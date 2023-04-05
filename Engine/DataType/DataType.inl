@@ -1,128 +1,220 @@
 #pragma once
+#pragma once
 
 using namespace Engine;
 
 #pragma region Vector2
 
 /* Constructor */
-inline Vector2::Vector2() : 
-	x_(0), 
-	y_(0)
+inline Vector2::Vector2() :
+	x(0), y(0)
 { }
-inline Vector2::Vector2(float x, float y) : 
-	x_(x), 
-	y_(y)
+inline Vector2::Vector2(double x, double y) :
+	x(x), y(y)
 { }
-inline Vector2::Vector2(const Vector2 &vec) : 
-	x_(vec.x_), 
-	y_(vec.y_)
+inline Vector2::Vector2(const Vector2& vec) :
+	x(vec.x), y(vec.y)
 { }
 
-/* Element getter */
-inline float Vector2::x(void) const { return x_; }
-inline float Vector2::y(void) const { return y_; }
-/* Element setter */
-inline void Vector2::x(float x) { x_ = x; }
-inline void Vector2::y(float y) { y_ = y; }
+///* Element getter */
+//inline float Vector2::x(void) const { return x_; }
+//inline float Vector2::y(void) const { return y_; }
+///* Element setter */
+//inline void Vector2::x(float x) { x_ = x; }
+//inline void Vector2::y(float y) { y_ = y; }
 
 /* Self modifying operators */
-inline void Vector2::operator+= (const Vector2 &vec)
+inline void Vector2::operator+= (const Vector2& vec)
 {
-	x_ += vec.x_;
-	y_ += vec.y_;
+	x += vec.x; y += vec.y;
 }
-inline void Vector2::operator-= (const Vector2 &vec)
+inline void Vector2::operator-= (const Vector2& vec)
 {
-	x_ -= vec.x_;
-	y_ -= vec.y_;
+	x -= vec.x; y -= vec.y;
 }
 
-inline void Vector2::operator*= (Vector2 const&vec)
+inline void Vector2::operator*= (Vector2 const& vec)
 {
-	x_ *= vec.x_;
-	y_ *= vec.y_;
+	x *= vec.x; y *= vec.y;
 }
-inline void Vector2::operator*= (float num)
+inline void Vector2::operator*= (double num)
 {
-	x_ *= num;
-	y_ *= num;
+	x *= num; y *= num;
 }
 
-inline void Vector2::operator/= (const Vector2 &vec)
+inline void Vector2::operator/= (const Vector2& vec)
 {
-	x_ /= vec.x_;
-	y_ /= vec.y_;
+	x /= vec.x; y /= vec.y;
 }
-inline void Vector2::operator/= (float num)
+inline void Vector2::operator/= (double num)
 {
-	x_ /= num;
-	y_ /= num;
+	x /= num; y /= num;
 }
 
 /* Modifying operators */
-inline Vector2 Vector2::operator+ (const Vector2 &vec) const
+inline Vector2 Vector2::operator+ (const Vector2& vec) const
 {
-	return Vector2(x_ + vec.x_, y_ + vec.y_);
+	return Vector2(x + vec.x, y + vec.y);
 }
-inline Vector2 Vector2::operator- (const Vector2 &vec) const
+inline Vector2 Vector2::operator- (const Vector2& vec) const
 {
-	return Vector2(x_ - vec.x_, y_ - vec.y_);
-}
-
-inline Vector2 Vector2::operator* (const Vector2 &vec) const
-{
-	return Vector2(x_ * vec.x_, y_ * vec.y_);
-}
-inline Vector2 Vector2::operator* (float num) const
-{
-	return Vector2(x_ * num, y_ * num);
-}
-inline Vector2 operator* (float left, Vector2 right)
-{
-	return Vector2(left * right.x(), left * right.y());
+	return Vector2(x - vec.x, y - vec.y);
 }
 
-inline Vector2 Vector2::operator/ (const Vector2 &vec) const
+inline Vector2 Vector2::operator* (const Vector2& vec) const
 {
-	return Vector2(x_ / vec.x_, y_ / vec.y_);
+	return Vector2(x * vec.x, y * vec.y);
 }
-inline Vector2 Vector2::operator/ (float num) const
+inline Vector2 Vector2::operator* (double num) const
 {
-	return Vector2(x_ / num, y_ / num);
+	return Vector2(x * num, y * num);
+}
+inline Vector2 operator* (double left, Vector2 right)
+{
+	return Vector2(left * right.x, left * right.y);
+}
+
+inline Vector2 Vector2::operator/ (const Vector2& vec) const
+{
+	return Vector2(x / vec.x, y / vec.y);
+}
+inline Vector2 Vector2::operator/ (double num) const
+{
+	return Vector2(x / num, y / num);
 }
 
 /* Assignment operators */
-inline Vector2& Vector2::operator= (const Vector2 &vec)
+inline Vector2& Vector2::operator= (const Vector2& vec)
 {
-	x_ = vec.x_;
-	y_ = vec.y_;
+	x = vec.x; y = vec.y;
 	return *this;
 }
 
 /* Comparison operators */
-inline bool Vector2::operator== (const Vector2 &vec) const
+inline bool Vector2::operator== (const Vector2& vec) const
 {
-	return (x_ == vec.x_) && (y_ == vec.y_);
+	return (x == vec.x) && (y == vec.y);
 }
 
-inline bool Vector2::operator!= (const Vector2 &vec) const
+inline bool Vector2::operator!= (const Vector2& vec) const
 {
-	return (x_ != vec.x_) || (y_ != vec.y_);
+	return (x != vec.x) || (y != vec.y);
 }
 
 /* Negate */
 inline Vector2 Vector2::operator- (void) const
 {
-	return Vector2(-x_, -y_);
+	return Vector2(-x, -y);
 }
+
+#pragma endregion
+
+
+#pragma region Vector3
+
+/* Constructor */
+inline Vector3::Vector3() :
+	x(0), y(0), z(0)
+{ }
+inline Vector3::Vector3(double x, double y, double z) :
+	x(x), y(y), z(z)
+{ }
+inline Vector3::Vector3(const Vector3& other) :
+	x(other.x), y(other.y), z(other.z)
+{ }
+
+/* Self modifying operators */
+inline void Vector3::operator+= (const Vector3& vec)
+{
+	x += vec.x; y += vec.y; z += vec.z;
+}
+inline void Vector3::operator-= (const Vector3& vec)
+{
+	x -= vec.x; y -= vec.y; x -= vec.z;
+}
+
+inline void Vector3::operator*= (Vector3 const& vec)
+{
+	x *= vec.x; y *= vec.y; z *= vec.z;
+}
+inline void Vector3::operator*= (double num)
+{
+	x *= num; y *= num; z *= num;
+}
+
+inline void Vector3::operator/= (const Vector3& vec)
+{
+	x /= vec.x; y /= vec.y; z /= vec.z;
+}
+inline void Vector3::operator/= (double num)
+{
+	x /= num; y /= num; z /= num;
+}
+
+/* Modifying operators */
+inline Vector3 Vector3::operator+ (const Vector3& vec) const
+{
+	return Vector3(x + vec.x, y + vec.y, z + vec.z);
+}
+inline Vector3 Vector3::operator- (const Vector3& vec) const
+{
+	return Vector3(x - vec.x, y - vec.y, z - vec.z);
+}
+
+inline Vector3 Vector3::operator* (const Vector3& vec) const
+{
+	return Vector3(x * vec.x, y * vec.y, z * vec.z);
+}
+inline Vector3 Vector3::operator* (double num) const
+{
+	return Vector3(x * num, y * num, z * num);
+}
+inline Vector3 operator* (double left, Vector3 right)
+{
+	return Vector3(left * right.x, left * right.y, left * right.z);
+}
+
+inline Vector3 Vector3::operator/ (const Vector3& vec) const
+{
+	return Vector3(x / vec.x, y / vec.y, z / vec.z);
+}
+inline Vector3 Vector3::operator/ (double num) const
+{
+	return Vector3(x / num, y / num, z / num);
+}
+
+/* Assignment operators */
+inline Vector3& Vector3::operator= (const Vector3& vec)
+{
+	x = vec.x; y = vec.y, z = vec.z;
+	return *this;
+}
+
+/* Comparison operators */
+inline bool Vector3::operator== (const Vector3& vec) const
+{
+	return (x == vec.x) && (y == vec.y) && (z == vec.z);
+}
+
+inline bool Vector3::operator!= (const Vector3& vec) const
+{
+	return (x != vec.x) || (y != vec.y) || (z != vec.z);
+}
+
+/* Negate */
+inline Vector3 Vector3::operator- (void) const
+{
+	return Vector3(-x, -y, -z);
+}
+
 
 #pragma endregion
 
 
 #pragma region ReferenceCount
 
-inline ReferenceCount::ReferenceCount(unsigned long smartRef, unsigned long weakRef) : 
-	smartRefCount(smartRef), 
+inline ReferenceCount::ReferenceCount(unsigned long smartRef, unsigned long weakRef) :
+	smartRefCount(smartRef),
 	weakRefCount(weakRef)
 { }
 
@@ -132,174 +224,24 @@ inline ReferenceCount::~ReferenceCount()
 #pragma endregion
 
 
-#pragma region SmartPtr
-
-//inline SmartPtr<class T>::SmartPtr() : 
-//	objectPtr(nullptr),
-//	refCount(nullptr)
-//{ }
-//
-//inline SmartPtr<class T>::SmartPtr(T* ptr) :
-//	objectPtr(ptr),
-//	refCount(new ReferenceCount(1, 0))
-//{ }
-//
-//inline SmartPtr<class T>::SmartPtr(const SmartPtr& other) :
-//	objectPtr(other.objectPtr),
-//	refCount(other.refCount)
-//{
-//	if (objectPtr == nullptr)
-//		refCount = nullptr;
-//	else
-//		refCount->smartRefCount++;
-//}
-//
-//inline SmartPtr<class T>::SmartPtr(const WeakPtr<T>& other) :
-//	objectPtr(other.objectPtr),
-//	refCount(other.refCount)
-//{
-//	if (objectPtr == nullptr)
-//		refCount = nullptr;
-//	else
-//		refCount++;
-//}
-//
-//inline SmartPtr<class T>::~SmartPtr()
-//{
-//	if (refCount != nullptr)
-//	{
-//		refCount->smartRefCount--;
-//
-//		if (refCount->smartRefCount == 0)
-//		{
-//			delete objectPtr;	
-//
-//			if (refCount->weakRefCount == 0)
-//				delete refCount;
-//		}
-//	}
-//}
-//
-//inline T* SmartPtr<class T>::operator->()
-//{
-//	return objectPtr;
-//}
-//
-//
-//inline SmartPtr<class T>::operator bool()
-//{
-//	return objectPtr != nullptr;
-//}
-//
-//inline bool SmartPtr<class T>::operator==(std::nullptr_t)
-//{
-//	return objectPtr == nullptr;
-//}
-//
-//inline bool SmartPtr<class T>::operator!=(std::nullptr_t)
-//{
-//	return objectPtr != nullptr;
-//}
-//
-//inline bool SmartPtr<class T>::operator==(const SmartPtr& other)
-//{
-//	return objectPtr == other.objectPtr;
-//}
-//
-//inline bool SmartPtr<class T>::operator!=(const SmartPtr& other)
-//{
-//	return objectPtr != other.objectPtr;
-//}
-
-#pragma endregion
-
-
-#pragma region WeakPtr
-
-//inline WeakPtr<class T>::WeakPtr() :
-//	objectPtr(nullptr),
-//	refCount(nullptr)
-//{ }
-//
-//inline WeakPtr<class T>::WeakPtr(const WeakPtr& other) :
-//	objectPtr(other.objectPtr),
-//	refCount(other.refCount)
-//{
-//	if (refCount != nullptr)
-//		refCount->weakRefCount++;
-//}
-//
-//inline WeakPtr<class T>::WeakPtr(const SmartPtr<T>& other) :
-//	objectPtr(other.objectPtr),
-//	refCount(other.refCount)
-//{
-//	if (refCount != nullptr)
-//		refCount->weakRefCount++;
-//}
-//
-//inline WeakPtr<class T>::~WeakPtr()
-//{
-//	if (refCount != nullptr)
-//	{
-//		refCount->weakRefCount--;
-//
-//		if (refCount->smartRefCount == 0 && refCount->weakRefCount == 0)
-//		{
-//			delete refCount;
-//		}
-//	}
-//}
-//
-//inline WeakPtr<class T>::operator bool()
-//{
-//	return objectPtr != nullptr;
-//}
-//
-//inline bool WeakPtr<class T>::operator==(std::nullptr_t)
-//{
-//	return objectPtr == nullptr;
-//}
-//
-//inline bool WeakPtr<class T>::operator!=(std::nullptr_t)
-//{
-//	return objectPtr != nullptr;
-//}
-//
-//inline bool WeakPtr<class T>::operator==(const WeakPtr& other)
-//{
-//	return objectPtr == other.objectPtr;
-//}
-//
-//inline bool WeakPtr<class T>::operator!=(const WeakPtr& other)
-//{
-//	return objectPtr != other.objectPtr;
-//}
-
-#pragma endregion
-
-
 #pragma region GameObject
 
-inline GameObject::GameObject() : 
-	mass(0.0),
+inline GameObject::GameObject() :
 	name(""),
-	position(Vector2()),
-	velocity(Vector2())
+	position(Vector2::Zero)
 { }
 
-inline GameObject::GameObject(string name, float mass, Vector2 position, Vector2 velocity) :
-	mass(mass),
+inline GameObject::GameObject(const string& name, const Vector2& position) :
 	name(name),
-	position(position),
-	velocity(velocity)
+	position(position)
 { }
 
 inline GameObject::~GameObject()
 { }
 
-inline SmartPtr<GameObject> GameObject::Create(string name)
+inline SmartPtr<GameObject> GameObject::Create(const string& name, const Vector2& position)
 {
-	return SmartPtr<GameObject>(new GameObject(name));
+	return SmartPtr<GameObject>(new GameObject(name, position));
 }
 
 #pragma endregion

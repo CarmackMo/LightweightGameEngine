@@ -7,32 +7,84 @@ using namespace Engine::Physics;
 
 void Physic::Update()
 {
-	for (PhysicObject item : physicObjList)
+	int removeCount = 0;
+	vector<PhysicObject*>::iterator fast = physicObjList.begin();
+	vector<PhysicObject*>::iterator slow = physicObjList.begin();
+
+	for (PhysicObject* physicObj : physicObjList)
 	{
-		SmartPtr<GameObject> obj = SmartPtr<GameObject>(item.object);
-
-		if (obj != nullptr)
+		if (physicObj->object != nullptr)
 		{
-			Vector2 acceleration = item.force / item.mass;
-			Vector2 newVelocity = item.velocity + acceleration * tim;
+			SmartPtr<GameObject> obj = SmartPtr<GameObject>(physicObj->object);
+
+			/* Numerical Integration Approach */
+			Vector2 acceleration = physicObj->force / physicObj->mass;
+			Vector2 newVelocity = physicObj->velocity + acceleration * Time::DeltaTime;
+			Vector2 deltaVelocity = newVelocity - physicObj->velocity;
+
+			obj->position = obj->position + (physicObj->velocity + newVelocity) / 2.0 * Time::DeltaTime;
+			physicObj->velocity = newVelocity;
 
 
-			// TODO: do physic
+
+			/* TODO: Temperary Drag Force Logic */
+			
+			double dragFactor = 1000;
+			double dragDirX = physicObj->velocity.x == 0 ? 0 : -1 * physicObj->velocity.x / abs(physicObj->velocity.x);
+			double dragDirY = physicObj->velocity.y == 0 ? 0 : -1 * physicObj->velocity.y / abs(physicObj->velocity.y);
+
+			Vector2 deltaDragForce = (dragFactor * deltaVelocity * deltaVelocity) * Vector2(dragDirX, dragDirY);
+			physicObj->force += deltaDragForce;
+
+			//Vector2 dragForce = (dragFactor * physicObj->velocity * physicObj->velocity) * Vector2(dragDirX, dragDirY);		// drag force magnitude * drag force direction  
+			//physicObj->force += dragForce;
+			/* TODO: Temperary Drag Force Logic */
+
 		}
-		else
+		else 
 		{
-			// TODO: release the instance
+			iter_swap(fast, slow);
+			removeCount++;
+			slow++;
 		}
+
+		fast++;
 	}
+
+	/* Erase invalid physical objects together and shrink the object list */
+	for (int i = 0; i < removeCount; i++)
+	{
+		delete physicObjList.front();
+		physicObjList.erase(physicObjList.begin());
+	}
+	physicObjList.shrink_to_fit();
 }
 
 
-void Physic::Update(GameObject &object, const Vector2 &force, double time)
-{
-	/* Numerical Integration Approach */
-	Vector2 acceleration = force / object.mass;
-	Vector2 newVelocity = object.velocity + acceleration * time;
 
-	object.position = object.position + (object.velocity + newVelocity) / 2.0 * time;
-	object.velocity = newVelocity;
+PhysicObject* Physic::FindPhysicObj(const SmartPtr<GameObject>& target)
+{
+	WeakPtr<GameObject> obj = WeakPtr<GameObject>(target);
+	for (PhysicObject* item : physicObjList)
+	{
+		if (item->object == obj)
+		{
+			return item;
+		}
+	}
+
+	return nullptr;
+}
+
+bool Physic::AddForceToObj(const SmartPtr<GameObject>& object, const Vector2& force)
+{
+	PhysicObject* physicObj = FindPhysicObj(object);
+
+	if (physicObj != nullptr)
+	{
+		physicObj->force += force;
+		return true;
+	}
+	else
+		return false;
 }

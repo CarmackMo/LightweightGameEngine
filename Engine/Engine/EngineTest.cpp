@@ -1,23 +1,31 @@
-#ifndef UNICODE
-#define UNICODE
-#endif 
-
-#include <windows.h>
-#include <string>
 #include "Engine.h"
 
-using namespace std;
 using namespace Engine;
 
 GameEngine engine;
+SmartPtr<GameObject> object;
+Vector2 gravity;
 
+
+void TestKeyDown()
+{
+    DEBUG_PRINT("Key down Call back!!!!!\n");
+}
+void TestKeyUp()
+{
+    DEBUG_PRINT("Key up Call back!!!!!\n");
+}
+
+
+
+#pragma region Desktop App Code
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 int WINAPI wWinMain(
-    _In_ HINSTANCE hInstance, 
-    _In_opt_ HINSTANCE hPrevInstance, 
-    _In_ LPWSTR pCmdLine, 
+    _In_ HINSTANCE hInstance,
+    _In_opt_ HINSTANCE hPrevInstance,
+    _In_ LPWSTR pCmdLine,
     _In_ int nCmdShow)
 {
 
@@ -57,18 +65,58 @@ int WINAPI wWinMain(
 
     /* Game engine code */
     engine = GameEngine();
-    engine.gameObjectList.push_back(GameObject("Mo", 1, Vector2(10, 10), Vector2(0, 0)));
+    engine.CreatGameObject("Mo", 1.0, Vector2(10, 10), Vector2::Zero, Vector2::Zero);
+    object = engine.gameObjectList[0];
+    gravity = Vector2::Down;
 
+
+    /**/
 
     // Run the message loop.
-    MSG msg = { };
-    while (GetMessage(&msg, NULL, 0, 0) > 0)
+    //MSG msg = { };
+    //while (GetMessage(&msg, NULL, 0, 0) > 0)
+    //{
+    //    const PhysicObject* physicObject = engine.physicManager->FindPhysicObj(object);
+    //    Debug::print<float>("Before, total force: %f \n", physicObject->force.y());
+    //    engine.Update(hwnd);
+    //    TranslateMessage(&msg);
+    //    DispatchMessage(&msg);
+    //}
+
+    engine.inputManager->AddOnKeyDownCallback(KeyCode::A, &TestKeyDown);
+    engine.inputManager->AddOnKeyUpCallback(KeyCode::A, &TestKeyUp);
+
+    do
     {
+
         engine.Update(hwnd);
 
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-    }
+        if (engine.inputManager->GetKeyUp(KeyCode::O))
+        {
+            engine.physicManager->AddForceToObj(object, gravity);
+            DEBUG_PRINT("Add %dN Force! \n", 1);
+        }
+        else if (engine.inputManager->GetKeyUp(KeyCode::P))
+        {
+            engine.physicManager->AddForceToObj(object, -1 * gravity);
+            DEBUG_PRINT("Remove %dN Force! \n", 1);
+        }
+
+
+        Sleep(100);
+
+    } while (!engine.quitRequest);
+
+    engine.inputManager->RemoveOnKeyDownCallback(KeyCode::A, &TestKeyDown);
+    engine.inputManager->RemoveOnKeyUpCallback(KeyCode::A, &TestKeyUp);
+
+    /* Game engine code */
+    engine.Destroy();
+    object.~SmartPtr();
+    /**/
+
+
+    _CrtDumpMemoryLeaks();
 
     return 0;
 }
@@ -79,106 +127,180 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     HDC hdc;
     switch (uMsg)
     {
-        case WM_DESTROY:
-        {
-            PostQuitMessage(0);
-            break;
-        }
-        case WM_PAINT:
-        {
-            hdc = BeginPaint(hwnd, &ps);
-            FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
-            EndPaint(hwnd, &ps);
-            break;
-        }
-        case WM_KEYDOWN:
-        {
-            if (wParam == 0x50)
-                engine.isKeyDown = true;
-
-            break;
-        }
-        case WM_KEYUP:
-        {
-            if (wParam == 0x50)
-                engine.isKeyDown = false;
-            break;
-        }
-        case WM_SETTEXT:
-        {
-            InvalidateRect(hwnd, NULL, FALSE);
-            hdc = BeginPaint(hwnd, &ps);
-
-
-            std::wstring text;
-            const wchar_t* ptr;
-            int len;
-            text = L"Hold 'p' key down to keep add force to gameobject!";
-            ptr = text.c_str();
-            len = static_cast<int>(wcslen(ptr));
-            TextOut(hdc, 60, 30, ptr, len);
-
-            text = L"DeltaTime: " + std::to_wstring(engine.timeManager.GetDeltaTime());
-            ptr = text.c_str();
-            len = static_cast<int>(wcslen(ptr));
-            TextOut(hdc, 60, 60, ptr, len);
-
-            GameObject object = engine.gameObjectList[0];
-            text = L"GameObject State: " 
-                L"Pos: (" + to_wstring(object.position.x()) + L"," + to_wstring(object.position.y()) + L")" +
-                L"Vel: (" + to_wstring(object.velocity.x()) + L"," + to_wstring(object.velocity.y()) + L")";
-            ptr = text.c_str();
-            len = static_cast<int>(wcslen(ptr));
-            TextOut(hdc, 60, 80, ptr, len);
-
-            Vector2 gravity = Vector2(0.0, -1.0);
-            float dragFactor = 0.1f;
-            float dragDirX = object.velocity.x() == 0 ? 0 : -1 * object.velocity.x() / abs(object.velocity.x());
-            float dragDirY = object.velocity.y() == 0 ? 0 : -1 * object.velocity.y() / abs(object.velocity.y());
-            Vector2 dragForce = dragFactor * object.velocity * object.velocity * Vector2(dragDirX, dragDirY);
-            Vector2 totalForce = gravity + dragForce;
-            text = L"DragForce: (" + to_wstring(dragForce.x()) + L"," + to_wstring(dragForce.y()) + L")"
-                L"TotalForce: (" + to_wstring(totalForce.x()) + L"," + to_wstring(totalForce.y()) + L")";
-            ptr = text.c_str();
-            len = static_cast<int>(wcslen(ptr));
-            TextOut(hdc, 60, 100, ptr, len);
+    case WM_DESTROY:
+    {
+        PostQuitMessage(0);
+        break;
+    }
+    case WM_PAINT:
+    {
+        hdc = BeginPaint(hwnd, &ps);
+        FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
+        EndPaint(hwnd, &ps);
+        break;
+    }
+    //case WM_INPUT:
+    //case WM_KEYDOWN:
+    //{
+    //    if (wParam == 0x4F)
+    //    {
+    //        engine.physicManager->AddForceToObj(object, gravity);
+    //        DEBUG_PRINT("Add %dN Force! \n", 1);
+    //    }
+    //    else if (wParam == 0x50)
+    //    {
+    //        engine.physicManager->AddForceToObj(object, -1 * gravity);
+    //        DEBUG_PRINT("Remove %dN Force! \n", 1);
+    //    }
+    //    break;
+    //}
+    case WM_KEYUP:
+    {
+        if (wParam == 0x50)
+            //engine.isKeyDown = false;
+        break;
+    }
+    case WM_SETTEXT:
+    {
+        InvalidateRect(hwnd, NULL, FALSE);
+        hdc = BeginPaint(hwnd, &ps);
 
 
-            EndPaint(hwnd, &ps);
-            break;
-        }
-        case WM_CLOSE:
-        {
-            if (MessageBox(hwnd, L"Really quit?", L"My application", MB_OKCANCEL) == IDOK)
-                DestroyWindow(hwnd);
-            return 0;
-        }
-        default:                      
-            return DefWindowProc(hwnd, uMsg, wParam, lParam);
+        std::wstring text;
+        const wchar_t* ptr;
+        int len;
+        text = L"Press 'o' key to add force to gameobject, press 'p' to remove force!";
+        ptr = text.c_str();
+        len = static_cast<int>(wcslen(ptr));
+        TextOut(hdc, 60, 30, ptr, len);
+
+        text = L"DeltaTime: " + std::to_wstring(Time::DeltaTime);
+        ptr = text.c_str();
+        len = static_cast<int>(wcslen(ptr));
+        TextOut(hdc, 60, 60, ptr, len);
+
+        /* Game engine code */
+        const PhysicObject* physicObject = engine.physicManager->FindPhysicObj(object);
+        assert(physicObject != nullptr);
+        /**/
+
+        text = L"GameObject State: "
+            L"Pos: (" + to_wstring(object->position.x) + L"," + to_wstring(object->position.y) + L"), " +
+            L"Vel: (" + to_wstring(physicObject->velocity.x) + L"," + to_wstring(physicObject->velocity.y) + L")";
+        ptr = text.c_str();
+        len = static_cast<int>(wcslen(ptr));
+        TextOut(hdc, 60, 80, ptr, len);
+
+        double dragFactor = 0.1f;
+        double dragDirX = physicObject->velocity.x == 0 ? 0 : -1 * physicObject->velocity.x / abs(physicObject->velocity.x);
+        double dragDirY = physicObject->velocity.y == 0 ? 0 : -1 * physicObject->velocity.y / abs(physicObject->velocity.y);
+        Vector2 dragForce = dragFactor * physicObject->velocity * physicObject->velocity * Vector2(dragDirX, dragDirY);
+        Vector2 totalForce = physicObject->force;
+        text = //L"DragForce: (" + to_wstring(dragForce.x()) + L"," + to_wstring(dragForce.y()) + L"), "
+            L"TotalForce: (" + to_wstring(totalForce.x) + L"," + to_wstring(totalForce.y) + L")";
+        ptr = text.c_str();
+        len = static_cast<int>(wcslen(ptr));
+        TextOut(hdc, 60, 100, ptr, len);
+
+
+        EndPaint(hwnd, &ps);
+        break;
+    }
+    case WM_CLOSE:
+    {
+        if (MessageBox(hwnd, L"Really quit?", L"My application", MB_OKCANCEL) == IDOK)
+            DestroyWindow(hwnd);
+        return 0;
+    }
+    default:
+        return DefWindowProc(hwnd, uMsg, wParam, lParam);
 
     }
+
     return 0;
 }
+
+
+
+#pragma endregion
+
+
+
+
+
+
+#pragma region Console Code
+
+/* Debug start */
+class Test
+{
+public:
+    vector<Vector2> temp1 = { Vector2::Zero, Vector2::Down, Vector2::Zero };
+
+    Test(){}
+
+};
+
+void TestCase(Test target, Vector2& out)
+{
+    for (Vector2& item : target.temp1)
+    {
+        if (item == Vector2::Down)
+            out = item;
+    }
+
+}
+/* Debug End */
 
 
 int main()
 {
-    //engine = GameEngine();
-    //engine.gameObjectList.push_back(GameObject("Mo", 1.0, Vector2(10, 10), Vector2(0, 0)));
-    //engine.GameLoop();
+    printf("Console App \n\n");
 
-    
-
-
-
-    SmartPtr<GameObject> temp1 = SmartPtr<GameObject>(new GameObject("L1"));
-    SmartPtr<GameObject> temp2 = SmartPtr<GameObject>(new GameObject("L2"));
-    SmartPtr<Vector2> temp3 = SmartPtr<Vector2>(new Vector2());
+    engine.GameLoop();
+    engine.Destroy();
 
 
 
-    printf("%d \n", (*temp1).mass);
 
+    //SmartPtr<GameObject> temp1 = SmartPtr<GameObject>(new GameObject("L1"));
+    //SmartPtr<GameObject> temp2 = SmartPtr<GameObject>(new GameObject("L2"));
+    //SmartPtr<Vector2> temp3 = SmartPtr<Vector2>(new Vector2());
+    //temp1 = temp2;
+
+
+    //Test* temp4 = Test::Instance();
+    //printf("a: %d \n", temp4->a);
+    //temp4->a = 2;
+    //printf("a: %d \n", temp4->a);
+
+
+
+    //Vector2* temp5 = new Vector2();
+    //Vector2* temp6 = temp5;
+
+    //printf("P5 %p \n", temp5);
+    //printf("P6 %p \n", temp6);
+
+    //delete temp5;
+
+    //if (temp5 == nullptr)
+    //    printf("P5 is nullptr \n");
+    //else
+    //    printf("P5 %p \n", temp5);
+
+    //if (temp6 == nullptr)
+    //    printf("P6 is nullptr \n");
+    //else
+    //    printf("P6 %p", temp6);
+
+    int res = _CrtDumpMemoryLeaks();
+    if (res == TRUE)
+        printf("\n #### Detedct Memory Leak!! \n");
+    else
+        printf("\n #### No Memory Leak!! \n");
 
     return 0;
 }
+
+#pragma endregion
