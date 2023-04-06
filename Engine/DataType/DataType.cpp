@@ -4,11 +4,11 @@ using namespace Engine;
 
 #pragma region Vector2
 
-const Vector2 Vector2::Zero(0.0f, 0.0f);
-const Vector2 Vector2::Left(-1.0f, 0.0f);
-const Vector2 Vector2::Right(1.0f, 0.0f);
-const Vector2 Vector2::Up(0.0f, 1.0f);
-const Vector2 Vector2::Down(0.0f, -1.0f);
+const Vector2 Vector2::Zero(0, 0);
+const Vector2 Vector2::Left(-1, 0);
+const Vector2 Vector2::Right(1, 0);
+const Vector2 Vector2::Up(0, 1);
+const Vector2 Vector2::Down(0, -1);
 
 #pragma endregion
 
@@ -29,30 +29,40 @@ const Vector3 Vector3::Back(0, 0, -1);
 
 #pragma region Matrix4
 
-Matrix4::Matrix4(
-	double x11, double x12, double x13, double x14,
-	double x21, double x22, double x23, double x24,
-	double x31, double x32, double x33, double x34,
-	double x41, double x42, double x43, double x44) :
-	m11(x11), m12(x12), m13(x13), m14(x14),
-	m21(x21), m22(x22), m23(x23), m24(x24),
-	m31(x31), m32(x32), m33(x33), m34(x34),
-	m41(x42), m42(x42), m43(x43), m44(x44)
-{ }
+Matrix4::Matrix4()
+{
+	val[0][0] = 0; val[0][1] = 0; val[0][2] = 0; val[0][3] = 0;
+	val[1][0] = 0; val[1][1] = 0; val[1][2] = 0; val[1][3] = 0;
+	val[2][0] = 0; val[2][1] = 0; val[2][2] = 0; val[2][3] = 0;
+	val[3][0] = 0; val[3][1] = 0; val[3][2] = 0; val[3][3] = 0;
+}
 
-Matrix4::Matrix4(const Matrix4& other) :
-	m11(other.m11), m12(other.m12), m13(other.m13), m14(other.m14),
-	m21(other.m21), m22(other.m22), m23(other.m23), m24(other.m24),
-	m31(other.m31), m32(other.m32), m33(other.m33), m34(other.m34),
-	m41(other.m41), m42(other.m42), m43(other.m43), m44(other.m44)
-{ }
+Matrix4::Matrix4(
+	double x00, double x01, double x02, double x03,
+	double x10, double x11, double x12, double x13,
+	double x20, double x21, double x22, double x23,
+	double x30, double x31, double x32, double x33)
+{
+	val[0][0] = x00; val[0][1] = x01; val[0][2] = x02; val[0][3] = x03;
+	val[1][0] = x10; val[1][1] = x11; val[1][2] = x12; val[1][3] = x13;
+	val[2][0] = x20; val[2][1] = x21; val[2][2] = x22; val[2][3] = x23;
+	val[3][0] = x30; val[3][1] = x31; val[3][2] = x32; val[3][3] = x33;
+}
+
+Matrix4::Matrix4(const Matrix4& other)
+{ 
+	val[0][0] = other.At(0,0); val[0][1] = other.At(0,1); val[0][2] = other.At(0,2); val[0][3] = other.At(0,3);
+	val[1][0] = other.At(1,0); val[1][1] = other.At(1,1); val[1][2] = other.At(1,2); val[1][3] = other.At(1,3);
+	val[2][0] = other.At(2,0); val[2][1] = other.At(2,1); val[2][2] = other.At(2,2); val[2][3] = other.At(2,3);
+	val[3][0] = other.At(3,0); val[3][1] = other.At(3,1); val[3][2] = other.At(3,2); val[3][3] = other.At(3,3);
+}
 
 Matrix4& Matrix4::operator=(const Matrix4& other)
 {
-	m11 = other.m11; m12 = other.m12; m13 = other.m13; m14 = other.m14;
-	m21 = other.m21; m22 = other.m22; m23 = other.m23; m24 = other.m24;
-	m31 = other.m31; m32 = other.m32; m33 = other.m33; m34 = other.m34;
-	m41 = other.m41; m42 = other.m42; m43 = other.m43; m44 = other.m44;
+	val[0][0] = other.At(0, 0); val[0][1] = other.At(0, 1); val[0][2] = other.At(0, 2); val[0][3] = other.At(0, 3);
+	val[1][0] = other.At(1, 0); val[1][1] = other.At(1, 1); val[1][2] = other.At(1, 2); val[1][3] = other.At(1, 3);
+	val[2][0] = other.At(2, 0); val[2][1] = other.At(2, 1); val[2][2] = other.At(2, 2); val[2][3] = other.At(2, 3);
+	val[3][0] = other.At(3, 0); val[3][1] = other.At(3, 1); val[3][2] = other.At(3, 2); val[3][3] = other.At(3, 3);
 	return *this;
 }
 
@@ -132,7 +142,38 @@ Matrix4 Matrix4::CreateScale(double scaleX, double scaleY, double scaleZ)
 		0,		0,		0,		1);
 }
 
+double Matrix4::At(int row, int col) const
+{
+	return val[row][col];
+}
 
+void Matrix4::Set(int row, int col, double data)
+{
+	val[row][col] = data;
+}
+
+void Matrix4::Transpose(void)
+{
+	double
+		t01 = val[0][1], t02 = val[0][2], t03 = val[0][3],
+		t12 = val[1][2], t13 = val[1][3], t23 = val[2][3];
+
+	val[0][1] = val[1][0]; val[0][2] = val[2][0]; val[0][3] = val[3][0];
+	val[1][2] = val[2][1]; val[1][3] = val[3][1]; val[2][3] = val[3][2];
+
+	val[0][1] = t01, val[0][2] = t02, val[0][3] = t03,
+	val[1][2] = t12, val[1][3] = t13, val[2][3] = t23;
+}
+
+
+Matrix4 Matrix4::GetTranspose(void) const
+{
+	return Matrix4(
+		val[0][0], val[1][0], val[2][0], val[3][0],
+		val[0][1], val[1][1], val[2][1], val[3][1],
+		val[0][2], val[1][2], val[2][2], val[3][2],
+		val[0][3], val[1][3], val[2][3], val[3][3]);
+}
 
 #pragma endregion
 

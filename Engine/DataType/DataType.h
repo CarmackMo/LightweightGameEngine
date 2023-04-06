@@ -68,15 +68,15 @@ public:
 	/* Negate */
 	inline Vector2 operator- (void) const;
 
-	/* @brief Vector2(0.0, 0.0) */
+	/* @brief Vector2(0, 0) */
 	static const Vector2 Zero;
-	/* @brief Vector2(-1.0, 0.0) */
+	/* @brief Vector2(-1, 0) */
 	static const Vector2 Left;
-	/* @brief Vector2(1.0, 0.0) */
+	/* @brief Vector2(1, 0) */
 	static const Vector2 Right;
-	/* @brief Vector2(0.0, 1.0) */
+	/* @brief Vector2(0, 1) */
 	static const Vector2 Up;
-	/* @brief Vector2(0.0, -1.0) */
+	/* @brief Vector2(0, -1) */
 	static const Vector2 Down;
 };
 
@@ -153,10 +153,10 @@ class Matrix4
 public:
 	/* Value base constructure */
 	Matrix4(
-		double x11, double x12, double x13, double x14,
-		double x21, double x22, double x23, double x24,
-		double x31, double x32, double x33, double x34,
-		double x41, double x42, double x43, double x44);
+		double x00, double x01, double x02, double x03,
+		double x10, double x11, double x12, double x13,
+		double x20, double x21, double x22, double x23,
+		double x30, double x31, double x32, double x33);
 	/* Copy constructure */
 	Matrix4(const Matrix4& other);
 
@@ -166,6 +166,7 @@ public:
 	static Matrix4 CreateIdentity(void);
 
 	/* Rotation matrix creator */
+
 	/* @brief Rotation matrix around X-axis, rotate counter-clockwise */
 	static Matrix4 CreateXRotation(double rad);
 	/* @brief Rotation matrix around Y-axis, rotate counter-clockwise */
@@ -182,6 +183,11 @@ public:
 	static Matrix4 CreateScale(double scaleX, double scaleY, double scaleZ);
 
 	/*  */
+
+	double At(int row, int col) const;
+
+	double Set(int row, int col, double val);
+
 
 	/* Invert this instance */
 	void Invert(void);
@@ -212,6 +218,8 @@ private:
 		m21, m22, m23, m24,
 		m31, m32, m33, m34,
 		m41, m42, m43, m44;
+
+	double val[4][4];
 	 
 	Matrix4();
 
