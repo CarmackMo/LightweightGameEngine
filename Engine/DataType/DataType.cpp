@@ -27,6 +27,62 @@ const Vector3 Vector3::Back(0, 0, -1);
 
 
 
+#pragma region Vector4
+
+Vector4::Vector4() : w(0), x(0), y(0), z(0)
+{ }
+
+Vector4::Vector4(double w, double x, double y, double z) :
+	w(w), x(x), y(y), z(z)
+{ }
+
+Vector4::Vector4(const Vector4& other) :
+	w(other.w), x(other.x), y(other.y), z(other.z)
+{ }
+
+double Vector4::At(int idx) const
+{
+	switch (idx)
+	{
+	case 0:
+		return w;
+	case 1:
+		return x;
+	case 2:
+		return y;
+	case 3:
+		return z;
+	default:
+		break;
+	}
+}
+
+void Vector4::Set(int idx, double val)
+{
+	switch (idx)
+	{
+	case 0:
+		w = val;
+		break;
+	case 1:
+		x = val;
+		break;
+	case 2:
+		y = val;
+		break;
+	case 3:
+		z = val;
+		break;
+	default:
+		break;
+	}
+}
+
+#pragma endregion
+
+
+
+
 #pragma region Matrix4
 
 Matrix4::Matrix4()
@@ -239,6 +295,77 @@ double Matrix4::Det(int row, int col) const
 	}
 
 	return res;
+}
+
+Matrix4 Matrix4::operator* (const Matrix4& other) const
+{
+	Matrix4 res = Matrix4();
+
+	/* Iterate all rows in matrix A */
+	for (int rowA = 0; rowA < 4; rowA++)
+	{
+		/* Iterate all columns in matrix B */
+		for (int colB = 0; colB < 4; colB++)
+		{
+			double sum = 0;
+			/* Iterator that repeat 4 times */
+			for (int i = 0; i < 4; i++)
+			{
+				sum += val[rowA][i] * other.val[i][colB];
+			}
+			res.Set(rowA, colB, sum);
+		}
+	}
+	return res;
+}
+
+Vector4 Matrix4::MultiplyLeft(const Vector4& vec) const
+{
+	Vector4 res = Vector4();
+
+	/* Iterate all columns in matrix */
+	for (int col = 0; col < 4; col++)
+	{
+		double sum = 0;
+		/* Iterator that repeat 4 times */
+		for (int i = 0; i < 4; i++)
+		{
+			sum += vec.At(i) * val[i][col];
+		}
+		res.Set(col, sum);
+	}
+	return res;
+}
+
+Vector4 Matrix4::MultiplyRight(const Vector4& vec) const
+{
+	Vector4 res = Vector4();
+
+	/* Iterator all rows in matrix */
+	for (int row = 0; row < 4; row++)
+	{
+		double sum = 0;
+		/* Iterator that repeat 4 times */
+		for (int i = 0; i < 4; i++)
+		{
+			sum += val[row][i] * vec.At(i);
+		}
+		res.Set(row, sum);
+	}
+	return res;
+}
+
+bool Matrix4::operator== (const Matrix4& other) const
+{
+	for (int row = 0; row < 4; row++)
+	{
+		for (int col = 0; col < 4; col++)
+		{
+			if (val[row][col] != other.At(row, col))
+				return false;
+		}
+	}
+	return true;
 }
 
 #pragma endregion

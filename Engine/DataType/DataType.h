@@ -143,7 +143,15 @@ public:
 
 class Vector4
 {
-	double x, y, z, u;
+public:
+	double w, x, y, z;
+
+	Vector4();
+	Vector4(double w, double x, double y, double z);
+	Vector4(const Vector4& other);
+
+	double At(int idx) const;
+	void Set(int idx, double val);
 };
 
 
@@ -160,18 +168,15 @@ public:
 	/* Copy constructure */
 	Matrix4(const Matrix4& other);
 
-	Matrix4& operator=(const Matrix4& other);
-
 	/* Identity matrix creator */
 	static Matrix4 CreateIdentity(void);
 
 	/* Rotation matrix creator */
-
-	/* @brief Rotation matrix around X-axis, rotate counter-clockwise */
+	/* Rotate matrix around X-axis, rotate counter-clockwise */
 	static Matrix4 CreateXRotation(double rad);
-	/* @brief Rotation matrix around Y-axis, rotate counter-clockwise */
+	/* @brief Rotate matrix around Y-axis, rotate counter-clockwise */
 	static Matrix4 CreateYRotation(double rad);
-	/* @brief Rotation matrix around Y-axis, rotate counter-clockwise */
+	/* @brief Rotate matrix around Y-axis, rotate counter-clockwise */
 	static Matrix4 CreateZRotation(double rad);
 
 	/* Translation matrix creator */
@@ -199,34 +204,23 @@ public:
 	/* Return a matrix that is the transpose of this instance but don't modify this instance */
 	Matrix4 GetTranspose(void) const;
 
-	/* Multiply matrix by matrix, return this * other */
-	Matrix4 operator* (const Matrix4& other) const;
-
 	/* Multiply vector by matrix */
 	/* Return v * M */
 	Vector4 MultiplyLeft(const Vector4& vec) const;
 	/* Return M * v */
 	Vector4 MultiplyRight(const Vector4& vec) const;
 
+	/* Multiply matrix by matrix, return this * other */
+	Matrix4 operator* (const Matrix4& other) const;
 	/* Comparison operators */
 	bool operator== (const Matrix4& other) const;
-
+	/* Assignment operators */
+	Matrix4& operator=(const Matrix4& other);
 
 private:
-	//double
-	//	m11, m12, m13, m14,
-	//	m21, m22, m23, m24,
-	//	m31, m32, m33, m34,
-	//	m41, m42, m43, m44;
-
 	double val[4][4];
 	
 	Matrix4();
-
-	
-
-	Matrix4 Multiply(const Matrix4& other, Matrix4& out) const;
-
 };
 
 
