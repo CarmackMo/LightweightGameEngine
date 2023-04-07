@@ -70,6 +70,15 @@ int WINAPI wWinMain(
     gravity = Vector2::Down;
 
 
+    Matrix4 m = Matrix4(
+        1, 1, 1, - 1,
+        1, 1, -1, 1,
+        1, -1, 1, 1,
+        -1, 1, 1, 1);
+
+    m.Invert();
+
+
     /**/
 
     // Run the message loop.

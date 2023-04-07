@@ -182,12 +182,12 @@ public:
 	static Matrix4 CreateScale(Vector3& vec);
 	static Matrix4 CreateScale(double scaleX, double scaleY, double scaleZ);
 
-	/*  */
-
+	/* Return the value at M(i,j) */
 	double At(int row, int col) const;
-
-	double Set(int row, int col, double val);
-
+	/* Update the value at M(i,j) */
+	void Set(int row, int col, double data);
+	/* Calculate the determinant of the 3x3 sub-matrix where M(row, col) is the pivot */
+	double Det(int row, int col) const;
 
 	/* Invert this instance */
 	void Invert(void);
@@ -213,15 +213,17 @@ public:
 
 
 private:
-	double
-		m11, m12, m13, m14,
-		m21, m22, m23, m24,
-		m31, m32, m33, m34,
-		m41, m42, m43, m44;
+	//double
+	//	m11, m12, m13, m14,
+	//	m21, m22, m23, m24,
+	//	m31, m32, m33, m34,
+	//	m41, m42, m43, m44;
 
 	double val[4][4];
-	 
+	
 	Matrix4();
+
+	
 
 	Matrix4 Multiply(const Matrix4& other, Matrix4& out) const;
 
