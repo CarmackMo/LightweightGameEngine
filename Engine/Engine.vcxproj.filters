@@ -46,6 +46,12 @@
     <ClCompile Include="Debugger\Debugger.cpp">
       <Filter>Source Files\Debugger</Filter>
     </ClCompile>
+    <ClCompile Include="DataType\Matrix.cpp">
+      <Filter>Source Files\DataType</Filter>
+    </ClCompile>
+    <ClCompile Include="DataType\Vector.cpp">
+      <Filter>Source Files\DataType</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataType\DataType.h">
@@ -69,6 +75,12 @@
     <ClInclude Include="Debugger\Debugger.h">
       <Filter>Source Files\Debugger</Filter>
     </ClInclude>
+    <ClInclude Include="DataType\Matrix.h">
+      <Filter>Source Files\DataType</Filter>
+    </ClInclude>
+    <ClInclude Include="DataType\Vector.h">
+      <Filter>Source Files\DataType</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Physics\Physics.inl">
@@ -81,6 +93,12 @@
       <Filter>Source Files\Input</Filter>
     </None>
     <None Include="DataType\DataType.inl">
+      <Filter>Source Files\DataType</Filter>
+    </None>
+    <None Include="DataType\Matrix.inl">
+      <Filter>Source Files\DataType</Filter>
+    </None>
+    <None Include="DataType\Vector.inl">
       <Filter>Source Files\DataType</Filter>
     </None>
   </ItemGroup>

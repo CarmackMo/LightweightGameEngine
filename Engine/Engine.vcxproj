@@ -140,6 +140,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DataType\DataType.cpp" />
+    <ClCompile Include="DataType\Matrix.cpp" />
+    <ClCompile Include="DataType\Vector.cpp" />
     <ClCompile Include="Debugger\Debugger.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
     <ClCompile Include="Engine\EngineTest.cpp" />
@@ -149,6 +151,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataType\DataType.h" />
+    <ClInclude Include="DataType\Matrix.h" />
+    <ClInclude Include="DataType\Vector.h" />
     <ClInclude Include="Debugger\Debugger.h" />
     <ClInclude Include="Engine\Dependency.h" />
     <ClInclude Include="Engine\Engine.h" />
@@ -158,6 +162,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="DataType\DataType.inl" />
+    <None Include="DataType\Matrix.inl" />
+    <None Include="DataType\Vector.inl" />
     <None Include="Input\Input.inl" />
     <None Include="Physics\Physics.inl" />
     <None Include="Timer\Timer.inl" />
