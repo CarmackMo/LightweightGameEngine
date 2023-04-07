@@ -31,7 +31,7 @@ public:
 	/* Return the value at M(i,j) */
 	inline double At(int row, int col) const;
 	/* Update the value at M(i,j) */
-	inline void Set(int row, int col, double data);
+	inline void Set(int row, int col, double num);
 	/* Calculate the determinant of the 3x3 sub-matrix where M(row, col) is the pivot */
 	double Det(int row, int col) const;
 
@@ -51,11 +51,13 @@ public:
 	/* Return M * v */
 	Vector4 MultiplyRight(const Vector4& vec) const;
 
-	/* Multiply matrix by matrix, return this * other */
+	inline Matrix4 operator+ (const Matrix4& other) const;
+	inline Matrix4 operator- (const Matrix4& other) const;
+	inline Matrix4 operator* (double num) const;
+	inline Matrix4 operator/ (double num) const;
+	inline Matrix4& operator= (const Matrix4& other);
+	/* Multiply matrix by matrix, return this instance * other */
 	Matrix4 operator* (const Matrix4& other) const;
-	/* Assignment operators */
-	inline Matrix4& operator=(const Matrix4& other);
-	/* Comparison operators */
 	bool operator== (const Matrix4& other) const;
 
 

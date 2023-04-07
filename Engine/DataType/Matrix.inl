@@ -42,9 +42,9 @@ inline double Matrix4::At(int row, int col) const
 }
 
 
-inline void Matrix4::Set(int row, int col, double data)
+inline void Matrix4::Set(int row, int col, double num)
 {
-	val[row][col] = data;
+	val[row][col] = num;
 }
 
 
@@ -77,6 +77,46 @@ inline Matrix4 Matrix4::GetTranspose(void) const
 		val[0][1], val[1][1], val[2][1], val[3][1],
 		val[0][2], val[1][2], val[2][2], val[3][2],
 		val[0][3], val[1][3], val[2][3], val[3][3]);
+}
+
+
+inline Matrix4 Matrix4::operator+ (const Matrix4& other) const
+{
+	return Matrix4(
+		val[0][0] + other.At(0,0), val[0][1] + other.At(0,1), val[0][2] + other.At(0,2), val[0][3] + other.At(0,3),
+		val[1][0] + other.At(1,0), val[1][1] + other.At(1,1), val[1][2] + other.At(1,2), val[1][3] + other.At(1,3),
+		val[2][0] + other.At(2,0), val[2][1] + other.At(2,1), val[2][2] + other.At(2,2), val[2][3] + other.At(2,3),
+		val[3][0] + other.At(3,0), val[3][1] + other.At(3,1), val[3][2] + other.At(3,2), val[3][3] + other.At(3,3));
+}
+
+
+inline Matrix4 Matrix4::operator- (const Matrix4& other) const
+{
+	return Matrix4(
+		val[0][0] - other.At(0,0), val[0][1] - other.At(0,1), val[0][2] - other.At(0,2), val[0][3] - other.At(0,3),
+		val[1][0] - other.At(1,0), val[1][1] - other.At(1,1), val[1][2] - other.At(1,2), val[1][3] - other.At(1,3),
+		val[2][0] - other.At(2,0), val[2][1] - other.At(2,1), val[2][2] - other.At(2,2), val[2][3] - other.At(2,3),
+		val[3][0] - other.At(3,0), val[3][1] - other.At(3,1), val[3][2] - other.At(3,2), val[3][3] - other.At(3,3));
+}
+
+
+inline Matrix4 Matrix4::operator* (double num) const
+{
+	return Matrix4(
+		val[0][0] * num, val[0][1] * num, val[0][2] * num, val[0][3] * num,
+		val[1][0] * num, val[1][1] * num, val[1][2] * num, val[1][3] * num,
+		val[2][0] * num, val[2][1] * num, val[2][2] * num, val[2][3] * num,
+		val[3][0] * num, val[3][1] * num, val[3][2] * num, val[3][3] * num);
+}
+
+
+inline Matrix4 Matrix4::operator/ (double num) const
+{
+	return Matrix4(
+		val[0][0] / num, val[0][1] / num, val[0][2] / num, val[0][3] / num,
+		val[1][0] / num, val[1][1] / num, val[1][2] / num, val[1][3] / num,
+		val[2][0] / num, val[2][1] / num, val[2][2] / num, val[2][3] / num,
+		val[3][0] / num, val[3][1] / num, val[3][2] / num, val[3][3] / num);
 }
 
 

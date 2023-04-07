@@ -10,9 +10,6 @@ namespace Engine
 {
 /* Classes forwared declaration */
 class Vector2;
-class Vector3;
-class Vector4;
-class Matrix4;
 class ReferenceCount;
 template<class T> class SmartPtr;
 template<class T> class WeakPtr;
