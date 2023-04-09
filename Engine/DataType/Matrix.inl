@@ -8,6 +8,11 @@ using namespace Engine;
 template <typename T>
 inline Matrix4<T>::Matrix4()
 {
+	if (typeid(T) == typeid(char) || typeid(T) == typeid(bool) || typeid(T) == typeid(void))
+	{
+		DEBUG_PRINT("WARNING: Create matrix4 class with type '%s' is not allow! \n", typeid(T).name());
+	}
+
 	val[0][0] = static_cast<T>(0); val[0][1] = static_cast<T>(0); val[0][2] = static_cast<T>(0); val[0][3] = static_cast<T>(0);
 	val[1][0] = static_cast<T>(0); val[1][1] = static_cast<T>(0); val[1][2] = static_cast<T>(0); val[1][3] = static_cast<T>(0);
 	val[2][0] = static_cast<T>(0); val[2][1] = static_cast<T>(0); val[2][2] = static_cast<T>(0); val[2][3] = static_cast<T>(0);
@@ -22,6 +27,11 @@ inline Matrix4<T>::Matrix4(
 	T x20, T x21, T x22, T x23,
 	T x30, T x31, T x32, T x33)
 {
+	if (typeid(T) == typeid(char) || typeid(T) == typeid(bool) || typeid(T) == typeid(void))
+	{
+		DEBUG_PRINT("WARNING: Create matrix4 class with type '%s' is not allow! \n", typeid(T).name());
+	}
+
 	val[0][0] = x00; val[0][1] = x01; val[0][2] = x02; val[0][3] = x03;
 	val[1][0] = x10; val[1][1] = x11; val[1][2] = x12; val[1][3] = x13;
 	val[2][0] = x20; val[2][1] = x21; val[2][2] = x22; val[2][3] = x23;
@@ -37,18 +47,6 @@ inline Matrix4<T>::Matrix4(const Matrix4<T>& other)
 	val[2][0] = other[2][0]; val[2][1] = other[2][1]; val[2][2] = other[2][2]; val[2][3] = other[2][3];
 	val[3][0] = other[3][0]; val[3][1] = other[3][1]; val[3][2] = other[3][2]; val[3][3] = other[3][3];
 }
-
-
-//inline double Matrix4::At(int row, int col) const
-//{
-//	return val[row][col];
-//}
-//
-//
-//inline void Matrix4::Set(int row, int col, double num)
-//{
-//	val[row][col] = num;
-//}
 
 
 template <typename T>
@@ -115,7 +113,7 @@ inline Matrix4<T> Matrix4<T>::operator- (const Matrix4<T>& other) const
 
 
 template <typename T>
-inline Matrix4<T> Matrix4<T>::operator* (double num) const
+inline Matrix4<T> Matrix4<T>::operator* (T num) const
 {
 	return Matrix4<T>(
 		val[0][0] * num, val[0][1] * num, val[0][2] * num, val[0][3] * num,
@@ -126,7 +124,7 @@ inline Matrix4<T> Matrix4<T>::operator* (double num) const
 
 
 template <typename T>
-inline Matrix4<T> Matrix4<T>::operator/ (double num) const
+inline Matrix4<T> Matrix4<T>::operator/ (T num) const
 {
 	return Matrix4<T>(
 		val[0][0] / num, val[0][1] / num, val[0][2] / num, val[0][3] / num,
@@ -211,7 +209,7 @@ inline Matrix4<T> Matrix4<T>::CreateTranslation(Vector3& vec)
 
 
 template <typename T>
-inline Matrix4<T> Matrix4<T>::CreateTranslation(double transX, double transY, double transZ)
+inline Matrix4<T> Matrix4<T>::CreateTranslation(T transX, T transY, T transZ)
 {
 	Matrix4<double> res = Matrix4<double>(
 							1, 0, 0, transX,
@@ -235,7 +233,7 @@ inline Matrix4<T> Matrix4<T>::CreateScale(Vector3& vec)
 
 
 template <typename T>
-inline Matrix4<T> Matrix4<T>::CreateScale(double scaleX, double scaleY, double scaleZ)
+inline Matrix4<T> Matrix4<T>::CreateScale(T scaleX, T scaleY, T scaleZ)
 {
 	Matrix4<double> res = Matrix4<double>(
 							scaleX, 0, 0, 0,

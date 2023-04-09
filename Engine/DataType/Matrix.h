@@ -3,6 +3,7 @@
 #include "Vector.h"
 
 using namespace std;
+using namespace Engine::Debugger;
 
 namespace Engine
 {
@@ -14,7 +15,7 @@ template <typename T> class Matrix4;
 /**
  *	@brief 4x4 Matrix. The index of element in top-left corner is (0,0). Down and right is 
  *		   the incremental direction of rows and column resepctively. Only accept C/C++
- *		   numerical primitive built-in type as template (i.e. int, float, uint8, uint16...)
+ *		   numerical type as template (i.e. int, float, uint8, uint16...)
  */
 template <typename T>
 class Matrix4
@@ -30,10 +31,6 @@ public:
 
 	inline Matrix4(const Matrix4<T>& other);
 
-	///* Return the value at M(i,j) */
-	//inline double At(int row, int col) const;
-	///* Update the value at M(i,j) */
-	//inline void Set(int row, int col, double num);
 	/* Calculate the determinant of the 3x3 sub-matrix where M(row, col) is the pivot */
 	T Det(int row, int col) const;
 
@@ -56,8 +53,8 @@ public:
 	inline T* operator[](int row);
 	inline Matrix4<T> operator+ (const Matrix4<T>& other) const;
 	inline Matrix4<T> operator- (const Matrix4<T>& other) const;
-	inline Matrix4<T> operator* (double num) const;
-	inline Matrix4<T> operator/ (double num) const;
+	inline Matrix4<T> operator* (T num) const;
+	inline Matrix4<T> operator/ (T num) const;
 	inline Matrix4<T>& operator= (const Matrix4<T>& other);
 	/* Multiply matrix by matrix, return this instance * other */
 	Matrix4<T> operator* (const Matrix4<T>& other) const;
@@ -67,8 +64,7 @@ public:
 	/* Identity matrix creator */
 	inline static Matrix4<T> CreateIdentity(void);
 
-	/* Rotation matrix creator */
-	/* Rotate matrix around X-axis, rotate counter-clockwise */
+	/* @brief Rotate matrix around X-axis, rotate counter-clockwise */
 	inline static Matrix4<T> CreateXRotation(double rad);
 	/* @brief Rotate matrix around Y-axis, rotate counter-clockwise */
 	inline static Matrix4<T> CreateYRotation(double rad);
@@ -77,12 +73,13 @@ public:
 
 	/* Translation matrix creator */
 	inline static Matrix4<T> CreateTranslation(Vector3& vec);
-	inline static Matrix4<T> CreateTranslation(double transX, double transY, double transZ);
+	inline static Matrix4<T> CreateTranslation(T transX, T transY, T transZ);
 
 	/* Scale matrix creator */
 	inline static Matrix4<T> CreateScale(Vector3& vec);
-	inline static Matrix4<T> CreateScale(double scaleX, double scaleY, double scaleZ);
+	inline static Matrix4<T> CreateScale(T scaleX, T scaleY, T scaleZ);
 
+	/* Convert a matrix with type "U" to type "T" */
 	template<typename U>
 	inline static Matrix4<T> CovertType(const Matrix4<U>& other);
 

@@ -18,6 +18,7 @@
 #include <unordered_map>
 #include <algorithm>
 #include <cassert>
+#include <typeinfo>
 #include <iostream>
 #include <functional>
 

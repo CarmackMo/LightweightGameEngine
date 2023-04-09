@@ -81,6 +81,8 @@ int WINAPI wWinMain(
         2, 6, 4, 8,
         9, -1, 0, 0);
 
+    Matrix4<bool> o;
+
 
     /**/
 
