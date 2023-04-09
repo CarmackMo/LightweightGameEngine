@@ -91,6 +91,13 @@ inline T* Matrix4<T>::operator[] (int row)
 
 
 template <typename T>
+inline const T* Matrix4<T>::operator[] (int row) const
+{
+	return val[row];
+}
+
+
+template <typename T>
 inline Matrix4<T> Matrix4<T>::operator+ (const Matrix4<T>& other) const
 {
 	return Matrix4<T>(

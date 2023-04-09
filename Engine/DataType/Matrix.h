@@ -50,7 +50,8 @@ public:
 	/* Return M * v */
 	Vector4<T> MultiplyRight(const Vector4<T>& vec) const;
 
-	inline T* operator[](int row);
+	inline T* operator[] (int row);
+	inline const T* operator[] (int row) const;
 	inline Matrix4<T> operator+ (const Matrix4<T>& other) const;
 	inline Matrix4<T> operator- (const Matrix4<T>& other) const;
 	inline Matrix4<T> operator* (T num) const;
@@ -79,8 +80,8 @@ public:
 	inline static Matrix4<T> CreateScale(Vector3& vec);
 	inline static Matrix4<T> CreateScale(T scaleX, T scaleY, T scaleZ);
 
-	/* Convert a matrix with type "U" to type "T" */
-	template<typename U>
+	/* Convert a matrix4 with type "U" to type "T" */
+	template <typename U>
 	inline static Matrix4<T> CovertType(const Matrix4<U>& other);
 
 private:
