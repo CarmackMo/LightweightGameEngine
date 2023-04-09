@@ -5,13 +5,13 @@ using namespace Engine;
 
 #pragma region Vector3
 
-const Vector3 Vector3::Zero(0, 0, 0);
-const Vector3 Vector3::Left(-1, 0, 0);
-const Vector3 Vector3::Right(1, 0, 0);
-const Vector3 Vector3::Up(0, 1, 0);
-const Vector3 Vector3::Down(0, -1, 0);
-const Vector3 Vector3::Front(0, 0, 1);
-const Vector3 Vector3::Back(0, 0, -1);
+template <typename T> const Vector3<T> Vector3<T>::Zero(static_cast<T>(0), static_cast<T>(0), static_cast<T>(0));
+template <typename T> const Vector3<T> Vector3<T>::Left(static_cast<T>(-1), static_cast<T>(0), static_cast<T>(0));
+template <typename T> const Vector3<T> Vector3<T>::Right(static_cast<T>(1), static_cast<T>(0), static_cast<T>(0));
+template <typename T> const Vector3<T> Vector3<T>::Up(static_cast<T>(0), static_cast<T>(1), static_cast<T>(0));
+template <typename T> const Vector3<T> Vector3<T>::Down(static_cast<T>(0), static_cast<T>(-1), static_cast<T>(0));
+template <typename T> const Vector3<T> Vector3<T>::Front(static_cast<T>(0), static_cast<T>(0), static_cast<T>(1));
+template <typename T> const Vector3<T> Vector3<T>::Back(static_cast<T>(0), static_cast<T>(0), static_cast<T>(-1));
 
 #pragma endregion
 

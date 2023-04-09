@@ -22,13 +22,11 @@ class Matrix4
 {
 public:
 	inline Matrix4();
-
 	inline Matrix4(
 		T x00, T x01, T x02, T x03,
 		T x10, T x11, T x12, T x13,
 		T x20, T x21, T x22, T x23,
 		T x30, T x31, T x32, T x33);
-
 	inline Matrix4(const Matrix4<T>& other);
 
 	/* Calculate the determinant of the 3x3 sub-matrix where M(row, col) is the pivot */
@@ -73,11 +71,11 @@ public:
 	inline static Matrix4<T> CreateZRotation(double rad);
 
 	/* Translation matrix creator */
-	inline static Matrix4<T> CreateTranslation(Vector3& vec);
+	inline static Matrix4<T> CreateTranslation(Vector3<T>& vec);
 	inline static Matrix4<T> CreateTranslation(T transX, T transY, T transZ);
 
 	/* Scale matrix creator */
-	inline static Matrix4<T> CreateScale(Vector3& vec);
+	inline static Matrix4<T> CreateScale(Vector3<T>& vec);
 	inline static Matrix4<T> CreateScale(T scaleX, T scaleY, T scaleZ);
 
 	/* Convert a matrix4 with type "U" to type "T" */

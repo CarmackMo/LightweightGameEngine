@@ -204,12 +204,12 @@ inline Matrix4<T> Matrix4<T>::CreateZRotation(double rad)
 
 
 template <typename T>
-inline Matrix4<T> Matrix4<T>::CreateTranslation(Vector3& vec)
+inline Matrix4<T> Matrix4<T>::CreateTranslation(Vector3<T>& vec)
 {
 	Matrix4<double> res = Matrix4<double>(
-							1, 0, 0, vec.x,
-							0, 1, 0, vec.y,
-							0, 0, 1, vec.z,
+							1, 0, 0, vec[0],
+							0, 1, 0, vec[1],
+							0, 0, 1, vec[2],
 							0, 0, 0, 1);
 	return Matrix4<T>::CovertType(res);
 }
@@ -228,12 +228,12 @@ inline Matrix4<T> Matrix4<T>::CreateTranslation(T transX, T transY, T transZ)
 
 
 template <typename T>
-inline Matrix4<T> Matrix4<T>::CreateScale(Vector3& vec)
+inline Matrix4<T> Matrix4<T>::CreateScale(Vector3<T>& vec)
 {
 	Matrix4<double> res = Matrix4<double>(
-							vec.x, 0, 0, 0,
-							0, vec.y, 0, 0,
-							0, 0, vec.z, 0,
+							vec[0], 0, 0, 0,
+							0, vec[1], 0, 0,
+							0, 0, vec[2], 0,
 							0, 0, 0, 1);
 	return Matrix4<T>::CovertType(res);
 }
