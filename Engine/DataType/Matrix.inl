@@ -5,20 +5,22 @@ using namespace Engine;
 
 #pragma region Matrix4
 
-inline Matrix4::Matrix4()
+template <typename T>
+inline Matrix4<T>::Matrix4()
 {
-	val[0][0] = 0; val[0][1] = 0; val[0][2] = 0; val[0][3] = 0;
-	val[1][0] = 0; val[1][1] = 0; val[1][2] = 0; val[1][3] = 0;
-	val[2][0] = 0; val[2][1] = 0; val[2][2] = 0; val[2][3] = 0;
-	val[3][0] = 0; val[3][1] = 0; val[3][2] = 0; val[3][3] = 0;
+	val[0][0] = static_cast<T>(0); val[0][1] = static_cast<T>(0); val[0][2] = static_cast<T>(0); val[0][3] = static_cast<T>(0);
+	val[1][0] = static_cast<T>(0); val[1][1] = static_cast<T>(0); val[1][2] = static_cast<T>(0); val[1][3] = static_cast<T>(0);
+	val[2][0] = static_cast<T>(0); val[2][1] = static_cast<T>(0); val[2][2] = static_cast<T>(0); val[2][3] = static_cast<T>(0);
+	val[3][0] = static_cast<T>(0); val[3][1] = static_cast<T>(0); val[3][2] = static_cast<T>(0); val[3][3] = static_cast<T>(0);
 }
 
 
-inline Matrix4::Matrix4(
-	double x00, double x01, double x02, double x03,
-	double x10, double x11, double x12, double x13,
-	double x20, double x21, double x22, double x23,
-	double x30, double x31, double x32, double x33)
+template <typename T>
+inline Matrix4<T>::Matrix4(
+	T x00, T x01, T x02, T x03,
+	T x10, T x11, T x12, T x13,
+	T x20, T x21, T x22, T x23,
+	T x30, T x31, T x32, T x33)
 {
 	val[0][0] = x00; val[0][1] = x01; val[0][2] = x02; val[0][3] = x03;
 	val[1][0] = x10; val[1][1] = x11; val[1][2] = x12; val[1][3] = x13;
@@ -27,40 +29,42 @@ inline Matrix4::Matrix4(
 }
 
 
-inline Matrix4::Matrix4(const Matrix4& other)
+template <typename T>
+inline Matrix4<T>::Matrix4(const Matrix4<T>& other)
 {
-	val[0][0] = other.At(0, 0); val[0][1] = other.At(0, 1); val[0][2] = other.At(0, 2); val[0][3] = other.At(0, 3);
-	val[1][0] = other.At(1, 0); val[1][1] = other.At(1, 1); val[1][2] = other.At(1, 2); val[1][3] = other.At(1, 3);
-	val[2][0] = other.At(2, 0); val[2][1] = other.At(2, 1); val[2][2] = other.At(2, 2); val[2][3] = other.At(2, 3);
-	val[3][0] = other.At(3, 0); val[3][1] = other.At(3, 1); val[3][2] = other.At(3, 2); val[3][3] = other.At(3, 3);
+	val[0][0] = other[0][0]; val[0][1] = other[0][1]; val[0][2] = other[0][2]; val[0][3] = other[0][3];
+	val[1][0] = other[1][0]; val[1][1] = other[1][1]; val[1][2] = other[1][2]; val[1][3] = other[1][3];
+	val[2][0] = other[2][0]; val[2][1] = other[2][1]; val[2][2] = other[2][2]; val[2][3] = other[2][3];
+	val[3][0] = other[3][0]; val[3][1] = other[3][1]; val[3][2] = other[3][2]; val[3][3] = other[3][3];
 }
 
 
-inline double Matrix4::At(int row, int col) const
+//inline double Matrix4::At(int row, int col) const
+//{
+//	return val[row][col];
+//}
+//
+//
+//inline void Matrix4::Set(int row, int col, double num)
+//{
+//	val[row][col] = num;
+//}
+
+
+template <typename T>
+inline Matrix4<T> Matrix4<T>::GetInverse(void) const
 {
-	return val[row][col];
-}
-
-
-inline void Matrix4::Set(int row, int col, double num)
-{
-	val[row][col] = num;
-}
-
-
-inline Matrix4 Matrix4::GetInverse(void) const
-{
-	Matrix4 temp = *this;
+	Matrix4<T> temp = *this;
 	temp.Invert();
 	return temp;
 }
 
 
-inline void Matrix4::Transpose(void)
+template <typename T>
+inline void Matrix4<T>::Transpose(void)
 {
-	double
-		t01 = val[0][1], t02 = val[0][2], t03 = val[0][3],
-		t12 = val[1][2], t13 = val[1][3], t23 = val[2][3];
+	T t01 = val[0][1], t02 = val[0][2], t03 = val[0][3],
+	  t12 = val[1][2], t13 = val[1][3], t23 = val[2][3];
 
 	val[0][1] = val[1][0]; val[0][2] = val[2][0]; val[0][3] = val[3][0];
 	val[1][2] = val[2][1]; val[1][3] = val[3][1]; val[2][3] = val[3][2];
@@ -70,9 +74,10 @@ inline void Matrix4::Transpose(void)
 }
 
 
-inline Matrix4 Matrix4::GetTranspose(void) const
+template <typename T>
+inline Matrix4<T> Matrix4<T>::GetTranspose(void) const
 {
-	return Matrix4(
+	return Matrix4<T>(
 		val[0][0], val[1][0], val[2][0], val[3][0],
 		val[0][1], val[1][1], val[2][1], val[3][1],
 		val[0][2], val[1][2], val[2][2], val[3][2],
@@ -80,29 +85,39 @@ inline Matrix4 Matrix4::GetTranspose(void) const
 }
 
 
-inline Matrix4 Matrix4::operator+ (const Matrix4& other) const
+template <typename T>
+inline T* Matrix4<T>::operator[] (int row)
 {
-	return Matrix4(
-		val[0][0] + other.At(0,0), val[0][1] + other.At(0,1), val[0][2] + other.At(0,2), val[0][3] + other.At(0,3),
-		val[1][0] + other.At(1,0), val[1][1] + other.At(1,1), val[1][2] + other.At(1,2), val[1][3] + other.At(1,3),
-		val[2][0] + other.At(2,0), val[2][1] + other.At(2,1), val[2][2] + other.At(2,2), val[2][3] + other.At(2,3),
-		val[3][0] + other.At(3,0), val[3][1] + other.At(3,1), val[3][2] + other.At(3,2), val[3][3] + other.At(3,3));
+	return val[row];
 }
 
 
-inline Matrix4 Matrix4::operator- (const Matrix4& other) const
+template <typename T>
+inline Matrix4<T> Matrix4<T>::operator+ (const Matrix4<T>& other) const
 {
-	return Matrix4(
-		val[0][0] - other.At(0,0), val[0][1] - other.At(0,1), val[0][2] - other.At(0,2), val[0][3] - other.At(0,3),
-		val[1][0] - other.At(1,0), val[1][1] - other.At(1,1), val[1][2] - other.At(1,2), val[1][3] - other.At(1,3),
-		val[2][0] - other.At(2,0), val[2][1] - other.At(2,1), val[2][2] - other.At(2,2), val[2][3] - other.At(2,3),
-		val[3][0] - other.At(3,0), val[3][1] - other.At(3,1), val[3][2] - other.At(3,2), val[3][3] - other.At(3,3));
+	return Matrix4<T>(
+		val[0][0] + other[0][0], val[0][1] + other[0][1], val[0][2] + other[0][2], val[0][3] + other[0][3],
+		val[1][0] + other[1][0], val[1][1] + other[1][1], val[1][2] + other[1][2], val[1][3] + other[1][3],
+		val[2][0] + other[2][0], val[2][1] + other[2][1], val[2][2] + other[2][2], val[2][3] + other[2][3],
+		val[3][0] + other[3][0], val[3][1] + other[3][1], val[3][2] + other[3][2], val[3][3] + other[3][3]);
 }
 
 
-inline Matrix4 Matrix4::operator* (double num) const
+template <typename T>
+inline Matrix4<T> Matrix4<T>::operator- (const Matrix4<T>& other) const
 {
-	return Matrix4(
+	return Matrix4<T>(
+		val[0][0] - other[0][0], val[0][1] - other[0][1], val[0][2] - other[0][2], val[0][3] - other[0][3],
+		val[1][0] - other[1][0], val[1][1] - other[1][1], val[1][2] - other[1][2], val[1][3] - other[1][3],
+		val[2][0] - other[2][0], val[2][1] - other[2][1], val[2][2] - other[2][2], val[2][3] - other[2][3],
+		val[3][0] - other[3][0], val[3][1] - other[3][1], val[3][2] - other[3][2], val[3][3] - other[3][3]);
+}
+
+
+template <typename T>
+inline Matrix4<T> Matrix4<T>::operator* (double num) const
+{
+	return Matrix4<T>(
 		val[0][0] * num, val[0][1] * num, val[0][2] * num, val[0][3] * num,
 		val[1][0] * num, val[1][1] * num, val[1][2] * num, val[1][3] * num,
 		val[2][0] * num, val[2][1] * num, val[2][2] * num, val[2][3] * num,
@@ -110,9 +125,10 @@ inline Matrix4 Matrix4::operator* (double num) const
 }
 
 
-inline Matrix4 Matrix4::operator/ (double num) const
+template <typename T>
+inline Matrix4<T> Matrix4<T>::operator/ (double num) const
 {
-	return Matrix4(
+	return Matrix4<T>(
 		val[0][0] / num, val[0][1] / num, val[0][2] / num, val[0][3] / num,
 		val[1][0] / num, val[1][1] / num, val[1][2] / num, val[1][3] / num,
 		val[2][0] / num, val[2][1] / num, val[2][2] / num, val[2][3] / num,
@@ -120,97 +136,125 @@ inline Matrix4 Matrix4::operator/ (double num) const
 }
 
 
-inline Matrix4& Matrix4::operator=(const Matrix4& other)
+template <typename T>
+inline Matrix4<T>& Matrix4<T>::operator=(const Matrix4<T>& other)
 {
-	val[0][0] = other.At(0, 0); val[0][1] = other.At(0, 1); val[0][2] = other.At(0, 2); val[0][3] = other.At(0, 3);
-	val[1][0] = other.At(1, 0); val[1][1] = other.At(1, 1); val[1][2] = other.At(1, 2); val[1][3] = other.At(1, 3);
-	val[2][0] = other.At(2, 0); val[2][1] = other.At(2, 1); val[2][2] = other.At(2, 2); val[2][3] = other.At(2, 3);
-	val[3][0] = other.At(3, 0); val[3][1] = other.At(3, 1); val[3][2] = other.At(3, 2); val[3][3] = other.At(3, 3);
+	val[0][0] = other[0][0]; val[0][1] = other[0][1]; val[0][2] = other[0][2]; val[0][3] = other[0][3];
+	val[1][0] = other[1][0]; val[1][1] = other[1][1]; val[1][2] = other[1][2]; val[1][3] = other[1][3];
+	val[2][0] = other[2][0]; val[2][1] = other[2][1]; val[2][2] = other[2][2]; val[2][3] = other[2][3];
+	val[3][0] = other[3][0]; val[3][1] = other[3][1]; val[3][2] = other[3][2]; val[3][3] = other[3][3];
 	return *this;
 }
 
 
-inline Matrix4 Matrix4::CreateIdentity(void)
+template <typename T>
+inline Matrix4<T> Matrix4<T>::CreateIdentity(void)
 {
-	return Matrix4(
-		1, 0, 0, 0,
-		0, 1, 0, 0,
-		0, 0, 1, 0,
-		0, 0, 0, 1);
+	Matrix4<double> res = Matrix4<double>(
+							1, 0, 0, 0,
+							0, 1, 0, 0,
+							0, 0, 1, 0,
+							0, 0, 0, 1);
+	return Matrix4<T>::CovertType(res);
 }
 
 
-inline Matrix4 Matrix4::CreateXRotation(double rad)
+template <typename T>
+inline Matrix4<T> Matrix4<T>::CreateXRotation(double rad)
 {
-	return Matrix4(
-		1, 0, 0, 0,
-		0, cos(rad), -sin(rad), 0,
-		0, sin(rad), cos(rad), 0,
-		0, 0, 0, 1);
+	Matrix4<double> res = Matrix4<double>(
+							1, 0, 0, 0,
+							0, cos(rad), -sin(rad), 0,
+							0, sin(rad), cos(rad), 0,
+							0, 0, 0, 1);
+	return Matrix4<T>::CovertType(res);
 }
 
-
-inline Matrix4 Matrix4::CreateYRotation(double rad)
+template <typename T>
+inline Matrix4<T> Matrix4<T>::CreateYRotation(double rad)
 {
 	/* Note that the sin() in the first row is positive and
 	 * sin() in the third row is negative. This is because
 	 * we are using right-hand coordinate.
 	 */
-	return Matrix4(
-		cos(rad), 0, sin(rad), 0,
-		0, 1, 0, 0,
-		-sin(rad), 0, cos(rad), 0,
-		0, 0, 0, 1);
+	Matrix4<double> res = Matrix4<double>(
+							cos(rad), 0, sin(rad), 0,
+							0, 1, 0, 0,
+							-sin(rad), 0, cos(rad), 0,
+							0, 0, 0, 1);
+	return Matrix4<T>::CovertType(res);
 }
 
 
-inline Matrix4 Matrix4::CreateZRotation(double rad)
+template <typename T>
+inline Matrix4<T> Matrix4<T>::CreateZRotation(double rad)
 {
-	return Matrix4(
-		cos(rad), -sin(rad), 0, 0,
-		sin(rad), cos(rad), 0, 0,
-		0, 0, 1, 0,
-		0, 0, 0, 1);
+	Matrix4<double> res = Matrix4<double>(
+							cos(rad), -sin(rad), 0, 0,
+							sin(rad), cos(rad), 0, 0,
+							0, 0, 1, 0,
+							0, 0, 0, 1);
+	return Matrix4<T>::CovertType(res);
 }
 
 
-inline Matrix4 Matrix4::CreateTranslation(Vector3& vec)
+template <typename T>
+inline Matrix4<T> Matrix4<T>::CreateTranslation(Vector3& vec)
 {
-	return Matrix4(
-		1, 0, 0, vec.x,
-		0, 1, 0, vec.y,
-		0, 0, 1, vec.z,
-		0, 0, 0, 1);
+	Matrix4<double> res = Matrix4<double>(
+							1, 0, 0, vec.x,
+							0, 1, 0, vec.y,
+							0, 0, 1, vec.z,
+							0, 0, 0, 1);
+	return Matrix4<T>::CovertType(res);
 }
 
 
-inline Matrix4 Matrix4::CreateTranslation(double transX, double transY, double transZ)
+template <typename T>
+inline Matrix4<T> Matrix4<T>::CreateTranslation(double transX, double transY, double transZ)
 {
-	return Matrix4(
-		1, 0, 0, transX,
-		0, 1, 0, transY,
-		0, 0, 1, transZ,
-		0, 0, 0, 1);
+	Matrix4<double> res = Matrix4<double>(
+							1, 0, 0, transX,
+							0, 1, 0, transY,
+							0, 0, 1, transZ,
+							0, 0, 0, 1);
+	return Matrix4<T>::CovertType(res);
 }
 
 
-inline Matrix4 Matrix4::CreateScale(Vector3& vec)
+template <typename T>
+inline Matrix4<T> Matrix4<T>::CreateScale(Vector3& vec)
 {
-	return Matrix4(
-		vec.x, 0, 0, 0,
-		0, vec.y, 0, 0,
-		0, 0, vec.z, 0,
-		0, 0, 0, 1);
+	Matrix4<double> res = Matrix4<double>(
+							vec.x, 0, 0, 0,
+							0, vec.y, 0, 0,
+							0, 0, vec.z, 0,
+							0, 0, 0, 1);
+	return Matrix4<T>::CovertType(res);
 }
 
 
-inline Matrix4 Matrix4::CreateScale(double scaleX, double scaleY, double scaleZ)
+template <typename T>
+inline Matrix4<T> Matrix4<T>::CreateScale(double scaleX, double scaleY, double scaleZ)
 {
-	return Matrix4(
-		scaleX, 0, 0, 0,
-		0, scaleY, 0, 0,
-		0, 0, scaleZ, 0,
-		0, 0, 0, 1);
+	Matrix4<double> res = Matrix4<double>(
+							scaleX, 0, 0, 0,
+							0, scaleY, 0, 0,
+							0, 0, scaleZ, 0,
+							0, 0, 0, 1);
+	return Matrix4<T>::CovertType(res);
+}
+
+
+template <typename T>
+template <typename U>
+inline Matrix4<T> Matrix4<T>::CovertType(const Matrix4<U>& other)
+{
+	return Matrix4<T>(
+		static_cast<T>(other[0][0]), static_cast<T>(other[0][1]), static_cast<T>(other[0][2]), static_cast<T>(other[0][3]),
+		static_cast<T>(other[1][0]), static_cast<T>(other[1][1]), static_cast<T>(other[1][2]), static_cast<T>(other[1][3]),
+		static_cast<T>(other[2][0]), static_cast<T>(other[2][1]), static_cast<T>(other[2][2]), static_cast<T>(other[2][3]),
+		static_cast<T>(other[3][0]), static_cast<T>(other[3][1]), static_cast<T>(other[3][2]), static_cast<T>(other[3][3]));
 }
 
 #pragma endregion

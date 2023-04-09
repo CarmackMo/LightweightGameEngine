@@ -70,21 +70,16 @@ int WINAPI wWinMain(
     gravity = Vector2::Down;
 
 
-    Matrix4 m = Matrix4(
+    Matrix4<int> m = Matrix4<int>(
         1, 1, 1, - 1,
         1, 1, -1, 1,
         1, -1, 1, 1,
         -1, 1, 1, 1);
-    Matrix4 n = Matrix4(
+    Matrix4<int> n = Matrix4<int>(
         3, -6, 1, 3,
         -7, 0, -3, 5,
         2, 6, 4, 8,
         9, -1, 0, 0);
-
-    Vector4 v = Vector4(5, 6, 7, 8);
-
-    Vector4 res = m.MultiplyLeft(v);
-    res = m.MultiplyRight(v);
 
 
     /**/

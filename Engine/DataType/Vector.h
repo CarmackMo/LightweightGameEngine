@@ -7,7 +7,7 @@ namespace Engine
 {
 
 class Vector3;
-class Vector4;
+template<typename T> class Vector4;
 
 
 
@@ -72,18 +72,75 @@ public:
 };
 
 
+/**
+ *	@brief 4-dimemsional vector. Can be treaded as a 1x4 row vector or
+ *		   4x1 column vector base on actual needs. Only accept C/C++
+ *		   numerical primitive built-in type as template (i.e. int, float...)
+ */
+template<typename T>
 class Vector4
 {
 public:
-	double w, x, y, z;
+	T val[4];
 
-	Vector4();
-	Vector4(double w, double x, double y, double z);
-	Vector4(const Vector4& other);
+	inline Vector4()
+	{
+		val[0] = static_cast<T>(0), val[1] = static_cast<T>(0),
+		val[2] = static_cast<T>(0), val[3] = static_cast<T>(0);
+	}
 
-	double At(int idx) const;
-	void Set(int idx, double val);
+	inline Vector4(T w, T x, T y, T z)
+	{
+		val[0] = w, val[1] = x, val[2] = y, val[3] = z;
+	}
+
+	inline Vector4(const Vector4<T>& other)
+	{
+		val[0] = other[0], val[1] = other[1],
+		val[2] = other[2], val[3] = other[3];
+	}
+
+	T& operator[] (int idx) { return val[idx]; }
+	const T& operator[] (int idx) const { return val[idx]; }
+
 };
+
+
+
+
+
+template <typename T>
+class Vector5
+{
+public:
+	T val[4];
+
+	inline Vector5()
+	{
+		val[0] = static_cast<T>(0), val[1] = static_cast<T>(0),
+			val[2] = static_cast<T>(0), val[3] = static_cast<T>(0);
+	}
+
+	inline Vector5(T w, T x, T y, T z)
+	{
+		val[0] = w, val[1] = x, val[2] = y, val[3] = z;
+	}
+
+	inline Vector5(const Vector5<T>& other)
+	{
+		val[0] = other[0], val[1] = other[1],
+			val[2] = other[2], val[3] = other[3];
+	}
+
+	double& operator[] (int idx);
+	const double& operator[] (int idx) const;
+
+	static const Vector5<double> Up;
+	static const Vector5<int> Down;
+
+};
+
+
 
 
 #include "Vector.inl"
