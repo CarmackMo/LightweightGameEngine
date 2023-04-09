@@ -7,11 +7,85 @@ using namespace Engine::Debugger;
 namespace Engine
 {
 
+class Vector2;
 template<typename T> class Vector3;
 template<typename T> class Vector4;
 
 
 
+
+/**
+ *	@brief 2-dimemsional vector. Can be treaded as a 1x2 row vector or
+ *		   2x1 column vector base on actual needs. Only accept C/C++
+ *		   numerical type as template (i.e. int, float, uint8, uint16...)
+ */
+class Vector2
+{
+public:
+	double x;
+	double y;
+
+	/* Constructor */
+	inline Vector2();
+	inline Vector2(double x, double y);
+	inline Vector2(const Vector2& vec);
+
+	///* Element getter */
+	//inline float x(void) const;
+	//inline float y(void) const;
+	///* Element setter */
+	//inline void x(float x);
+	//inline void y(float y);
+
+	/* Self modifying operators */
+	inline void operator+= (const Vector2& vec);
+	inline void operator-= (const Vector2& vec);
+
+	inline void operator*= (const Vector2& vec);
+	inline void operator*= (double num);
+
+	inline void operator/= (const Vector2& vec);
+	inline void operator/= (double num);
+
+	/* Modifying operators */
+	inline Vector2 operator+ (const Vector2& vec) const;
+	inline Vector2 operator- (const Vector2& vec) const;
+
+	inline Vector2 operator* (const Vector2& vec) const;
+	inline Vector2 operator* (double num) const;
+	inline friend Vector2 operator* (double left, Vector2 right);
+
+	inline Vector2 operator/ (const Vector2& vec) const;
+	inline Vector2 operator/ (double num) const;
+
+	/* Assignment operators */
+	inline Vector2& operator= (const Vector2& vec);
+
+	/* Comparison operators */
+	inline bool operator== (const Vector2& vec) const;
+	inline bool operator!= (const Vector2& vec) const;
+
+	/* Negate */
+	inline Vector2 operator- (void) const;
+
+	/* @brief Vector2(0, 0) */
+	static const Vector2 Zero;
+	/* @brief Vector2(-1, 0) */
+	static const Vector2 Left;
+	/* @brief Vector2(1, 0) */
+	static const Vector2 Right;
+	/* @brief Vector2(0, 1) */
+	static const Vector2 Up;
+	/* @brief Vector2(0, -1) */
+	static const Vector2 Down;
+};
+
+
+/**
+ *	@brief 3-dimemsional vector. Can be treaded as a 1x3 row vector or
+ *		   3x1 column vector base on actual needs. Only accept C/C++
+ *		   numerical type as template (i.e. int, float, uint8, uint16...)
+ */
 template <typename T>
 class Vector3
 {
@@ -88,8 +162,6 @@ template<typename T>
 class Vector4
 {
 public:
-	T val[4];
-
 	inline Vector4();
 	inline Vector4(T w, T x, T y, T z);
 	inline Vector4(const Vector4<T>& other);
@@ -101,6 +173,8 @@ public:
 	inline T& operator[] (int idx);
 	inline const T& operator[] (int idx) const;
 
+private:
+	T val[4];
 };
 
 

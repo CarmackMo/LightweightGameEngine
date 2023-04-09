@@ -147,8 +147,4 @@ bool Matrix4<T>::operator== (const Matrix4<T>& other) const
 }
 
 
-
-
-
-
 #pragma endregion
