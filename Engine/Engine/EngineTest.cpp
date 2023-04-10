@@ -70,20 +70,27 @@ int WINAPI wWinMain(
     gravity = Vector2<double>::Down;
 
 
-    Matrix4<int> m = Matrix4<int>(
+    Matrix4<double> m = Matrix4<double>(
         1, 1, 1, - 1,
         1, 1, -1, 1,
         1, -1, 1, 1,
         -1, 1, 1, 1);
+
     Matrix4<int> n = Matrix4<int>(
-        3, -6, 1, 3,
-        -7, 0, -3, 5,
-        2, 6, 4, 8,
-        9, -1, 0, 0);
+        5, 2, 3, 1,
+        3, 4, 3, 2,
+        4, 6, 4, 2,
+        7, 3, 4, 4);
 
-    Matrix4<bool> o;
-
+    Matrix4<double> p = n.GetInverse<double>();
     n.Invert();
+
+    Matrix3<int> o = Matrix3<int>(
+        1, 2, 3,
+        0, 1, 4,
+        5, 6, 0);
+
+    o.Invert();
 
     Vector2<int> test1 = Vector2<int>(1, 1);
     Vector2<int> test2 = test1;
