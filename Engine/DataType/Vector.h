@@ -66,7 +66,7 @@ public:
 
 	/* Must implement here. Otherwise, the compiler cannot find the specific
 	 * template instance, and will report a LNK2019 error */
-	inline friend Vector2<T> operator* (T left, Vector2<T> right) { return Vector2<T>(left * right.x, left * right.y); }
+	inline friend Vector2<T> operator* (T left, Vector2<T> right) { return Vector2<T>(left * right[0], left * right[1]); }
 
 	/* @brief Vector2(0, 0) */
 	static const Vector2<T> Zero;

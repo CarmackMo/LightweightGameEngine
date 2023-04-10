@@ -87,12 +87,6 @@ const Vector3<double> Vector3<double>::Back(0, 0, -1);
 #pragma region Vector4
 
 
-
-
-
-const Vector5<double> Vector5<double>::Up(1, 2, 3, 4);
-const Vector5<int> Vector5<int>::Down(5, 6, 7, 8);
-
 #pragma endregion
 
 

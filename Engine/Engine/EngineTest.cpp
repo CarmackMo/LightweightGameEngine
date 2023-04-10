@@ -199,19 +199,19 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         /**/
 
         text = L"GameObject State: "
-            L"Pos: (" + to_wstring(object->position.x) + L"," + to_wstring(object->position.y) + L"), " +
-            L"Vel: (" + to_wstring(physicObject->velocity.x) + L"," + to_wstring(physicObject->velocity.y) + L")";
+            L"Pos: (" + to_wstring(object->position[0]) + L"," + to_wstring(object->position[1]) + L"), " +
+            L"Vel: (" + to_wstring(physicObject->velocity[0]) + L"," + to_wstring(physicObject->velocity[1]) + L")";
         ptr = text.c_str();
         len = static_cast<int>(wcslen(ptr));
         TextOut(hdc, 60, 80, ptr, len);
 
         double dragFactor = 0.1f;
-        double dragDirX = physicObject->velocity.x == 0 ? 0 : -1 * physicObject->velocity.x / abs(physicObject->velocity.x);
-        double dragDirY = physicObject->velocity.y == 0 ? 0 : -1 * physicObject->velocity.y / abs(physicObject->velocity.y);
+        double dragDirX = physicObject->velocity[0] == 0 ? 0 : -1 * physicObject->velocity[0] / abs(physicObject->velocity[0]);
+        double dragDirY = physicObject->velocity[1] == 0 ? 0 : -1 * physicObject->velocity[1] / abs(physicObject->velocity[1]);
         Vector2<double> dragForce = dragFactor * physicObject->velocity * physicObject->velocity * Vector2<double>(dragDirX, dragDirY);
         Vector2<double> totalForce = physicObject->force;
         text = //L"DragForce: (" + to_wstring(dragForce.x()) + L"," + to_wstring(dragForce.y()) + L"), "
-            L"TotalForce: (" + to_wstring(totalForce.x) + L"," + to_wstring(totalForce.y) + L")";
+            L"TotalForce: (" + to_wstring(totalForce[0]) + L"," + to_wstring(totalForce[1]) + L")";
         ptr = text.c_str();
         len = static_cast<int>(wcslen(ptr));
         TextOut(hdc, 60, 100, ptr, len);

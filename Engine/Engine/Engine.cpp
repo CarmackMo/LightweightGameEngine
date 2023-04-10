@@ -121,15 +121,15 @@ void GameEngine::GameLoop()
 
 		Vector2<double> gravity = Vector2<double>(0.0, -1.0);
 		double dragFactor = 0.1;
-		double dragDirX = physicObj->velocity.x == 0 ? 0 : -1 * physicObj->velocity.x / abs(physicObj->velocity.x);
-		double dragDirY = physicObj->velocity.y == 0 ? 0 : -1 * physicObj->velocity.y / abs(physicObj->velocity.y);
+		double dragDirX = physicObj->velocity[0] == 0 ? 0 : -1 * physicObj->velocity[0] / abs(physicObj->velocity[0]);
+		double dragDirY = physicObj->velocity[1] == 0 ? 0 : -1 * physicObj->velocity[1] / abs(physicObj->velocity[1]);
 		Vector2<double> dragForce = dragFactor * physicObj->velocity * physicObj->velocity * Vector2<double>(dragDirX, dragDirY);
 		Vector2<double> totalForce = gravity + dragForce;
 
 		printf("/////Debug///// \n");
 		printf("DeltaTime: %lf \n", Time::DeltaTime);
-		printf("GameObject: Pos: (%f, %f), Vel: (%f, %f) \n", obj->position.x, obj->position.y, physicObj->velocity.x, physicObj->velocity.y);
-		printf("DragForce: (%f, %f), TotalForct (%f, %f) \n", dragForce.x, dragForce.y, totalForce.x, totalForce.y);
+		printf("GameObject: Pos: (%f, %f), Vel: (%f, %f) \n", obj->position[0], obj->position[1], physicObj->velocity[0], physicObj->velocity[1]);
+		printf("DragForce: (%f, %f), TotalForct (%f, %f) \n", dragForce[0], dragForce[1], totalForce[0], totalForce[1]);
 		Sleep(500);
 
 		/* Debug end */

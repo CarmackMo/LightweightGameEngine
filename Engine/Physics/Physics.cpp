@@ -30,8 +30,8 @@ void Physic::Update()
 			/* TODO: Temperary Drag Force Logic */
 			
 			double dragFactor = 1000;
-			double dragDirX = physicObj->velocity.x == 0 ? 0 : -1 * physicObj->velocity.x / abs(physicObj->velocity.x);
-			double dragDirY = physicObj->velocity.y == 0 ? 0 : -1 * physicObj->velocity.y / abs(physicObj->velocity.y);
+			double dragDirX = physicObj->velocity[0] == 0 ? 0 : -1 * physicObj->velocity[0] / abs(physicObj->velocity[0]);
+			double dragDirY = physicObj->velocity[1] == 0 ? 0 : -1 * physicObj->velocity[1] / abs(physicObj->velocity[1]);
 
 			Vector2<double> deltaDragForce = (dragFactor * deltaVelocity * deltaVelocity) * Vector2<double>(dragDirX, dragDirY);
 			physicObj->force += deltaDragForce;

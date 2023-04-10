@@ -66,7 +66,7 @@ inline void Vector2<T>::operator*= (T num)
 }
 
 template <typename T>
-inline void Vector2<T>::operator/= (const Vector2<T>& vec)
+inline void Vector2<T>::operator/= (const Vector2<T>& other)
 {
 	val[0] /= other[0]; val[1] /= other[1];
 }
