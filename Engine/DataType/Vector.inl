@@ -6,112 +6,150 @@
 
 /* Constructor */
 template <typename T>
-inline Vector2<T>::Vector2() :
-	x(0), y(0)
-{ }
+inline Vector2<T>::Vector2()
+{
+	if (typeid(T) == typeid(char) || typeid(T) == typeid(bool) || typeid(T) == typeid(void))
+	{
+		DEBUG_PRINT("WARNING: Create vector2 class with type '%s' is not allow! \n", typeid(T).name());
+	}
+
+	val[0] = static_cast<T>(0); val[1] = static_cast<T>(0); 
+}
+
 template <typename T>
-inline Vector2<T>::Vector2(T x, T y) :
-	x(x), y(y)
-{ }
+inline Vector2<T>::Vector2(T x, T y)
+{
+	if (typeid(T) == typeid(char) || typeid(T) == typeid(bool) || typeid(T) == typeid(void))
+	{
+		DEBUG_PRINT("WARNING: Create vector2 class with type '%s' is not allow! \n", typeid(T).name());
+	}
+
+	val[0] = x; val[1] = y;
+}
+
 template <typename T>
-inline Vector2<T>::Vector2(const Vector2<T>& vec) :
-	x(vec.x), y(vec.y)
-{ }
+inline Vector2<T>::Vector2(const Vector2<T>& other)
+{
+	val[0] = other[0]; val[1] = other[1];
+}
+
+template <typename T>
+template <typename U>
+inline Vector2<T> Vector2<T>::ConvertType(const Vector2<U>& other)
+{
+	return Vector2<T>(static_cast<T>(other[0]), static_cast<T>(other[1]));
+}
 
 /* Self modifying operators */
 template <typename T>
-inline void Vector2<T>::operator+= (const Vector2<T>& vec)
+inline void Vector2<T>::operator+= (const Vector2<T>& other)
 {
-	x += vec.x; y += vec.y;
-}
-template <typename T>
-inline void Vector2<T>::operator-= (const Vector2<T>& vec)
-{
-	x -= vec.x; y -= vec.y;
+	val[0] += other[0]; val[1] += other[1];
 }
 
 template <typename T>
-inline void Vector2<T>::operator*= (const Vector2<T>& vec)
+inline void Vector2<T>::operator-= (const Vector2<T>& other)
 {
-	x *= vec.x; y *= vec.y;
+	val[0] -= other[0]; val[1] -= other[1];
 }
+
+template <typename T>
+inline void Vector2<T>::operator*= (const Vector2<T>& other)
+{
+	val[0] *= other[0]; val[1] *= other[1];
+}
+
 template <typename T>
 inline void Vector2<T>::operator*= (T num)
 {
-	x *= num; y *= num;
+	val[0] *= num; val[1] *= num;
 }
 
 template <typename T>
 inline void Vector2<T>::operator/= (const Vector2<T>& vec)
 {
-	x /= vec.x; y /= vec.y;
+	val[0] /= other[0]; val[1] /= other[1];
 }
+
 template <typename T>
 inline void Vector2<T>::operator/= (T num)
 {
-	x /= num; y /= num;
+	val[0] /= num; val[1] /= num;
 }
 
 /* Modifying operators */
 template <typename T>
-inline Vector2<T> Vector2<T>::operator+ (const Vector2<T>& vec) const
+inline Vector2<T> Vector2<T>::operator+ (const Vector2<T>& other) const
 {
-	return Vector2<T>(x + vec.x, y + vec.y);
+	return Vector2<T>(val[0] + other[0], val[1] + other[1]);
 }
 template <typename T>
-inline Vector2<T> Vector2<T>::operator- (const Vector2<T>& vec) const
+inline Vector2<T> Vector2<T>::operator- (const Vector2<T>& other) const
 {
-	return Vector2<T>(x - vec.x, y - vec.y);
+	return Vector2<T>(val[0] - other[0], val[1] - other[1]);
 }
 
 template <typename T>
-inline Vector2<T> Vector2<T>::operator* (const Vector2<T>& vec) const
+inline Vector2<T> Vector2<T>::operator* (const Vector2<T>& other) const
 {
-	return Vector2<T>(x * vec.x, y * vec.y);
+	return Vector2<T>(val[0] * other[0], val[1] * other[1]);
 }
 template <typename T>
 inline Vector2<T> Vector2<T>::operator* (T num) const
 {
-	return Vector2<T>(x * num, y * num);
+	return Vector2<T>(val[0] * num, val[1] * num);
 }
 
 template <typename T>
-inline Vector2<T> Vector2<T>::operator/ (const Vector2<T>& vec) const
+inline Vector2<T> Vector2<T>::operator/ (const Vector2<T>& other) const
 {
-	return Vector2<T>(x / vec.x, y / vec.y);
+	return Vector2<T>(val[0] / other[0], val[1] / other[1]);
 }
 template <typename T>
 inline Vector2<T> Vector2<T>::operator/ (T num) const
 {
-	return Vector2<T>(x / num, y / num);
+	return Vector2<T>(val[0] / num, val[1] / num);
 }
 
 /* Assignment operators */
 template <typename T>
-inline Vector2<T>& Vector2<T>::operator= (const Vector2<T>& vec)
+inline Vector2<T>& Vector2<T>::operator= (const Vector2<T>& other)
 {
-	x = vec.x; y = vec.y;
+	val[0] = other[0]; val[1] = other[1];
 	return *this;
 }
 
 /* Comparison operators */
 template <typename T>
-inline bool Vector2<T>::operator== (const Vector2<T>& vec) const
+inline bool Vector2<T>::operator== (const Vector2<T>& other) const
 {
-	return (x == vec.x) && (y == vec.y);
+	return (val[0] == other[0]) && (val[1] == other[1]);
 }
 
 template <typename T>
-inline bool Vector2<T>::operator!= (const Vector2<T>& vec) const
+inline bool Vector2<T>::operator!= (const Vector2<T>& other) const
 {
-	return (x != vec.x) || (y != vec.y);
+	return (val[0] != other[0]) || (val[1] != other[1]);
 }
 
 /* Negate */
 template <typename T>
 inline Vector2<T> Vector2<T>::operator- (void) const
 {
-	return Vector2<T>(-x, -y);
+	return Vector2<T>(-val[0], -val[1]);
+}
+
+/* Indexing */
+template <typename T>
+inline T& Vector2<T>::operator[] (int idx)
+{
+	return val[idx];
+}
+
+template <typename T>
+inline const T& Vector2<T>::operator[] (int idx) const
+{
+	return val[idx];
 }
 
 #pragma endregion
@@ -127,21 +165,23 @@ inline Vector3<T>::Vector3()
 {
 	if (typeid(T) == typeid(char) || typeid(T) == typeid(bool) || typeid(T) == typeid(void))
 	{
-		DEBUG_PRINT("WARNING: Create vector4 class with type '%s' is not allow! \n", typeid(T).name());
+		DEBUG_PRINT("WARNING: Create vector3 class with type '%s' is not allow! \n", typeid(T).name());
 	}
 
 	val[0] = static_cast<T>(0); val[1] = static_cast<T>(0); val[2] = static_cast<T>(0);
 }
+
 template <typename T>
 inline Vector3<T>::Vector3(T x, T y, T z)
 {
 	if (typeid(T) == typeid(char) || typeid(T) == typeid(bool) || typeid(T) == typeid(void))
 	{
-		DEBUG_PRINT("WARNING: Create vector4 class with type '%s' is not allow! \n", typeid(T).name());
+		DEBUG_PRINT("WARNING: Create vector3 class with type '%s' is not allow! \n", typeid(T).name());
 	}
 
 	val[0] = x; val[1] = y; val[2] = z;
 }
+
 template <typename T>
 inline Vector3<T>::Vector3(const Vector3<T>& other)
 {
@@ -161,6 +201,7 @@ inline void Vector3<T>::operator+= (const Vector3<T>& other)
 {
 	val[0] += other[0]; val[1] += other[1]; val[2] += other[2];
 }
+
 template <typename T>
 inline void Vector3<T>::operator-= (const Vector3<T>& other)
 {
@@ -172,6 +213,7 @@ inline void Vector3<T>::operator*= (Vector3<T> const& other)
 {
 	val[0] *= other[0]; val[1] *= other[1]; val[2] *= other[2];
 }
+
 template <typename T>
 inline void Vector3<T>::operator*= (T num)
 {
@@ -183,6 +225,7 @@ inline void Vector3<T>::operator/= (const Vector3<T>& other)
 {
 	val[0] /= other[0]; val[1] /= other[1]; val[2] /= other[2];
 }
+
 template <typename T>
 inline void Vector3<T>::operator/= (T num)
 {
@@ -195,6 +238,7 @@ inline Vector3<T> Vector3<T>::operator+ (const Vector3<T>& other) const
 {
 	return Vector3<T>(val[0] + other[0], val[1] + other[1], val[2] + other[2]);
 }
+
 template <typename T>
 inline Vector3<T> Vector3<T>::operator- (const Vector3<T>& other) const
 {
@@ -206,22 +250,19 @@ inline Vector3<T> Vector3<T>::operator* (const Vector3<T>& other) const
 {
 	return Vector3<T>(val[0] * other[0], val[1] * other[1], val[2] * other[2]);
 }
+
 template <typename T>
 inline Vector3<T> Vector3<T>::operator* (T num) const
 {
 	return Vector3(val[0] * num, val[1] * num, val[2] * num);
 }
-//template <typename T>
-//inline Vector3<T> operator* (T left, Vector3<T> right)
-//{
-//	return Vector3<T>(left * right[0], left * right[1], left * right[2]);
-//}
 
 template <typename T>
 inline Vector3<T> Vector3<T>::operator/ (const Vector3<T>& other) const
 {
 	return Vector3<T>(val[0] / other[0], val[1] / other[1], val[2] / other[2]);
 }
+
 template <typename T>
 inline Vector3<T> Vector3<T>::operator/ (T num) const
 {
@@ -256,6 +297,7 @@ inline Vector3<T> Vector3<T>::operator- (void) const
 	return Vector3<T>(-val[0], -val[1], -val[2]);
 }
 
+/* Indexing */
 template <typename T>
 inline T& Vector3<T>::operator[] (int idx)
 {
@@ -278,6 +320,11 @@ inline const T& Vector3<T>::operator[] (int idx) const
 template <typename T>
 inline Vector4<T>::Vector4()
 {
+	if (typeid(T) == typeid(char) || typeid(T) == typeid(bool) || typeid(T) == typeid(void))
+	{
+		DEBUG_PRINT("WARNING: Create vector4 class with type '%s' is not allow! \n", typeid(T).name());
+	}
+
 	val[0] = static_cast<T>(0), val[1] = static_cast<T>(0);
 	val[2] = static_cast<T>(0), val[3] = static_cast<T>(0);
 }
@@ -285,6 +332,11 @@ inline Vector4<T>::Vector4()
 template <typename T>
 inline Vector4<T>::Vector4(T w, T x, T y, T z)
 {
+	if (typeid(T) == typeid(char) || typeid(T) == typeid(bool) || typeid(T) == typeid(void))
+	{
+		DEBUG_PRINT("WARNING: Create vector4 class with type '%s' is not allow! \n", typeid(T).name());
+	}
+
 	val[0] = w, val[1] = x, val[2] = y, val[3] = z;
 }
 

@@ -12,8 +12,6 @@ template<typename T> class Vector3;
 template<typename T> class Vector4;
 
 
-
-
 /**
  *	@brief 2-dimemsional vector. Can be treaded as a 1x2 row vector or
  *		   2x1 column vector base on actual needs. Only accept C/C++
@@ -23,43 +21,48 @@ template <typename T>
 class Vector2
 {
 public:
-	double x;
-	double y;
-
 	/* Constructor */
 	inline Vector2();
 	inline Vector2(T x, T y);
-	inline Vector2(const Vector2<T>& vec);
+	inline Vector2(const Vector2<T>& other);
+
+	/* Convert a vector2 with type "U" to type "T" */
+	template<typename U>
+	inline static Vector2<T> ConvertType(const Vector2<U>& other);
 
 	/* Self modifying operators */
-	inline void operator+= (const Vector2<T>& vec);
-	inline void operator-= (const Vector2<T>& vec);
+	inline void operator+= (const Vector2<T>& other);
+	inline void operator-= (const Vector2<T>& other);
 
-	inline void operator*= (const Vector2<T>& vec);
+	inline void operator*= (const Vector2<T>& other);
 	inline void operator*= (T num);
 
-	inline void operator/= (const Vector2<T>& vec);
+	inline void operator/= (const Vector2<T>& other);
 	inline void operator/= (T num);
 
 	/* Modifying operators */
-	inline Vector2<T> operator+ (const Vector2<T>& vec) const;
-	inline Vector2<T> operator- (const Vector2<T>& vec) const;
+	inline Vector2<T> operator+ (const Vector2<T>& other) const;
+	inline Vector2<T> operator- (const Vector2<T>& other) const;
 
-	inline Vector2<T> operator* (const Vector2<T>& vec) const;
+	inline Vector2<T> operator* (const Vector2<T>& other) const;
 	inline Vector2<T> operator* (T num) const;
 
-	inline Vector2<T> operator/ (const Vector2<T>& vec) const;
+	inline Vector2<T> operator/ (const Vector2<T>& other) const;
 	inline Vector2<T> operator/ (T num) const;
 
 	/* Assignment operators */
-	inline Vector2<T>& operator= (const Vector2<T>& vec);
+	inline Vector2<T>& operator= (const Vector2<T>& other);
 
 	/* Comparison operators */
-	inline bool operator== (const Vector2<T>& vec) const;
-	inline bool operator!= (const Vector2<T>& vec) const;
+	inline bool operator== (const Vector2<T>& other) const;
+	inline bool operator!= (const Vector2<T>& other) const;
 
 	/* Negate */
 	inline Vector2<T> operator- (void) const;
+
+	/* Indexing */
+	inline T& operator[] (int idx);
+	inline const T& operator[] (int idx) const;
 
 	/* Must implement here. Otherwise, the compiler cannot find the specific
 	 * template instance, and will report a LNK2019 error */
@@ -75,6 +78,9 @@ public:
 	static const Vector2<T> Up;
 	/* @brief Vector2(0, -1) */
 	static const Vector2<T> Down;
+
+private:
+	T val[2];
 };
 
 
@@ -177,43 +183,6 @@ public:
 private:
 	T val[4];
 };
-
-
-
-
-
-template <typename T>
-class Vector5
-{
-public:
-	T val[4];
-
-	inline Vector5()
-	{
-		val[0] = static_cast<T>(0), val[1] = static_cast<T>(0),
-			val[2] = static_cast<T>(0), val[3] = static_cast<T>(0);
-	}
-
-	inline Vector5(T w, T x, T y, T z)
-	{
-		val[0] = w, val[1] = x, val[2] = y, val[3] = z;
-	}
-
-	inline Vector5(const Vector5<T>& other)
-	{
-		val[0] = other[0], val[1] = other[1],
-			val[2] = other[2], val[3] = other[3];
-	}
-
-	double& operator[] (int idx);
-	const double& operator[] (int idx) const;
-
-	static const Vector5<double> Up;
-	static const Vector5<int> Down;
-
-};
-
-
 
 
 #include "Vector.inl"
