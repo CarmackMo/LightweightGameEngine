@@ -5,105 +5,113 @@
 #pragma region Vector2
 
 /* Constructor */
-inline Vector2::Vector2() :
+template <typename T>
+inline Vector2<T>::Vector2() :
 	x(0), y(0)
 { }
-inline Vector2::Vector2(double x, double y) :
+template <typename T>
+inline Vector2<T>::Vector2(T x, T y) :
 	x(x), y(y)
 { }
-inline Vector2::Vector2(const Vector2& vec) :
+template <typename T>
+inline Vector2<T>::Vector2(const Vector2<T>& vec) :
 	x(vec.x), y(vec.y)
 { }
 
-///* Element getter */
-//inline float Vector2::x(void) const { return x_; }
-//inline float Vector2::y(void) const { return y_; }
-///* Element setter */
-//inline void Vector2::x(float x) { x_ = x; }
-//inline void Vector2::y(float y) { y_ = y; }
-
 /* Self modifying operators */
-inline void Vector2::operator+= (const Vector2& vec)
+template <typename T>
+inline void Vector2<T>::operator+= (const Vector2<T>& vec)
 {
 	x += vec.x; y += vec.y;
 }
-inline void Vector2::operator-= (const Vector2& vec)
+template <typename T>
+inline void Vector2<T>::operator-= (const Vector2<T>& vec)
 {
 	x -= vec.x; y -= vec.y;
 }
 
-inline void Vector2::operator*= (Vector2 const& vec)
+template <typename T>
+inline void Vector2<T>::operator*= (const Vector2<T>& vec)
 {
 	x *= vec.x; y *= vec.y;
 }
-inline void Vector2::operator*= (double num)
+template <typename T>
+inline void Vector2<T>::operator*= (T num)
 {
 	x *= num; y *= num;
 }
 
-inline void Vector2::operator/= (const Vector2& vec)
+template <typename T>
+inline void Vector2<T>::operator/= (const Vector2<T>& vec)
 {
 	x /= vec.x; y /= vec.y;
 }
-inline void Vector2::operator/= (double num)
+template <typename T>
+inline void Vector2<T>::operator/= (T num)
 {
 	x /= num; y /= num;
 }
 
 /* Modifying operators */
-inline Vector2 Vector2::operator+ (const Vector2& vec) const
+template <typename T>
+inline Vector2<T> Vector2<T>::operator+ (const Vector2<T>& vec) const
 {
-	return Vector2(x + vec.x, y + vec.y);
+	return Vector2<T>(x + vec.x, y + vec.y);
 }
-inline Vector2 Vector2::operator- (const Vector2& vec) const
+template <typename T>
+inline Vector2<T> Vector2<T>::operator- (const Vector2<T>& vec) const
 {
-	return Vector2(x - vec.x, y - vec.y);
-}
-
-inline Vector2 Vector2::operator* (const Vector2& vec) const
-{
-	return Vector2(x * vec.x, y * vec.y);
-}
-inline Vector2 Vector2::operator* (double num) const
-{
-	return Vector2(x * num, y * num);
-}
-inline Vector2 operator* (double left, Vector2 right)
-{
-	return Vector2(left * right.x, left * right.y);
+	return Vector2<T>(x - vec.x, y - vec.y);
 }
 
-inline Vector2 Vector2::operator/ (const Vector2& vec) const
+template <typename T>
+inline Vector2<T> Vector2<T>::operator* (const Vector2<T>& vec) const
 {
-	return Vector2(x / vec.x, y / vec.y);
+	return Vector2<T>(x * vec.x, y * vec.y);
 }
-inline Vector2 Vector2::operator/ (double num) const
+template <typename T>
+inline Vector2<T> Vector2<T>::operator* (T num) const
 {
-	return Vector2(x / num, y / num);
+	return Vector2<T>(x * num, y * num);
+}
+
+template <typename T>
+inline Vector2<T> Vector2<T>::operator/ (const Vector2<T>& vec) const
+{
+	return Vector2<T>(x / vec.x, y / vec.y);
+}
+template <typename T>
+inline Vector2<T> Vector2<T>::operator/ (T num) const
+{
+	return Vector2<T>(x / num, y / num);
 }
 
 /* Assignment operators */
-inline Vector2& Vector2::operator= (const Vector2& vec)
+template <typename T>
+inline Vector2<T>& Vector2<T>::operator= (const Vector2<T>& vec)
 {
 	x = vec.x; y = vec.y;
 	return *this;
 }
 
 /* Comparison operators */
-inline bool Vector2::operator== (const Vector2& vec) const
+template <typename T>
+inline bool Vector2<T>::operator== (const Vector2<T>& vec) const
 {
 	return (x == vec.x) && (y == vec.y);
 }
 
-inline bool Vector2::operator!= (const Vector2& vec) const
+template <typename T>
+inline bool Vector2<T>::operator!= (const Vector2<T>& vec) const
 {
 	return (x != vec.x) || (y != vec.y);
 }
 
 /* Negate */
-inline Vector2 Vector2::operator- (void) const
+template <typename T>
+inline Vector2<T> Vector2<T>::operator- (void) const
 {
-	return Vector2(-x, -y);
+	return Vector2<T>(-x, -y);
 }
 
 #pragma endregion
@@ -203,11 +211,11 @@ inline Vector3<T> Vector3<T>::operator* (T num) const
 {
 	return Vector3(val[0] * num, val[1] * num, val[2] * num);
 }
-template <typename T>
-inline Vector3<T> operator* (T left, Vector3<T> right)
-{
-	return Vector3<T>(left * right[0], left * right[1], left * right[2]);
-}
+//template <typename T>
+//inline Vector3<T> operator* (T left, Vector3<T> right)
+//{
+//	return Vector3<T>(left * right[0], left * right[1], left * right[2]);
+//}
 
 template <typename T>
 inline Vector3<T> Vector3<T>::operator/ (const Vector3<T>& other) const

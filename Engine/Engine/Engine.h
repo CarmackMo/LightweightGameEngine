@@ -40,9 +40,9 @@ public:
 	void CreatGameObject(
 		string name,
 		float mass,
-		const Vector2& posistion,
-		const Vector2& velocity,
-		const Vector2& force);
+		const Vector2<double>& posistion,
+		const Vector2<double>& velocity,
+		const Vector2<double>& force);
 
 
 };

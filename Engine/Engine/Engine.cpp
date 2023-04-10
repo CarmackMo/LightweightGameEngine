@@ -88,9 +88,9 @@ void GameEngine::Service(HWND hwnd)
 
 void GameEngine::CreatGameObject(string name,
 								 float mass,
-								 const Vector2& posistion,
-								 const Vector2& velocity,
-								 const Vector2& force)
+								 const Vector2<double>& posistion,
+								 const Vector2<double>& velocity,
+								 const Vector2<double>& force)
 	
 {
 	SmartPtr<GameObject> obj = GameObject::Create(name, posistion);
@@ -105,7 +105,7 @@ void GameEngine::CreatGameObject(string name,
 void GameEngine::GameLoop()
 {
 	/* Debug start */
-	CreatGameObject("Mo", 1.0, Vector2(10, 10), Vector2::Zero, Vector2::Zero);
+	CreatGameObject("Mo", 1.0, Vector2<double>(10, 10), Vector2<double>::Zero, Vector2<double>::Zero);
 	/* Debug end */
 
 	int i = 0;
@@ -119,12 +119,12 @@ void GameEngine::GameLoop()
 		PhysicObject* physicObj = physicManager->FindPhysicObj(obj);
 		assert(physicObj != nullptr);
 
-		Vector2 gravity = Vector2(0.0, -1.0);
-		float dragFactor = 0.1f;
+		Vector2<double> gravity = Vector2<double>(0.0, -1.0);
+		double dragFactor = 0.1;
 		double dragDirX = physicObj->velocity.x == 0 ? 0 : -1 * physicObj->velocity.x / abs(physicObj->velocity.x);
 		double dragDirY = physicObj->velocity.y == 0 ? 0 : -1 * physicObj->velocity.y / abs(physicObj->velocity.y);
-		Vector2 dragForce = dragFactor * physicObj->velocity * physicObj->velocity * Vector2(dragDirX, dragDirY);
-		Vector2 totalForce = gravity + dragForce;
+		Vector2<double> dragForce = dragFactor * physicObj->velocity * physicObj->velocity * Vector2<double>(dragDirX, dragDirY);
+		Vector2<double> totalForce = gravity + dragForce;
 
 		printf("/////Debug///// \n");
 		printf("DeltaTime: %lf \n", Time::DeltaTime);

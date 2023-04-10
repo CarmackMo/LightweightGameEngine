@@ -5,8 +5,8 @@
 inline PhysicObject::PhysicObject() :
 	object(nullptr),
 	mass(0.0),
-	velocity(Vector2::Zero),
-	force(Vector2::Zero)
+	velocity(Vector2<double>::Zero),
+	force(Vector2<double>::Zero)
 { }
 
 inline PhysicObject::PhysicObject(const PhysicObject& other) :
@@ -18,8 +18,8 @@ inline PhysicObject::PhysicObject(const PhysicObject& other) :
 
 inline PhysicObject::PhysicObject(const WeakPtr<GameObject>& object,
 								  double mass,
-								  const Vector2& velocity,
-								  const Vector2& force) :
+								  const Vector2<double>& velocity,
+								  const Vector2<double>& force) :
 	object(object),
 	mass(mass),
 	velocity(velocity),
@@ -56,8 +56,8 @@ inline Physic::~Physic()
 
 inline void Physic::AddPhysicObj(const SmartPtr<GameObject>& object,
 								 float mass,
-								 const Vector2& velocity,
-								 const Vector2& force)
+								 const Vector2<double>& velocity,
+								 const Vector2<double>& force)
 
 {
 	PhysicObject* obj = new PhysicObject(WeakPtr<GameObject>(object), mass, velocity, force);

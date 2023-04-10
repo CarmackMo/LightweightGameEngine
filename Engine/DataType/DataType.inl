@@ -21,10 +21,10 @@ inline ReferenceCount::~ReferenceCount()
 
 inline GameObject::GameObject() :
 	name(""),
-	position(Vector2::Zero)
+	position(Vector2<double>::Zero)
 { }
 
-inline GameObject::GameObject(const string& name, const Vector2& position) :
+inline GameObject::GameObject(const string& name, const Vector2<double>& position) :
 	name(name),
 	position(position)
 { }
@@ -32,7 +32,7 @@ inline GameObject::GameObject(const string& name, const Vector2& position) :
 inline GameObject::~GameObject()
 { }
 
-inline SmartPtr<GameObject> GameObject::Create(const string& name, const Vector2& position)
+inline SmartPtr<GameObject> GameObject::Create(const string& name, const Vector2<double>& position)
 {
 	return SmartPtr<GameObject>(new GameObject(name, position));
 }

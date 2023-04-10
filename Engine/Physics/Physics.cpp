@@ -18,9 +18,9 @@ void Physic::Update()
 			SmartPtr<GameObject> obj = SmartPtr<GameObject>(physicObj->object);
 
 			/* Numerical Integration Approach */
-			Vector2 acceleration = physicObj->force / physicObj->mass;
-			Vector2 newVelocity = physicObj->velocity + acceleration * Time::DeltaTime;
-			Vector2 deltaVelocity = newVelocity - physicObj->velocity;
+			Vector2<double> acceleration = physicObj->force / physicObj->mass;
+			Vector2<double> newVelocity = physicObj->velocity + acceleration * Time::DeltaTime;
+			Vector2<double> deltaVelocity = newVelocity - physicObj->velocity;
 
 			obj->position = obj->position + (physicObj->velocity + newVelocity) / 2.0 * Time::DeltaTime;
 			physicObj->velocity = newVelocity;
@@ -33,7 +33,7 @@ void Physic::Update()
 			double dragDirX = physicObj->velocity.x == 0 ? 0 : -1 * physicObj->velocity.x / abs(physicObj->velocity.x);
 			double dragDirY = physicObj->velocity.y == 0 ? 0 : -1 * physicObj->velocity.y / abs(physicObj->velocity.y);
 
-			Vector2 deltaDragForce = (dragFactor * deltaVelocity * deltaVelocity) * Vector2(dragDirX, dragDirY);
+			Vector2<double> deltaDragForce = (dragFactor * deltaVelocity * deltaVelocity) * Vector2<double>(dragDirX, dragDirY);
 			physicObj->force += deltaDragForce;
 
 			//Vector2 dragForce = (dragFactor * physicObj->velocity * physicObj->velocity) * Vector2(dragDirX, dragDirY);		// drag force magnitude * drag force direction  
@@ -76,7 +76,7 @@ PhysicObject* Physic::FindPhysicObj(const SmartPtr<GameObject>& target)
 	return nullptr;
 }
 
-bool Physic::AddForceToObj(const SmartPtr<GameObject>& object, const Vector2& force)
+bool Physic::AddForceToObj(const SmartPtr<GameObject>& object, const Vector2<double>& force)
 {
 	PhysicObject* physicObj = FindPhysicObj(object);
 

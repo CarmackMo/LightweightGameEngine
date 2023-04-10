@@ -7,7 +7,7 @@ using namespace Engine::Debugger;
 namespace Engine
 {
 
-class Vector2;
+template<typename T> class Vector2;
 template<typename T> class Vector3;
 template<typename T> class Vector4;
 
@@ -19,6 +19,7 @@ template<typename T> class Vector4;
  *		   2x1 column vector base on actual needs. Only accept C/C++
  *		   numerical type as template (i.e. int, float, uint8, uint16...)
  */
+template <typename T>
 class Vector2
 {
 public:
@@ -27,57 +28,53 @@ public:
 
 	/* Constructor */
 	inline Vector2();
-	inline Vector2(double x, double y);
-	inline Vector2(const Vector2& vec);
-
-	///* Element getter */
-	//inline float x(void) const;
-	//inline float y(void) const;
-	///* Element setter */
-	//inline void x(float x);
-	//inline void y(float y);
+	inline Vector2(T x, T y);
+	inline Vector2(const Vector2<T>& vec);
 
 	/* Self modifying operators */
-	inline void operator+= (const Vector2& vec);
-	inline void operator-= (const Vector2& vec);
+	inline void operator+= (const Vector2<T>& vec);
+	inline void operator-= (const Vector2<T>& vec);
 
-	inline void operator*= (const Vector2& vec);
-	inline void operator*= (double num);
+	inline void operator*= (const Vector2<T>& vec);
+	inline void operator*= (T num);
 
-	inline void operator/= (const Vector2& vec);
-	inline void operator/= (double num);
+	inline void operator/= (const Vector2<T>& vec);
+	inline void operator/= (T num);
 
 	/* Modifying operators */
-	inline Vector2 operator+ (const Vector2& vec) const;
-	inline Vector2 operator- (const Vector2& vec) const;
+	inline Vector2<T> operator+ (const Vector2<T>& vec) const;
+	inline Vector2<T> operator- (const Vector2<T>& vec) const;
 
-	inline Vector2 operator* (const Vector2& vec) const;
-	inline Vector2 operator* (double num) const;
-	inline friend Vector2 operator* (double left, Vector2 right);
+	inline Vector2<T> operator* (const Vector2<T>& vec) const;
+	inline Vector2<T> operator* (T num) const;
 
-	inline Vector2 operator/ (const Vector2& vec) const;
-	inline Vector2 operator/ (double num) const;
+	inline Vector2<T> operator/ (const Vector2<T>& vec) const;
+	inline Vector2<T> operator/ (T num) const;
 
 	/* Assignment operators */
-	inline Vector2& operator= (const Vector2& vec);
+	inline Vector2<T>& operator= (const Vector2<T>& vec);
 
 	/* Comparison operators */
-	inline bool operator== (const Vector2& vec) const;
-	inline bool operator!= (const Vector2& vec) const;
+	inline bool operator== (const Vector2<T>& vec) const;
+	inline bool operator!= (const Vector2<T>& vec) const;
 
 	/* Negate */
-	inline Vector2 operator- (void) const;
+	inline Vector2<T> operator- (void) const;
+
+	/* Must implement here. Otherwise, the compiler cannot find the specific
+	 * template instance, and will report a LNK2019 error */
+	inline friend Vector2<T> operator* (T left, Vector2<T> right) { return Vector2<T>(left * right.x, left * right.y); }
 
 	/* @brief Vector2(0, 0) */
-	static const Vector2 Zero;
+	static const Vector2<T> Zero;
 	/* @brief Vector2(-1, 0) */
-	static const Vector2 Left;
+	static const Vector2<T> Left;
 	/* @brief Vector2(1, 0) */
-	static const Vector2 Right;
+	static const Vector2<T> Right;
 	/* @brief Vector2(0, 1) */
-	static const Vector2 Up;
+	static const Vector2<T> Up;
 	/* @brief Vector2(0, -1) */
-	static const Vector2 Down;
+	static const Vector2<T> Down;
 };
 
 
@@ -115,7 +112,6 @@ public:
 
 	inline Vector3<T> operator* (const Vector3<T>& other) const;
 	inline Vector3<T> operator* (T num) const;
-	inline friend Vector3<T> operator* (T left, Vector3<T> right);
 
 	inline Vector3<T> operator/ (const Vector3<T>& other) const;
 	inline Vector3<T> operator/ (T num) const;
@@ -130,8 +126,13 @@ public:
 	/* Negate */
 	inline Vector3<T> operator- (void) const;
 
+	/* Indexing */
 	inline T& operator[] (int idx);
 	inline const T& operator[] (int idx) const;
+
+	/* Must implement here. Otherwise, the compiler cannot find the specific
+	 * template instance, and will report a LNK2019 error */
+	inline friend Vector3<T> operator* (T left, Vector3<T> right) { return Vector3<T>(left * right[0], left * right[1], left * right[2]); }
 
 	/* @brief Vector3(0, 0, 0) */
 	static const Vector3<T> Zero;

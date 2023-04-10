@@ -4,7 +4,7 @@ using namespace Engine;
 
 GameEngine engine;
 SmartPtr<GameObject> object;
-Vector2 gravity;
+Vector2<double> gravity;
 
 
 void TestKeyDown()
@@ -65,9 +65,9 @@ int WINAPI wWinMain(
 
     /* Game engine code */
     engine = GameEngine();
-    engine.CreatGameObject("Mo", 1.0, Vector2(10, 10), Vector2::Zero, Vector2::Zero);
+    engine.CreatGameObject("Mo", 1.0, Vector2<double>(10, 10), Vector2<double>::Zero, Vector2<double>::Zero);
     object = engine.gameObjectList[0];
-    gravity = Vector2::Down;
+    gravity = Vector2<double>::Down;
 
 
     Matrix4<int> m = Matrix4<int>(
@@ -208,8 +208,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         double dragFactor = 0.1f;
         double dragDirX = physicObject->velocity.x == 0 ? 0 : -1 * physicObject->velocity.x / abs(physicObject->velocity.x);
         double dragDirY = physicObject->velocity.y == 0 ? 0 : -1 * physicObject->velocity.y / abs(physicObject->velocity.y);
-        Vector2 dragForce = dragFactor * physicObject->velocity * physicObject->velocity * Vector2(dragDirX, dragDirY);
-        Vector2 totalForce = physicObject->force;
+        Vector2<double> dragForce = dragFactor * physicObject->velocity * physicObject->velocity * Vector2<double>(dragDirX, dragDirY);
+        Vector2<double> totalForce = physicObject->force;
         text = //L"DragForce: (" + to_wstring(dragForce.x()) + L"," + to_wstring(dragForce.y()) + L"), "
             L"TotalForce: (" + to_wstring(totalForce.x) + L"," + to_wstring(totalForce.y) + L")";
         ptr = text.c_str();
@@ -249,17 +249,17 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 class Test
 {
 public:
-    vector<Vector2> temp1 = { Vector2::Zero, Vector2::Down, Vector2::Zero };
+    vector<Vector2<float>> temp1 = { Vector2<float>::Zero, Vector2<float>::Down, Vector2<float>::Zero };
 
     Test(){}
 
 };
 
-void TestCase(Test target, Vector2& out)
+void TestCase(Test target, Vector2<float>& out)
 {
-    for (Vector2& item : target.temp1)
+    for (Vector2<float>& item : target.temp1)
     {
-        if (item == Vector2::Down)
+        if (item == Vector2<float>::Down)
             out = item;
     }
 
