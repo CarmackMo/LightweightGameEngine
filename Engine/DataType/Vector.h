@@ -6,7 +6,7 @@ using namespace Engine::Debugger;
 
 namespace Engine
 {
-
+/* Forwared declaration */
 template<typename T> class Vector2;
 template<typename T> class Vector3;
 template<typename T> class Vector4;
@@ -20,6 +20,9 @@ template<typename T> class Vector4;
 template <typename T>
 class Vector2
 {
+private:
+	T val[2];
+
 public:
 	/* Constructor */
 	inline Vector2();
@@ -78,9 +81,6 @@ public:
 	static const Vector2<T> Up;
 	/* @brief Vector2(0, -1) */
 	static const Vector2<T> Down;
-
-private:
-	T val[2];
 };
 
 
@@ -92,6 +92,9 @@ private:
 template <typename T>
 class Vector3
 {
+private:
+	T val[3];
+
 public:
 	/* Constructor */
 	inline Vector3();
@@ -154,9 +157,6 @@ public:
 	static const Vector3<T> Front;
 	/* @brief Vector3(0, 0, -1) */
 	static const Vector3<T> Back;
-
-private:
-	T val[3];
 };
 
 
@@ -168,6 +168,9 @@ private:
 template<typename T>
 class Vector4
 {
+private:
+	T val[4];
+
 public:
 	inline Vector4();
 	inline Vector4(T w, T x, T y, T z);
@@ -179,12 +182,8 @@ public:
 
 	inline T& operator[] (int idx);
 	inline const T& operator[] (int idx) const;
-
-private:
-	T val[4];
 };
 
 
 #include "Vector.inl"
-
 }

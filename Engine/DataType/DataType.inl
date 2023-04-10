@@ -3,20 +3,6 @@
 
 using namespace Engine;
 
-
-#pragma region ReferenceCount
-
-inline ReferenceCount::ReferenceCount(unsigned long smartRef, unsigned long weakRef) :
-	smartRefCount(smartRef),
-	weakRefCount(weakRef)
-{ }
-
-inline ReferenceCount::~ReferenceCount()
-{ }
-
-#pragma endregion
-
-
 #pragma region GameObject
 
 inline GameObject::GameObject() :

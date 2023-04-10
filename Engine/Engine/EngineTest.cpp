@@ -83,6 +83,11 @@ int WINAPI wWinMain(
 
     Matrix4<bool> o;
 
+    n.Invert();
+
+    Vector2<int> test1 = Vector2<int>(1, 1);
+    Vector2<int> test2 = test1;
+
 
     /**/
 

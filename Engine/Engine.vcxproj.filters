@@ -52,6 +52,9 @@
     <ClCompile Include="DataType\Vector.cpp">
       <Filter>Source Files\DataType</Filter>
     </ClCompile>
+    <ClCompile Include="DataType\Util.cpp">
+      <Filter>Source Files\DataType</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataType\DataType.h">
@@ -81,6 +84,9 @@
     <ClInclude Include="DataType\Vector.h">
       <Filter>Source Files\DataType</Filter>
     </ClInclude>
+    <ClInclude Include="DataType\Util.h">
+      <Filter>Source Files\DataType</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Physics\Physics.inl">
@@ -99,6 +105,9 @@
       <Filter>Source Files\DataType</Filter>
     </None>
     <None Include="DataType\Vector.inl">
+      <Filter>Source Files\DataType</Filter>
+    </None>
+    <None Include="DataType\Util.inl">
       <Filter>Source Files\DataType</Filter>
     </None>
   </ItemGroup>

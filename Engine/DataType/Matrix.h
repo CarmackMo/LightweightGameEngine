@@ -7,9 +7,8 @@ using namespace Engine::Debugger;
 
 namespace Engine
 {
-
+/* Forwared declaration */
 template <typename T> class Matrix4;
-
 
 
 /**
@@ -20,6 +19,9 @@ template <typename T> class Matrix4;
 template <typename T>
 class Matrix4
 {
+private:
+	T val[4][4];
+
 public:
 	inline Matrix4();
 	inline Matrix4(
@@ -30,10 +32,65 @@ public:
 	inline Matrix4(const Matrix4<T>& other);
 
 	/* Calculate the determinant of the 3x3 sub-matrix where M(row, col) is the pivot */
-	T Det(int row, int col) const;
+	T Det(int row, int col) const
+	{
+		int x = 0, y = 0;
+		T subMatrix[3][3];
+
+		/* Extract the 3x3 sub-matrix that is going to calculate the determinant */
+		for (int i = 0; i < 4; i++)
+		{
+			if (i == row) { continue; }
+			for (int j = 0; j < 4; j++)
+			{
+				if (j == col) { continue; }
+
+				subMatrix[x][y] = val[i][j];
+				y++;
+			}
+			y = 0;
+			x++;
+		}
+
+		/* Calcualte the determinant based on the following formula:
+		 * det = a11(a22a33 - a23a32) - a12(a21a33 - a23a31) + a13(a21a32 - a22a31) */
+		T res = 0;
+		for (int i = 0; i < 3; i++)
+		{
+			res += subMatrix[0][i] * (subMatrix[1][(i + 1) % 3] * subMatrix[2][(i + 2) % 3] - subMatrix[1][(i + 2) % 3] * subMatrix[2][(i + 1) % 3]);
+		}
+
+		return res;
+	}
 
 	/* Invert this instance */
-	void Invert(void);
+	void Invert(void)
+	{
+		/* Inverse of matrix M equals to Adj(M)/Det(M).
+		 * Calcualte the determinant of this instance, using first row */
+		T det = val[0][0] * Det(0, 0) - val[0][1] * Det(0, 1) +
+			val[0][2] * Det(0, 2) - val[0][3] * Det(0, 3);
+
+		/* Calculate the adjugate matrix of this instance, the value at (i,j)
+		 * equals to Det(i,j) */
+		T adjugate[4][4];
+		for (int i = 0; i < 4; i++)
+		{
+			for (int j = 0; j < 4; j++)
+			{
+				adjugate[i][j] = static_cast<T>(pow(-1, i + j)) * Det(i, j);
+			}
+		}
+
+		/* Update the elements of this instance to make it inversed */
+		for (int i = 0; i < 4; i++)
+		{
+			for (int j = 0; j < 4; j++)
+			{
+				val[i][j] = adjugate[i][j] / det;
+			}
+		}
+	}
 	/* Return a matrix that is the inverse of this instance but don't modify this instance */
 	inline Matrix4<T> GetInverse(void) const;
 
@@ -44,9 +101,41 @@ public:
 
 	/* Multiply vector by matrix */
 	/* Return v * M */
-	Vector4<T> MultiplyLeft(const Vector4<T>& vec) const;
+	Vector4<T> MultiplyLeft(const Vector4<T>& vec) const
+	{
+		Vector4<T> res = Vector4<T>();
+
+		/* Iterate all columns in matrix */
+		for (int col = 0; col < 4; col++)
+		{
+			T sum = 0;
+			/* Iterator that repeat 4 times */
+			for (int i = 0; i < 4; i++)
+			{
+				sum += vec[i] * val[i][col];
+			}
+			res[col] = sum;
+		}
+		return res;
+	}
 	/* Return M * v */
-	Vector4<T> MultiplyRight(const Vector4<T>& vec) const;
+	Vector4<T> MultiplyRight(const Vector4<T>& vec) const
+	{
+		Vector4<T> res = Vector4<T>();
+
+		/* Iterator all rows in matrix */
+		for (int row = 0; row < 4; row++)
+		{
+			T sum = 0;
+			/* Iterator that repeat 4 times */
+			for (int i = 0; i < 4; i++)
+			{
+				sum += val[row][i] * vec[i];
+			}
+			res[row] = sum;
+		}
+		return res;
+	}
 
 	inline T* operator[] (int row);
 	inline const T* operator[] (int row) const;
@@ -56,8 +145,40 @@ public:
 	inline Matrix4<T> operator/ (T num) const;
 	inline Matrix4<T>& operator= (const Matrix4<T>& other);
 	/* Multiply matrix by matrix, return this instance * other */
-	Matrix4<T> operator* (const Matrix4<T>& other) const;
-	bool operator== (const Matrix4<T>& other) const;
+	Matrix4<T> operator* (const Matrix4<T>& other) const
+	{
+		Matrix4<T> res = Matrix4<T>();
+
+		/* Iterate all rows in matrix A */
+		for (int rowA = 0; rowA < 4; rowA++)
+		{
+			/* Iterate all columns in matrix B */
+			for (int colB = 0; colB < 4; colB++)
+			{
+				T sum = 0;
+				/* Iterator that repeat 4 times */
+				for (int i = 0; i < 4; i++)
+				{
+					sum += val[rowA][i] * other[i][colB];
+				}
+				res.Set(rowA, colB, sum);
+			}
+		}
+		return res;
+	}
+
+	bool operator== (const Matrix4<T>& other) const
+	{
+		for (int row = 0; row < 4; row++)
+		{
+			for (int col = 0; col < 4; col++)
+			{
+				if (val[row][col] != other[row][col])
+					return false;
+			}
+		}
+		return true;
+	}
 
 
 	/* Identity matrix creator */
@@ -81,9 +202,6 @@ public:
 	/* Convert a matrix4 with type "U" to type "T" */
 	template <typename U>
 	inline static Matrix4<T> CovertType(const Matrix4<U>& other);
-
-private:
-	T val[4][4];
 };
 
 #include "Matrix.inl"
