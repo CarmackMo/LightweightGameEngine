@@ -6,10 +6,12 @@ using namespace std;
 
 namespace Engine
 {
-/* Classes forwared declaration */
+/* Forwared declaration */
 class ReferenceCount;
 template <class T> class SmartPtr;
 template <class T> class WeakPtr;
+template <class T> class Singleton;
+
 
 
 class ReferenceCount
@@ -89,16 +91,16 @@ public:
 
 
 /**
-	* @brief TODO: weak pointer...
-	*
-	* @remarks Allow reference count exsits when object instance is exist. Weak reference
-	*			count records the amount of "observer" to the object instance no matter it
-	*			exists or not. Therefore, when creating a new weak pointer by copying other
-	*			smart pointer / weak pointer instance, reference count is allowed to be existed
-	*			even if the object instance is not exist. But in most cases, smart pointer's
-	*			reference count will not exist if its object instance is null. The weak pointer
-	*			created from this smart pointer will not have reference as well.
-	*/
+* @brief TODO: weak pointer...
+*
+* @remarks Allow reference count exsits when object instance is exist. Weak reference
+*			count records the amount of "observer" to the object instance no matter it
+*			exists or not. Therefore, when creating a new weak pointer by copying other
+*			smart pointer / weak pointer instance, reference count is allowed to be existed
+*			even if the object instance is not exist. But in most cases, smart pointer's
+*			reference count will not exist if its object instance is null. The weak pointer
+*			created from this smart pointer will not have reference as well.
+*/
 template<class T>
 class WeakPtr
 {
@@ -147,6 +149,37 @@ public:
 		return *this;
 	}
 };
+
+
+/**
+* @brief TODO: singleton...
+*
+* @remarks: To prevent direct construction of a singleton class, the singleton's
+*			 constructor is set to be private. Also, functions that we don't want
+*			 (like: copy constructor, assignment operator) is explicitly deleted.
+*/
+template<class T>
+class Singleton
+{
+protected:
+	static T* instance;
+
+	inline Singleton();
+	inline ~Singleton();
+
+public:
+	inline Singleton(const Singleton& other) = delete;
+	inline void operator=(const Singleton& other) = delete;
+
+
+	inline static T* Instance();
+
+	inline virtual void Destory();
+};
+
+template<class T>
+T* Singleton<T>::instance = nullptr;
+
 
 
 #include "Util.inl"

@@ -174,5 +174,31 @@ inline bool WeakPtr<T>::operator==(const WeakPtr<T>& other) { return objectPtr =
 template <class T>
 inline bool WeakPtr<T>::operator!=(const WeakPtr<T>& other) { return objectPtr != other.objectPtr; }
 
+#pragma endregion
+
+
+#pragma region Singleton
+
+template<class T>
+inline Singleton<T>::Singleton() { }
+
+template<class T>
+inline Singleton<T>::~Singleton() { }
+
+template<class T>
+inline T* Singleton<T>::Instance()
+{
+	if (instance == nullptr)
+		instance = new T();
+
+	return instance;
+}
+
+template<class T>
+inline void Singleton<T>::Destory()
+{
+	if (instance != nullptr)
+		delete instance;
+}
 
 #pragma endregion
