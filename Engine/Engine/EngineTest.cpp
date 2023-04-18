@@ -69,6 +69,11 @@ int WINAPI wWinMain(
     object = engine.gameObjectList[0];
     gravity = Vector2<double>::Down;
 
+    Matrix4<int> test;
+    test.UnitTest();
+
+
+
 
     Matrix4<double> m = Matrix4<double>(
         1, 1, 1, - 1,

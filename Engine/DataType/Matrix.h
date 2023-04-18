@@ -170,6 +170,8 @@ public:
 	inline static Matrix4<T> CreateScale(Vector3<T>& vec);
 	inline static Matrix4<T> CreateScale(T scaleX, T scaleY, T scaleZ);
 
+
+	void UnitTest();
 };
 
 #include "Matrix.inl"

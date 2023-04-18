@@ -137,6 +137,31 @@ bool Matrix3<T>::operator== (const Matrix3<T>& other) const
 #pragma region Matrix4
 
 template <typename T>
+void Matrix4<T>::UnitTest()
+{
+
+	Matrix4 res;
+	Matrix4 test = Matrix4(
+		1, 2, 3, 4,
+		5, 6, 7, 8,
+		9, 10, 11, 12,
+		13, 14, 15, 16
+	);
+
+	/* Operator Test */
+	res = test + Matrix4(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+	assert(res == Matrix4(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17));
+	res = test - Matrix4(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+	assert(res == Matrix4(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15));
+	res = test * 2;
+	assert(res == Matrix4(2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32));
+	res = test * Matrix4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+	assert(res == Matrix4(90, 100, 110, 120, 202, 228, 254, 280, 314, 356, 398, 440, 426, 484, 542, 600));
+
+}
+
+
+template <typename T>
 T Matrix4<T>::Det(int row, int col) const
 {
 	int x = 0, y = 0;
@@ -276,6 +301,8 @@ bool Matrix4<T>::operator== (const Matrix4<T>& other) const
 	}
 	return true;
 }
+
+
 
 
 #pragma endregion
