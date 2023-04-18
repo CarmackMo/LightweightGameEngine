@@ -67,26 +67,7 @@ public:
 	inline bool operator!=(const SmartPtr<T>& other);
 
 	/* Assignment operators */
-	SmartPtr<T>& operator=(const SmartPtr<T>& other)
-	{
-		if (refCount != nullptr && --(refCount->smartRefCount) == 0)
-		{
-			delete objectPtr;
-
-			if (refCount->weakRefCount == 0)
-				delete refCount;
-		}
-
-		objectPtr = other.objectPtr;
-		refCount = other.refCount;
-
-		if (objectPtr != nullptr)
-			refCount->smartRefCount++;
-		else
-			refCount = nullptr;
-
-		return *this;
-	}
+	SmartPtr<T>& operator=(const SmartPtr<T>& other);
 };
 
 
@@ -128,26 +109,7 @@ public:
 	inline bool operator!=(const WeakPtr<T>& other);
 
 	/* Assignment operators */
-	WeakPtr<T>& operator=(const WeakPtr<T>& other)
-	{
-		if (refCount != nullptr)
-		{
-			refCount->weakRefCount--;
-
-			if (refCount->smartRefCount == 0 && refCount->weakRefCount == 0)
-			{
-				delete refCount;
-			}
-		}
-
-		objectPtr = other.objectPtr;
-		refCount = other.refCount;
-
-		if (refCount != nullptr)
-			refCount->weakRefCount++;
-
-		return *this;
-	}
+	WeakPtr<T>& operator=(const WeakPtr<T>& other);
 };
 
 
