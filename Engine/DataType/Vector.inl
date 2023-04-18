@@ -329,6 +329,7 @@ inline Vector4<T>::Vector4()
 	val[2] = static_cast<T>(0), val[3] = static_cast<T>(0);
 }
 
+
 template <typename T>
 inline Vector4<T>::Vector4(T w, T x, T y, T z)
 {
@@ -340,6 +341,7 @@ inline Vector4<T>::Vector4(T w, T x, T y, T z)
 	val[0] = w, val[1] = x, val[2] = y, val[3] = z;
 }
 
+
 template <typename T>
 inline Vector4<T>::Vector4(const Vector4<T>& other)
 {
@@ -347,17 +349,6 @@ inline Vector4<T>::Vector4(const Vector4<T>& other)
 	val[2] = other[2], val[3] = other[3];
 }
 
-template <typename T>
-inline T& Vector4<T>::operator[] (int idx)
-{
-	return val[idx];
-}
-
-template <typename T>
-inline const T& Vector4<T>::operator[] (int idx) const
-{
-	return val[idx];
-}
 
 template <typename T>
 template <typename U>
@@ -366,5 +357,25 @@ inline Vector4<T> Vector4<T>::ConvertType(const Vector4<U>& other)
 	return Vector4<T>(static_cast<T>(other[0]), static_cast<T>(other[1]), static_cast<T>(other[2]), static_cast<T>(other[3]));
 }
 
+
+template <typename T>
+inline T& Vector4<T>::operator[] (int idx)
+{
+	return val[idx];
+}
+
+
+template <typename T>
+inline const T& Vector4<T>::operator[] (int idx) const
+{
+	return val[idx];
+}
+
+
+template <typename T>
+inline bool Vector4<T>::operator== (const Vector4<T>& other) const
+{
+	return (val[0] == other[0]) && (val[1] == other[1]) && (val[2] == other[2]) && (val[3] == other[3]);
+}
 
 #pragma endregion

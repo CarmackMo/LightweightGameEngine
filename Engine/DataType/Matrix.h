@@ -41,8 +41,11 @@ public:
 	/* @brief Invert this instance. Invert a matrix with type "int" might have incorrect result.
 	 *		  Because the real result of the inverse might be a float point number. */
 	void Invert(void);
-	/* @brief Return a matrix that is the inverse of this instance but don't modify this instance.
-	 *		  This function can avoid incorrect invert result */
+	/* @brief Return a matrix that is the inverse of this instance but don't modify this instance. */
+	inline Matrix3<T> GetInverse() const;
+	/* @brief Same functionality of Matrix<T>::GetInverse(). This function can avoid incorrect
+	 *		  result due to inappropriate data types. (e.g. the inverse of a <int> matrix might
+	 *		  has <float> result) */
 	template <typename U>
 	inline Matrix3<U> GetInverse() const;
 
@@ -119,8 +122,11 @@ public:
 	/* @brief Invert this instance. Invert a matrix with type "int" might have incorrect result. 
 	 *		  Because the real result of the inverse might be a float point number. */
 	void Invert(void);
-	/* @brief Return a matrix that is the inverse of this instance but don't modify this instance.
-	 *		  This function can avoid incorrect invert result */
+	/* @brief Return a matrix that is the inverse of this instance but don't modify this instance. */
+	inline Matrix4<T> GetInverse() const;
+	/* @brief Same functionality of Matrix<T>::GetInverse(). This function can avoid incorrect 
+	 *		  result due to inappropriate data types. (e.g. the inverse of a <int> matrix might 
+	 *		  has <float> result) */
 	template <typename U>
 	inline Matrix4<U> GetInverse() const;
 

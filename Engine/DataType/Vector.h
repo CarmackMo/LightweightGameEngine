@@ -182,6 +182,8 @@ public:
 
 	inline T& operator[] (int idx);
 	inline const T& operator[] (int idx) const;
+	inline bool operator== (const Vector4<T>& other) const;
+
 };
 
 

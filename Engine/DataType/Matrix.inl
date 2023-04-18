@@ -43,6 +43,16 @@ inline Matrix3<T>::Matrix3(const Matrix3<T>& other)
 	val[2][0] = other[2][0]; val[2][1] = other[2][1]; val[2][2] = other[2][2];
 }
 
+
+template <typename T>
+inline Matrix3<T> Matrix3<T>::GetInverse() const
+{
+	Matrix3<T> res = *this;
+	res.Invert();
+	return res;
+}
+
+
 template <typename T>
 template <typename U>
 inline Matrix3<U> Matrix3<T>::GetInverse() const
@@ -269,6 +279,14 @@ inline Matrix4<U> Matrix4<T>::GetInverse() const
 {
 	Matrix4<T> ori = *this;
 	Matrix4<U> res = ori.CovertToType<U>();
+	res.Invert();
+	return res;
+}
+
+template <typename T>
+inline Matrix4<T> Matrix4<T>::GetInverse() const
+{
+	Matrix4<T> res = *this;
 	res.Invert();
 	return res;
 }
