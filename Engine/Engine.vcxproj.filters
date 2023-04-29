@@ -23,6 +23,15 @@
     <Filter Include="Source Files\Debugger">
       <UniqueIdentifier>{0e4ec07c-db5b-4c92-82d6-351b7cae6bfb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\JSON">
+      <UniqueIdentifier>{11d64c68-60df-46e3-822f-d7e8cbf56eb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\JSON\header">
+      <UniqueIdentifier>{be27f695-6faa-4acb-b81a-8562617dd1c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\JSON\source">
+      <UniqueIdentifier>{eba850e1-c319-419b-ba99-c11bdc6d4843}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataType\DataType.cpp">
@@ -54,6 +63,15 @@
     </ClCompile>
     <ClCompile Include="DataType\Util.cpp">
       <Filter>Source Files\DataType</Filter>
+    </ClCompile>
+    <ClCompile Include="JSON\source\json_reader.cpp">
+      <Filter>Source Files\JSON\source</Filter>
+    </ClCompile>
+    <ClCompile Include="JSON\source\json_value.cpp">
+      <Filter>Source Files\JSON\source</Filter>
+    </ClCompile>
+    <ClCompile Include="JSON\source\json_writer.cpp">
+      <Filter>Source Files\JSON\source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -87,6 +105,39 @@
     <ClInclude Include="DataType\Util.h">
       <Filter>Source Files\DataType</Filter>
     </ClInclude>
+    <ClInclude Include="JSON\header\json\allocator.h">
+      <Filter>Source Files\JSON\header</Filter>
+    </ClInclude>
+    <ClInclude Include="JSON\header\json\assertions.h">
+      <Filter>Source Files\JSON\header</Filter>
+    </ClInclude>
+    <ClInclude Include="JSON\header\json\config.h">
+      <Filter>Source Files\JSON\header</Filter>
+    </ClInclude>
+    <ClInclude Include="JSON\header\json\forwards.h">
+      <Filter>Source Files\JSON\header</Filter>
+    </ClInclude>
+    <ClInclude Include="JSON\header\json\json.h">
+      <Filter>Source Files\JSON\header</Filter>
+    </ClInclude>
+    <ClInclude Include="JSON\header\json\json_features.h">
+      <Filter>Source Files\JSON\header</Filter>
+    </ClInclude>
+    <ClInclude Include="JSON\header\json\reader.h">
+      <Filter>Source Files\JSON\header</Filter>
+    </ClInclude>
+    <ClInclude Include="JSON\header\json\value.h">
+      <Filter>Source Files\JSON\header</Filter>
+    </ClInclude>
+    <ClInclude Include="JSON\header\json\version.h">
+      <Filter>Source Files\JSON\header</Filter>
+    </ClInclude>
+    <ClInclude Include="JSON\header\json\writer.h">
+      <Filter>Source Files\JSON\header</Filter>
+    </ClInclude>
+    <ClInclude Include="JSON\source\json_tool.h">
+      <Filter>Source Files\JSON\source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Physics\Physics.inl">
@@ -109,6 +160,9 @@
     </None>
     <None Include="DataType\Util.inl">
       <Filter>Source Files\DataType</Filter>
+    </None>
+    <None Include="JSON\source\json_valueiterator.inl">
+      <Filter>Source Files\JSON\source</Filter>
     </None>
   </ItemGroup>
 </Project>

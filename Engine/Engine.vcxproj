@@ -110,7 +110,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Engine\Input;$(SolutionDir)Engine\Debugger;$(SolutionDir)Engine\DataType;$(SolutionDir)Engine\Timer;$(SolutionDir)Engine\Engine;$(SolutionDir)Engine\Physics;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Engine\Input;$(SolutionDir)Engine\Debugger;$(SolutionDir)Engine\DataType;$(SolutionDir)Engine\Timer;$(SolutionDir)Engine\Engine;$(SolutionDir)Engine\Physics;$(SolutionDir)Engine\JSON\header;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -147,6 +147,9 @@
     <ClCompile Include="Engine\Engine.cpp" />
     <ClCompile Include="Engine\EngineTest.cpp" />
     <ClCompile Include="Input\Input.cpp" />
+    <ClCompile Include="JSON\source\json_reader.cpp" />
+    <ClCompile Include="JSON\source\json_value.cpp" />
+    <ClCompile Include="JSON\source\json_writer.cpp" />
     <ClCompile Include="Physics\Physics.cpp" />
     <ClCompile Include="Timer\Timer.cpp" />
   </ItemGroup>
@@ -159,6 +162,17 @@
     <ClInclude Include="Engine\Dependency.h" />
     <ClInclude Include="Engine\Engine.h" />
     <ClInclude Include="Input\Input.h" />
+    <ClInclude Include="JSON\header\json\allocator.h" />
+    <ClInclude Include="JSON\header\json\assertions.h" />
+    <ClInclude Include="JSON\header\json\config.h" />
+    <ClInclude Include="JSON\header\json\forwards.h" />
+    <ClInclude Include="JSON\header\json\json.h" />
+    <ClInclude Include="JSON\header\json\json_features.h" />
+    <ClInclude Include="JSON\header\json\reader.h" />
+    <ClInclude Include="JSON\header\json\value.h" />
+    <ClInclude Include="JSON\header\json\version.h" />
+    <ClInclude Include="JSON\header\json\writer.h" />
+    <ClInclude Include="JSON\source\json_tool.h" />
     <ClInclude Include="Physics\Physics.h" />
     <ClInclude Include="Timer\Timer.h" />
   </ItemGroup>
@@ -168,6 +182,7 @@
     <None Include="DataType\Util.inl" />
     <None Include="DataType\Vector.inl" />
     <None Include="Input\Input.inl" />
+    <None Include="JSON\source\json_valueiterator.inl" />
     <None Include="Physics\Physics.inl" />
     <None Include="Timer\Timer.inl" />
   </ItemGroup>
