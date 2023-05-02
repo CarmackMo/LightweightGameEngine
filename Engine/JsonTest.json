@@ -1,7 +1,19 @@
-{
-    "Name" : "Ziheng",
-    "Mass" : 0.5,
-    "Position": [1, 2, 3],
-    "Velocity": [0.4, 0.5, 0.6],
-    "Force": [0.0, 0.0, 0.0]
-}
+[
+    
+    {
+        "Name" : "Ziheng",
+        "Mass" : 0.5,
+        "Position": [1, 2, 3],
+        "Velocity": [0.4, 0.5, 0.6],
+        "Force": [0.0, 0.0, 0.0]
+    },
+    {
+        "Name" : "KeQing",
+        "Mass" : 1.5,
+        "Position": [1.1, 2.2, 3.3],
+        "Velocity": [1.4, 1.5, 1.6],
+        "Force": [0.0, 0.0, 0.0]
+    }
+
+
+]
