@@ -102,6 +102,13 @@ int WINAPI wWinMain(
     Vector2<int> test2 = test1;
 
 
+    engine.CreateGameObject("JsonTest.json");
+    SmartPtr<GameObject> jsonObj = engine.gameObjectList[1];
+    DEBUG_PRINT("Create game object from JSON file, path: %s \n", "JsonTest.json");
+    DEBUG_PRINT("Game object name: %s \n", jsonObj->name.c_str());
+    DEBUG_PRINT("Game object position: (%lf, %lf) \n", jsonObj->position[0], jsonObj->position[1]);
+
+
     /**/
 
     // Run the message loop.

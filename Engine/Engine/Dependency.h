@@ -20,6 +20,7 @@
 #include <cassert>
 #include <typeinfo>
 #include <iostream>
+#include <fstream>
 #include <functional>
 
 

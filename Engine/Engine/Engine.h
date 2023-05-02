@@ -4,6 +4,7 @@
 #include "Input.h"
 #include "Timer.h"
 #include "Physics.h"
+#include "FileSys.h"
 
 using namespace std;
 using namespace Engine::Input;
@@ -40,9 +41,11 @@ public:
 	void CreatGameObject(
 		string name,
 		float mass,
-		const Vector2<double>& posistion,
+		const Vector2<double>& position,
 		const Vector2<double>& velocity,
 		const Vector2<double>& force);
+
+	void CreateGameObject(string jsonPath);
 
 
 };

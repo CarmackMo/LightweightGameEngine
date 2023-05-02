@@ -32,6 +32,9 @@
     <Filter Include="Source Files\JSON\source">
       <UniqueIdentifier>{eba850e1-c319-419b-ba99-c11bdc6d4843}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\FileSys">
+      <UniqueIdentifier>{405330c2-1fc0-4ff2-9d51-ff70904d1fec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataType\DataType.cpp">
@@ -72,6 +75,9 @@
     </ClCompile>
     <ClCompile Include="JSON\source\json_writer.cpp">
       <Filter>Source Files\JSON\source</Filter>
+    </ClCompile>
+    <ClCompile Include="FileSys\FileSys.cpp">
+      <Filter>Source Files\FileSys</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -137,6 +143,9 @@
     </ClInclude>
     <ClInclude Include="JSON\source\json_tool.h">
       <Filter>Source Files\JSON\source</Filter>
+    </ClInclude>
+    <ClInclude Include="FileSys\FileSys.h">
+      <Filter>Source Files\FileSys</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

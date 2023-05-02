@@ -88,15 +88,63 @@ void GameEngine::Service(HWND hwnd)
 
 void GameEngine::CreatGameObject(string name,
 								 float mass,
-								 const Vector2<double>& posistion,
+								 const Vector2<double>& position,
 								 const Vector2<double>& velocity,
 								 const Vector2<double>& force)
 	
 {
-	SmartPtr<GameObject> obj = GameObject::Create(name, posistion);
+	SmartPtr<GameObject> obj = GameObject::Create(name, position);
 	gameObjectList.push_back(obj);
 	physicManager->AddPhysicObj(obj, mass, velocity, force);
 }
+
+
+void GameEngine::CreateGameObject(string jsonPath)
+{
+	// Using fstream to get the file pointer in "file"
+	ifstream file(jsonPath, ios::in);
+	Json::Value value;
+	Json::Reader reader;
+	 
+	if (file.fail())
+	{
+		Engine::Debugger::DEBUG_PRINT("Read file fail!! \n ");
+	}
+	else
+	{
+		// Data placeholder
+		string name;
+		float mass;
+		Vector2<double> position, velocity, force;
+
+
+		// Using reader we are parsing the JSON
+		reader.parse(file, value);
+
+		// Parse data to placeholder
+		name = value["Name"].asString();
+		mass = value["Mass"].asFloat();
+
+		position[0] = value["Position"][0].asDouble();
+		position[1] = value["Position"][1].asDouble();
+
+		velocity[0] = value["Velocity"][0].asDouble();
+		velocity[1] = value["Velocity"][1].asDouble();
+
+		force[0] = value["Force"][0].asDouble();
+		force[1] = value["Force"][1].asDouble();
+
+		//Create gameobject
+		SmartPtr<GameObject> obj = GameObject::Create(name, position);
+		gameObjectList.push_back(obj);
+		physicManager->AddPhysicObj(obj, mass, velocity, force);
+
+
+		
+	}
+}
+
+
 
 
 

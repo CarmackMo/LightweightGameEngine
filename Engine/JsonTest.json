@@ -1,0 +1,7 @@
+{
+    "Name" : "Ziheng",
+    "Mass" : 0.5,
+    "Position": [1, 2, 3],
+    "Velocity": [0.4, 0.5, 0.6],
+    "Force": [0.0, 0.0, 0.0]
+}
