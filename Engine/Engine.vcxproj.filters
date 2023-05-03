@@ -35,6 +35,9 @@
     <Filter Include="Source Files\FileSys">
       <UniqueIdentifier>{405330c2-1fc0-4ff2-9d51-ff70904d1fec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\JobSys">
+      <UniqueIdentifier>{91dd9b6f-e371-42bd-9ad9-97e97e8bb049}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataType\DataType.cpp">
@@ -78,6 +81,9 @@
     </ClCompile>
     <ClCompile Include="FileSys\FileSys.cpp">
       <Filter>Source Files\FileSys</Filter>
+    </ClCompile>
+    <ClCompile Include="JosSys\JobSys.cpp">
+      <Filter>Source Files\JobSys</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -147,6 +153,9 @@
     <ClInclude Include="FileSys\FileSys.h">
       <Filter>Source Files\FileSys</Filter>
     </ClInclude>
+    <ClInclude Include="JosSys\JobSys.h">
+      <Filter>Source Files\JobSys</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Physics\Physics.inl">
@@ -172,6 +181,9 @@
     </None>
     <None Include="JSON\source\json_valueiterator.inl">
       <Filter>Source Files\JSON\source</Filter>
+    </None>
+    <None Include="JosSys\JobSys.inl">
+      <Filter>Source Files\JobSys</Filter>
     </None>
   </ItemGroup>
 </Project>
