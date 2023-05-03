@@ -70,12 +70,8 @@ int WINAPI wWinMain(
     object = engine.gameObjectList[0];
     gravity = Vector2<double>::Down;
 
-    Matrix4<double> test;
-    test.UnitTest();
 
-
-
-
+    /* Unit test for Matrix4 class  */
     Matrix4<double> m = Matrix4<double>(
         1, 1, 1, - 1,
         1, 1, -1, 1,
@@ -98,10 +94,12 @@ int WINAPI wWinMain(
 
     o.Invert();
 
-    Vector2<int> test1 = Vector2<int>(1, 1);
-    Vector2<int> test2 = test1;
+    /* Unit test for Matrix4 class  */
+    Matrix4<double> test;
+    test.UnitTest();
 
 
+    /* Unit Test for creating game object from Json file */
     engine.CreateGameObject("JsonTest.json");
     SmartPtr<GameObject> jsonObj = engine.gameObjectList[1];
     DEBUG_PRINT("Create game object from JSON file, path: %s \n", "JsonTest.json");
