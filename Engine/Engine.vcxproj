@@ -148,6 +148,7 @@
     <ClCompile Include="Engine\EngineTest.cpp" />
     <ClCompile Include="FileSys\FileSys.cpp" />
     <ClCompile Include="Input\Input.cpp" />
+    <ClCompile Include="JosSys\HashedString.cpp" />
     <ClCompile Include="JosSys\JobSys.cpp" />
     <ClCompile Include="JSON\source\json_reader.cpp" />
     <ClCompile Include="JSON\source\json_value.cpp" />
@@ -165,6 +166,7 @@
     <ClInclude Include="Engine\Engine.h" />
     <ClInclude Include="FileSys\FileSys.h" />
     <ClInclude Include="Input\Input.h" />
+    <ClInclude Include="JosSys\HashedString.h" />
     <ClInclude Include="JosSys\JobSys.h" />
     <ClInclude Include="JSON\header\json\allocator.h" />
     <ClInclude Include="JSON\header\json\assertions.h" />
@@ -186,6 +188,7 @@
     <None Include="DataType\Util.inl" />
     <None Include="DataType\Vector.inl" />
     <None Include="Input\Input.inl" />
+    <None Include="JosSys\HashedString.inl" />
     <None Include="JosSys\JobSys.inl" />
     <None Include="JSON\source\json_valueiterator.inl" />
     <None Include="Physics\Physics.inl" />

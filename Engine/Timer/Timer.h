@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 #include "Dependency.h"
 #include "DataType.h"
 

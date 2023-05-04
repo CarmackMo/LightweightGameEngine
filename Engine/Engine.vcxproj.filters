@@ -85,6 +85,9 @@
     <ClCompile Include="JosSys\JobSys.cpp">
       <Filter>Source Files\JobSys</Filter>
     </ClCompile>
+    <ClCompile Include="JosSys\HashedString.cpp">
+      <Filter>Source Files\JobSys</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataType\DataType.h">
@@ -156,6 +159,9 @@
     <ClInclude Include="JosSys\JobSys.h">
       <Filter>Source Files\JobSys</Filter>
     </ClInclude>
+    <ClInclude Include="JosSys\HashedString.h">
+      <Filter>Source Files\JobSys</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Physics\Physics.inl">
@@ -183,6 +189,9 @@
       <Filter>Source Files\JSON\source</Filter>
     </None>
     <None Include="JosSys\JobSys.inl">
+      <Filter>Source Files\JobSys</Filter>
+    </None>
+    <None Include="JosSys\HashedString.inl">
       <Filter>Source Files\JobSys</Filter>
     </None>
   </ItemGroup>
