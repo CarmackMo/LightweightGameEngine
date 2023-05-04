@@ -48,18 +48,7 @@ bool ShutdownRequested();
 
 
 /* Job system unit test */
-void ProcessFileContents(uint8_t* i_pFileContents, size_t i_sizeFileContents, std::function<void(uint8_t*, size_t)> i_Processor)
-{
-	if (i_pFileContents)
-	{
-		if (i_sizeFileContents && !ShutdownRequested())
-			i_Processor(i_pFileContents, i_sizeFileContents);
-	}
-
-	delete[] i_pFileContents;
-
-	std::cout << "ProcessFileContents finished processing file.\n";
-}
+void ProcessFileContents(uint8_t* i_pFileContents, size_t i_sizeFileContents, std::function<void(uint8_t*, size_t)> i_Processor);
 
 class ProcessFile
 {
@@ -149,27 +138,9 @@ private:
 };
 
 
-void PrintOnInterval(std::string i_String, unsigned int i_IntervalMilliseconds, unsigned int i_Count)
-{
-	bool bCounted = i_Count > 0;
+void PrintOnInterval(std::string i_String, unsigned int i_IntervalMilliseconds, unsigned int i_Count);
 
-	do
-	{
-		std::cout << i_String << "\n";
-		Sleep(i_IntervalMilliseconds);
-	} while ((!bCounted || (bCounted && --i_Count)) && !ShutdownRequested());
-}
-
-void PrintFileContents(uint8_t* i_pFileContents, size_t i_sizeFileContents)
-{
-	assert(i_pFileContents && i_sizeFileContents);
-
-	std::cout << "File Contents:\n";
-	while (i_sizeFileContents--)
-		std::cout << *(i_pFileContents++);
-
-	std::cout << "\n";
-}
+void PrintFileContents(uint8_t* i_pFileContents, size_t i_sizeFileContents);
 
 void BasicSample();
 

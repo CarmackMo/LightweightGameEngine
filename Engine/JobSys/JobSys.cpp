@@ -137,7 +137,7 @@ void RunJob(const HashedString& i_QueueName, std::function<void()> i_JobFunction
 	assert(existing != Queues.end());
 	assert(existing->second);
 
-	Engine::Debugger::DEBUG_PRINT("Job System: Adding Job to Queue \"%s\".", existing->second->m_SharedQueue.GetName().c_str());
+	Engine::Debugger::DEBUG_PRINT("Job System: Adding Job to Queue \"%s\". \n", existing->second->m_SharedQueue.GetName().c_str());
 	existing->second->m_SharedQueue.Add(new QueuedJob(i_JobFunction, i_QueueName, i_pJobName ? i_pJobName : std::string(), i_pJobStatus));
 }
 
@@ -156,6 +156,44 @@ void Init()
 
 
 
+void ProcessFileContents(uint8_t* i_pFileContents, size_t i_sizeFileContents, std::function<void(uint8_t*, size_t)> i_Processor)
+{
+	if (i_pFileContents)
+	{
+		if (i_sizeFileContents && !ShutdownRequested())
+			i_Processor(i_pFileContents, i_sizeFileContents);
+	}
+
+	delete[] i_pFileContents;
+
+	std::cout << "ProcessFileContents finished processing file.\n";
+}
+
+
+void PrintOnInterval(std::string i_String, unsigned int i_IntervalMilliseconds, unsigned int i_Count)
+{
+	bool bCounted = i_Count > 0;
+
+	do
+	{
+		Engine::Debugger::DEBUG_PRINT("$s@#$ \n", i_String.c_str());
+		std::cout << i_String << "\n";
+		Sleep(i_IntervalMilliseconds);
+	} while ((!bCounted || (bCounted && --i_Count)) && !ShutdownRequested());
+}
+
+
+void PrintFileContents(uint8_t* i_pFileContents, size_t i_sizeFileContents)
+{
+	assert(i_pFileContents && i_sizeFileContents);
+
+	std::cout << "File Contents:\n";
+	while (i_sizeFileContents--)
+		std::cout << *(i_pFileContents++);
+
+	std::cout << "\n";
+}
+
 
 void BasicSample()
 {
@@ -168,11 +206,11 @@ void BasicSample()
 		RunJob(
 			GetDefaultQueueName(),
 			[]()
-		{
-			PrintOnInterval("Wahoo!!", 500, 10);
-		},
+			{
+				PrintOnInterval("Wahoo!!", 500, 10);
+			},
 			&JobStatus
-			);
+		);
 
 		JobStatus.WaitForZeroJobsLeft();
 	}
@@ -190,7 +228,7 @@ void BasicSample()
 		// wait for FinishEvent to be signaled
 		JobStatus.WaitForZeroJobsLeft();
 
-		std::cout << "ProcessFile finished running.\n";
+		Engine::Debugger::DEBUG_PRINT("ProcessFile finished running.\n");
 	}
 
 }

@@ -107,7 +107,16 @@ int WINAPI wWinMain(
     DEBUG_PRINT("Game object position: (%lf, %lf) \n", jsonObj->position[0], jsonObj->position[1]);
 
 
-    /**/
+    /* Unit Test for job system */
+    Init();
+    BasicSample();
+    RequestShutdown();
+
+
+
+
+
+
 
     // Run the message loop.
     //MSG msg = { };

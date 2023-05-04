@@ -85,23 +85,26 @@
     <ClCompile Include="FileSys\FileSys.cpp">
       <Filter>Source Files\FileSys</Filter>
     </ClCompile>
-    <ClCompile Include="JosSys\JobSys.cpp">
-      <Filter>Source Files\JobSys</Filter>
-    </ClCompile>
-    <ClCompile Include="JosSys\HashedString.cpp">
-      <Filter>Source Files\JobSys</Filter>
-    </ClCompile>
-    <ClCompile Include="JosSys\JobRunner.cpp">
-      <Filter>Source Files\JobSys</Filter>
-    </ClCompile>
-    <ClCompile Include="JosSys\SharedJobQueue.cpp">
-      <Filter>Source Files\JobSys</Filter>
-    </ClCompile>
     <ClCompile Include="Sync\AtomicOperations.cpp">
       <Filter>Source Files\Sync</Filter>
     </ClCompile>
     <ClCompile Include="Sync\Event.cpp">
       <Filter>Source Files\Sync</Filter>
+    </ClCompile>
+    <ClCompile Include="Sync\ScopeLock.cpp">
+      <Filter>Source Files\Sync</Filter>
+    </ClCompile>
+    <ClCompile Include="JobSys\HashedString.cpp">
+      <Filter>Source Files\JobSys</Filter>
+    </ClCompile>
+    <ClCompile Include="JobSys\JobRunner.cpp">
+      <Filter>Source Files\JobSys</Filter>
+    </ClCompile>
+    <ClCompile Include="JobSys\JobSys.cpp">
+      <Filter>Source Files\JobSys</Filter>
+    </ClCompile>
+    <ClCompile Include="JobSys\SharedJobQueue.cpp">
+      <Filter>Source Files\JobSys</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -171,21 +174,6 @@
     <ClInclude Include="FileSys\FileSys.h">
       <Filter>Source Files\FileSys</Filter>
     </ClInclude>
-    <ClInclude Include="JosSys\JobSys.h">
-      <Filter>Source Files\JobSys</Filter>
-    </ClInclude>
-    <ClInclude Include="JosSys\HashedString.h">
-      <Filter>Source Files\JobSys</Filter>
-    </ClInclude>
-    <ClInclude Include="JosSys\JobRunner.h">
-      <Filter>Source Files\JobSys</Filter>
-    </ClInclude>
-    <ClInclude Include="JosSys\SharedJobQueue.h">
-      <Filter>Source Files\JobSys</Filter>
-    </ClInclude>
-    <ClInclude Include="JosSys\JobStatus.h">
-      <Filter>Source Files\JobSys</Filter>
-    </ClInclude>
     <ClInclude Include="Sync\WaitableObject.h">
       <Filter>Source Files\Sync</Filter>
     </ClInclude>
@@ -194,6 +182,24 @@
     </ClInclude>
     <ClInclude Include="Sync\Event.h">
       <Filter>Source Files\Sync</Filter>
+    </ClInclude>
+    <ClInclude Include="Sync\ScopeLock.h">
+      <Filter>Source Files\Sync</Filter>
+    </ClInclude>
+    <ClInclude Include="JobSys\HashedString.h">
+      <Filter>Source Files\JobSys</Filter>
+    </ClInclude>
+    <ClInclude Include="JobSys\JobRunner.h">
+      <Filter>Source Files\JobSys</Filter>
+    </ClInclude>
+    <ClInclude Include="JobSys\JobStatus.h">
+      <Filter>Source Files\JobSys</Filter>
+    </ClInclude>
+    <ClInclude Include="JobSys\JobSys.h">
+      <Filter>Source Files\JobSys</Filter>
+    </ClInclude>
+    <ClInclude Include="JobSys\SharedJobQueue.h">
+      <Filter>Source Files\JobSys</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -221,13 +227,13 @@
     <None Include="JSON\source\json_valueiterator.inl">
       <Filter>Source Files\JSON\source</Filter>
     </None>
-    <None Include="JosSys\JobSys.inl">
+    <None Include="JobSys\HashedString.inl">
       <Filter>Source Files\JobSys</Filter>
     </None>
-    <None Include="JosSys\HashedString.inl">
+    <None Include="JobSys\JobSys.inl">
       <Filter>Source Files\JobSys</Filter>
     </None>
-    <None Include="JosSys\SharedJobQueue.inl">
+    <None Include="JobSys\SharedJobQueue.inl">
       <Filter>Source Files\JobSys</Filter>
     </None>
   </ItemGroup>
