@@ -110,7 +110,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Engine\Input;$(SolutionDir)Engine\Debugger;$(SolutionDir)Engine\DataType;$(SolutionDir)Engine\Timer;$(SolutionDir)Engine\Engine;$(SolutionDir)Engine\Physics;$(SolutionDir)Engine\FileSys;$(SolutionDir)Engine\JSON\header;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Engine\Input;$(SolutionDir)Engine\Debugger;$(SolutionDir)Engine\DataType;$(SolutionDir)Engine\Timer;$(SolutionDir)Engine\Engine;$(SolutionDir)Engine\Physics;$(SolutionDir)Engine\FileSys;$(SolutionDir)Engine\Sync;$(SolutionDir)Engine\JSON\header;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -149,11 +149,15 @@
     <ClCompile Include="FileSys\FileSys.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="JosSys\HashedString.cpp" />
+    <ClCompile Include="JosSys\JobRunner.cpp" />
     <ClCompile Include="JosSys\JobSys.cpp" />
+    <ClCompile Include="JosSys\SharedJobQueue.cpp" />
     <ClCompile Include="JSON\source\json_reader.cpp" />
     <ClCompile Include="JSON\source\json_value.cpp" />
     <ClCompile Include="JSON\source\json_writer.cpp" />
     <ClCompile Include="Physics\Physics.cpp" />
+    <ClCompile Include="Sync\AtomicOperations.cpp" />
+    <ClCompile Include="Sync\Event.cpp" />
     <ClCompile Include="Timer\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -167,7 +171,10 @@
     <ClInclude Include="FileSys\FileSys.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="JosSys\HashedString.h" />
+    <ClInclude Include="JosSys\JobRunner.h" />
+    <ClInclude Include="JosSys\JobStatus.h" />
     <ClInclude Include="JosSys\JobSys.h" />
+    <ClInclude Include="JosSys\SharedJobQueue.h" />
     <ClInclude Include="JSON\header\json\allocator.h" />
     <ClInclude Include="JSON\header\json\assertions.h" />
     <ClInclude Include="JSON\header\json\config.h" />
@@ -180,6 +187,9 @@
     <ClInclude Include="JSON\header\json\writer.h" />
     <ClInclude Include="JSON\source\json_tool.h" />
     <ClInclude Include="Physics\Physics.h" />
+    <ClInclude Include="Sync\AtomicOperations.h" />
+    <ClInclude Include="Sync\Event.h" />
+    <ClInclude Include="Sync\WaitableObject.h" />
     <ClInclude Include="Timer\Timer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -190,6 +200,7 @@
     <None Include="Input\Input.inl" />
     <None Include="JosSys\HashedString.inl" />
     <None Include="JosSys\JobSys.inl" />
+    <None Include="JosSys\SharedJobQueue.inl" />
     <None Include="JSON\source\json_valueiterator.inl" />
     <None Include="Physics\Physics.inl" />
     <None Include="Timer\Timer.inl" />

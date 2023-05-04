@@ -1,5 +1,8 @@
 #pragma once
 #include "Dependency.h"
+#include "WaitableObject.h"
+#include "AtomicOperations.h"
+#include "Event.h"
 
 
 class JobStatus
@@ -11,7 +14,7 @@ public:
 
 	uint32_t JobsLeft() const { return m_JobCount; }
 
-	void WaitForZeroJobsLeft(int i_WaitMS = Engine::WaitableObject::WaitInfinite)
+	void WaitForZeroJobsLeft(int i_WaitMS = WaitableObject::WaitInfinite)
 	{
 		m_JobsFinishedEvent.Wait(DWORD(i_WaitMS));
 	}

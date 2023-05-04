@@ -2,6 +2,7 @@
 #include "Dependency.h"
 #include "HashedString.h"
 #include "JobStatus.h"
+#include "AtomicOperations.h"
 
 
 struct QueuedJob

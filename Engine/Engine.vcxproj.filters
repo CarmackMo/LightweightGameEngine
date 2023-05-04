@@ -38,6 +38,9 @@
     <Filter Include="Source Files\JobSys">
       <UniqueIdentifier>{91dd9b6f-e371-42bd-9ad9-97e97e8bb049}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Sync">
+      <UniqueIdentifier>{f4f91eea-d779-4a1d-9e16-650994c6bb1d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataType\DataType.cpp">
@@ -87,6 +90,18 @@
     </ClCompile>
     <ClCompile Include="JosSys\HashedString.cpp">
       <Filter>Source Files\JobSys</Filter>
+    </ClCompile>
+    <ClCompile Include="JosSys\JobRunner.cpp">
+      <Filter>Source Files\JobSys</Filter>
+    </ClCompile>
+    <ClCompile Include="JosSys\SharedJobQueue.cpp">
+      <Filter>Source Files\JobSys</Filter>
+    </ClCompile>
+    <ClCompile Include="Sync\AtomicOperations.cpp">
+      <Filter>Source Files\Sync</Filter>
+    </ClCompile>
+    <ClCompile Include="Sync\Event.cpp">
+      <Filter>Source Files\Sync</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -162,6 +177,24 @@
     <ClInclude Include="JosSys\HashedString.h">
       <Filter>Source Files\JobSys</Filter>
     </ClInclude>
+    <ClInclude Include="JosSys\JobRunner.h">
+      <Filter>Source Files\JobSys</Filter>
+    </ClInclude>
+    <ClInclude Include="JosSys\SharedJobQueue.h">
+      <Filter>Source Files\JobSys</Filter>
+    </ClInclude>
+    <ClInclude Include="JosSys\JobStatus.h">
+      <Filter>Source Files\JobSys</Filter>
+    </ClInclude>
+    <ClInclude Include="Sync\WaitableObject.h">
+      <Filter>Source Files\Sync</Filter>
+    </ClInclude>
+    <ClInclude Include="Sync\AtomicOperations.h">
+      <Filter>Source Files\Sync</Filter>
+    </ClInclude>
+    <ClInclude Include="Sync\Event.h">
+      <Filter>Source Files\Sync</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Physics\Physics.inl">
@@ -192,6 +225,9 @@
       <Filter>Source Files\JobSys</Filter>
     </None>
     <None Include="JosSys\HashedString.inl">
+      <Filter>Source Files\JobSys</Filter>
+    </None>
+    <None Include="JosSys\SharedJobQueue.inl">
       <Filter>Source Files\JobSys</Filter>
     </None>
   </ItemGroup>
