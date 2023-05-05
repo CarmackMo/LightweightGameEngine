@@ -7,7 +7,7 @@ namespace Debugger
 {
 
 
-static class DebugManager
+class DebugManager
 {
 public:
 	template <typename T>

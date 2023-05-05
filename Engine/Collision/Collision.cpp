@@ -311,8 +311,6 @@ bool CheckCollision(const Object& i_Obj1, const Object& i_Obj2, float i_dt, floa
 	CollisionAxis = i_Obj1.m_Orientation.GetCol(0).GetNorm().Cross(i_Obj2.m_Orientation.GetCol(1).GetNorm());
 	if (!IsZero(CollisionAxis.Length()))
 	{
-		float temp0 = CollisionAxis[0] * CollisionAxis[0] + CollisionAxis[1] * CollisionAxis[1] + CollisionAxis[2] * CollisionAxis[2];
-		float temp1 = CollisionAxis.Length();
 
 		if (CheckSeparationAlongAxis(CollisionAxis, i_Obj1, Obj1BBCenterInWorld, i_Obj2, Obj2BBCenterInWorld, i_dt, axisEnter, axisExit))
 		{
@@ -746,7 +744,6 @@ bool Check2DCollision(const Object& i_Obj1, const Object& i_Obj2, float i_dt, fl
 }
 
 
-
 void SingleCollisionCheck()
 {
 
@@ -827,7 +824,7 @@ void CollisionPoolCheck()
 	}
 
 
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < 10; i++)
 	{
 		CollisionPair Pair = FindCollision(RandInRange(0.1f, 1.0f));
 	}

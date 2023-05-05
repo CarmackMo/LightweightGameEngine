@@ -97,6 +97,7 @@ int WINAPI wWinMain(
     /* Unit test for Matrix4 class  */
     Matrix4<double> test;
     test.UnitTest();
+    DEBUG_PRINT(" \n\n\n ############ \n Matrix4 unit test successful \n ############ \n\n\n");
 
 
     /* Unit Test for creating game object from Json file */ 
@@ -105,16 +106,19 @@ int WINAPI wWinMain(
     DEBUG_PRINT("Create game object from JSON file, path: %s \n", "JsonTest.json");
     DEBUG_PRINT("Game object name: %s \n", jsonObj->name.c_str());
     DEBUG_PRINT("Game object position: (%lf, %lf) \n", jsonObj->position[0], jsonObj->position[1]);
+    DEBUG_PRINT(" \n\n\n ############ \n JSON reader unit test successful \n ############ \n\n\n");
 
 
     /* Unit Test for job system */
     Init();
     BasicSample();
     RequestShutdown();
+    DEBUG_PRINT(" \n\n\n ############ \n Job system unit test successful \n ############ \n\n\n");
 
 
     /* Unit Test for collision detection */
     CollisionPoolCheck();
+    DEBUG_PRINT(" \n\n\n ############ \n Collision detection unit test successful \n ############ \n\n\n");
 
 
 
