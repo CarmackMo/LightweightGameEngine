@@ -17,7 +17,6 @@ inline Matrix3<T>::Matrix3()
 	val[2][0] = static_cast<T>(0); val[2][1] = static_cast<T>(0); val[2][2] = static_cast<T>(0);
 }
 
-
 template <typename T>
 inline Matrix3<T>::Matrix3(
 	T x00, T x01, T x02,
@@ -34,7 +33,6 @@ inline Matrix3<T>::Matrix3(
 	val[2][0] = x20; val[2][1] = x21; val[2][2] = x22;
 }
 
-
 template <typename T>
 inline Matrix3<T>::Matrix3(const Matrix3<T>& other)
 {
@@ -43,6 +41,17 @@ inline Matrix3<T>::Matrix3(const Matrix3<T>& other)
 	val[2][0] = other[2][0]; val[2][1] = other[2][1]; val[2][2] = other[2][2];
 }
 
+template <typename T>
+inline Vector3<T> Matrix3<T>::GetRow(int row) const
+{
+	return Vector3<T>(val[row][0], val[row][1], val[row][2]);
+}
+
+template <typename T>
+inline Vector3<T> Matrix3<T>::GetCol(int col) const
+{
+	return Vector3<T>(val[0][col], val[1][col], val[0][col]);
+}
 
 template <typename T>
 inline Matrix3<T> Matrix3<T>::GetInverse() const
@@ -51,7 +60,6 @@ inline Matrix3<T> Matrix3<T>::GetInverse() const
 	res.Invert();
 	return res;
 }
-
 
 template <typename T>
 template <typename U>
@@ -63,7 +71,6 @@ inline Matrix3<U> Matrix3<T>::GetInverse() const
 	return res;
 }
 
-
 template <typename T>
 inline void Matrix3<T>::Transpose(void)
 {
@@ -74,7 +81,6 @@ inline void Matrix3<T>::Transpose(void)
 	val[1][0] = t01; val[2][0] = t02; val[2][1] = t12;
 }
 
-
 template <typename T>
 inline Matrix3<T> Matrix3<T>::GetTranspose(void) const
 {
@@ -84,6 +90,15 @@ inline Matrix3<T> Matrix3<T>::GetTranspose(void) const
 		val[0][2], val[1][2], val[2][2]);
 }
 
+template <typename T>
+inline Matrix4<T> Matrix3<T>::GetTransform() const
+{
+	return Matrix4<T>(
+		val[0][0], val[0][1], val[0][2], 0.0f,
+		val[1][0], val[1][1], val[1][2], 0.0f,
+		val[2][0], val[2][1], val[2][2], 0.0f,
+		0.0f,	   0.0f,	  0.0f,		 1.0f);
+}
 
 template <typename T>
 template <typename U>
@@ -95,14 +110,11 @@ inline Matrix3<U> Matrix3<T>::CovertToType()
 		static_cast<U>(val[2][0]), static_cast<U>(val[2][1]), static_cast<U>(val[2][2]));
 }
 
-
-
 template <typename T>
 inline T* Matrix3<T>::operator[] (int row)
 {
 	return val[row];
 }
-
 
 template <typename T>
 inline const T* Matrix3<T>::operator[] (int row) const
@@ -119,7 +131,6 @@ inline Matrix3<T> Matrix3<T>::operator+ (const Matrix3<T>& other) const
 		val[2][0] + other[2][0], val[2][1] + other[2][1], val[2][2] + other[2][2]);
 }
 
-
 template <typename T>
 inline Matrix3<T> Matrix3<T>::operator- (const Matrix3<T>& other) const
 {
@@ -128,7 +139,6 @@ inline Matrix3<T> Matrix3<T>::operator- (const Matrix3<T>& other) const
 		val[1][0] - other[1][0], val[1][1] - other[1][1], val[1][2] - other[1][2],
 		val[2][0] - other[2][0], val[2][1] - other[2][1], val[2][2] - other[2][2]);
 }
-
 
 template <typename T>
 inline Matrix3<T> Matrix3<T>::operator* (T num) const
@@ -139,7 +149,6 @@ inline Matrix3<T> Matrix3<T>::operator* (T num) const
 		val[2][0] * num, val[2][1] * num, val[2][2] * num);
 }
 
-
 template <typename T>
 inline Matrix3<T> Matrix3<T>::operator/ (T num) const
 {
@@ -149,7 +158,6 @@ inline Matrix3<T> Matrix3<T>::operator/ (T num) const
 		val[2][0] / num, val[2][1] / num, val[2][2] / num);
 }
 
-
 template <typename T>
 inline Matrix3<T>& Matrix3<T>::operator=(const Matrix3<T>& other)
 {
@@ -158,7 +166,6 @@ inline Matrix3<T>& Matrix3<T>::operator=(const Matrix3<T>& other)
 	val[2][0] = other[2][0]; val[2][1] = other[2][1]; val[2][2] = other[2][2];
 	return *this;
 }
-
 
 template <typename T>
 inline Matrix3<T> Matrix3<T>::CreateIdentity(void)
@@ -170,20 +177,47 @@ inline Matrix3<T> Matrix3<T>::CreateIdentity(void)
 	return res.CovertToType<T>();
 }
 
-
 template <typename T>
-inline Matrix3<T> Matrix3<T>::CreateRotation(double rad)
+inline Matrix3<T> Matrix3<T>::CreateXRotation(double rad)
 {
+	double sin_ = sin(rad);
+	double cos_ = cos(rad);
+
 	Matrix3<double> res = Matrix3<double>(
-		cos(rad), -sin(rad), 0,
-		sin(rad), cos(rad),  0,
-		0,		  0,		 1);
+		1, 0,	  0,
+		0, cos_, -sin_,
+		0, sin_,  cos_);
 	return res.CovertToType<T>();
 }
 
+template <typename T>
+inline Matrix3<T> Matrix3<T>::CreateYRotation(double rad)
+{
+	double sin_ = sin(rad);
+	double cos_ = cos(rad);
+
+	Matrix3<double> res = Matrix3<double>(
+		 cos_, 0, sin_,
+		 0,	   1, 0,
+		-sin_, 0, cos_);
+	return res.CovertToType<T>();
+}
 
 template <typename T>
-inline Matrix3<T> Matrix3<T>::CreateTranslation(Vector2<T>& vec)
+inline Matrix3<T> Matrix3<T>::CreateZRotation(double rad)
+{
+	double sin_ = sin(rad);
+	double cos_ = cos(rad);
+
+	Matrix3<double> res = Matrix3<double>(
+		cos_, -sin_, 0,
+		sin_,  cos_, 0,
+		0,	   0,	 1);
+	return res.CovertToType<T>();
+}
+
+template <typename T>
+inline Matrix3<T> Matrix3<T>::CreateTranslation(const Vector2<T>& vec)
 {
 	Matrix3<double> res = Matrix3<double>(
 		1, 0, vec[0],
@@ -191,7 +225,6 @@ inline Matrix3<T> Matrix3<T>::CreateTranslation(Vector2<T>& vec)
 		0, 0, 1);
 	return res.CovertToType<T>();
 }
-
 
 template <typename T>
 inline Matrix3<T> Matrix3<T>::CreateTranslation(T transX, T transY)
@@ -203,9 +236,8 @@ inline Matrix3<T> Matrix3<T>::CreateTranslation(T transX, T transY)
 	return res.CovertToType<T>();
 }
 
-
 template <typename T>
-inline Matrix3<T> Matrix3<T>::CreateScale(Vector2<T>& vec)
+inline Matrix3<T> Matrix3<T>::CreateScale(const Vector2<T>& vec)
 {
 	Matrix3<double> res = Matrix3<double>(
 		vec[0], 0,		0,
@@ -213,7 +245,6 @@ inline Matrix3<T> Matrix3<T>::CreateScale(Vector2<T>& vec)
 		0,		0,		1);
 	return res.CovertToType<T>();
 }
-
 
 template <typename T>
 inline Matrix3<T> Matrix3<T>::CreateScale(T scaleX, T scaleY)
@@ -292,6 +323,16 @@ inline Matrix4<T> Matrix4<T>::GetInverse() const
 }
 
 template <typename T>
+inline Matrix4<T> Matrix4<T>::GetInverseRotTrans() const
+{
+	return Matrix4<T>(
+		val[0][0], val[1][0], val[2][0], -((val[0][0] * val[0][3]) + (val[1][0] * val[1][3]) + (val[2][0] * val[2][3])),
+		val[0][1], val[1][1], val[2][1], -((val[0][1] * val[0][3]) + (val[1][1] * val[1][3]) + (val[2][1] * val[2][3])),
+		val[0][2], val[1][2], val[2][2], -((val[0][2] * val[0][3]) + (val[1][2] * val[1][3]) + (val[2][2] * val[2][3])),
+		0.0f, 0.0f, 0.0f, 1.0f);
+}
+
+template <typename T>
 inline void Matrix4<T>::Transpose(void)
 {
 	T t01 = val[0][1], t02 = val[0][2], t03 = val[0][3],
@@ -323,6 +364,15 @@ inline Matrix4<U> Matrix4<T>::CovertToType()
 		static_cast<U>(val[1][0]), static_cast<U>(val[1][1]), static_cast<U>(val[1][2]), static_cast<U>(val[1][3]),
 		static_cast<U>(val[2][0]), static_cast<U>(val[2][1]), static_cast<U>(val[2][2]), static_cast<U>(val[2][3]),
 		static_cast<U>(val[3][0]), static_cast<U>(val[3][1]), static_cast<U>(val[3][2]), static_cast<U>(val[3][3]));
+}
+
+template <typename T>
+inline Vector3<T> Matrix4<T>::TransformPoint(const Vector3<T>& point) const
+{
+	Vector4<T> Point = MultiplyRight(Vector4<T>(point[0], point[1], point[2], 1.0f));
+
+	float inv_w = 1.0f / Point[3];
+	return Vector3<T>(Point[0] * inv_w, Point[1] * inv_w, Point[2] * inv_w);
 }
 
 template <typename T>
@@ -401,11 +451,14 @@ inline Matrix4<T> Matrix4<T>::CreateIdentity(void)
 template <typename T>
 inline Matrix4<T> Matrix4<T>::CreateXRotation(double rad)
 {
+	double cos_ = cos(rad);
+	double sin_ = sin(rad);
+
 	Matrix4<double> res = Matrix4<double>(
-							1, 0, 0, 0,
-							0, cos(rad), -sin(rad), 0,
-							0, sin(rad), cos(rad), 0,
-							0, 0, 0, 1);
+		1, 0,	  0,	0,
+		0, cos_, -sin_, 0,
+		0, sin_,  cos_, 0,
+		0, 0,	  0,	1);
 	return res.CovertToType<T>();
 }
 
@@ -416,27 +469,33 @@ inline Matrix4<T> Matrix4<T>::CreateYRotation(double rad)
 	 * sin() in the third row is negative. This is because
 	 * we are using right-hand coordinate.
 	 */
+	double cos_ = cos(rad);
+	double sin_ = sin(rad);
+
 	Matrix4<double> res = Matrix4<double>(
-							cos(rad), 0, sin(rad), 0,
-							0, 1, 0, 0,
-							-sin(rad), 0, cos(rad), 0,
-							0, 0, 0, 1);
+		cos_,  0, sin_, 0,
+		0,	   1, 0,	0,
+		-sin_, 0, cos_, 0,
+		0,	   0, 0,	1);
 	return res.CovertToType<T>();
 }
 
 template <typename T>
 inline Matrix4<T> Matrix4<T>::CreateZRotation(double rad)
 {
+	double cos_ = cos(rad);
+	double sin_ = sin(rad);
+
 	Matrix4<double> res = Matrix4<double>(
-							cos(rad), -sin(rad), 0, 0,
-							sin(rad), cos(rad), 0, 0,
-							0, 0, 1, 0,
-							0, 0, 0, 1);
+		cos_, -sin_, 0, 0,
+		sin_,  cos_, 0, 0,
+		0,	   0,	 1, 0,
+		0,	   0,	 0, 1);
 	return res.CovertToType<T>();
 }
 
 template <typename T>
-inline Matrix4<T> Matrix4<T>::CreateTranslation(Vector3<T>& vec)
+inline Matrix4<T> Matrix4<T>::CreateTranslation(const Vector3<T>& vec)
 {
 	Matrix4<double> res = Matrix4<double>(
 							1, 0, 0, vec[0],
@@ -458,7 +517,7 @@ inline Matrix4<T> Matrix4<T>::CreateTranslation(T transX, T transY, T transZ)
 }
 
 template <typename T>
-inline Matrix4<T> Matrix4<T>::CreateScale(Vector3<T>& vec)
+inline Matrix4<T> Matrix4<T>::CreateScale(const Vector3<T>& vec)
 {
 	Matrix4<double> res = Matrix4<double>(
 							vec[0], 0, 0, 0,

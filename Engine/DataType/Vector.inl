@@ -188,11 +188,57 @@ inline Vector3<T>::Vector3(const Vector3<T>& other)
 	val[0] = other[0]; val[1] = other[1]; val[2] = other[2];
 }
 
+//template <typename T>
+//template <typename U>
+//inline Vector3<T> Vector3<T>::ConvertType(const Vector3<U>& other)
+//{
+//	return Vector3<T>(static_cast<T>(other[0]), static_cast<T>(other[1]), static_cast<T>(other[2]));
+//}
+
 template <typename T>
 template <typename U>
-inline Vector3<T> Vector3<T>::ConvertType(const Vector3<U>& other)
+inline Vector3<U> Vector3<T>::CovertToType()
 {
-	return Vector3<T>(static_cast<T>(other[0]), static_cast<T>(other[1]), static_cast<T>(other[2]));
+	return Vector3<U>(
+		static_cast<U>(val[0]),
+		static_cast<U>(val[1]),
+		static_cast<U>(val[2]));
+}
+
+template <typename T>
+inline T Vector3<T>::Dot(const Vector3<T>& other) const
+{
+	return val[0] * other[0] + val[1] * other[1] + val[2] * other[2];
+}
+
+template <typename T>
+inline Vector3<T> Vector3<T>::Cross(const Vector3<T>& other) const
+{
+	return Vector3<T>(
+			val[1] * other[2] - val[2] * other[1],
+			val[2] * other[0] - val[0] * other[2],
+			val[0] * other[1] - val[1] * other[0]);
+}
+
+template <typename T>
+inline T Vector3<T>::Length() const
+{
+	return static_cast<T>(sqrt(val[0] * val[0] + val[1] * val[1] + val[2] * val[2]));
+}
+
+template <typename T>
+inline Vector3<T> Vector3<T>::GetNorm() const
+{
+	T length = Length();
+
+	if (length == 0)
+		return Zero;
+	else
+	{
+		double inv = 1.0 / length;
+		Vector3<double> res = Vector3<double>(val[0]*inv, val[1]*inv, val[2]*inv);
+		return res.CovertToType<T>();
+	}
 }
 
 /* Self modifying operators */
@@ -377,5 +423,20 @@ inline bool Vector4<T>::operator== (const Vector4<T>& other) const
 {
 	return (val[0] == other[0]) && (val[1] == other[1]) && (val[2] == other[2]) && (val[3] == other[3]);
 }
+
+
+template <typename T>
+inline Vector4<T> Vector4<T>::operator* (const Vector4<T>& other) const
+{
+	return Vector4<T>(val[0] * other[0], val[1] * other[1], val[2] * other[2], val[3] * other[3]);
+}
+
+
+template <typename T>
+inline Vector4<T> Vector4<T>::operator* (T num) const
+{
+	return Vector4(val[0] * num, val[1] * num, val[2] * num, val[3] * num);
+}
+
 
 #pragma endregion

@@ -6,6 +6,7 @@
 #include "Physics.h"
 #include "FileSys.h"
 #include "JobSys.h"
+#include "Collision.h"
 
 using namespace std;
 using namespace Engine::Input;

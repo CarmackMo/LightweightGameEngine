@@ -113,6 +113,8 @@ int WINAPI wWinMain(
     RequestShutdown();
 
 
+    /* Unit Test for collision detection */
+    CollisionPoolCheck();
 
 
 

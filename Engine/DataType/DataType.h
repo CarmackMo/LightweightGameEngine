@@ -12,6 +12,7 @@ using namespace std;
 namespace Engine
 {
 /* Classes forwared declaration */
+template <typename T> class AABB;
 class GameObject;
 
 
@@ -61,6 +62,15 @@ class GameObject;
 //};
 
 
+template<typename T>
+class AABB
+{
+public:
+	Vector3<T> center;
+	Vector3<T> extent;
+};
+
+
 
 class GameObject
 {
@@ -69,6 +79,7 @@ private:
 public:
 	string name;
 	Vector2<double> position;
+	AABB<double> BB;
 
 	inline GameObject();
 	inline GameObject(const string& name, const Vector2<double>& position = Vector2<double>::Zero);

@@ -12,6 +12,7 @@
 #include <assert.h>
 #include <crtdbg.h>
 #include <inttypes.h>
+#include <math.h>
 
 /* STD */
 #include <string>

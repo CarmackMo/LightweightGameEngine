@@ -41,6 +41,12 @@
     <Filter Include="Source Files\Sync">
       <UniqueIdentifier>{f4f91eea-d779-4a1d-9e16-650994c6bb1d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Collision">
+      <UniqueIdentifier>{6cf846ed-10c5-4c8b-921a-1907b6f6bdf4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Mathd">
+      <UniqueIdentifier>{e7b5024e-4710-489b-b545-45df73d7c495}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataType\DataType.cpp">
@@ -105,6 +111,9 @@
     </ClCompile>
     <ClCompile Include="JobSys\SharedJobQueue.cpp">
       <Filter>Source Files\JobSys</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision\Collision.cpp">
+      <Filter>Source Files\Collision</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -200,6 +209,12 @@
     </ClInclude>
     <ClInclude Include="JobSys\SharedJobQueue.h">
       <Filter>Source Files\JobSys</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision\Collision.h">
+      <Filter>Source Files\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Mathd\Mathd.h">
+      <Filter>Source Files\Mathd</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -34,6 +34,9 @@ public:
 		T x20, T x21, T x22);
 	inline Matrix3(const Matrix3<T>& other);
 
+	/* Get the specific row / column of the matrix */
+	inline Vector3<T> GetRow(int row) const;
+	inline Vector3<T> GetCol(int col) const;
 
 	/* Calculate the determinant of the 2x2 minor matrix where M(row, col) is the pivot */
 	T Det(int row, int col) const;
@@ -53,6 +56,9 @@ public:
 	inline void Transpose(void);
 	/* Return a matrix that is the transpose of this instance but don't modify this instance */
 	inline Matrix3<T> GetTranspose(void) const;
+
+	/* Return a transform matrix of this instance */
+	inline Matrix4<T> GetTransform() const;
 
 	/* Convert current to a new matrix with type "U" */
 	template <typename U>
@@ -82,14 +88,16 @@ public:
 	inline static Matrix3<T> CreateIdentity(void);
 
 	/* @brief Rotate matrix around origin point, rotate counter-clockwise */
-	inline static Matrix3<T> CreateRotation(double rad);
+	inline static Matrix3<T> CreateXRotation(double rad);
+	inline static Matrix3<T> CreateYRotation(double rad);
+	inline static Matrix3<T> CreateZRotation(double rad);
 
 	/* Translation matrix creator */
-	inline static Matrix3<T> CreateTranslation(Vector2<T>& vec);
+	inline static Matrix3<T> CreateTranslation(const Vector2<T>& vec);
 	inline static Matrix3<T> CreateTranslation(T transX, T transY);
 
 	/* Scale matrix creator */
-	inline static Matrix3<T> CreateScale(Vector2<T>& vec);
+	inline static Matrix3<T> CreateScale(const Vector2<T>& vec);
 	inline static Matrix3<T> CreateScale(T scaleX, T scaleY);
 };
 
@@ -130,6 +138,9 @@ public:
 	template <typename U>
 	inline Matrix4<U> GetInverse() const;
 
+	/* Return a matrix that is the inverse ASSUMING this matrix has axis rotation and translation only. */
+	inline Matrix4<T> GetInverseRotTrans() const;
+
 	/* Transpose this instance */
 	inline void Transpose(void);
 	/* Return a matrix that is the transpose of this instance but don't modify this instance */
@@ -144,6 +155,9 @@ public:
 	Vector4<T> MultiplyLeft(const Vector4<T>& vec) const;
 	/* Return M * v */
 	Vector4<T> MultiplyRight(const Vector4<T>& vec) const;
+
+	/* Transform point counter clockwise */
+	inline Vector3<T> TransformPoint(const Vector3<T>& point) const;
 
 	inline T* operator[] (int row);
 	inline const T* operator[] (int row) const;
@@ -169,11 +183,11 @@ public:
 	inline static Matrix4<T> CreateZRotation(double rad);
 
 	/* Translation matrix creator */
-	inline static Matrix4<T> CreateTranslation(Vector3<T>& vec);
+	inline static Matrix4<T> CreateTranslation(const Vector3<T>& vec);
 	inline static Matrix4<T> CreateTranslation(T transX, T transY, T transZ);
 
 	/* Scale matrix creator */
-	inline static Matrix4<T> CreateScale(Vector3<T>& vec);
+	inline static Matrix4<T> CreateScale(const Vector3<T>& vec);
 	inline static Matrix4<T> CreateScale(T scaleX, T scaleY, T scaleZ);
 
 

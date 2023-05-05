@@ -1,6 +1,7 @@
 #pragma once
 #include "Dependency.h"
 
+
 using namespace std;
 using namespace Engine::Debugger;
 
@@ -102,8 +103,17 @@ public:
 	inline Vector3(const Vector3<T>& other);
 
 	/* Convert a vector3 with type "U" to type "T" */
-	template<typename U>
-	inline static Vector3<T> ConvertType(const Vector3<U>& other);
+	//template<typename U>
+	//inline static Vector3<T> ConvertType(const Vector3<U>& other);
+	template <typename U>
+	inline Vector3<U> CovertToType();
+
+	inline T Dot(const Vector3<T>& other) const;
+	inline Vector3<T> Cross(const Vector3<T>& other) const;
+	inline T Length() const;
+	
+	/* Get the normalization vector of this instance */
+	inline Vector3<T> GetNorm() const;
 
 	/* Self modifying operators */
 	inline void operator+= (const Vector3<T>& other);
@@ -183,6 +193,10 @@ public:
 	inline T& operator[] (int idx);
 	inline const T& operator[] (int idx) const;
 	inline bool operator== (const Vector4<T>& other) const;
+
+
+	inline Vector4<T> operator* (const Vector4<T>& other) const;
+	inline Vector4<T> operator* (T num) const;
 
 };
 
