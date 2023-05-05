@@ -99,7 +99,7 @@ int WINAPI wWinMain(
     test.UnitTest();
 
 
-    /* Unit Test for creating game object from Json file */
+    /* Unit Test for creating game object from Json file */ 
     engine.CreateGameObject("JsonTest.json");
     SmartPtr<GameObject> jsonObj = engine.gameObjectList[1];
     DEBUG_PRINT("Create game object from JSON file, path: %s \n", "JsonTest.json");

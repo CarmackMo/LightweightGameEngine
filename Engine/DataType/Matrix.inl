@@ -50,7 +50,7 @@ inline Vector3<T> Matrix3<T>::GetRow(int row) const
 template <typename T>
 inline Vector3<T> Matrix3<T>::GetCol(int col) const
 {
-	return Vector3<T>(val[0][col], val[1][col], val[0][col]);
+	return Vector3<T>(val[0][col], val[1][col], val[2][col]);
 }
 
 template <typename T>

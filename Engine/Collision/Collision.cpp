@@ -161,12 +161,12 @@ bool CheckCollision(const Object& i_Obj1, const Object& i_Obj2, float i_dt, floa
 	CollisionAxis = i_Obj1.m_Orientation.GetCol(0).GetNorm();
 	if (CheckSeparationAlongAxis(CollisionAxis, i_Obj1, Obj1BBCenterInWorld, i_Obj2, Obj2BBCenterInWorld, i_dt, axisEnter, axisExit))
 	{
-		DEBUG_PRINT("Found Separation along Obj1 X Axis");
+		DEBUG_PRINT("Found Separation along Obj1 X Axis \n");
 		return false;
 	}
 	else
 	{
-		DEBUG_PRINT("Found Overlap along Obj1 X Axis from %f to %f", axisEnter, axisExit);
+		DEBUG_PRINT("Found Overlap along Obj1 X Axis from %f to %f \n", axisEnter, axisExit);
 		if (axisEnter > tEnter)
 		{
 			DEBUG_PRINT("Updating tEnter to %f\n", axisEnter);
@@ -182,12 +182,12 @@ bool CheckCollision(const Object& i_Obj1, const Object& i_Obj2, float i_dt, floa
 	CollisionAxis = i_Obj1.m_Orientation.GetCol(1).GetNorm();
 	if (CheckSeparationAlongAxis(CollisionAxis, i_Obj1, Obj1BBCenterInWorld, i_Obj2, Obj2BBCenterInWorld, i_dt, axisEnter, axisExit))
 	{
-		DEBUG_PRINT("Found Separation along Obj1 Y Axis");
+		DEBUG_PRINT("Found Separation along Obj1 Y Axis \n");
 		return false;
 	}
 	else
 	{
-		DEBUG_PRINT("Found Overlap along Obj1 Y Axis from %f to %f", axisEnter, axisExit);
+		DEBUG_PRINT("Found Overlap along Obj1 Y Axis from %f to %f \n", axisEnter, axisExit);
 		if (axisEnter > tEnter)
 		{
 			DEBUG_PRINT("Updating tEnter to %f\n", axisEnter);
@@ -203,12 +203,12 @@ bool CheckCollision(const Object& i_Obj1, const Object& i_Obj2, float i_dt, floa
 	CollisionAxis = i_Obj1.m_Orientation.GetCol(2).GetNorm();
 	if (CheckSeparationAlongAxis(CollisionAxis, i_Obj1, Obj1BBCenterInWorld, i_Obj2, Obj2BBCenterInWorld, i_dt, axisEnter, axisExit))
 	{
-		DEBUG_PRINT("Found Separation along Obj1 Z Axis");
+		DEBUG_PRINT("Found Separation along Obj1 Z Axis \n");
 		return false;
 	}
 	else
 	{
-		DEBUG_PRINT("Found Overlap along Obj1 Z Axis from %f to %f", axisEnter, axisExit);
+		DEBUG_PRINT("Found Overlap along Obj1 Z Axis from %f to %f \n", axisEnter, axisExit);
 		if (axisEnter > tEnter)
 		{
 			DEBUG_PRINT("Updating tEnter to %f\n", axisEnter);
@@ -224,12 +224,12 @@ bool CheckCollision(const Object& i_Obj1, const Object& i_Obj2, float i_dt, floa
 	CollisionAxis = i_Obj2.m_Orientation.GetCol(0).GetNorm();
 	if (CheckSeparationAlongAxis(CollisionAxis, i_Obj2, Obj2BBCenterInWorld, i_Obj1, Obj1BBCenterInWorld, i_dt, axisEnter, axisExit))
 	{
-		DEBUG_PRINT("Found Separation along Obj2 X Axis");
+		DEBUG_PRINT("Found Separation along Obj2 X Axis \n");
 		return false;
 	}
 	else
 	{
-		DEBUG_PRINT("Found Overlap along Obj2 X Axis from %f to %f", axisEnter, axisExit);
+		DEBUG_PRINT("Found Overlap along Obj2 X Axis from %f to %f \n", axisEnter, axisExit);
 		if (axisEnter > tEnter)
 		{
 			DEBUG_PRINT("Updating tEnter to %f\n", axisEnter);
@@ -245,12 +245,12 @@ bool CheckCollision(const Object& i_Obj1, const Object& i_Obj2, float i_dt, floa
 	CollisionAxis = i_Obj2.m_Orientation.GetCol(1).GetNorm();
 	if (CheckSeparationAlongAxis(CollisionAxis, i_Obj2, Obj2BBCenterInWorld, i_Obj1, Obj1BBCenterInWorld, i_dt, axisEnter, axisExit))
 	{
-		DEBUG_PRINT("Found Separation along Obj2 Y Axis");
+		DEBUG_PRINT("Found Separation along Obj2 Y Axis \n");
 		return false;
 	}
 	else
 	{
-		DEBUG_PRINT("Found Overlap along Obj2 Y Axis from %f to %f", axisEnter, axisExit);
+		DEBUG_PRINT("Found Overlap along Obj2 Y Axis from %f to %f \n", axisEnter, axisExit);
 		if (axisEnter > tEnter)
 		{
 			DEBUG_PRINT("Updating tEnter to %f\n", axisEnter);
@@ -266,12 +266,12 @@ bool CheckCollision(const Object& i_Obj1, const Object& i_Obj2, float i_dt, floa
 	CollisionAxis = i_Obj2.m_Orientation.GetCol(2).GetNorm();
 	if (CheckSeparationAlongAxis(CollisionAxis, i_Obj2, Obj2BBCenterInWorld, i_Obj1, Obj1BBCenterInWorld, i_dt, axisEnter, axisExit))
 	{
-		DEBUG_PRINT("Found Separation along Obj1 Z Axis");
+		DEBUG_PRINT("Found Separation along Obj1 Z Axis\n");
 		return false;
 	}
 	else
 	{
-		DEBUG_PRINT("Found Overlap along Obj1 Z Axis from %f to %f", axisEnter, axisExit);
+		DEBUG_PRINT("Found Overlap along Obj1 Z Axis from %f to %f\n", axisEnter, axisExit);
 		if (axisEnter > tEnter)
 		{
 			DEBUG_PRINT("Updating tEnter to %f\n", axisEnter);
@@ -289,12 +289,12 @@ bool CheckCollision(const Object& i_Obj1, const Object& i_Obj2, float i_dt, floa
 	{
 		if (CheckSeparationAlongAxis(CollisionAxis, i_Obj1, Obj1BBCenterInWorld, i_Obj2, Obj2BBCenterInWorld, i_dt, axisEnter, axisExit))
 		{
-			DEBUG_PRINT("Found Separation along Obj1 X x Obj2 X Axis");
+			DEBUG_PRINT("Found Separation along Obj1 X x Obj2 X Axis\n");
 			return false;
 		}
 		else
 		{
-			DEBUG_PRINT("Found Overlap along Obj1 X x Obj2 X Axis from %f to %f", axisEnter, axisExit);
+			DEBUG_PRINT("Found Overlap along Obj1 X x Obj2 X Axis from %f to %f\n", axisEnter, axisExit);
 			if (axisEnter > tEnter)
 			{
 				DEBUG_PRINT("Updating tEnter to %f\n", axisEnter);
@@ -311,14 +311,17 @@ bool CheckCollision(const Object& i_Obj1, const Object& i_Obj2, float i_dt, floa
 	CollisionAxis = i_Obj1.m_Orientation.GetCol(0).GetNorm().Cross(i_Obj2.m_Orientation.GetCol(1).GetNorm());
 	if (!IsZero(CollisionAxis.Length()))
 	{
+		float temp0 = CollisionAxis[0] * CollisionAxis[0] + CollisionAxis[1] * CollisionAxis[1] + CollisionAxis[2] * CollisionAxis[2];
+		float temp1 = CollisionAxis.Length();
+
 		if (CheckSeparationAlongAxis(CollisionAxis, i_Obj1, Obj1BBCenterInWorld, i_Obj2, Obj2BBCenterInWorld, i_dt, axisEnter, axisExit))
 		{
-			DEBUG_PRINT("Found Separation along Obj1 X x Obj2 Y Axis");
+			DEBUG_PRINT("Found Separation along Obj1 X x Obj2 Y Axis\n");
 			return false;
 		}
 		else
 		{
-			DEBUG_PRINT("Found Overlap along Obj1 X x Obj2 Y Axis from %f to %f", axisEnter, axisExit);
+			DEBUG_PRINT("Found Overlap along Obj1 X x Obj2 Y Axis from %f to %f\n", axisEnter, axisExit);
 			if (axisEnter > tEnter)
 			{
 				DEBUG_PRINT("Updating tEnter to %f\n", axisEnter);
@@ -337,12 +340,12 @@ bool CheckCollision(const Object& i_Obj1, const Object& i_Obj2, float i_dt, floa
 	{
 		if (CheckSeparationAlongAxis(CollisionAxis, i_Obj1, Obj1BBCenterInWorld, i_Obj2, Obj2BBCenterInWorld, i_dt, axisEnter, axisExit))
 		{
-			DEBUG_PRINT("Found Separation along Obj1 X x Obj2 Z Axis");
+			DEBUG_PRINT("Found Separation along Obj1 X x Obj2 Z Axis\n");
 			return false;
 		}
 		else
 		{
-			DEBUG_PRINT("Found Overlap along Obj1 X x Obj2 Z Axis from %f to %f", axisEnter, axisExit);
+			DEBUG_PRINT("Found Overlap along Obj1 X x Obj2 Z Axis from %f to %f\n", axisEnter, axisExit);
 			if (axisEnter > tEnter)
 			{
 				DEBUG_PRINT("Updating tEnter to %f\n", axisEnter);
@@ -361,12 +364,12 @@ bool CheckCollision(const Object& i_Obj1, const Object& i_Obj2, float i_dt, floa
 	{
 		if (CheckSeparationAlongAxis(CollisionAxis, i_Obj1, Obj1BBCenterInWorld, i_Obj2, Obj2BBCenterInWorld, i_dt, axisEnter, axisExit))
 		{
-			DEBUG_PRINT("Found Separation along Obj1 Y x Obj2 X Axis");
+			DEBUG_PRINT("Found Separation along Obj1 Y x Obj2 X Axis\n");
 			return false;
 		}
 		else
 		{
-			DEBUG_PRINT("Found Overlap along Obj1 Y x Obj2 X Axis from %f to %f", axisEnter, axisExit);
+			DEBUG_PRINT("Found Overlap along Obj1 Y x Obj2 X Axis from %f to %f\n", axisEnter, axisExit);
 			if (axisEnter > tEnter)
 			{
 				DEBUG_PRINT("Updating tEnter to %f\n", axisEnter);
@@ -385,12 +388,12 @@ bool CheckCollision(const Object& i_Obj1, const Object& i_Obj2, float i_dt, floa
 	{
 		if (CheckSeparationAlongAxis(CollisionAxis, i_Obj1, Obj1BBCenterInWorld, i_Obj2, Obj2BBCenterInWorld, i_dt, axisEnter, axisExit))
 		{
-			DEBUG_PRINT("Found Separation along Obj1 Y x Obj2 Y Axis");
+			DEBUG_PRINT("Found Separation along Obj1 Y x Obj2 Y Axis\n");
 			return false;
 		}
 		else
 		{
-			DEBUG_PRINT("Found Overlap along Obj1 Y x Obj2 Y Axis from %f to %f", axisEnter, axisExit);
+			DEBUG_PRINT("Found Overlap along Obj1 Y x Obj2 Y Axis from %f to %f\n", axisEnter, axisExit);
 			if (axisEnter > tEnter)
 			{
 				DEBUG_PRINT("Updating tEnter to %f\n", axisEnter);
@@ -409,12 +412,12 @@ bool CheckCollision(const Object& i_Obj1, const Object& i_Obj2, float i_dt, floa
 	{
 		if (CheckSeparationAlongAxis(CollisionAxis, i_Obj1, Obj1BBCenterInWorld, i_Obj2, Obj2BBCenterInWorld, i_dt, axisEnter, axisExit))
 		{
-			DEBUG_PRINT("Found Separation along Obj1 Y x Obj2 Z Axis");
+			DEBUG_PRINT("Found Separation along Obj1 Y x Obj2 Z Axis\n");
 			return false;
 		}
 		else
 		{
-			DEBUG_PRINT("Found Overlap along Obj1 Y x Obj2 Z Axis from %f to %f", axisEnter, axisExit);
+			DEBUG_PRINT("Found Overlap along Obj1 Y x Obj2 Z Axis from %f to %f\n", axisEnter, axisExit);
 			if (axisEnter > tEnter)
 			{
 				DEBUG_PRINT("Updating tEnter to %f\n", axisEnter);
@@ -433,12 +436,12 @@ bool CheckCollision(const Object& i_Obj1, const Object& i_Obj2, float i_dt, floa
 	{
 		if (CheckSeparationAlongAxis(CollisionAxis, i_Obj1, Obj1BBCenterInWorld, i_Obj2, Obj2BBCenterInWorld, i_dt, axisEnter, axisExit))
 		{
-			DEBUG_PRINT("Found Separation along Obj1 Z x Obj2 X Axis");
+			DEBUG_PRINT("Found Separation along Obj1 Z x Obj2 X Axis\n");
 			return false;
 		}
 		else
 		{
-			DEBUG_PRINT("Found Overlap along Obj1 Z x Obj2 X Axis from %f to %f", axisEnter, axisExit);
+			DEBUG_PRINT("Found Overlap along Obj1 Z x Obj2 X Axis from %f to %f\n", axisEnter, axisExit);
 			if (axisEnter > tEnter)
 			{
 				DEBUG_PRINT("Updating tEnter to %f\n", axisEnter);
@@ -457,12 +460,12 @@ bool CheckCollision(const Object& i_Obj1, const Object& i_Obj2, float i_dt, floa
 	{
 		if (CheckSeparationAlongAxis(CollisionAxis, i_Obj1, Obj1BBCenterInWorld, i_Obj2, Obj2BBCenterInWorld, i_dt, axisEnter, axisExit))
 		{
-			DEBUG_PRINT("Found Separation along Obj1 Z x Obj2 Y Axis");
+			DEBUG_PRINT("Found Separation along Obj1 Z x Obj2 Y Axis\n");
 			return false;
 		}
 		else
 		{
-			DEBUG_PRINT("Found Overlap along Obj1 Z x Obj2 Y Axis from %f to %f", axisEnter, axisExit);
+			DEBUG_PRINT("Found Overlap along Obj1 Z x Obj2 Y Axis from %f to %f\n", axisEnter, axisExit);
 			if (axisEnter > tEnter)
 			{
 				DEBUG_PRINT("Updating tEnter to %f\n", axisEnter);
@@ -481,12 +484,12 @@ bool CheckCollision(const Object& i_Obj1, const Object& i_Obj2, float i_dt, floa
 	{
 		if (CheckSeparationAlongAxis(CollisionAxis, i_Obj1, Obj1BBCenterInWorld, i_Obj2, Obj2BBCenterInWorld, i_dt, axisEnter, axisExit))
 		{
-			DEBUG_PRINT("Found Separation along Obj1 Z x Obj2 Z Axis");
+			DEBUG_PRINT("Found Separation along Obj1 Z x Obj2 Z Axis\n");
 			return false;
 		}
 		else
 		{
-			DEBUG_PRINT("Found Overlap along Obj1 Z x Obj2 Z Axis from %f to %f", axisEnter, axisExit);
+			DEBUG_PRINT("Found Overlap along Obj1 Z x Obj2 Z Axis from %f to %f\n", axisEnter, axisExit);
 			if (axisEnter > tEnter)
 			{
 				DEBUG_PRINT("Updating tEnter to %f\n", axisEnter);
@@ -823,8 +826,14 @@ void CollisionPoolCheck()
 		m_CollisionObjects.push_back(pObj);
 	}
 
-	while (1)
+
+	for (int i = 0; i < 20; i++)
+	{
 		CollisionPair Pair = FindCollision(RandInRange(0.1f, 1.0f));
+	}
+
+	//while (1)
+	//	CollisionPair Pair = FindCollision(RandInRange(0.1f, 1.0f));
 }
 
 

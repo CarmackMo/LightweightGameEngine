@@ -1,6 +1,5 @@
 #pragma once
 #include "Dependency.h"
-#include "DataType.h"
 
 
 using namespace Engine;

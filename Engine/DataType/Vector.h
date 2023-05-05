@@ -1,5 +1,6 @@
 #pragma once
 #include "Dependency.h"
+#include "Mathd.h"
 
 
 using namespace std;

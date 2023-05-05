@@ -223,7 +223,8 @@ inline Vector3<T> Vector3<T>::Cross(const Vector3<T>& other) const
 template <typename T>
 inline T Vector3<T>::Length() const
 {
-	return static_cast<T>(sqrt(val[0] * val[0] + val[1] * val[1] + val[2] * val[2]));
+	double lengthSq = static_cast<double>(val[0] * val[0] + val[1] * val[1] + val[2] * val[2]);
+	return static_cast<T>(sqrt(lengthSq));
 }
 
 template <typename T>
@@ -231,7 +232,7 @@ inline Vector3<T> Vector3<T>::GetNorm() const
 {
 	T length = Length();
 
-	if (length == 0)
+	if (IsZero(static_cast<float>(length)))
 		return Zero;
 	else
 	{
