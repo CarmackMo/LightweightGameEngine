@@ -47,6 +47,15 @@
     <Filter Include="Source Files\Mathd">
       <UniqueIdentifier>{e7b5024e-4710-489b-b545-45df73d7c495}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\DataType\Math">
+      <UniqueIdentifier>{68d6c5f8-2a46-4382-82a4-349d499d7322}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DataType\Engine">
+      <UniqueIdentifier>{e775612d-c2d9-427b-8ffd-74073e101489}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DataType\Utility">
+      <UniqueIdentifier>{2e49cf5c-bbf1-4db7-8394-8cf26c30b76a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Physics\Physics.cpp">
@@ -66,12 +75,6 @@
     </ClCompile>
     <ClCompile Include="Debugger\Debugger.cpp">
       <Filter>Source Files\Debugger</Filter>
-    </ClCompile>
-    <ClCompile Include="DataType\Matrix.cpp">
-      <Filter>Source Files\DataType</Filter>
-    </ClCompile>
-    <ClCompile Include="DataType\Vector.cpp">
-      <Filter>Source Files\DataType</Filter>
     </ClCompile>
     <ClCompile Include="DataType\Util.cpp">
       <Filter>Source Files\DataType</Filter>
@@ -112,8 +115,14 @@
     <ClCompile Include="Collision\Collision.cpp">
       <Filter>Source Files\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="DataType\GameObject.cpp">
-      <Filter>Source Files\DataType</Filter>
+    <ClCompile Include="DataType\Math\Matrix.cpp">
+      <Filter>Source Files\DataType\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="DataType\Math\Vector.cpp">
+      <Filter>Source Files\DataType\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="DataType\Engine\GameObject.cpp">
+      <Filter>Source Files\DataType\Engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -137,12 +146,6 @@
     </ClInclude>
     <ClInclude Include="Debugger\Debugger.h">
       <Filter>Source Files\Debugger</Filter>
-    </ClInclude>
-    <ClInclude Include="DataType\Matrix.h">
-      <Filter>Source Files\DataType</Filter>
-    </ClInclude>
-    <ClInclude Include="DataType\Vector.h">
-      <Filter>Source Files\DataType</Filter>
     </ClInclude>
     <ClInclude Include="DataType\Util.h">
       <Filter>Source Files\DataType</Filter>
@@ -216,8 +219,14 @@
     <ClInclude Include="Mathd\Mathd.h">
       <Filter>Source Files\Mathd</Filter>
     </ClInclude>
-    <ClInclude Include="DataType\GameObject.h">
-      <Filter>Source Files\DataType</Filter>
+    <ClInclude Include="DataType\Math\Matrix.h">
+      <Filter>Source Files\DataType\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="DataType\Math\Vector.h">
+      <Filter>Source Files\DataType\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="DataType\Engine\GameObject.h">
+      <Filter>Source Files\DataType\Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -229,9 +238,6 @@
     </None>
     <None Include="Input\Input.inl">
       <Filter>Source Files\Input</Filter>
-    </None>
-    <None Include="DataType\Vector.inl">
-      <Filter>Source Files\DataType</Filter>
     </None>
     <None Include="DataType\Util.inl">
       <Filter>Source Files\DataType</Filter>

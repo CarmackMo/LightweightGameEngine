@@ -140,10 +140,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Collision\Collision.cpp" />
-    <ClCompile Include="DataType\GameObject.cpp" />
-    <ClCompile Include="DataType\Matrix.cpp" />
+    <ClCompile Include="DataType\Engine\GameObject.cpp" />
+    <ClCompile Include="DataType\Math\Matrix.cpp" />
+    <ClCompile Include="DataType\Math\Vector.cpp" />
     <ClCompile Include="DataType\Util.cpp" />
-    <ClCompile Include="DataType\Vector.cpp" />
     <ClCompile Include="Debugger\Debugger.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
     <ClCompile Include="Engine\EngineTest.cpp" />
@@ -165,10 +165,10 @@
   <ItemGroup>
     <ClInclude Include="Collision\Collision.h" />
     <ClInclude Include="DataType\DataType.h" />
-    <ClInclude Include="DataType\GameObject.h" />
-    <ClInclude Include="DataType\Matrix.h" />
+    <ClInclude Include="DataType\Engine\GameObject.h" />
+    <ClInclude Include="DataType\Math\Matrix.h" />
+    <ClInclude Include="DataType\Math\Vector.h" />
     <ClInclude Include="DataType\Util.h" />
-    <ClInclude Include="DataType\Vector.h" />
     <ClInclude Include="Debugger\Debugger.h" />
     <ClInclude Include="Engine\Dependency.h" />
     <ClInclude Include="Engine\Engine.h" />
@@ -200,7 +200,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="DataType\Util.inl" />
-    <None Include="DataType\Vector.inl" />
     <None Include="Input\Input.inl" />
     <None Include="JobSys\HashedString.inl" />
     <None Include="JobSys\JobSys.inl" />
