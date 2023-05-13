@@ -25,7 +25,7 @@ The game engine implements object instances monitor algorithm and runtime garbag
 
 ## Catalog
 
-* [C/C++] (#cc)
+* [C/C++](#cc)
 
 <a id="cc"></a>
 ## C/C++
