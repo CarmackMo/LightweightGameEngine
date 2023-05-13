@@ -31,9 +31,9 @@ public:
 	inline Vector2(T x, T y);
 	inline Vector2(const Vector2<T>& other);
 
-	/* Convert a vector2 with type "U" to type "T" */
+	/* Convert this instance to a new Vector2 with type "U" */
 	template<typename U>
-	inline static Vector2<T> ConvertType(const Vector2<U>& other);
+	inline Vector2<U> ConvertToType();
 
 	/* Self modifying operators */
 	inline void operator+= (const Vector2<T>& other);
@@ -73,6 +73,10 @@ public:
 	 * template instance, and will report a LNK2019 error */
 	inline friend Vector2<T> operator* (T left, Vector2<T> right) { return Vector2<T>(left * right[0], left * right[1]); }
 
+	/* Static constant instances must be implemented explicitly for each 
+	 * template type. Since complier cannot automatically detemine the type 
+	 * of each static instance */
+
 	/* @brief Vector2(0, 0) */
 	static const Vector2<T> Zero;
 	/* @brief Vector2(-1, 0) */
@@ -104,8 +108,6 @@ public:
 	inline Vector3(const Vector3<T>& other);
 
 	/* Convert a vector3 with type "U" to type "T" */
-	//template<typename U>
-	//inline static Vector3<T> ConvertType(const Vector3<U>& other);
 	template <typename U>
 	inline Vector3<U> CovertToType();
 
@@ -153,6 +155,10 @@ public:
 	/* Must implement here. Otherwise, the compiler cannot find the specific
 	 * template instance, and will report a LNK2019 error */
 	inline friend Vector3<T> operator* (T left, Vector3<T> right) { return Vector3<T>(left * right[0], left * right[1], left * right[2]); }
+
+	/* Static constant instances must be implemented explicitly for each
+	 * template type. Since complier cannot automatically detemine the type
+	 * of each static instance */
 
 	/* @brief Vector3(0, 0, 0) */
 	static const Vector3<T> Zero;
@@ -202,5 +208,4 @@ public:
 };
 
 
-#include "Vector.inl"
 }

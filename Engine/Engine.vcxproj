@@ -199,7 +199,6 @@
     <ClInclude Include="Timer\Timer.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="DataType\Matrix.inl" />
     <None Include="DataType\Util.inl" />
     <None Include="DataType\Vector.inl" />
     <None Include="Input\Input.inl" />

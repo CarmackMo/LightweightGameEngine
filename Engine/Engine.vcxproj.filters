@@ -230,9 +230,6 @@
     <None Include="Input\Input.inl">
       <Filter>Source Files\Input</Filter>
     </None>
-    <None Include="DataType\Matrix.inl">
-      <Filter>Source Files\DataType</Filter>
-    </None>
     <None Include="DataType\Vector.inl">
       <Filter>Source Files\DataType</Filter>
     </None>
