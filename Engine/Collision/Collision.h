@@ -8,6 +8,16 @@ using namespace Engine;
 #define M_PI       3.14159265358979323846
 
 
+
+template<typename T>
+class AABB
+{
+public:
+	Vector3<T> center;
+	Vector3<T> extent;
+};
+
+
 struct Object
 {
 	Vector3<float>	m_Position;

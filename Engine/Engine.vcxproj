@@ -140,7 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Collision\Collision.cpp" />
-    <ClCompile Include="DataType\DataType.cpp" />
+    <ClCompile Include="DataType\GameObject.cpp" />
     <ClCompile Include="DataType\Matrix.cpp" />
     <ClCompile Include="DataType\Util.cpp" />
     <ClCompile Include="DataType\Vector.cpp" />
@@ -165,6 +165,7 @@
   <ItemGroup>
     <ClInclude Include="Collision\Collision.h" />
     <ClInclude Include="DataType\DataType.h" />
+    <ClInclude Include="DataType\GameObject.h" />
     <ClInclude Include="DataType\Matrix.h" />
     <ClInclude Include="DataType\Util.h" />
     <ClInclude Include="DataType\Vector.h" />
@@ -198,7 +199,6 @@
     <ClInclude Include="Timer\Timer.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="DataType\DataType.inl" />
     <None Include="DataType\Matrix.inl" />
     <None Include="DataType\Util.inl" />
     <None Include="DataType\Vector.inl" />

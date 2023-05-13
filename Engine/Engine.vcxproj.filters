@@ -49,9 +49,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DataType\DataType.cpp">
-      <Filter>Source Files\DataType</Filter>
-    </ClCompile>
     <ClCompile Include="Physics\Physics.cpp">
       <Filter>Source Files\Physics</Filter>
     </ClCompile>
@@ -114,6 +111,9 @@
     </ClCompile>
     <ClCompile Include="Collision\Collision.cpp">
       <Filter>Source Files\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="DataType\GameObject.cpp">
+      <Filter>Source Files\DataType</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -216,6 +216,9 @@
     <ClInclude Include="Mathd\Mathd.h">
       <Filter>Source Files\Mathd</Filter>
     </ClInclude>
+    <ClInclude Include="DataType\GameObject.h">
+      <Filter>Source Files\DataType</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Physics\Physics.inl">
@@ -226,9 +229,6 @@
     </None>
     <None Include="Input\Input.inl">
       <Filter>Source Files\Input</Filter>
-    </None>
-    <None Include="DataType\DataType.inl">
-      <Filter>Source Files\DataType</Filter>
     </None>
     <None Include="DataType\Matrix.inl">
       <Filter>Source Files\DataType</Filter>
