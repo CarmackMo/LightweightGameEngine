@@ -194,6 +194,4 @@ public:
 	void UnitTest();
 };
 
-#include "Matrix.inl"
-
 }
