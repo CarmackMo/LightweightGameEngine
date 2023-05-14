@@ -1,6 +1,6 @@
 #pragma once
-#include <./Math/Vector.h>
-#include <Util.h>
+#include "./Math/Vector.h"
+#include "./Utility/SharePtrs.h"
 
 
 namespace Engine
@@ -21,4 +21,4 @@ public:
 	inline static SmartPtr<GameObject> Create(const string& name, const Vector2<double>& position = Vector2<double>::Zero);
 };
 
-}
+}//Namespace Engine

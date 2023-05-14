@@ -124,6 +124,12 @@
     <ClCompile Include="DataType\Engine\GameObject.cpp">
       <Filter>Source Files\DataType\Engine</Filter>
     </ClCompile>
+    <ClCompile Include="DataType\Utility\SharePtrs.cpp">
+      <Filter>Source Files\DataType\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="DataType\Utility\Singleton.cpp">
+      <Filter>Source Files\DataType\Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataType\DataType.h">
@@ -227,6 +233,12 @@
     </ClInclude>
     <ClInclude Include="DataType\Engine\GameObject.h">
       <Filter>Source Files\DataType\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="DataType\Utility\SharePtrs.h">
+      <Filter>Source Files\DataType\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="DataType\Utility\Singleton.h">
+      <Filter>Source Files\DataType\Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

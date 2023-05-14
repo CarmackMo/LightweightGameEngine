@@ -144,6 +144,8 @@
     <ClCompile Include="DataType\Math\Matrix.cpp" />
     <ClCompile Include="DataType\Math\Vector.cpp" />
     <ClCompile Include="DataType\Util.cpp" />
+    <ClCompile Include="DataType\Utility\SharePtrs.cpp" />
+    <ClCompile Include="DataType\Utility\Singleton.cpp" />
     <ClCompile Include="Debugger\Debugger.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
     <ClCompile Include="Engine\EngineTest.cpp" />
@@ -169,6 +171,8 @@
     <ClInclude Include="DataType\Math\Matrix.h" />
     <ClInclude Include="DataType\Math\Vector.h" />
     <ClInclude Include="DataType\Util.h" />
+    <ClInclude Include="DataType\Utility\SharePtrs.h" />
+    <ClInclude Include="DataType\Utility\Singleton.h" />
     <ClInclude Include="Debugger\Debugger.h" />
     <ClInclude Include="Engine\Dependency.h" />
     <ClInclude Include="Engine\Engine.h" />
