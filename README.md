@@ -29,8 +29,29 @@ The game engine implements object instances monitor algorithm and runtime garbag
 * [Vector](#vector)
 
 <a id="cc"></a>
+
 ## C/C++
 
 
 <a id="vector"></a>
-Vector
+
+## Vector.h
+
+This file contains the definitions and implementations of data structures known as "vector" which are commonly used in linear algebra calculations.
+
++ ### Features
+    - A vector is implemented by a one-dimensional array, which can be considered as a 1xN row vector or an Nx1 column vector. The current implementation supports three types of vector classes: `Vector2`, `Vector3`, and `Vector4`, representing vectors with size of 2, 3, and 4, respectively.
+    - Each vector class is implemented as a template class that only accepts numerical types (e.g., `int`, `float`, `double`, `uint8`, `uint16`...) as template arguments.
+    - Additionally, each vector class provides convenient shortcuts for special vector instances, such as the `Zero` vector (0,0,0), the `Up` vector (0,0,1), the `Down` vector (0,0,-1), and so on. These instances are implemented as static constant instances. Since the compiler cannot infer the type of a static instance at compile time, these instances need to be explicitly implemented in advance. The current implementation supports `int`, `short`, `long`, `float`, and `double` types for each static instance.
+
++ ### Local APIs
+    Each vector class offers a comprehensive set of functions and operators that are commonly used in standard calculations, which includes:
+    - Type conversion
+    - Numerical operators
+    - Assignment operators
+    - Comparison operators
+    - Indexing operators
+
++ ### Global APIs
+    Furthermore, current implementation also provides global functions specifically designed for vector calculations:
+

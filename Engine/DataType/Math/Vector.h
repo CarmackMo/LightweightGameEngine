@@ -74,7 +74,7 @@ public:
 	inline friend Vector2<T> operator* (T left, Vector2<T> right) { return Vector2<T>(left * right[0], left * right[1]); }
 
 	/* Static constant instances must be implemented explicitly for each 
-	 * template type. Since complier cannot automatically detemine the type 
+	 * template type. Since compiler cannot automatically determine the type 
 	 * of each static instance */
 
 	/* @brief Vector2(0, 0) */
