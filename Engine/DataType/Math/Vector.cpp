@@ -44,6 +44,46 @@ inline Vector2<U> Vector2<T>::ConvertToType()
 }
 
 
+template <typename T>
+inline T Vector2<T>::Length() const
+{
+	float lengthSq = static_cast<float>(val[0] * val[0] + val[1] * val[1]);
+	return static_cast<T>(sqrt(lengthSq));
+}
+
+
+template <typename T>
+inline void Vector2<T>::Norm()
+{
+	float lengthSq = static_cast<float>(val[0] * val[0] + val[1] * val[1]);
+	float length = sqrt(lengthSq);
+
+	if (!IsZero(length))
+	{
+		float inverse = 1.0 / length;
+		val[0] = static_cast<T>(val[0] * inverse);
+		val[1] = static_cast<T>(val[1] * inverse);
+	}
+}
+
+
+template <typename T>
+inline Vector2<T> Vector2<T>::GetNorm() const
+{
+	float lengthSq = static_cast<float>(val[0] * val[0] + val[1] * val[1]);
+	float length = sqrt(lengthSq);
+
+	if (IsZero(length))
+		return Zero;
+	else
+	{
+		float inverse = 1.0f / length;
+		Vector2<float> res = Vector2<float>(val[0] * inverse, val[1] * inverse);
+		return res.CovertToType<T>();
+	}
+}
+
+
 /* Self modifying operators */
 template <typename T>
 inline void Vector2<T>::operator+= (const Vector2<T>& other)
@@ -277,22 +317,39 @@ inline Vector3<T> Vector3<T>::Cross(const Vector3<T>& other) const
 template <typename T>
 inline T Vector3<T>::Length() const
 {
-	double lengthSq = static_cast<double>(val[0] * val[0] + val[1] * val[1] + val[2] * val[2]);
+	float lengthSq = static_cast<float>(val[0] * val[0] + val[1] * val[1] + val[2] * val[2]);
 	return static_cast<T>(sqrt(lengthSq));
+}
+
+
+template <typename T>
+inline void Vector3<T>::Norm()
+{
+	float lengthSq = static_cast<float>(val[0] * val[0] + val[1] * val[1] + val[2] * val[2]);
+	float length = sqrt(lengthSq);
+
+	if (!IsZero(length))
+	{
+		float inverse = 1.0 / length;
+		val[0] = static_cast<T>(val[0] * inverse);
+		val[1] = static_cast<T>(val[1] * inverse);
+		val[2] = static_cast<T>(val[2] * inverse);
+	}
 }
 
 
 template <typename T>
 inline Vector3<T> Vector3<T>::GetNorm() const
 {
-	T length = Length();
+	float lengthSq = static_cast<float>(val[0] * val[0] + val[1] * val[1] + val[2] * val[2]);
+	float length = sqrt(lengthSq);
 
-	if (IsZero(static_cast<float>(length)))
+	if (IsZero(length))
 		return Zero;
 	else
 	{
-		double inv = 1.0 / length;
-		Vector3<double> res = Vector3<double>(val[0] * inv, val[1] * inv, val[2] * inv);
+		float inverse = 1.0f / length;
+		Vector3<float> res = Vector3<float>(val[0] * inverse, val[1] * inverse, val[2] * inverse);
 		return res.CovertToType<T>();
 	}
 }

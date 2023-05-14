@@ -35,6 +35,17 @@ public:
 	template<typename U>
 	inline Vector2<U> ConvertToType();
 
+	/* Calcualte the length of this vector. Noted that calculate the length of a vector
+	 * with type "int" might have incorrect result. Because the square root result might
+	 * be a float point number.*/
+	inline T Length() const;
+
+	/* Normalize this instance. Noted that normalize a vector with type "int" might
+	 * have incorrect result. Because the division result might be a float point number.*/
+	inline void Norm();
+	/* Get the normalization vector of this instance, but don't modify this instance */
+	inline Vector2<T> GetNorm() const;
+
 	/* Self modifying operators */
 	inline void operator+= (const Vector2<T>& other);
 	inline void operator-= (const Vector2<T>& other);
@@ -113,9 +124,16 @@ public:
 
 	inline T Dot(const Vector3<T>& other) const;
 	inline Vector3<T> Cross(const Vector3<T>& other) const;
+
+	/* Calcualte the length of this vector. Noted that calculate the length of a vector 
+	 * with type "int" might have incorrect result. Because the square root result might 
+	 * be a float point number.*/
 	inline T Length() const;
 	
-	/* Get the normalization vector of this instance */
+	/* Normalize this instance. Noted that normalize a vector with type "int" might 
+	 * have incorrect result. Because the division result might be a float point number.*/
+	inline void Norm();
+	/* Get the normalization vector of this instance, but don't modify this instance */
 	inline Vector3<T> GetNorm() const;
 
 	/* Self modifying operators */
@@ -206,6 +224,25 @@ public:
 	inline Vector4<T> operator* (T num) const;
 
 };
+
+
+
+/* TODO */
+template <typename T>
+inline T Dot(const Vector2<T>& lhs, const Vector2<T>& rhs);
+
+template <typename T>
+inline T Dot(const Vector3<T>& lhs, const Vector3<T>& rhs);
+
+template <typename T>
+inline T Distance(const Vector2<T>& lhs, const Vector2<T>& rhs);
+
+template <typename T>
+inline T Distance(const Vector3<T>& lhs, const Vector3<T>& rhs);
+
+template <typename T>
+inline Vector3<T> Cross(const Vector3<T>& lhs, const Vector3<T>& rhs);
+
 
 
 }

@@ -143,7 +143,6 @@
     <ClCompile Include="DataType\Engine\GameObject.cpp" />
     <ClCompile Include="DataType\Math\Matrix.cpp" />
     <ClCompile Include="DataType\Math\Vector.cpp" />
-    <ClCompile Include="DataType\Util.cpp" />
     <ClCompile Include="DataType\Utility\SharePtrs.cpp" />
     <ClCompile Include="DataType\Utility\Singleton.cpp" />
     <ClCompile Include="Debugger\Debugger.cpp" />
@@ -170,7 +169,6 @@
     <ClInclude Include="DataType\Engine\GameObject.h" />
     <ClInclude Include="DataType\Math\Matrix.h" />
     <ClInclude Include="DataType\Math\Vector.h" />
-    <ClInclude Include="DataType\Util.h" />
     <ClInclude Include="DataType\Utility\SharePtrs.h" />
     <ClInclude Include="DataType\Utility\Singleton.h" />
     <ClInclude Include="Debugger\Debugger.h" />
@@ -203,7 +201,6 @@
     <ClInclude Include="Timer\Timer.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="DataType\Util.inl" />
     <None Include="Input\Input.inl" />
     <None Include="JobSys\HashedString.inl" />
     <None Include="JobSys\JobSys.inl" />

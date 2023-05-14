@@ -76,9 +76,6 @@
     <ClCompile Include="Debugger\Debugger.cpp">
       <Filter>Source Files\Debugger</Filter>
     </ClCompile>
-    <ClCompile Include="DataType\Util.cpp">
-      <Filter>Source Files\DataType</Filter>
-    </ClCompile>
     <ClCompile Include="JSON\source\json_reader.cpp">
       <Filter>Source Files\JSON\source</Filter>
     </ClCompile>
@@ -152,9 +149,6 @@
     </ClInclude>
     <ClInclude Include="Debugger\Debugger.h">
       <Filter>Source Files\Debugger</Filter>
-    </ClInclude>
-    <ClInclude Include="DataType\Util.h">
-      <Filter>Source Files\DataType</Filter>
     </ClInclude>
     <ClInclude Include="JSON\header\json\allocator.h">
       <Filter>Source Files\JSON\header</Filter>
@@ -250,9 +244,6 @@
     </None>
     <None Include="Input\Input.inl">
       <Filter>Source Files\Input</Filter>
-    </None>
-    <None Include="DataType\Util.inl">
-      <Filter>Source Files\DataType</Filter>
     </None>
     <None Include="JSON\source\json_valueiterator.inl">
       <Filter>Source Files\JSON\source</Filter>
