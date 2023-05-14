@@ -33,18 +33,20 @@ public:
 
 	/* Convert this instance to a new Vector2 with type "U" */
 	template<typename U>
-	inline Vector2<U> ConvertToType();
+	inline Vector2<U> ConvertTo();
 
-	/* Calcualte the length of this vector. Noted that calculate the length of a vector
-	 * with type "int" might have incorrect result. Because the square root result might
-	 * be a float point number.*/
-	inline T Length() const;
+	/* Calcualte the length of this instance. Return the result in "float" type by 
+	 * default. (Since I was not able to use explicit template specialization to 
+	 * specify return type for Vector<double> instances, I have to unify return 
+	 * type to be "float" to prevent data loss)*/
+	inline float Length() const;
 
-	/* Normalize this instance. Noted that normalize a vector with type "int" might
+
+	/* Normalize this instance. Noted that normalize a vector with integer type might
 	 * have incorrect result. Because the division result might be a float point number.*/
 	inline void Norm();
 	/* Get the normalization vector of this instance, but don't modify this instance */
-	inline Vector2<T> GetNorm() const;
+	inline Vector2<float> GetNorm() const;
 
 	/* Self modifying operators */
 	inline void operator+= (const Vector2<T>& other);
@@ -120,21 +122,22 @@ public:
 
 	/* Convert a vector3 with type "U" to type "T" */
 	template <typename U>
-	inline Vector3<U> CovertToType();
+	inline Vector3<U> CovertTo();
 
 	inline T Dot(const Vector3<T>& other) const;
 	inline Vector3<T> Cross(const Vector3<T>& other) const;
 
-	/* Calcualte the length of this vector. Noted that calculate the length of a vector 
-	 * with type "int" might have incorrect result. Because the square root result might 
-	 * be a float point number.*/
-	inline T Length() const;
+	/* Calcualte the length of this instance. Return the result in "float" type by
+	 * default. (Since I was not able to use explicit template specialization to
+	 * specify return type for Vector<double> instances, I have to unify return
+	 * type to be "float" to prevent data loss)*/
+	inline float Length() const;
 	
 	/* Normalize this instance. Noted that normalize a vector with type "int" might 
 	 * have incorrect result. Because the division result might be a float point number.*/
 	inline void Norm();
 	/* Get the normalization vector of this instance, but don't modify this instance */
-	inline Vector3<T> GetNorm() const;
+	inline Vector3<float> GetNorm() const;
 
 	/* Self modifying operators */
 	inline void operator+= (const Vector3<T>& other);
@@ -229,19 +232,59 @@ public:
 
 /* TODO */
 template <typename T>
-inline T Dot(const Vector2<T>& lhs, const Vector2<T>& rhs);
+inline T Dot(const Vector2<T>& lhs, const Vector2<T>& rhs)
+{
+	return lhs[0] * rhs[0] + lhs[1] * rhs[1];
+}
+
 
 template <typename T>
-inline T Dot(const Vector3<T>& lhs, const Vector3<T>& rhs);
+inline T Dot(const Vector3<T>& lhs, const Vector3<T>& rhs)
+{
+	return lhs[0] * rhs[0] + lhs[1] * rhs[1] + lhs[2] * rhs[2];
+}
+
 
 template <typename T>
-inline T Distance(const Vector2<T>& lhs, const Vector2<T>& rhs);
+inline float Distance(const Vector2<T>& lhs, const Vector2<T>& rhs)
+{
+	float sq0 = static_cast<float>((lhs[0] - rhs[0]) * (lhs[0] - rhs[0]));
+	float sq1 = static_cast<float>((lhs[1] - rhs[1]) * (lhs[1] - rhs[1]));
+	return sqrt(sq0 + sq1);
+}
+
+
+inline double Distance(const Vector2<double>& lhs, const Vector2<int>& rhs)
+{
+	double sq0 = static_cast<double>((lhs[0] - rhs[0]) * (lhs[0] - rhs[0]));
+	double sq1 = static_cast<double>((lhs[1] - rhs[1]) * (lhs[1] - rhs[1]));
+	return sqrt(sq0 + sq1);
+}
+
 
 template <typename T>
 inline T Distance(const Vector3<T>& lhs, const Vector3<T>& rhs);
 
+
 template <typename T>
 inline Vector3<T> Cross(const Vector3<T>& lhs, const Vector3<T>& rhs);
+
+
+
+
+
+#if defined(_DEBUG)
+
+inline void Vector2UnitTest()
+{
+	Vector2<double> temp0 = Vector2<double>(4, 3);
+	Vector2<float> temp1 = Vector2<float>(6, 8);
+	Vector2<int> temp3 = Vector2<int>(2, 8);
+
+
+}
+#endif
+
 
 
 

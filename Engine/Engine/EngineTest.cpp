@@ -70,6 +70,11 @@ int WINAPI wWinMain(
     object = engine.gameObjectList[0];
     gravity = Vector2<double>::Down;
 
+#if defined(_DEBUG)
+
+    /* Vector class unit test */
+    Vector2UnitTest();
+
 
     /* Unit test for Matrix4 class  */
     Matrix4<double> m = Matrix4<double>(
@@ -119,6 +124,9 @@ int WINAPI wWinMain(
     /* Unit Test for collision detection */
     CollisionPoolCheck();
     DEBUG_PRINT(" \n\n\n ############ \n Collision detection unit test successful \n ############ \n\n\n");
+
+
+#endif // defined(_DEBUG)
 
 
 

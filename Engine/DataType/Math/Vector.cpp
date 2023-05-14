@@ -38,49 +38,42 @@ inline Vector2<T>::Vector2(const Vector2<T>& other)
 
 template <typename T>
 template <typename U>
-inline Vector2<U> Vector2<T>::ConvertToType()
+inline Vector2<U> Vector2<T>::ConvertTo()
 {
 	return Vector2<U>(static_cast<U>(val[0]), static_cast<U>(val[1]));
 }
 
 
 template <typename T>
-inline T Vector2<T>::Length() const
+inline float Vector2<T>::Length() const
 {
 	float lengthSq = static_cast<float>(val[0] * val[0] + val[1] * val[1]);
-	return static_cast<T>(sqrt(lengthSq));
+	return sqrt(lengthSq);
 }
 
 
 template <typename T>
 inline void Vector2<T>::Norm()
 {
-	float lengthSq = static_cast<float>(val[0] * val[0] + val[1] * val[1]);
-	float length = sqrt(lengthSq);
+	float len = Length();
 
-	if (!IsZero(length))
+	if (!IsZero(len))
 	{
-		float inverse = 1.0 / length;
-		val[0] = static_cast<T>(val[0] * inverse);
-		val[1] = static_cast<T>(val[1] * inverse);
+		val[0] = static_cast<T>(val[0] / len);
+		val[1] = static_cast<T>(val[1] / len);
 	}
 }
 
 
 template <typename T>
-inline Vector2<T> Vector2<T>::GetNorm() const
+inline Vector2<float> Vector2<T>::GetNorm() const
 {
-	float lengthSq = static_cast<float>(val[0] * val[0] + val[1] * val[1]);
-	float length = sqrt(lengthSq);
+	float len = Length();
 
-	if (IsZero(length))
+	if (IsZero(len))
 		return Zero;
 	else
-	{
-		float inverse = 1.0f / length;
-		Vector2<float> res = Vector2<float>(val[0] * inverse, val[1] * inverse);
-		return res.CovertToType<T>();
-	}
+		return Vector2<float>(val[0] / len, val[1] / len);
 }
 
 
@@ -288,7 +281,7 @@ inline Vector3<T>::Vector3(const Vector3<T>& other)
 
 template <typename T>
 template <typename U>
-inline Vector3<U> Vector3<T>::CovertToType()
+inline Vector3<U> Vector3<T>::CovertTo()
 {
 	return Vector3<U>(
 		static_cast<U>(val[0]),
@@ -315,43 +308,36 @@ inline Vector3<T> Vector3<T>::Cross(const Vector3<T>& other) const
 
 
 template <typename T>
-inline T Vector3<T>::Length() const
+inline float Vector3<T>::Length() const
 {
 	float lengthSq = static_cast<float>(val[0] * val[0] + val[1] * val[1] + val[2] * val[2]);
-	return static_cast<T>(sqrt(lengthSq));
+	return sqrt(lengthSq);
 }
 
 
 template <typename T>
 inline void Vector3<T>::Norm()
 {
-	float lengthSq = static_cast<float>(val[0] * val[0] + val[1] * val[1] + val[2] * val[2]);
-	float length = sqrt(lengthSq);
+	float len = Length();
 
-	if (!IsZero(length))
+	if (!IsZero(len))
 	{
-		float inverse = 1.0 / length;
-		val[0] = static_cast<T>(val[0] * inverse);
-		val[1] = static_cast<T>(val[1] * inverse);
-		val[2] = static_cast<T>(val[2] * inverse);
+		val[0] = static_cast<T>(val[0] / len);
+		val[1] = static_cast<T>(val[1] / len);
+		val[2] = static_cast<T>(val[2] / len);
 	}
 }
 
 
 template <typename T>
-inline Vector3<T> Vector3<T>::GetNorm() const
+inline Vector3<float> Vector3<T>::GetNorm() const
 {
-	float lengthSq = static_cast<float>(val[0] * val[0] + val[1] * val[1] + val[2] * val[2]);
-	float length = sqrt(lengthSq);
+	float len = Length();
 
-	if (IsZero(length))
+	if (IsZero(len))
 		return Zero;
 	else
-	{
-		float inverse = 1.0f / length;
-		Vector3<float> res = Vector3<float>(val[0] * inverse, val[1] * inverse, val[2] * inverse);
-		return res.CovertToType<T>();
-	}
+		return Vector3<float>(val[0] / len, val[1] / len, val[2] / len);
 }
 
 
@@ -613,5 +599,8 @@ inline Vector4<T> Vector4<T>::operator* (T num) const
 
 
 #pragma endregion
+
+
+
 
 
