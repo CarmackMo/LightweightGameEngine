@@ -41,7 +41,6 @@ public:
 	 * type to be "float" to prevent data loss)*/
 	inline float Length() const;
 
-
 	/* Normalize this instance. Noted that normalize a vector with integer type might
 	 * have incorrect result. Because the division result might be a float point number.*/
 	inline void Norm();
