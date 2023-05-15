@@ -178,16 +178,16 @@ inline Vector2<T>& Vector2<T>::operator= (const Vector2<T>& other)
 template <typename T>
 inline bool Vector2<T>::operator== (const Vector2<T>& other) const
 {
-	return IsEqual(static_cast<float>(val[0]), static_cast<float>(other[0])) && 
-		   IsEqual(static_cast<float>(val[1]), static_cast<float>(other[1]));
+	return IsEqual(static_cast<float>(val[0]), static_cast<float>(other[0])) == true && 
+		   IsEqual(static_cast<float>(val[1]), static_cast<float>(other[1])) == true;
 }
 
 
 template <typename T>
 inline bool Vector2<T>::operator!= (const Vector2<T>& other) const
 {
-	return !IsEqual(static_cast<float>(val[0]), static_cast<float>(other[0])) && 
-		   !IsEqual(static_cast<float>(val[1]), static_cast<float>(other[1]));
+	return IsEqual(static_cast<float>(val[0]), static_cast<float>(other[0])) == false ||
+		   IsEqual(static_cast<float>(val[1]), static_cast<float>(other[1])) == false;
 }
 
 
@@ -285,7 +285,7 @@ inline Vector3<T>::Vector3(const Vector3<T>& other)
 
 template <typename T>
 template <typename U>
-inline Vector3<U> Vector3<T>::CovertTo()
+inline Vector3<U> Vector3<T>::ConvertTo()
 {
 	return Vector3<U>(
 		static_cast<U>(val[0]),
@@ -447,18 +447,18 @@ inline Vector3<T>& Vector3<T>::operator= (const Vector3<T>& other)
 template <typename T>
 inline bool Vector3<T>::operator== (const Vector3<T>& other) const
 {
-	return IsEqual(static_cast<float>(val[0]), static_cast<float>(other[0])) &&
-		   IsEqual(static_cast<float>(val[1]), static_cast<float>(other[1])) &&
-		   IsEqual(static_cast<float>(val[2]), static_cast<float>(other[2]));
+	return IsEqual(static_cast<float>(val[0]), static_cast<float>(other[0])) == true &&
+		   IsEqual(static_cast<float>(val[1]), static_cast<float>(other[1])) == true &&
+		   IsEqual(static_cast<float>(val[2]), static_cast<float>(other[2])) == true;
 }
 
 
 template <typename T>
 inline bool Vector3<T>::operator!= (const Vector3<T>& other) const
 {
-	return !IsEqual(static_cast<float>(val[0]), static_cast<float>(other[0])) &&
-		   !IsEqual(static_cast<float>(val[1]), static_cast<float>(other[1])) &&
-		   !IsEqual(static_cast<float>(val[2]), static_cast<float>(other[2]));
+	return IsEqual(static_cast<float>(val[0]), static_cast<float>(other[0])) == false ||
+		   IsEqual(static_cast<float>(val[1]), static_cast<float>(other[1])) == false ||
+		   IsEqual(static_cast<float>(val[2]), static_cast<float>(other[2])) == false;
 }
 
 

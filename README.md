@@ -53,7 +53,7 @@ This file contains the definitions and implementations of data structures known 
     There is a remark for the `Length()`, `Norm()`, and `GetNorm()` method. For vector instances with integer types, using its original type to perform intermeida calculate will cause data loss. Since the result of division and square root might ba a non-integer number. In this case, on solution is to unify the return type to be `float` for integer type instance and `Vector<float>` instance, and let `Vector<double>` instances keep the same return type. However, the attempt to specify a different return type for `Vector<double>` instances using explicit template specialization was failed. In current implementation, all types of instances are using `float` as the only return type.
 
 + ### Global APIs
-    Furthermore, current implementation also provides global functions specifically designed for vector calculations:
+    Furthermore, current implementation also provides global functions specifically designed for vector calculations. Noted these global functions are defined in the namespace of `Vector::`.
     - **`Dot()`**
     - **`Cross()`**
     - **`Distance()`**

@@ -44,9 +44,6 @@
     <Filter Include="Source Files\Collision">
       <UniqueIdentifier>{6cf846ed-10c5-4c8b-921a-1907b6f6bdf4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Mathd">
-      <UniqueIdentifier>{e7b5024e-4710-489b-b545-45df73d7c495}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\DataType\Math">
       <UniqueIdentifier>{68d6c5f8-2a46-4382-82a4-349d499d7322}</UniqueIdentifier>
     </Filter>
@@ -55,6 +52,9 @@
     </Filter>
     <Filter Include="Source Files\DataType\Utility">
       <UniqueIdentifier>{2e49cf5c-bbf1-4db7-8394-8cf26c30b76a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Mathf">
+      <UniqueIdentifier>{e7b5024e-4710-489b-b545-45df73d7c495}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -216,9 +216,6 @@
     <ClInclude Include="Collision\Collision.h">
       <Filter>Source Files\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="Mathd\Mathd.h">
-      <Filter>Source Files\Mathd</Filter>
-    </ClInclude>
     <ClInclude Include="DataType\Math\Matrix.h">
       <Filter>Source Files\DataType\Math</Filter>
     </ClInclude>
@@ -233,6 +230,9 @@
     </ClInclude>
     <ClInclude Include="DataType\Utility\Singleton.h">
       <Filter>Source Files\DataType\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Mathf\Mathf.h">
+      <Filter>Source Files\Mathf</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

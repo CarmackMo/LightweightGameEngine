@@ -1,6 +1,6 @@
 #pragma once
 #include "Dependency.h"
-#include "Mathd.h"
+#include "Mathf.h"
 
 
 using namespace std;
@@ -121,7 +121,7 @@ public:
 
 	/* Convert a vector3 with type "U" to type "T" */
 	template <typename U>
-	inline Vector3<U> CovertTo();
+	inline Vector3<U> ConvertTo();
 
 	inline T Dot(const Vector3<T>& other) const;
 	inline Vector3<T> Cross(const Vector3<T>& other) const;
@@ -284,8 +284,6 @@ inline Vector3<T> Cross(const Vector3<T>& lhs, const Vector3<T>& rhs)
 		lhs[0] * rhs[1] - lhs[1] * rhs[0]);
 }
 
-}//Namespace Vector
-
 
 /********************************* Unit tests **************************************/
 
@@ -354,9 +352,8 @@ inline void Vector2UnitTest()
 	assert(AreEqual_Eps(temp1[0], 8.8f, 0.00001f) && AreEqual_Eps(temp1[1], 11.0f, 0.00001f));
 
 	assert(temp1 == Vector2<float>(8.8f, 11.0f));
-	assert(temp1 != Vector2<float>(0.0f, 0.0f));
+	assert(temp1 != Vector2<float>(8.8f, 0.0f));
 	assert(-temp1 == Vector2<float>(-8.8f, -11.0f));
-
 
 	temp0 = Vector2<int>(5, 6);
 	temp1 = Vector2<float>(5.5f, 6.6f);
@@ -365,6 +362,84 @@ inline void Vector2UnitTest()
 	assert(AreEqual_Eps(Vector::Distance(case1, temp1), 3.47850f, 0.00001f));
 }
 
+
+inline void Vector3UnitTest()
+{
+	Vector3<int> case0 = Vector3<int>(3, 4, 5);
+	Vector3<float> case1 = Vector3<float>(3.3f, 4.4f, 5.5f);
+	Vector3<double> case2 = Vector3<double>(6.6, 8.8, 9.9);
+
+
+	Vector3<int> temp0;
+	Vector3<float> temp1;
+	Vector3<double> temp2;
+	float val0;
+
+	temp0 = case1.ConvertTo<int>();
+	assert(temp0[0] == 3 && temp0[1] == 4 && temp0[2] == 5);
+
+	val0 = case0.Length();
+	assert(IsEqual(val0, 7.071067811f));
+	val0 = case1.Length();
+	assert(IsEqual(val0, 7.7781745f));
+	val0 = case2.Length();
+	assert(IsEqual(val0, 14.7989864517f));
+
+	temp0 = case0;
+	temp0.Norm();
+	assert(temp0[0] == 0 && temp0[1] == 0, temp0[2] == 0);
+	temp1 = case1;
+	temp1.Norm();
+	assert(IsEqual(temp1[0], 0.42426406f) && IsEqual(temp1[1], 0.565685424f) && IsEqual(temp1[2], 0.70710678f));
+
+	temp1 = case0.GetNorm();
+	assert(IsEqual(temp1[0], 0.42426406f) && IsEqual(temp1[1], 0.565685424f) && IsEqual(temp1[2], 0.70710678f));
+	temp1 = case2.GetNorm();
+	assert(IsEqual(temp1[0], 0.44597648f) && IsEqual(temp1[1], 0.594635316f) && IsEqual(temp1[2], 0.66896473f));
+
+	temp1 = case1;
+	temp1 += Vector3<float>(6.6f, 6.6f, 4.4f);
+	assert(IsEqual(temp1[0], 9.9f) && IsEqual(temp1[1], 11.0f), IsEqual(temp1[2], 9.9f));
+	temp1 -= Vector3<float>(1.1f, 0.0f, 1.1f);
+	assert(IsEqual(temp1[0], 8.8f) && IsEqual(temp1[1], 11.0f), IsEqual(temp1[2], 8.8f));
+	temp1 *= Vector3<float>(0.5f, 0.5f, 0.5f);
+	assert(IsEqual(temp1[0], 4.4f) && IsEqual(temp1[1], 5.5f), IsEqual(temp1[2], 4.4f));
+	temp1 *= 2.0f;
+	assert(IsEqual(temp1[0], 8.8f) && IsEqual(temp1[1], 11.0f) && IsEqual(temp1[2], 8.8f));
+	temp1 /= Vector3<float>(2.0f, 2.0f, 2.0f);
+	assert(IsEqual(temp1[0], 4.4f) && IsEqual(temp1[1], 5.5f) && IsEqual(temp1[2], 4.4f));
+	temp1 /= 0.5f;
+	assert(IsEqual(temp1[0], 8.8f) && IsEqual(temp1[1], 11.0f) && IsEqual(temp1[0], 8.8f));
+
+	temp1 = case1;
+	temp1 = temp1 + Vector3<float>(6.6f, 6.6f, 4.4f);
+	assert(IsEqual(temp1[0], 9.9f) && IsEqual(temp1[1], 11.0f), IsEqual(temp1[2], 9.9f));
+	temp1 = temp1 - Vector3<float>(1.1f, 0.0f, 1.1f);
+	assert(IsEqual(temp1[0], 8.8f) && IsEqual(temp1[1], 11.0f), IsEqual(temp1[2], 8.8f));
+	temp1 = temp1 * Vector3<float>(0.5f, 0.5f, 0.5f);
+	assert(IsEqual(temp1[0], 4.4f) && IsEqual(temp1[1], 5.5f), IsEqual(temp1[2], 4.4f));
+	temp1 = temp1 * 2.0f;
+	assert(IsEqual(temp1[0], 8.8f) && IsEqual(temp1[1], 11.0f) && IsEqual(temp1[2], 8.8f));
+	temp1 = temp1 / Vector3<float>(2.0f, 2.0f, 2.0f);
+	assert(IsEqual(temp1[0], 4.4f) && IsEqual(temp1[1], 5.5f) && IsEqual(temp1[2], 4.4f));
+	temp1 = temp1 / 0.5f;
+	assert(IsEqual(temp1[0], 8.8f) && IsEqual(temp1[1], 11.0f) && IsEqual(temp1[0], 8.8f));
+
+	assert(temp1 == Vector3<float>(8.8f, 11.0f, 8.8f));
+	assert(temp1 != Vector3<float>(0.0f, 11.0f, 8.8f));
+	assert(-temp1 == Vector3<float>(-8.8f, -11.0f, -8.8f));
+
+	temp0 = Vector3<int>(5, 6, 7);
+	temp1 = Vector3<float>(5.5f, 6.6f, 7.7f);
+	assert(Vector::Dot(case0, temp0) == 74);
+	assert(IsEqual(Vector::Distance(case0, temp0), 3.464102f));
+	assert(IsEqual(Vector::Distance(case1, temp1), 3.810512f, 0.00001f));
+}
+
 #endif
 
+
+
+
+}//Namespace Vector
 }//Namespace Engine

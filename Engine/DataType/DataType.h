@@ -1,3 +1,8 @@
+/*****************************************************************************
+*	"DataType.h" serves as the entry point for fundamental data types and	 *
+*	data structures of the game engine. To use any data types, just simplely *
+*	include this header file to your code									 *									
+*****************************************************************************/
 #pragma once
 #include "Dependency.h"
 

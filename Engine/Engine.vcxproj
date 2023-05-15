@@ -110,7 +110,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Engine\Input;$(SolutionDir)Engine\Debugger;$(SolutionDir)Engine\DataType;$(SolutionDir)Engine\Timer;$(SolutionDir)Engine\Engine;$(SolutionDir)Engine\Physics;$(SolutionDir)Engine\FileSys;$(SolutionDir)Engine\JobSys;$(SolutionDir)Engine\Sync;$(SolutionDir)Engine\Mathd;$(SolutionDir)Engine\Collision;$(SolutionDir)Engine\JSON\header;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Engine\Input;$(SolutionDir)Engine\Debugger;$(SolutionDir)Engine\DataType;$(SolutionDir)Engine\Timer;$(SolutionDir)Engine\Engine;$(SolutionDir)Engine\Physics;$(SolutionDir)Engine\FileSys;$(SolutionDir)Engine\JobSys;$(SolutionDir)Engine\Sync;$(SolutionDir)Engine\Mathf;$(SolutionDir)Engine\Collision;$(SolutionDir)Engine\JSON\header;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -192,7 +192,7 @@
     <ClInclude Include="JSON\header\json\version.h" />
     <ClInclude Include="JSON\header\json\writer.h" />
     <ClInclude Include="JSON\source\json_tool.h" />
-    <ClInclude Include="Mathd\Mathd.h" />
+    <ClInclude Include="Mathf\Mathf.h" />
     <ClInclude Include="Physics\Physics.h" />
     <ClInclude Include="Sync\AtomicOperations.h" />
     <ClInclude Include="Sync\Event.h" />

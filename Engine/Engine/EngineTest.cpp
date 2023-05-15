@@ -73,7 +73,9 @@ int WINAPI wWinMain(
 #if defined(_DEBUG)
 
     /* Vector class unit test */
-    Vector2UnitTest();
+    Vector::Vector2UnitTest();
+    Vector::Vector3UnitTest();
+    
 
 
     /* Unit test for Matrix4 class  */
