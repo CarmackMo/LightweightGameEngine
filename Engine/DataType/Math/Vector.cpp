@@ -71,9 +71,11 @@ inline Vector2<float> Vector2<T>::GetNorm() const
 	float len = Length();
 
 	if (IsZero(len))
-		return Zero;
+		return Vector2<float>::Zero;
 	else
-		return Vector2<float>(val[0] / len, val[1] / len);
+		return Vector2<float>(
+			static_cast<float>(val[0] / len), 
+			static_cast<float>(val[1] / len));
 }
 
 
@@ -176,14 +178,16 @@ inline Vector2<T>& Vector2<T>::operator= (const Vector2<T>& other)
 template <typename T>
 inline bool Vector2<T>::operator== (const Vector2<T>& other) const
 {
-	return (val[0] == other[0]) && (val[1] == other[1]);
+	return IsEqual(static_cast<float>(val[0]), static_cast<float>(other[0])) && 
+		   IsEqual(static_cast<float>(val[1]), static_cast<float>(other[1]));
 }
 
 
 template <typename T>
 inline bool Vector2<T>::operator!= (const Vector2<T>& other) const
 {
-	return (val[0] != other[0]) || (val[1] != other[1]);
+	return !IsEqual(static_cast<float>(val[0]), static_cast<float>(other[0])) && 
+		   !IsEqual(static_cast<float>(val[1]), static_cast<float>(other[1]));
 }
 
 
@@ -335,9 +339,12 @@ inline Vector3<float> Vector3<T>::GetNorm() const
 	float len = Length();
 
 	if (IsZero(len))
-		return Zero;
+		return Vector3<float>::Zero;
 	else
-		return Vector3<float>(val[0] / len, val[1] / len, val[2] / len);
+		return Vector3<float>(
+			static_cast<float>(val[0] / len), 
+			static_cast<float>(val[1] / len),
+			static_cast<float>(val[2] / len));
 }
 
 
@@ -440,14 +447,18 @@ inline Vector3<T>& Vector3<T>::operator= (const Vector3<T>& other)
 template <typename T>
 inline bool Vector3<T>::operator== (const Vector3<T>& other) const
 {
-	return (val[0] == other[0]) && (val[1] == other[1]) && (val[2] == other[2]);
+	return IsEqual(static_cast<float>(val[0]), static_cast<float>(other[0])) &&
+		   IsEqual(static_cast<float>(val[1]), static_cast<float>(other[1])) &&
+		   IsEqual(static_cast<float>(val[2]), static_cast<float>(other[2]));
 }
 
 
 template <typename T>
 inline bool Vector3<T>::operator!= (const Vector3<T>& other) const
 {
-	return (val[0] != other[0]) || (val[1] != other[1]) || (val[2] != other[2]);
+	return !IsEqual(static_cast<float>(val[0]), static_cast<float>(other[0])) &&
+		   !IsEqual(static_cast<float>(val[1]), static_cast<float>(other[1])) &&
+		   !IsEqual(static_cast<float>(val[2]), static_cast<float>(other[2]));
 }
 
 
