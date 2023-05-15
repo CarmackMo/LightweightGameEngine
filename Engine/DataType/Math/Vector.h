@@ -235,6 +235,9 @@ public:
  * declaration and definition must be visible to the compiler at the point of instantiation. 
  * As a result, template functions are typically declared and implemented in the same file. */
 
+namespace Vector
+{
+
 template <typename T>
 inline T Dot(const Vector2<T>& lhs, const Vector2<T>& rhs)
 {
@@ -250,9 +253,9 @@ inline T Dot(const Vector3<T>& lhs, const Vector3<T>& rhs)
 
 
 /* Calcualte the distance between two vector. Return the result in "float" type by
- * default. (Since I was not able to use explicit template specialization to
- * specify return type for Vector<double>, I have to unify return type to be "float" 
- * to prevent data loss)*/
+	* default. (Since I was not able to use explicit template specialization to
+	* specify return type for Vector<double>, I have to unify return type to be "float"
+	* to prevent data loss)*/
 template <typename T>
 inline float Distance(const Vector2<T>& lhs, const Vector2<T>& rhs)
 {
@@ -280,6 +283,8 @@ inline Vector3<T> Cross(const Vector3<T>& lhs, const Vector3<T>& rhs)
 		lhs[2] * rhs[0] - lhs[0] * rhs[2],
 		lhs[0] * rhs[1] - lhs[1] * rhs[0]);
 }
+
+}//Namespace Vector
 
 
 /********************************* Unit tests **************************************/
@@ -355,12 +360,11 @@ inline void Vector2UnitTest()
 
 	temp0 = Vector2<int>(5, 6);
 	temp1 = Vector2<float>(5.5f, 6.6f);
-	assert(Dot(case0, temp0) == 38);
-	assert(AreEqual_Eps(Distance(case0, temp0), 3.16227f, 0.00001f));
-	assert(AreEqual_Eps(Distance(case1, temp1), 3.47850f, 0.00001f));
-
-
+	assert(Vector::Dot(case0, temp0) == 38);
+	assert(AreEqual_Eps(Vector::Distance(case0, temp0), 3.16227f, 0.00001f));
+	assert(AreEqual_Eps(Vector::Distance(case1, temp1), 3.47850f, 0.00001f));
 }
+
 #endif
 
 }//Namespace Engine
