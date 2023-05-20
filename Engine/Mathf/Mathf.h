@@ -11,50 +11,49 @@ using namespace Engine;
 
 
 
-// fastest
-inline bool AreEqual_Eps(float i_lhs, float i_rhs, float i_maxDiff = MAX_DIff)
+/* Fastest but lowest accuracy */
+inline bool AreEqual_Eps(float lhs, float rhs, float maxDiff = MAX_DIff)
 {
-	return fabs(i_lhs - i_rhs) < i_maxDiff;
+	return fabs(lhs - rhs) < maxDiff;
 }
 
-// balanced
-inline bool AreEqual_Rel(float i_lhs, float i_rhs, float i_maxDiff = MAX_DIff)
+/* Balanced between efficiency and accuracy */
+inline bool AreEqual_Rel(float lhs, float rhs, float maxDiff = MAX_DIff)
 {
-	if (i_lhs == i_rhs)
+	if (lhs == rhs)
 		return true;
 
 	float relDiff;
 
-	if (fabs(i_rhs) > fabs(i_lhs))
-		relDiff = static_cast<float>(fabs((i_lhs - i_rhs) / i_rhs));
+	if (fabs(rhs) > fabs(lhs))
+		relDiff = static_cast<float>(fabs((lhs - rhs) / rhs));
 	else
-		relDiff = static_cast<float>(fabs((i_lhs - i_rhs) / i_lhs));
+		relDiff = static_cast<float>(fabs((lhs - rhs) / lhs));
 
-	return relDiff <= i_maxDiff;
+	return relDiff <= maxDiff;
 }
 
-// slow but sure
-inline bool AreEqual_Accurate(float i_lhs, float i_rhs, float i_maxDiff = MAX_DIff, unsigned int i_maxULPS = 12)
+/* Lowest effiency but highest accuracy */
+inline bool AreEqual_Accurate(float lhs, float rhs, float maxDiff = MAX_DIff, unsigned int maxULPS = 12)
 {
 	assert(sizeof(float) == sizeof(int));
 
-	if (i_lhs == i_rhs)
+	if (lhs == rhs)
 		return true;
 
-	double diff = fabs(i_lhs - i_rhs);
+	double diff = fabs(lhs - rhs);
 
-	if (diff <= i_maxDiff)
+	if (diff <= maxDiff)
 		return true;
 
-	unsigned int intDiff = abs(*reinterpret_cast<int*>(&i_lhs) - *reinterpret_cast<int*>(&i_rhs));
+	unsigned int intDiff = abs(*reinterpret_cast<int*>(&lhs) - *reinterpret_cast<int*>(&rhs));
 
-	return intDiff <= i_maxULPS;
+	return intDiff <= maxULPS;
 }
 
-
+/* General entry point of comparison functions */
 inline bool IsEqual(float lhs, float rhs, float maxDiff = MAX_DIff)
 {
-
 #if defined(USE_EFFICIENCY)
 	return AreEqual_Eps(lhs, rhs, maxDiff);
 #elif defined(USE_ACCURACY)
