@@ -5,20 +5,23 @@
 using namespace Engine;
 
 
-#define MAX_DIff 0.00001f
+#define MAX_DIFF 0.00001f
 #define USE_EFFICIENCY
 //#define USE_ACCURACY
 
 
 
-/* Fastest but lowest accuracy */
-inline bool AreEqual_Eps(float lhs, float rhs, float maxDiff = MAX_DIff)
+/* Compare tow float values by checking whether the absolute difference
+ * between the two float values is within a specified maximum difference
+ * threshold. This comparison method has fastest performance but lowest
+ * accuracy */
+inline bool AreEqualEps(float lhs, float rhs, float maxDiff = MAX_DIFF)
 {
 	return fabs(lhs - rhs) < maxDiff;
 }
 
 /* Balanced between efficiency and accuracy */
-inline bool AreEqual_Rel(float lhs, float rhs, float maxDiff = MAX_DIff)
+inline bool AreEqual_Rel(float lhs, float rhs, float maxDiff = MAX_DIFF)
 {
 	if (lhs == rhs)
 		return true;
@@ -34,7 +37,7 @@ inline bool AreEqual_Rel(float lhs, float rhs, float maxDiff = MAX_DIff)
 }
 
 /* Lowest effiency but highest accuracy */
-inline bool AreEqual_Accurate(float lhs, float rhs, float maxDiff = MAX_DIff, unsigned int maxULPS = 12)
+inline bool AreEqual_Accurate(float lhs, float rhs, float maxDiff = MAX_DIFF, unsigned int maxULPS = 12)
 {
 	assert(sizeof(float) == sizeof(int));
 
@@ -52,10 +55,10 @@ inline bool AreEqual_Accurate(float lhs, float rhs, float maxDiff = MAX_DIff, un
 }
 
 /* General entry point of comparison functions */
-inline bool IsEqual(float lhs, float rhs, float maxDiff = MAX_DIff)
+inline bool AreEqual(float lhs, float rhs, float maxDiff = MAX_DIFF)
 {
 #if defined(USE_EFFICIENCY)
-	return AreEqual_Eps(lhs, rhs, maxDiff);
+	return AreEqualEps(lhs, rhs, maxDiff);
 #elif defined(USE_ACCURACY)
 	return AreEqual_Accurate(lhs, rhs, maxDiff);
 #else
@@ -72,7 +75,7 @@ inline bool IsNAN(float val)
 
 inline bool IsZero(float val)
 {
-	return AreEqual_Eps(0.0f, val, .000000001f);
+	return AreEqualEps(0.0f, val, .000000001f);
 }
 
 

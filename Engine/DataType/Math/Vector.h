@@ -316,40 +316,40 @@ inline void Vector2UnitTest()
 	assert(temp0[0] == 0 && temp0[1] == 0);
 	temp1 = case1;
 	temp1.Norm();
-	assert(AreEqual_Eps(temp1[0], 0.8f, 0.00001f) && AreEqual_Eps(temp1[1], 0.6f, 0.00001f));
+	assert(AreEqual(temp1[0], 0.8f) && AreEqual(temp1[1], 0.6f));
 
 	temp1 = case0.GetNorm();
-	assert(AreEqual_Eps(temp1[0], 0.8f, 0.00001f) && AreEqual_Eps(temp1[1], 0.6f, 0.00001f));
+	assert(AreEqual(temp1[0], 0.8f) && AreEqual(temp1[1], 0.6f));
 	temp1 = case2.GetNorm();
-	assert(AreEqual_Eps(temp1[0], 0.6f, 0.00001f) && AreEqual_Eps(temp1[1], 0.8f, 0.00001f));
+	assert(AreEqual(temp1[0], 0.6f) && AreEqual(temp1[1], 0.8f));
 
 	temp1 = case1;
 	temp1 += Vector2<float>(5.5f, 7.7f);
-	assert(AreEqual_Eps(temp1[0], 9.9f, 0.00001f) && AreEqual_Eps(temp1[1], 11.0f, 0.00001f));
+	assert(AreEqual(temp1[0], 9.9f) && AreEqual(temp1[1], 11.0f));
 	temp1 -= Vector2<float>(1.1f, 0.0f);
-	assert(AreEqual_Eps(temp1[0], 8.8f, 0.00001f) && AreEqual_Eps(temp1[1], 11.0f, 0.00001f));
+	assert(AreEqual(temp1[0], 8.8f) && AreEqual(temp1[1], 11.0f));
 	temp1 *= Vector2<float>(0.5f, 0.5f);
-	assert(AreEqual_Eps(temp1[0], 4.4f, 0.00001f) && AreEqual_Eps(temp1[1], 5.5f, 0.00001f));
+	assert(AreEqual(temp1[0], 4.4f) && AreEqual(temp1[1], 5.5f));
 	temp1 *= 2.0f;
-	assert(AreEqual_Eps(temp1[0], 8.8f, 0.00001f) && AreEqual_Eps(temp1[1], 11.0f, 0.00001f));
+	assert(AreEqual(temp1[0], 8.8f) && AreEqual(temp1[1], 11.0f));
 	temp1 /= Vector2<float>(2.0f, 2.0f);
-	assert(AreEqual_Eps(temp1[0], 4.4f, 0.00001f) && AreEqual_Eps(temp1[1], 5.5f, 0.00001f));
+	assert(AreEqual(temp1[0], 4.4f) && AreEqual(temp1[1], 5.5f));
 	temp1 /= 0.5f;
-	assert(AreEqual_Eps(temp1[0], 8.8f, 0.00001f) && AreEqual_Eps(temp1[1], 11.0f, 0.00001f));
+	assert(AreEqual(temp1[0], 8.8f) && AreEqual(temp1[1], 11.0f));
 
 	temp1 = case1;
 	temp1 = temp1 + Vector2<float>(5.5f, 7.7f);
-	assert(AreEqual_Eps(temp1[0], 9.9f, 0.00001f) && AreEqual_Eps(temp1[1], 11.0f, 0.00001f));
+	assert(AreEqual(temp1[0], 9.9f) && AreEqual(temp1[1], 11.0f));
 	temp1 = temp1 - Vector2<float>(1.1f, 0.0f);
-	assert(AreEqual_Eps(temp1[0], 8.8f, 0.00001f) && AreEqual_Eps(temp1[1], 11.0f, 0.00001f));
+	assert(AreEqual(temp1[0], 8.8f) && AreEqual(temp1[1], 11.0f));
 	temp1 = temp1 * Vector2<float>(0.5f, 0.5f);
-	assert(AreEqual_Eps(temp1[0], 4.4f, 0.00001f) && AreEqual_Eps(temp1[1], 5.5f, 0.00001f));
+	assert(AreEqual(temp1[0], 4.4f) && AreEqual(temp1[1], 5.5f));
 	temp1 = temp1 * 2.0f;
-	assert(AreEqual_Eps(temp1[0], 8.8f, 0.00001f) && AreEqual_Eps(temp1[1], 11.0f, 0.00001f));
+	assert(AreEqual(temp1[0], 8.8f) && AreEqual(temp1[1], 11.0f));
 	temp1 = temp1 / Vector2<float>(2.0f, 2.0f);
-	assert(AreEqual_Eps(temp1[0], 4.4f, 0.00001f) && AreEqual_Eps(temp1[1], 5.5f, 0.00001f));
+	assert(AreEqual(temp1[0], 4.4f) && AreEqual(temp1[1], 5.5f));
 	temp1 = temp1 / 0.5f;
-	assert(AreEqual_Eps(temp1[0], 8.8f, 0.00001f) && AreEqual_Eps(temp1[1], 11.0f, 0.00001f));
+	assert(AreEqual(temp1[0], 8.8f) && AreEqual(temp1[1], 11.0f));
 
 	assert(temp1 == Vector2<float>(8.8f, 11.0f));
 	assert(temp1 != Vector2<float>(8.8f, 0.0f));
@@ -358,8 +358,8 @@ inline void Vector2UnitTest()
 	temp0 = Vector2<int>(5, 6);
 	temp1 = Vector2<float>(5.5f, 6.6f);
 	assert(Vector::Dot(case0, temp0) == 38);
-	assert(AreEqual_Eps(Vector::Distance(case0, temp0), 3.16227f, 0.00001f));
-	assert(AreEqual_Eps(Vector::Distance(case1, temp1), 3.47850f, 0.00001f));
+	assert(AreEqual(Vector::Distance(case0, temp0), 3.16227f));
+	assert(AreEqual(Vector::Distance(case1, temp1), 3.47850f));
 }
 
 
@@ -379,51 +379,51 @@ inline void Vector3UnitTest()
 	assert(temp0[0] == 3 && temp0[1] == 4 && temp0[2] == 5);
 
 	val0 = case0.Length();
-	assert(IsEqual(val0, 7.071067811f));
+	assert(AreEqual(val0, 7.071067811f));
 	val0 = case1.Length();
-	assert(IsEqual(val0, 7.7781745f));
+	assert(AreEqual(val0, 7.7781745f));
 	val0 = case2.Length();
-	assert(IsEqual(val0, 14.7989864517f));
+	assert(AreEqual(val0, 14.7989864517f));
 
 	temp0 = case0;
 	temp0.Norm();
 	assert(temp0[0] == 0 && temp0[1] == 0, temp0[2] == 0);
 	temp1 = case1;
 	temp1.Norm();
-	assert(IsEqual(temp1[0], 0.42426406f) && IsEqual(temp1[1], 0.565685424f) && IsEqual(temp1[2], 0.70710678f));
+	assert(AreEqual(temp1[0], 0.42426406f) && AreEqual(temp1[1], 0.565685424f) && AreEqual(temp1[2], 0.70710678f));
 
 	temp1 = case0.GetNorm();
-	assert(IsEqual(temp1[0], 0.42426406f) && IsEqual(temp1[1], 0.565685424f) && IsEqual(temp1[2], 0.70710678f));
+	assert(AreEqual(temp1[0], 0.42426406f) && AreEqual(temp1[1], 0.565685424f) && AreEqual(temp1[2], 0.70710678f));
 	temp1 = case2.GetNorm();
-	assert(IsEqual(temp1[0], 0.44597648f) && IsEqual(temp1[1], 0.594635316f) && IsEqual(temp1[2], 0.66896473f));
+	assert(AreEqual(temp1[0], 0.44597648f) && AreEqual(temp1[1], 0.594635316f) && AreEqual(temp1[2], 0.66896473f));
 
 	temp1 = case1;
 	temp1 += Vector3<float>(6.6f, 6.6f, 4.4f);
-	assert(IsEqual(temp1[0], 9.9f) && IsEqual(temp1[1], 11.0f), IsEqual(temp1[2], 9.9f));
+	assert(AreEqual(temp1[0], 9.9f) && AreEqual(temp1[1], 11.0f), AreEqual(temp1[2], 9.9f));
 	temp1 -= Vector3<float>(1.1f, 0.0f, 1.1f);
-	assert(IsEqual(temp1[0], 8.8f) && IsEqual(temp1[1], 11.0f), IsEqual(temp1[2], 8.8f));
+	assert(AreEqual(temp1[0], 8.8f) && AreEqual(temp1[1], 11.0f), AreEqual(temp1[2], 8.8f));
 	temp1 *= Vector3<float>(0.5f, 0.5f, 0.5f);
-	assert(IsEqual(temp1[0], 4.4f) && IsEqual(temp1[1], 5.5f), IsEqual(temp1[2], 4.4f));
+	assert(AreEqual(temp1[0], 4.4f) && AreEqual(temp1[1], 5.5f), AreEqual(temp1[2], 4.4f));
 	temp1 *= 2.0f;
-	assert(IsEqual(temp1[0], 8.8f) && IsEqual(temp1[1], 11.0f) && IsEqual(temp1[2], 8.8f));
+	assert(AreEqual(temp1[0], 8.8f) && AreEqual(temp1[1], 11.0f) && AreEqual(temp1[2], 8.8f));
 	temp1 /= Vector3<float>(2.0f, 2.0f, 2.0f);
-	assert(IsEqual(temp1[0], 4.4f) && IsEqual(temp1[1], 5.5f) && IsEqual(temp1[2], 4.4f));
+	assert(AreEqual(temp1[0], 4.4f) && AreEqual(temp1[1], 5.5f) && AreEqual(temp1[2], 4.4f));
 	temp1 /= 0.5f;
-	assert(IsEqual(temp1[0], 8.8f) && IsEqual(temp1[1], 11.0f) && IsEqual(temp1[0], 8.8f));
+	assert(AreEqual(temp1[0], 8.8f) && AreEqual(temp1[1], 11.0f) && AreEqual(temp1[0], 8.8f));
 
 	temp1 = case1;
 	temp1 = temp1 + Vector3<float>(6.6f, 6.6f, 4.4f);
-	assert(IsEqual(temp1[0], 9.9f) && IsEqual(temp1[1], 11.0f), IsEqual(temp1[2], 9.9f));
+	assert(AreEqual(temp1[0], 9.9f) && AreEqual(temp1[1], 11.0f), AreEqual(temp1[2], 9.9f));
 	temp1 = temp1 - Vector3<float>(1.1f, 0.0f, 1.1f);
-	assert(IsEqual(temp1[0], 8.8f) && IsEqual(temp1[1], 11.0f), IsEqual(temp1[2], 8.8f));
+	assert(AreEqual(temp1[0], 8.8f) && AreEqual(temp1[1], 11.0f), AreEqual(temp1[2], 8.8f));
 	temp1 = temp1 * Vector3<float>(0.5f, 0.5f, 0.5f);
-	assert(IsEqual(temp1[0], 4.4f) && IsEqual(temp1[1], 5.5f), IsEqual(temp1[2], 4.4f));
+	assert(AreEqual(temp1[0], 4.4f) && AreEqual(temp1[1], 5.5f), AreEqual(temp1[2], 4.4f));
 	temp1 = temp1 * 2.0f;
-	assert(IsEqual(temp1[0], 8.8f) && IsEqual(temp1[1], 11.0f) && IsEqual(temp1[2], 8.8f));
+	assert(AreEqual(temp1[0], 8.8f) && AreEqual(temp1[1], 11.0f) && AreEqual(temp1[2], 8.8f));
 	temp1 = temp1 / Vector3<float>(2.0f, 2.0f, 2.0f);
-	assert(IsEqual(temp1[0], 4.4f) && IsEqual(temp1[1], 5.5f) && IsEqual(temp1[2], 4.4f));
+	assert(AreEqual(temp1[0], 4.4f) && AreEqual(temp1[1], 5.5f) && AreEqual(temp1[2], 4.4f));
 	temp1 = temp1 / 0.5f;
-	assert(IsEqual(temp1[0], 8.8f) && IsEqual(temp1[1], 11.0f) && IsEqual(temp1[0], 8.8f));
+	assert(AreEqual(temp1[0], 8.8f) && AreEqual(temp1[1], 11.0f) && AreEqual(temp1[0], 8.8f));
 
 	assert(temp1 == Vector3<float>(8.8f, 11.0f, 8.8f));
 	assert(temp1 != Vector3<float>(0.0f, 11.0f, 8.8f));
@@ -432,8 +432,8 @@ inline void Vector3UnitTest()
 	temp0 = Vector3<int>(5, 6, 7);
 	temp1 = Vector3<float>(5.5f, 6.6f, 7.7f);
 	assert(Vector::Dot(case0, temp0) == 74);
-	assert(IsEqual(Vector::Distance(case0, temp0), 3.464102f));
-	assert(IsEqual(Vector::Distance(case1, temp1), 3.810512f, 0.00001f));
+	assert(AreEqual(Vector::Distance(case0, temp0), 3.464102f));
+	assert(AreEqual(Vector::Distance(case1, temp1), 3.810512f, 0.00001f));
 }
 
 #endif

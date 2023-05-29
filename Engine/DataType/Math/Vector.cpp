@@ -178,16 +178,16 @@ inline Vector2<T>& Vector2<T>::operator= (const Vector2<T>& other)
 template <typename T>
 inline bool Vector2<T>::operator== (const Vector2<T>& other) const
 {
-	return IsEqual(static_cast<float>(val[0]), static_cast<float>(other[0])) == true && 
-		   IsEqual(static_cast<float>(val[1]), static_cast<float>(other[1])) == true;
+	return AreEqual(static_cast<float>(val[0]), static_cast<float>(other[0])) == true && 
+		   AreEqual(static_cast<float>(val[1]), static_cast<float>(other[1])) == true;
 }
 
 
 template <typename T>
 inline bool Vector2<T>::operator!= (const Vector2<T>& other) const
 {
-	return IsEqual(static_cast<float>(val[0]), static_cast<float>(other[0])) == false ||
-		   IsEqual(static_cast<float>(val[1]), static_cast<float>(other[1])) == false;
+	return AreEqual(static_cast<float>(val[0]), static_cast<float>(other[0])) == false ||
+		   AreEqual(static_cast<float>(val[1]), static_cast<float>(other[1])) == false;
 }
 
 
@@ -447,18 +447,18 @@ inline Vector3<T>& Vector3<T>::operator= (const Vector3<T>& other)
 template <typename T>
 inline bool Vector3<T>::operator== (const Vector3<T>& other) const
 {
-	return IsEqual(static_cast<float>(val[0]), static_cast<float>(other[0])) == true &&
-		   IsEqual(static_cast<float>(val[1]), static_cast<float>(other[1])) == true &&
-		   IsEqual(static_cast<float>(val[2]), static_cast<float>(other[2])) == true;
+	return AreEqual(static_cast<float>(val[0]), static_cast<float>(other[0])) == true &&
+		   AreEqual(static_cast<float>(val[1]), static_cast<float>(other[1])) == true &&
+		   AreEqual(static_cast<float>(val[2]), static_cast<float>(other[2])) == true;
 }
 
 
 template <typename T>
 inline bool Vector3<T>::operator!= (const Vector3<T>& other) const
 {
-	return IsEqual(static_cast<float>(val[0]), static_cast<float>(other[0])) == false ||
-		   IsEqual(static_cast<float>(val[1]), static_cast<float>(other[1])) == false ||
-		   IsEqual(static_cast<float>(val[2]), static_cast<float>(other[2])) == false;
+	return AreEqual(static_cast<float>(val[0]), static_cast<float>(other[0])) == false ||
+		   AreEqual(static_cast<float>(val[1]), static_cast<float>(other[1])) == false ||
+		   AreEqual(static_cast<float>(val[2]), static_cast<float>(other[2])) == false;
 }
 
 
