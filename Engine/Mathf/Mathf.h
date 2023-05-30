@@ -1,7 +1,6 @@
 #pragma once
 #include "Dependency.h"
 
-
 using namespace Engine;
 
 
@@ -10,7 +9,34 @@ using namespace Engine;
 //#define USE_ACCURACY
 
 
+/* Forward declaration */
+inline bool IsNAN(float val);
+inline bool IsZero(float val);
 
+inline bool AreEqualEps(float lhs, float rhs, float maxDiff = MAX_DIFF);
+inline bool AreEqualRel(float lhs, float rhs, float maxDiff = MAX_DIFF);
+inline bool AreEqualAccurate(float lhs, float rhs, float maxDiff = MAX_DIFF, unsigned int maxULPS = 12);
+inline bool AreEqual(float lhs, float rhs, float maxDiff = MAX_DIFF);
+
+inline unsigned int RandInRange(unsigned int lowerBound, unsigned int upperBound);
+
+template<typename T> inline void Swap(T& left, T& right);
+
+
+
+/** @brief Check if the given number is not a number */
+inline bool IsNAN(float val)
+{
+	volatile float val_ = val;
+	return val != val_;
+}
+
+
+/** @brief Check if the given number equals to zero */
+inline bool IsZero(float val)
+{
+	return AreEqualEps(0.0f, val, .000000001f);
+}
 
 
 /** 
@@ -18,10 +44,11 @@ using namespace Engine;
  *		  float values is within a specified maximum difference threshold. This comparison method 
  *		  has fastest performance but lowest accuracy 
  */
-inline bool AreEqualEps(float lhs, float rhs, float maxDiff = MAX_DIFF)
+inline bool AreEqualEps(float lhs, float rhs, float maxDiff)
 {
 	return fabs(lhs - rhs) < maxDiff;
 }
+
 
 /** 
  * @brief Compare two float values by checking whether the relative difference between the two float 
@@ -32,7 +59,7 @@ inline bool AreEqualEps(float lhs, float rhs, float maxDiff = MAX_DIFF)
  *		  difference between two small values could be significant. 
  *		  This comparison method is balanced between efficiency and accuracy 
  */
-inline bool AreEqualRel(float lhs, float rhs, float maxDiff = MAX_DIFF)
+inline bool AreEqualRel(float lhs, float rhs, float maxDiff)
 {
 	if (lhs == rhs)
 		return true;
@@ -46,6 +73,7 @@ inline bool AreEqualRel(float lhs, float rhs, float maxDiff = MAX_DIFF)
 
 	return relDiff <= maxDiff;
 }
+
 
 /** 
  * @brief Compare two float values by chacking whether the difference of binary bits between the two float 
@@ -64,7 +92,7 @@ inline bool AreEqualRel(float lhs, float rhs, float maxDiff = MAX_DIFF)
  *			 specified range.
  *		  This comparison method has lowest performance but highest accuracy.
  */
-inline bool AreEqualAccurate(float lhs, float rhs, float maxDiff = MAX_DIFF, unsigned int maxULPS = 12)
+inline bool AreEqualAccurate(float lhs, float rhs, float maxDiff, unsigned int maxULPS)
 {
 	assert(sizeof(float) == sizeof(int));
 
@@ -81,13 +109,14 @@ inline bool AreEqualAccurate(float lhs, float rhs, float maxDiff = MAX_DIFF, uns
 	return intDiff <= maxULPS;
 }
 
+
 /**
  * @brief General entry point of comparison functions. 
  *		  If "USE_EFFICIENCY" is defined, use "AreEqualEps()" to compare;
  *		  Else if "USE_ACCURACY" is defined, use "AreEqualAccurate()" to compare;
  *		  Otherwise use "AreEqualRel()" to compare.
  */
-inline bool AreEqual(float lhs, float rhs, float maxDiff = MAX_DIFF)
+inline bool AreEqual(float lhs, float rhs, float maxDiff)
 {
 #if defined(USE_EFFICIENCY)
 	return AreEqualEps(lhs, rhs, maxDiff);
@@ -98,24 +127,19 @@ inline bool AreEqual(float lhs, float rhs, float maxDiff = MAX_DIFF)
 #endif
 }
 
-/** @brief Check if the given number is not a number */
-inline bool IsNAN(float val)
+
+inline unsigned int RandInRange(unsigned int lowerBound, unsigned int upperBound)
 {
-	volatile float val_ = val;
-	return val != val_;
+	assert(lowerBound < upperBound);
+	return lowerBound + rand() % (upperBound - lowerBound);
 }
 
-/** @brief Check if the given number equals to zero */
-inline bool IsZero(float val)
-{
-	return AreEqualEps(0.0f, val, .000000001f);
-}
 
 /** @brief Swap two numbers by modifying their value in the memory */
 template<typename T>
-inline void Swap(T& i_Left, T& i_Right)
+inline void Swap(T& left, T& right)
 {
-	T temp = i_Left;
-	i_Left = i_Right;
-	i_Right = temp;
+	T temp = left;
+	left = right;
+	right = temp;
 }
