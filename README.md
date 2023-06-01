@@ -26,14 +26,29 @@ The game engine implements object instances monitor algorithm and runtime garbag
 ## Catalog
 
 + [Math](#math)
+    - [Mathf](#mathf)
     - [Vector](#vector)
 
 
 
 
----
 
-<a id = "math"></a>
+---
+<a id="math"></a>
+
+# Math
+
+<a id="mathf"></a>
+
+## Mathf.h
+
+This file implements various mathematical operations that are commonly used in calculations within the game engine. These operations are implemented as global APIs, allowing users to conveniently access them in the global scope. In current implementation, the operations primarily revolve around: value comparison, random value generation, and validation detection.
+
++ ### Value Comparison
+    Current implementation provide 
+
+
+
 
 <a id="vector"></a>
 
@@ -58,6 +73,13 @@ This file contains the definitions and implementations of data structures known 
 
 + ### Global APIs
     Furthermore, current implementation also provides global functions specifically designed for vector calculations. Noted these global functions are defined whithin the namespace of `Vector::`.
+    ```cpp
+
+    T           Vector::Dot(vec1, vec2);            // Support both Vector2 and Vector3
+    Vector<T>   Vector::Cross(vec1, vec2);          // Support Vector3 only
+    float       Vector::Distance(vec1, vec2);       // Support both Vector2 and Vector3
+
+    ```
     - **`Dot()`**
     - **`Cross()`**
     - **`Distance()`**
