@@ -59,9 +59,36 @@ This file implements various mathematical operations that are commonly used in c
      *  try direct comparison and abs-diff comparison, and then try Unit in the Last Place (ULPs)
      *  comparison. Lowest performance but highest accuracy. */
     bool AreEqualAccurate(float lhs, float rhs, float maxDiff, unsigned int maxULPS);
+
+    /** General entry function of above comparison functions */
     bool AreEqual(float lhs, float rhs, float maxDiff);
     ```
 
+    Note that the entry function `AreEqual()` utilizes macros to determine the comparison function to be used at runtime. In the current implementation, if the `USE_EFFICIENCY` macro is defined, the `AreEqualEps()` function will be invoked; if the `USE_ACCURACY` macro is defined, the `AreEqualAccurate()` function will be invoked; otherwise, the `AreEqualRel()` function will be invoked. 
+
++ ### Random Value Generation
+    Current implementation provides 2 random value generation functions:
+    ```cpp
+    /** Generate a random integer value within range [lowerBound, upperBound). */
+    int RandInRange(int lowerBound, int upperBound);
+
+    /** Generate a random float value within range [lowerBound, upperBound]. */
+    float RandInRange(float lowerBound, float upperBound);
+    ```
+
+    To facilitate the implementation of the two `RandInRange()` functions, a singleton class named `Mathf` is implemented. This class serves as a utility class, providing essential configurations and operations for the functions. It is important to note that `Mathf` is intended to be used internally and is "private" to users. Although users can still access the instance of `Mathf`, it is not recommended for direct usage in application development. All members within `Mathf` are designated as private, ensuring that only specific engine code has access to them.
+
++ ### Validation Dtection
+    Functions that perform validation check for input values:
+    ```cpp
+    bool IsNAN(float val);
+    bool IsZero(float val)
+    ```
+  
+  
+
+
+    
 
 
 
@@ -89,9 +116,9 @@ This file contains the definitions and implementations of data structures known 
 + ### Global APIs
     Furthermore, current implementation also provides global functions specifically designed for vector calculations. Noted these global functions are defined whithin the namespace of `Vector::`.
     ```cpp
-    T           Vector::Dot(vec1, vec2);            // Supports both Vector2 and Vector3
-    Vector<T>   Vector::Cross(vec1, vec2);          // Supports Vector3 only
-    float       Vector::Distance(vec1, vec2);       // Supports both Vector2 and Vector3
+    T           Vector::Dot(Vector<T> vec1, Vector<T> vec2);            // Supports both Vector2 and Vector3
+    Vector<T>   Vector::Cross(Vector<T> vec1, Vector<T> vec2);          // Supports Vector3 only
+    float       Vector::Distance(Vector<T> vec1, Vector<T> vec2);       // Supports both Vector2 and Vector3
     ```
 
 
