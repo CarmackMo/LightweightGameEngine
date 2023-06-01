@@ -31,20 +31,24 @@ public:
 	inline Vector2(T x, T y);
 	inline Vector2(const Vector2<T>& other);
 
-	/* Convert this instance to a new Vector2 with type "U" */
+	/** @brief Convert this instance to a new Vector2 with type "U" */
 	template<typename U>
 	inline Vector2<U> ConvertTo();
 
-	/* Calcualte the length of this instance. Return the result in "float" type by 
-	 * default. (Since I was not able to use explicit template specialization to 
-	 * specify return type for Vector<double> instances, I have to unify return 
-	 * type to be "float" to prevent data loss)*/
+	/** 
+	 *	@brief Calcualte the length of this instance. Return the result in "float" type by 
+	 *		   default. (Since I was not able to use explicit template specialization to 
+	 *		   specify return type for Vector<double> instances, I have to unify return 
+	 *		   type to be "float" to prevent data loss)
+	 */
 	inline float Length() const;
 
-	/* Normalize this instance. Noted that normalize a vector with integer type might
-	 * have incorrect result. Because the division result might be a float point number.*/
+	/** 
+	 *	@brief Normalize this instance. Noted that normalize a vector with integer type might
+	 *		   have incorrect result. Because the division result might be a float point number.
+	 */
 	inline void Norm();
-	/* Get the normalization vector of this instance, but don't modify this instance */
+	/** @brief Get the normalization vector of this instance, but don't modify this instance */
 	inline Vector2<float> GetNorm() const;
 
 	/* Self modifying operators */
@@ -126,16 +130,20 @@ public:
 	inline T Dot(const Vector3<T>& other) const;
 	inline Vector3<T> Cross(const Vector3<T>& other) const;
 
-	/* Calcualte the length of this instance. Return the result in "float" type by
-	 * default. (Since I was not able to use explicit template specialization to
-	 * specify return type for Vector<double> instances, I have to unify return
-	 * type to be "float" to prevent data loss)*/
+	/** 
+	 *	@brief Calcualte the length of this instance. Return the result in "float" type by
+	 *		   default. (Since I was not able to use explicit template specialization to
+	 *		   specify return type for Vector<double> instances, I have to unify return
+	 *		   type to be "float" to prevent data loss)
+	 */
 	inline float Length() const;
 	
-	/* Normalize this instance. Noted that normalize a vector with type "int" might 
-	 * have incorrect result. Because the division result might be a float point number.*/
+	/** 
+	 *	@brief Normalize this instance. Noted that normalize a vector with type "int" might 
+	 *		   have incorrect result. Because the division result might be a float point number.
+	 */
 	inline void Norm();
-	/* Get the normalization vector of this instance, but don't modify this instance */
+	/** @brief Get the normalization vector of this instance, but don't modify this instance */
 	inline Vector3<float> GetNorm() const;
 
 	/* Self modifying operators */
@@ -233,7 +241,8 @@ public:
  * is not a class or a function, it is a "pattern" that the compiler uses to generate 
  * a family of classes or functions. To use function templates, both the template 
  * declaration and definition must be visible to the compiler at the point of instantiation. 
- * As a result, template functions are typically declared and implemented in the same file. */
+ * As a result, template functions are typically declared and implemented in the same file. 
+ */
 
 namespace Vector
 {
@@ -252,10 +261,12 @@ inline T Dot(const Vector3<T>& lhs, const Vector3<T>& rhs)
 }
 
 
-/* Calcualte the distance between two vector. Return the result in "float" type by
-	* default. (Since I was not able to use explicit template specialization to
-	* specify return type for Vector<double>, I have to unify return type to be "float"
-	* to prevent data loss)*/
+/** 
+ *	@brief Calcualte the distance between two vector. Return the result in "float" type by
+ *		   default. (Since I was not able to use explicit template specialization to
+ *		   specify return type for Vector<double>, I have to unify return type to be "float"
+ *		   to prevent data loss)
+ */
 template <typename T>
 inline float Distance(const Vector2<T>& lhs, const Vector2<T>& rhs)
 {

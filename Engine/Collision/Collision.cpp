@@ -13,10 +13,10 @@ float DegreesToRadians(float i_Degrees)
 }
 
 
-float RandInRange(float i_Min, float i_Max)
-{
-	return i_Min + (static_cast<float>(rand()) / (RAND_MAX + 1) * (i_Max - i_Min + 1.0f));
-}
+//float RandInRange(float i_Min, float i_Max)
+//{
+//	return i_Min + (static_cast<float>(rand()) / (RAND_MAX + 1) * (i_Max - i_Min + 1.0f));
+//}
 
 
 Vector3<float> GenerateRandomVector(const Vector3<float>& i_Min, const Vector3<float>& i_Max)

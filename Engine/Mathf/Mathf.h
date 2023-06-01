@@ -28,12 +28,21 @@ template<typename T> inline void Swap(T& left, T& right);
 
 
 
-
+/**
+ *	@brief A helper singleton class that mainly designed for handling random value generation. This 
+ *		   class is 
+ 
+ 
+ The class 
+ *		   implements two helper functions "Randf()" and "Randi()" for random value generation. Both
+ *		   functions generate random value using the uniform distribution. 
+ *		   "Ran"
+ */
 class Mathf : public Singleton<Mathf>
 {
 private:
-	random_device rd;
-	mt19937 generator;
+	random_device rd;			/* Seed source for the random number engine, unique in the whole engine scope */
+	mt19937 generator;			/* Random number engine */
 	uniform_real_distribution<float> distf;
 	uniform_int_distribution<int> disti;
 
@@ -47,15 +56,16 @@ private:
 		disti = uniform_int_distribution<int>(0, INT_MAX);
 	}
 
-public:
-	friend class Singleton<Mathf>;
-
 	/** @brief Return a random float value within the range [0.0, 1.0], inclusive in both sides */
 	inline float Randf() { return distf(generator); }
 
 	/** @brief Return a random integer value within the range [0, INT_MAX], inclusive in both sides */
 	inline int Randi() { return disti(generator); }
 
+public:
+	friend class Singleton<Mathf>;
+	friend inline int RandInRange(int lowerBound, int upperBound);
+	friend inline float RandInRange(float lowerBound, float upperBound);
 };
 
 
@@ -166,8 +176,8 @@ inline bool AreEqual(float lhs, float rhs, float maxDiff)
 
 
 /** 
- *	@brief Generate a random integer number within range [lowerBound, upperBound). Note that the range is inclusive
- *		   in left side and exclusive in right side. 
+ *	@brief Generate a random integer value within range [lowerBound, upperBound). Note that the range is inclusive
+ *		   in left side and exclusive in right side. See "Mathf" class for more info.
  */
 inline int RandInRange(int lowerBound, int upperBound)
 {
@@ -178,8 +188,8 @@ inline int RandInRange(int lowerBound, int upperBound)
 
 
 /**
- *	@brief Generate a random float-point number within range [lowerBound, upperBound]. Note that the range inclusive
- *		   in both sides.
+ *	@brief Generate a random float value within range [lowerBound, upperBound]. Note that the range inclusive
+ *		   in both sides. See "Mathf" class for more info.
  */
 inline float RandInRange(float lowerBound, float upperBound)
 {
