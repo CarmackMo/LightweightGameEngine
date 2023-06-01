@@ -45,7 +45,13 @@ The game engine implements object instances monitor algorithm and runtime garbag
 This file implements various mathematical operations that are commonly used in calculations within the game engine. These operations are implemented as global APIs, allowing users to conveniently access them in the global scope. In current implementation, the operations primarily revolve around: value comparison, random value generation, and validation detection.
 
 + ### Value Comparison
-    Current implementation provide 
+    Current implementation provides 3 comparison functions with different features and a entry function:
+    ```cpp
+    bool AreEqualEps(float lhs, float rhs, float maxDiff);
+    bool AreEqualRel(float lhs, float rhs, float maxDiff);
+    bool AreEqualAccurate(float lhs, float rhs, float maxDiff, unsigned int maxULPS);
+    bool AreEqual(float lhs, float rhs, float maxDiff);
+    ```
 
 
 
@@ -74,13 +80,9 @@ This file contains the definitions and implementations of data structures known 
 + ### Global APIs
     Furthermore, current implementation also provides global functions specifically designed for vector calculations. Noted these global functions are defined whithin the namespace of `Vector::`.
     ```cpp
-
-    T           Vector::Dot(vec1, vec2);            // Support both Vector2 and Vector3
-    Vector<T>   Vector::Cross(vec1, vec2);          // Support Vector3 only
-    float       Vector::Distance(vec1, vec2);       // Support both Vector2 and Vector3
-
+    T           Vector::Dot(vec1, vec2);            // Supports both Vector2 and Vector3
+    Vector<T>   Vector::Cross(vec1, vec2);          // Supports Vector3 only
+    float       Vector::Distance(vec1, vec2);       // Supports both Vector2 and Vector3
     ```
-    - **`Dot()`**
-    - **`Cross()`**
-    - **`Distance()`**
+
 
