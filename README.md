@@ -47,7 +47,11 @@ This file implements various mathematical operations that are commonly used in c
 + ### Value Comparison
     Current implementation provides 3 comparison functions with different features and a entry function:
     ```cpp
+    /** Compare by checking if the absolute difference exceed threashold "maxDiff" 
+     *  Fastest performance but lowest accuracy. */
     bool AreEqualEps(float lhs, float rhs, float maxDiff);
+
+    
     bool AreEqualRel(float lhs, float rhs, float maxDiff);
     bool AreEqualAccurate(float lhs, float rhs, float maxDiff, unsigned int maxULPS);
     bool AreEqual(float lhs, float rhs, float maxDiff);
