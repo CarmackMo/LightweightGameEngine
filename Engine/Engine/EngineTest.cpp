@@ -75,7 +75,13 @@ int WINAPI wWinMain(
     /* Vector class unit test */
     Vector::Vector2UnitTest();
     Vector::Vector3UnitTest();
+    DEBUG_PRINT(" \n\n\n ############ \n Vector2, Vector3 unit test successful \n ############ \n\n\n");
     
+
+    /* Mathf.h unit test */
+    RandInRangeIntUnitTest();
+    RandInRangeFloatUnitTest();
+    DEBUG_PRINT(" \n\n\n ############ \n Mathf.h unit test successful \n ############ \n\n\n");
 
 
     /* Unit test for Matrix4 class  */
@@ -100,12 +106,6 @@ int WINAPI wWinMain(
         5, 6, 0);
 
     o.Invert();
-
-
-    srand(static_cast<unsigned int>(time(0)));
-    int aa = rand();
-    int ss = rand();
-    int dd = rand();
 
 
     /* Unit test for Matrix4 class  */

@@ -1,5 +1,6 @@
 #pragma once
 #include <random>
+#include <cassert>
 #include "./Utility/Singleton.h"
 
 using namespace std;
@@ -12,6 +13,8 @@ using namespace Engine;
 
 
 /* Forward declaration */
+class Mathf;
+
 inline bool IsNAN(float val);
 inline bool IsZero(float val);
 
@@ -75,8 +78,6 @@ public:
 	friend inline int RandInRange(int lowerBound, int upperBound);
 	friend inline float RandInRange(float lowerBound, float upperBound);
 };
-
-
 
 
 /** @brief Check if the given number is not a number */
@@ -209,7 +210,6 @@ inline float RandInRange(float lowerBound, float upperBound)
 }
 
 
-
 /** @brief Swap two numbers by modifying their value in the memory */
 template<typename T>
 inline void Swap(T& left, T& right)
@@ -218,3 +218,87 @@ inline void Swap(T& left, T& right)
 	left = right;
 	right = temp;
 }
+
+
+
+
+
+
+/********************************* Unit tests **************************************/
+
+//TODO: Need to develop a more reliable fucntion to check whether RandInRange() is random
+//		enough.
+
+#if defined(_DEBUG)
+
+#include <vector>
+#include "Debugger.h"
+
+inline void RandInRangeIntUnitTest()
+{
+	/* Generate random values */
+	vector<int> samples = vector<int>(1000);
+	for (int i = 0; i < 1000; i++)
+	{
+		samples[i] = RandInRange(1, 100);
+	}
+
+	/* Calculate the mean and variance of the sample values */
+	double mean = 0.0;
+	double variance = 0.0;
+	for (int value : samples) 
+	{
+		mean += value;
+		variance += value * value;
+	}
+	mean /= samples.size();
+	variance = (variance / samples.size()) - (mean * mean);
+
+	/* Check if the variance is large enough, and if the mean is close enough to the expectation */
+	double expectedMean = 0.0;		/* Expected mean */ 
+	double expectedVariance = 1.0;  /* Expected variance */
+	double threshold = 0.01;		/* Acceptable threshold */
+
+	bool res = (variance > expectedVariance - threshold)
+		&& (variance < expectedVariance + threshold)
+		&& (mean > expectedMean - threshold)
+		&& (mean < expectedMean + threshold);
+
+	Engine::Debugger::DEBUG_PRINT("Is RandInRangeInt() random: %d\n", res);
+}
+
+
+inline void RandInRangeFloatUnitTest()
+{
+	/* Generate random values */
+	vector<float> samples = vector<float>(1000);
+	for (int i = 0; i < 1000; i++)
+	{
+		samples[i] = RandInRange(1.0f, 100.0f);
+	}
+
+	/* Calculate the mean and variance of the sample values */
+	double mean = 0.0;
+	double variance = 0.0;
+	for (float value : samples)
+	{
+		mean += value;
+		variance += value * value;
+	}
+	mean /= samples.size();
+	variance = (variance / samples.size()) - (mean * mean);
+
+	/* Check if the variance is large enough, and if the mean is close enough to the expectation */
+	double expectedMean = 0.0;		/* Expected mean */
+	double expectedVariance = 1.0;  /* Expected variance */
+	double threshold = 0.01;		/* Acceptable threshold */
+
+	bool res = (variance > expectedVariance - threshold)
+		&& (variance < expectedVariance + threshold)
+		&& (mean > expectedMean - threshold)
+		&& (mean < expectedMean + threshold);
+
+	Engine::Debugger::DEBUG_PRINT("Is RandInRangeFloat() random: %d\n", res);
+}
+
+#endif

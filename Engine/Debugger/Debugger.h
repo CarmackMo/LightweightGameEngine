@@ -1,5 +1,6 @@
 #pragma once
-#include "Dependency.h"
+#include <windows.h>
+#include <stdio.h>
 
 namespace Engine
 {
