@@ -29,14 +29,22 @@ template<typename T> inline void Swap(T& left, T& right);
 
 
 /**
- *	@brief A helper singleton class that mainly designed for handling random value generation. This 
- *		   class is 
- 
- 
- The class 
- *		   implements two helper functions "Randf()" and "Randi()" for random value generation. Both
- *		   functions generate random value using the uniform distribution. 
- *		   "Ran"
+ *	@brief A helper singleton class that mainly designed for handling random value generation. As a  
+ *		   helper class, "Mathf" is suppose to be "private" to engine users (Although they can access
+ *		   Mathf's instance). Therefore, all members are labeled as private and only specified engine
+ *		   code can access them.
+ * 
+ *		   "Mathf" implements two helper functions "Randf()" and "Randi()" for random value generation. 
+ *		   Both functions generate random value using the uniform distribution. 
+ * 
+ *		   "Randf()" generates a random float value within the range [0.0, 1.0], both sides are 
+ *		   inclusive. According to the formular: lower + (upper - lower) * factor (0 <= factor <= 1), 
+ *		   we can generate random number in a specific range with both sides inclusive.
+ * 
+ *		   "Randi()" generates a random integer value within the range [0, INT_MAX], both sides are 
+ *		   inclusive. According to the formular: lower + range % (upper - lower) (0 <= range <= Max),
+ *		   we can generate random number in a specific range left side inclusive and right side
+ *		   exclusive.
  */
 class Mathf : public Singleton<Mathf>
 {
@@ -100,10 +108,12 @@ inline bool AreEqualEps(float lhs, float rhs, float maxDiff)
 /** 
  * @brief Compare two float values by checking whether the relative difference between the two float 
  *		  values is within a specified maximum difference threshold. 
+ * 
  *		  The advantage of using relative difference for comparisons is that the significance of a 
  *		  difference between two values may vary depending on the magnitude of the values themselves. 
  *		  A small difference between two large values might be considered negligible, while the same 
  *		  difference between two small values could be significant. 
+ * 
  *		  This comparison method is balanced between efficiency and accuracy 
  */
 inline bool AreEqualRel(float lhs, float rhs, float maxDiff)

@@ -1,5 +1,5 @@
 #pragma once
-#include "Dependency.h"
+#include "Debugger.h"
 #include "Mathf.h"
 
 
@@ -398,7 +398,7 @@ inline void Vector3UnitTest()
 
 	temp0 = case0;
 	temp0.Norm();
-	assert(temp0[0] == 0 && temp0[1] == 0, temp0[2] == 0);
+	assert(temp0[0] == 0 && temp0[1] == 0 && temp0[2] == 0);
 	temp1 = case1;
 	temp1.Norm();
 	assert(AreEqual(temp1[0], 0.42426406f) && AreEqual(temp1[1], 0.565685424f) && AreEqual(temp1[2], 0.70710678f));
@@ -410,11 +410,11 @@ inline void Vector3UnitTest()
 
 	temp1 = case1;
 	temp1 += Vector3<float>(6.6f, 6.6f, 4.4f);
-	assert(AreEqual(temp1[0], 9.9f) && AreEqual(temp1[1], 11.0f), AreEqual(temp1[2], 9.9f));
+	assert(AreEqual(temp1[0], 9.9f) && AreEqual(temp1[1], 11.0f) && AreEqual(temp1[2], 9.9f));
 	temp1 -= Vector3<float>(1.1f, 0.0f, 1.1f);
-	assert(AreEqual(temp1[0], 8.8f) && AreEqual(temp1[1], 11.0f), AreEqual(temp1[2], 8.8f));
+	assert(AreEqual(temp1[0], 8.8f) && AreEqual(temp1[1], 11.0f) && AreEqual(temp1[2], 8.8f));
 	temp1 *= Vector3<float>(0.5f, 0.5f, 0.5f);
-	assert(AreEqual(temp1[0], 4.4f) && AreEqual(temp1[1], 5.5f), AreEqual(temp1[2], 4.4f));
+	assert(AreEqual(temp1[0], 4.4f) && AreEqual(temp1[1], 5.5f) && AreEqual(temp1[2], 4.4f));
 	temp1 *= 2.0f;
 	assert(AreEqual(temp1[0], 8.8f) && AreEqual(temp1[1], 11.0f) && AreEqual(temp1[2], 8.8f));
 	temp1 /= Vector3<float>(2.0f, 2.0f, 2.0f);
@@ -424,11 +424,11 @@ inline void Vector3UnitTest()
 
 	temp1 = case1;
 	temp1 = temp1 + Vector3<float>(6.6f, 6.6f, 4.4f);
-	assert(AreEqual(temp1[0], 9.9f) && AreEqual(temp1[1], 11.0f), AreEqual(temp1[2], 9.9f));
+	assert(AreEqual(temp1[0], 9.9f) && AreEqual(temp1[1], 11.0f) && AreEqual(temp1[2], 9.9f));
 	temp1 = temp1 - Vector3<float>(1.1f, 0.0f, 1.1f);
-	assert(AreEqual(temp1[0], 8.8f) && AreEqual(temp1[1], 11.0f), AreEqual(temp1[2], 8.8f));
+	assert(AreEqual(temp1[0], 8.8f) && AreEqual(temp1[1], 11.0f) && AreEqual(temp1[2], 8.8f));
 	temp1 = temp1 * Vector3<float>(0.5f, 0.5f, 0.5f);
-	assert(AreEqual(temp1[0], 4.4f) && AreEqual(temp1[1], 5.5f), AreEqual(temp1[2], 4.4f));
+	assert(AreEqual(temp1[0], 4.4f) && AreEqual(temp1[1], 5.5f) && AreEqual(temp1[2], 4.4f));
 	temp1 = temp1 * 2.0f;
 	assert(AreEqual(temp1[0], 8.8f) && AreEqual(temp1[1], 11.0f) && AreEqual(temp1[2], 8.8f));
 	temp1 = temp1 / Vector3<float>(2.0f, 2.0f, 2.0f);
