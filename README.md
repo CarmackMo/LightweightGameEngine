@@ -54,6 +54,10 @@ This file implements various mathematical operations that are commonly used in c
     /** Compare by checking if the relative difference exceed threashold "maxDiff". More reliable
      *  than "AreEqualEps()" when inputs are small. Good balance between efficiency and accuracy. */
     bool AreEqualRel(float lhs, float rhs, float maxDiff);
+
+    /** Compare by checking the difference of units in the last place of memory. It will first
+     *  try direct comparison and abs-diff comparison, and then try Unit in the Last Place (ULPs)
+     *  comparison. Lowest performance but highest accuracy. */
     bool AreEqualAccurate(float lhs, float rhs, float maxDiff, unsigned int maxULPS);
     bool AreEqual(float lhs, float rhs, float maxDiff);
     ```
