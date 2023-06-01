@@ -101,6 +101,13 @@ int WINAPI wWinMain(
 
     o.Invert();
 
+
+    srand(static_cast<unsigned int>(time(0)));
+    int aa = rand();
+    int ss = rand();
+    int dd = rand();
+
+
     /* Unit test for Matrix4 class  */
     Matrix4<double> test;
     test.UnitTest();
@@ -126,6 +133,9 @@ int WINAPI wWinMain(
     /* Unit Test for collision detection */
     CollisionPoolCheck();
     DEBUG_PRINT(" \n\n\n ############ \n Collision detection unit test successful \n ############ \n\n\n");
+
+
+
 
 
 #endif // defined(_DEBUG)

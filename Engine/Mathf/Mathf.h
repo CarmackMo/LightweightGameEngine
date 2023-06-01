@@ -1,6 +1,8 @@
 #pragma once
-#include "Dependency.h"
+#include <random>
+#include "./Utility/Singleton.h"
 
+using namespace std;
 using namespace Engine;
 
 
@@ -18,9 +20,44 @@ inline bool AreEqualRel(float lhs, float rhs, float maxDiff = MAX_DIFF);
 inline bool AreEqualAccurate(float lhs, float rhs, float maxDiff = MAX_DIFF, unsigned int maxULPS = 12);
 inline bool AreEqual(float lhs, float rhs, float maxDiff = MAX_DIFF);
 
-inline unsigned int RandInRange(unsigned int lowerBound, unsigned int upperBound);
+inline int RandInRange(int lowerBound, int upperBound);
+inline float RandInRange(float lowerBound, float upperBound);
 
 template<typename T> inline void Swap(T& left, T& right);
+
+
+
+
+
+class Mathf : public Singleton<Mathf>
+{
+private:
+	random_device rd;
+	mt19937 generator;
+	uniform_real_distribution<float> distf;
+	uniform_int_distribution<int> disti;
+
+	inline Mathf() { Initialize(); }
+	inline ~Mathf() {};
+
+	inline void Initialize()
+	{
+		generator = mt19937(rd());
+		distf = uniform_real_distribution<float>(0.0f, nextafter(1.0f, FLT_MAX));
+		disti = uniform_int_distribution<int>(0, INT_MAX);
+	}
+
+public:
+	friend class Singleton<Mathf>;
+
+	/** @brief Return a random float value within the range [0.0, 1.0], inclusive in both sides */
+	inline float Randf() { return distf(generator); }
+
+	/** @brief Return a random integer value within the range [0, INT_MAX], inclusive in both sides */
+	inline int Randi() { return disti(generator); }
+
+};
+
 
 
 
@@ -128,11 +165,29 @@ inline bool AreEqual(float lhs, float rhs, float maxDiff)
 }
 
 
-inline unsigned int RandInRange(unsigned int lowerBound, unsigned int upperBound)
+/** 
+ *	@brief Generate a random integer number within range [lowerBound, upperBound). Note that the range is inclusive
+ *		   in left side and exclusive in right side. 
+ */
+inline int RandInRange(int lowerBound, int upperBound)
 {
 	assert(lowerBound < upperBound);
-	return lowerBound + rand() % (upperBound - lowerBound);
+	int range = upperBound - lowerBound;
+	return lowerBound + Mathf::Instance()->Randi() % range;
 }
+
+
+/**
+ *	@brief Generate a random float-point number within range [lowerBound, upperBound]. Note that the range inclusive
+ *		   in both sides.
+ */
+inline float RandInRange(float lowerBound, float upperBound)
+{
+	assert(lowerBound < upperBound);
+	float diff = upperBound - lowerBound;
+	return lowerBound + Mathf::Instance()->Randf() * diff;
+}
+
 
 
 /** @brief Swap two numbers by modifying their value in the memory */
