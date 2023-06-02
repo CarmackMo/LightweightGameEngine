@@ -300,6 +300,8 @@ inline Vector3<T> Cross(const Vector3<T>& lhs, const Vector3<T>& rhs)
 
 #if defined(_DEBUG)
 
+#include <cassert>
+
 inline void Vector2UnitTest()
 {
 	Vector2<int> case0 = Vector2<int>(4, 3);

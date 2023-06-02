@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "Dependency.h"
+#include "Debugger.h"
 #include "Vector.h"
 
 using namespace std;
@@ -189,9 +189,57 @@ public:
 	/* Scale matrix creator */
 	inline static Matrix4<T> CreateScale(const Vector3<T>& vec);
 	inline static Matrix4<T> CreateScale(T scaleX, T scaleY, T scaleZ);
-
-
-	void UnitTest();
 };
 
+
+
+
+
+namespace Matrix
+{
+/********************************* Unit tests **************************************/
+
+#if defined(_DEBUG)
+
+#include <cassert>
+
+inline void Matrix4UnitTest()
+{
+	Matrix4<double> sample = Matrix4<double>(
+		1, 2, 3, 4,
+		5, 6, 7, 8,
+		9, 10, 11, 12,
+		13, 14, 15, 16
+	);
+
+	/* Operator Test */
+	Matrix4<double> temp1;
+	temp1 = sample + Matrix4<double>(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+	assert(temp1 == Matrix4<double>(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17));
+	temp1 = sample - Matrix4<double>(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+	assert(temp1 == Matrix4<double>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15));
+	temp1 = sample * 2;
+	assert(temp1 == Matrix4<double>(2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32));
+	temp1 = sample * Matrix4<double>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+	assert(temp1 == Matrix4<double>(90, 100, 110, 120, 202, 228, 254, 280, 314, 356, 398, 440, 426, 484, 542, 600));
+	assert(2 == sample[0][1]);
+
+	/* Math Operation Test */
+	Vector4<double> temp2;
+	temp2 = sample.MultiplyLeft(Vector4<double>(1, 2, 3, 4));
+	assert(temp2 == Vector4<double>(90, 100, 110, 120));
+	temp2 = sample.MultiplyRight(Vector4<double>(1, 2, 3, 4));
+	assert(temp2 == Vector4<double>(30, 70, 110, 150));
+	temp1 = sample.GetTranspose();
+	assert(temp1 == Matrix4<double>(1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15, 4, 8, 12, 16));
+	sample = Matrix4<double>(1, 1, 1, -1, 1, 1, -1, 1, 1, -1, 1, 1, -1, 1, 1, 1);
+	temp1 = sample.GetInverse();
+	assert(temp1 == Matrix4<double>(0.25, 0.25, 0.25, -0.25, 0.25, 0.25, -0.25, 0.25, 0.25, -0.25, 0.25, 0.25, -0.25, 0.25, 0.25, 0.25));
 }
+
+#endif
+
+
+
+}//Namespace Matrix
+}//Namespace Engine

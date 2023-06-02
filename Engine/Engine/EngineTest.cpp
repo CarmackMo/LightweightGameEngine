@@ -85,32 +85,7 @@ int WINAPI wWinMain(
 
 
     /* Unit test for Matrix4 class  */
-    Matrix4<double> m = Matrix4<double>(
-        1, 1, 1, - 1,
-        1, 1, -1, 1,
-        1, -1, 1, 1,
-        -1, 1, 1, 1);
-
-    Matrix4<int> n = Matrix4<int>(
-        5, 2, 3, 1,
-        3, 4, 3, 2,
-        4, 6, 4, 2,
-        7, 3, 4, 4);
-
-    Matrix4<double> p = n.GetInverse<double>();
-    n.Invert();
-
-    Matrix3<int> o = Matrix3<int>(
-        1, 2, 3,
-        0, 1, 4,
-        5, 6, 0);
-
-    o.Invert();
-
-
-    /* Unit test for Matrix4 class  */
-    Matrix4<double> test;
-    test.UnitTest();
+    Matrix::Matrix4UnitTest();
     DEBUG_PRINT(" \n\n\n ############ \n Matrix4 unit test successful \n ############ \n\n\n");
 
 

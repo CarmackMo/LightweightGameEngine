@@ -857,41 +857,4 @@ inline Matrix4<T> Matrix4<T>::CreateScale(T scaleX, T scaleY, T scaleZ)
 }
 
 
-template <typename T>
-void Matrix4<T>::UnitTest()
-{
-	Matrix4<T> test = Matrix4<T>(
-		1, 2, 3, 4,
-		5, 6, 7, 8,
-		9, 10, 11, 12,
-		13, 14, 15, 16
-	);
-
-	/* Operator Test */
-	Matrix4<T> temp1;
-	temp1 = test + Matrix4<T>(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
-	assert(temp1 == Matrix4<T>(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17));
-	temp1 = test - Matrix4<T>(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
-	assert(temp1 == Matrix4<T>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15));
-	temp1 = test * 2;
-	assert(temp1 == Matrix4<T>(2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32));
-	temp1 = test * Matrix4<T>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
-	assert(temp1 == Matrix4<T>(90, 100, 110, 120, 202, 228, 254, 280, 314, 356, 398, 440, 426, 484, 542, 600));
-	assert(2 == test[0][1]);
-
-	/* Math Operation Test */
-	Vector4<T> temp2;
-	temp2 = test.MultiplyLeft(Vector4<T>(1, 2, 3, 4));
-	assert(temp2 == Vector4<T>(90, 100, 110, 120));
-	temp2 = test.MultiplyRight(Vector4<T>(1, 2, 3, 4));
-	assert(temp2 == Vector4<T>(30, 70, 110, 150));
-	temp1 = test.GetTranspose();
-	assert(temp1 == Matrix4<T>(1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15, 4, 8, 12, 16));
-	test = Matrix4<T>(1, 1, 1, -1, 1, 1, -1, 1, 1, -1, 1, 1, -1, 1, 1, 1);
-	temp1 = test.GetInverse();
-	assert(temp1 == Matrix4<T>(0.25, 0.25, 0.25, -0.25, 0.25, 0.25, -0.25, 0.25, 0.25, -0.25, 0.25, 0.25, -0.25, 0.25, 0.25, 0.25));
-
-}
-
-
 #pragma endregion
