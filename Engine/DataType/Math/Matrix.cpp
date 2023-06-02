@@ -64,9 +64,10 @@ T Matrix3<T>::Det(int row, int col) const
 {
 	/* Calcualte the determinant based on the following formula:
 	 * det = a11(a22a33 - a23a32) - a12(a21a33 - a23a31) + a13(a21a32 - a22a31).
-	 * Note that needs to ensure positive-negative correctness*/
-	T res = static_cast<T>(pow(-1, row + col)) * (val[(row + 1) % 3][(col + 1) % 3] * val[(row + 2) % 3][(col + 2) % 3] -
-		val[(row + 1) % 3][(col + 2) % 3] * val[(row + 2) % 3][(col + 1) % 3]);
+	 * Note that needs to ensure positive-negative correctness. */
+	T res = static_cast<T>(pow(-1, row + col)) * 
+		(val[(row + 1) % 3][(col + 1) % 3] * val[(row + 2) % 3][(col + 2) % 3] -
+		 val[(row + 1) % 3][(col + 2) % 3] * val[(row + 2) % 3][(col + 1) % 3]);
 
 	return res;
 }
