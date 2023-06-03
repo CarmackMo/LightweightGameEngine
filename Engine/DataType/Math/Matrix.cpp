@@ -478,7 +478,7 @@ T Matrix4<T>::Det(int row, int col) const
 	}
 
 	/* Calcualte the determinant based on the following formula:
-	 * det = a11(a22a33 - a23a32) - a12(a21a33 - a23a31) + a13(a21a32 - a22a31) */
+	 * det = M11(M22M33 - M23M32) - M12(M21M33 - M23M31) + M13(M21M32 - M22M31) */
 	T res = 0;
 	for (int i = 0; i < 3; i++)
 	{

@@ -272,9 +272,11 @@ inline void Matrix3UnitTest()
 		1, 0, 0,
 		0, 2, 0,
 		0, 0, 3);
+	Vector3<float> case2 = Vector3<float>(1.0f, 2.0f, 3.0f);
 
 	Matrix3<float> temp0;
 	Matrix3<int> temp1;
+	Vector3<float> temp2;
 
 	assert(AreEqual(case0.Det(0, 1), 0.0f));
 
@@ -305,6 +307,11 @@ inline void Matrix3UnitTest()
 	assert(temp0 == Matrix3<float>(1.1f, 0.0f, 1.3f, 0.0f, 2.2f, 0.0f, 3.1f, 0.0f, 3.3f));
 	temp0 = case0 * case0;
 	assert(temp0 == Matrix3<float>(5.24f, 0.0f, 5.72f, 0.0f, 4.84f, 0.0f, 13.64f, 0.0f, 14.92f));
+
+	temp2 = case0 * case2;
+	assert(temp2 == Vector3<float>(5.0f, 4.4f, 13.0f));
+	temp2 = case2 * case0;
+	assert(temp2 == Vector3<float>(10.4f, 4.4f, 11.2f));
 
 }
 
@@ -340,6 +347,8 @@ inline void Matrix4UnitTest()
 	sample = Matrix4<double>(1, 1, 1, -1, 1, 1, -1, 1, 1, -1, 1, 1, -1, 1, 1, 1);
 	temp1 = sample.GetInverse();
 	assert(temp1 == Matrix4<double>(0.25, 0.25, 0.25, -0.25, 0.25, 0.25, -0.25, 0.25, 0.25, -0.25, 0.25, 0.25, -0.25, 0.25, 0.25, 0.25));
+
+
 }
 
 #endif
