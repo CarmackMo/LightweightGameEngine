@@ -49,10 +49,10 @@ public:
 	/* @brief Invert this instance. Invert a matrix with type "int" might have incorrect result.
 	 *		  Because the real result of the inverse might be a float point number. */
 	void Invert(void);
-	/* @brief Same functionality of Matrix<T>::GetInverse(). User needs to sepcify the return type
-	 *		  to prevent incorrect result due to inappropriate data types. (e.g. the inverse of a 
-	 *		  <int> matrix might has <float> result, if return the result in its original type, the
-	 *		  result will be incorrect) */
+	/* @brief Return a matrix that is the inverse of this instance but don't modify this instance. User 
+	 *		  needs to sepcify the return type to prevent incorrect result due to inappropriate data 
+	 *		  types. (e.g. the inverse of a <int> matrix might has <float> result, if return the result 
+	 *		  in its original type, the result will be incorrect) */
 	template <typename U>
 	inline Matrix3<U> GetInverse() const;
 	///* @brief Return a matrix that is the inverse of this instance but don't modify this instance. */
@@ -63,12 +63,6 @@ public:
 	/* @brief Return a matrix that is the transpose of this instance but don't modify this instance */
 	inline Matrix3<T> GetTranspose(void) const;
 
-	/* @brief Convert this instance into a 4x4 transformation matrix. The additional row and column 
-	 *		  represents translations and homogeneous coordinates respectively. Mathematically,
-	 *		  this convertion is known as an affine transformation, allowing the original matrix
-	 *		  to be used for 3D math in a homogenous coordinate system. */
-	inline Matrix4<T> GetTransform() const;
-
 	/* @brief Convert this instance to a new matrix with type "U", but don't modify this instance */
 	template <typename U>
 	inline Matrix3<U> ConvertToType() const;
@@ -78,7 +72,6 @@ public:
 	//Vector3<T> MultiplyLeft(const Vector3<T>& vec) const;
 	///* @brief Return Mtx * vec */
 	//Vector3<T> MultiplyRight(const Vector3<T>& vec) const;
-
 
 	inline T* operator[] (int row);
 	inline const T* operator[] (int row) const;
@@ -108,6 +101,12 @@ public:
 	/* @brief Scale matrix creator */
 	inline static Matrix3<T> CreateScale(const Vector2<T>& vec);
 	inline static Matrix3<T> CreateScale(T scaleX, T scaleY);
+
+	/* @brief Convert this instance into a 4x4 transformation matrix. The additional row and column 
+	 *		  represents translations and homogeneous coordinates respectively. Mathematically,
+	 *		  this convertion is known as an affine transformation, allowing the original matrix
+	 *		  to be used for 3D math in a homogenous coordinate system. */
+	inline Matrix4<T> ToTransform() const;
 };
 
 
@@ -132,40 +131,38 @@ public:
 		T x30, T x31, T x32, T x33);
 	inline Matrix4(const Matrix4<T>& other);
 
-	/* Calculate the determinant of the 3x3 minor matrix where M(row, col) is the pivot */
+	/* @brief Calculate the determinant of the 3x3 minor matrix using M[row][col] as the pivot.
+	 *		  To calculate the actual determinant of a Matrix4 instance, can refer to following formular:
+	 *		  det = M[0][0]*Det(0,0) - M[0][1]*Det(0,1) + M[0][2]*Det(0,2) - M[0][3]*Det(0,3), using first
+	 *		  row elements as pivots */
 	T Det(int row, int col) const;
 
 	/* @brief Invert this instance. Invert a matrix with type "int" might have incorrect result. 
 	 *		  Because the real result of the inverse might be a float point number. */
 	void Invert(void);
-	/* @brief Return a matrix that is the inverse of this instance but don't modify this instance. */
-	inline Matrix4<T> GetInverse() const;
-	/* @brief Same functionality of Matrix<T>::GetInverse(). This function can avoid incorrect 
-	 *		  result due to inappropriate data types. (e.g. the inverse of a <int> matrix might 
-	 *		  has <float> result) */
+	/* @brief Return a matrix that is the inverse of this instance but don't modify this instance. User
+	 *		  needs to sepcify the return type to prevent incorrect result due to inappropriate data
+	 *		  types. (e.g. the inverse of a <int> matrix might has <float> result, if return the result
+	 *		  in its original type, the result will be incorrect) */
 	template <typename U>
 	inline Matrix4<U> GetInverse() const;
+	///* @brief Return a matrix that is the inverse of this instance but don't modify this instance. */
+	//inline Matrix4<T> GetInverse() const;
 
-	/* Return a matrix that is the inverse ASSUMING this matrix has axis rotation and translation only. */
-	inline Matrix4<T> GetInverseRotTrans() const;
-
-	/* Transpose this instance */
+	/* @brief Transpose this instance */
 	inline void Transpose(void);
-	/* Return a matrix that is the transpose of this instance but don't modify this instance */
+	/* @brief Return a matrix that is the transpose of this instance but don't modify this instance */
 	inline Matrix4<T> GetTranspose(void) const;
 
-	/* Convert current to a new matrix with type "U" */
+	/* @brief Convert this instance to a new matrix with type "U", but don't modify this instance */
 	template <typename U>
-	inline Matrix4<U> CovertToType();
+	inline Matrix4<U> CovertToType() const;
 
-	/* Multiply vector by matrix */
-	/* Return v * M */
-	Vector4<T> MultiplyLeft(const Vector4<T>& vec) const;
-	/* Return M * v */
-	Vector4<T> MultiplyRight(const Vector4<T>& vec) const;
-
-	/* Transform point counter clockwise */
-	inline Vector3<T> TransformPoint(const Vector3<T>& point) const;
+	///* Multiply vector by matrix */
+	///* Return v * M */
+	//Vector4<T> MultiplyLeft(const Vector4<T>& vec) const;
+	///* Return M * v */
+	//Vector4<T> MultiplyRight(const Vector4<T>& vec) const;
 
 	inline T* operator[] (int row);
 	inline const T* operator[] (int row) const;
@@ -179,6 +176,14 @@ public:
 
 	bool operator== (const Matrix4<T>& other) const;
 
+	/* @brief Return a matrix that is the inverse of a transformation matrix. It "undoes" the original 
+	 *		  transformation by taking the transpose of the rotation and applying the inverse translation.
+	 *		  (ASSUME this matrix has axis rotation and translation only). */
+	inline Matrix4<T> GetInverseRotTrans() const;
+
+	/* @brief Apply this instance as a transform matrix to the input point, return a new vector that
+	 *		  represents the transformed point. (The point is transformed clockwise). */
+	inline Vector3<T> TransformPoint(const Vector3<T>& point) const;
 
 	/* Identity matrix creator */
 	inline static Matrix4<T> CreateIdentity(void);
@@ -197,6 +202,7 @@ public:
 	/* Scale matrix creator */
 	inline static Matrix4<T> CreateScale(const Vector3<T>& vec);
 	inline static Matrix4<T> CreateScale(T scaleX, T scaleY, T scaleZ);
+
 };
 
 
@@ -250,12 +256,51 @@ inline Vector3<T> operator* (const Vector3<T>& vec, const Matrix3<T>& mtx)
 }
 
 
+/* @brief Calculate vec = Mtx * vec; (i.e. column vector) */
+template <typename T>
+inline Vector4<T> operator* (const Matrix4<T>& mtx, const Vector4<T>& vec)
+{
+	Vector4<T> res = Vector4<T>();
+
+	/* Iterator all rows in matrix */
+	for (int row = 0; row < 4; row++)
+	{
+		T sum = 0;
+		/* Iterator that repeat 4 times */
+		for (int i = 0; i < 4; i++)
+		{
+			sum += mtx[row][i] * vec[i];
+		}
+		res[row] = sum;
+	}
+	return res;
+}
+
+
+/* @brief Calculate vec = vec * Mtx; (i.e. row vector) */
+template <typename T>
+inline Vector4<T> operator* (const Vector4<T>& vec, const Matrix4<T>& mtx)
+{
+	Vector4<T> res = Vector4<T>();
+
+	/* Iterate all columns in matrix */
+	for (int col = 0; col < 4; col++)
+	{
+		T sum = 0;
+		/* Iterator that repeat 4 times */
+		for (int i = 0; i < 4; i++)
+		{
+			sum += vec[i] * mtx[i][col];
+		}
+		res[col] = sum;
+	}
+	return res;
+}
+
 
 
 namespace Matrix
 {
-
-
 /********************************* Unit tests **************************************/
 
 #if defined(_DEBUG)
@@ -338,14 +383,14 @@ inline void Matrix4UnitTest()
 
 	/* Math Operation Test */
 	Vector4<double> temp2;
-	temp2 = sample.MultiplyLeft(Vector4<double>(1, 2, 3, 4));
+	temp2 = Vector4<double>(1, 2, 3, 4) * sample;
 	assert(temp2 == Vector4<double>(90, 100, 110, 120));
-	temp2 = sample.MultiplyRight(Vector4<double>(1, 2, 3, 4));
+	temp2 = sample * Vector4<double>(1, 2, 3, 4);
 	assert(temp2 == Vector4<double>(30, 70, 110, 150));
 	temp1 = sample.GetTranspose();
 	assert(temp1 == Matrix4<double>(1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15, 4, 8, 12, 16));
 	sample = Matrix4<double>(1, 1, 1, -1, 1, 1, -1, 1, 1, -1, 1, 1, -1, 1, 1, 1);
-	temp1 = sample.GetInverse();
+	temp1 = sample.GetInverse<double>();
 	assert(temp1 == Matrix4<double>(0.25, 0.25, 0.25, -0.25, 0.25, 0.25, -0.25, 0.25, 0.25, -0.25, 0.25, 0.25, -0.25, 0.25, 0.25, 0.25));
 
 

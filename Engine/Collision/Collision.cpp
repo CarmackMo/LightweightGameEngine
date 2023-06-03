@@ -144,8 +144,8 @@ CollisionPair FindCollision(float i_dt)
 bool CheckCollision(const Object& i_Obj1, const Object& i_Obj2, float i_dt, float& o_tCollision)
 {
 
-	Matrix4<float> Obj1ToWorld = Matrix4<float>::CreateTranslation(i_Obj1.m_Position) * i_Obj1.m_Orientation.GetTransform();
-	Matrix4<float> Obj2ToWorld = Matrix4<float>::CreateTranslation(i_Obj2.m_Position) * i_Obj2.m_Orientation.GetTransform();
+	Matrix4<float> Obj1ToWorld = Matrix4<float>::CreateTranslation(i_Obj1.m_Position) * i_Obj1.m_Orientation.ToTransform();
+	Matrix4<float> Obj2ToWorld = Matrix4<float>::CreateTranslation(i_Obj2.m_Position) * i_Obj2.m_Orientation.ToTransform();
 
 	Vector3<float> Obj1BBCenterInWorld = Obj1ToWorld.TransformPoint(i_Obj1.m_BB.center);
 	Vector3<float> Obj2BBCenterInWorld = Obj2ToWorld.TransformPoint(i_Obj2.m_BB.center);
@@ -514,8 +514,8 @@ bool CheckCollision(const Object& i_Obj1, const Object& i_Obj2, float i_dt, floa
 bool Check2DCollision(const Object& i_Obj1, const Object& i_Obj2, float i_dt, float& i_tCollision, float& o_)
 {
 
-	Matrix4<float> Obj1ToWorld = Matrix4<float>::CreateTranslation(i_Obj1.m_Position) * i_Obj1.m_Orientation.GetTransform();
-	Matrix4<float> Obj2ToWorld = Matrix4<float>::CreateTranslation(i_Obj2.m_Position) * i_Obj2.m_Orientation.GetTransform();
+	Matrix4<float> Obj1ToWorld = Matrix4<float>::CreateTranslation(i_Obj1.m_Position) * i_Obj1.m_Orientation.ToTransform();
+	Matrix4<float> Obj2ToWorld = Matrix4<float>::CreateTranslation(i_Obj2.m_Position) * i_Obj2.m_Orientation.ToTransform();
 
 	Vector3<float> Obj1BBCenterInWorld = Obj1ToWorld.TransformPoint(i_Obj1.m_BB.center);
 	Vector3<float> Obj2BBCenterInWorld = Obj2ToWorld.TransformPoint(i_Obj2.m_BB.center);
@@ -753,10 +753,10 @@ void SingleCollisionCheck()
 
 	Vector4<float> VXAxis(1.0f, 0.0f, 0.0f, 1.0f);
 
-	Vector4<float> VWorld = mToWorld.MultiplyRight(VXAxis);
+	Vector4<float> VWorld =  mToWorld * VXAxis;
 
 	Matrix4<float> mFromWorld = mToWorld.GetInverseRotTrans();
-	Vector4<float> VBack = mFromWorld.MultiplyRight(VWorld);
+	Vector4<float> VBack = mFromWorld * VWorld;
 
 	Object	Obj1;
 

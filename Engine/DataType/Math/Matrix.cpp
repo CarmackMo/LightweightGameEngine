@@ -143,17 +143,6 @@ inline Matrix3<T> Matrix3<T>::GetTranspose(void) const
 
 
 template <typename T>
-inline Matrix4<T> Matrix3<T>::GetTransform() const
-{
-	return Matrix4<T>(
-		val[0][0], val[0][1], val[0][2], 0.0f,
-		val[1][0], val[1][1], val[1][2], 0.0f,
-		val[2][0], val[2][1], val[2][2], 0.0f,
-		0.0f, 0.0f, 0.0f, 1.0f);
-}
-
-
-template <typename T>
 template <typename U>
 inline Matrix3<U> Matrix3<T>::ConvertToType() const
 {
@@ -404,6 +393,17 @@ inline Matrix3<T> Matrix3<T>::CreateScale(T scaleX, T scaleY)
 }
 
 
+template <typename T>
+inline Matrix4<T> Matrix3<T>::ToTransform() const
+{
+	return Matrix4<T>(
+		val[0][0], val[0][1], val[0][2], 0.0f,
+		val[1][0], val[1][1], val[1][2], 0.0f,
+		val[2][0], val[2][1], val[2][2], 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f);
+}
+
+
 #pragma endregion
 
 
@@ -523,44 +523,32 @@ template <typename T>
 template <typename U>
 inline Matrix4<U> Matrix4<T>::GetInverse() const
 {
-	Matrix4<T> ori = *this;
-	Matrix4<U> res = ori.CovertToType<U>();
+	Matrix4<U> res = this->CovertToType<U>();
 	res.Invert();
 	return res;
 }
 
 
-template <typename T>
-inline Matrix4<T> Matrix4<T>::GetInverse() const
-{
-	Matrix4<T> res = *this;
-	res.Invert();
-	return res;
-}
-
-
-template <typename T>
-inline Matrix4<T> Matrix4<T>::GetInverseRotTrans() const
-{
-	return Matrix4<T>(
-		val[0][0], val[1][0], val[2][0], -((val[0][0] * val[0][3]) + (val[1][0] * val[1][3]) + (val[2][0] * val[2][3])),
-		val[0][1], val[1][1], val[2][1], -((val[0][1] * val[0][3]) + (val[1][1] * val[1][3]) + (val[2][1] * val[2][3])),
-		val[0][2], val[1][2], val[2][2], -((val[0][2] * val[0][3]) + (val[1][2] * val[1][3]) + (val[2][2] * val[2][3])),
-		0.0f, 0.0f, 0.0f, 1.0f);
-}
+//template <typename T>
+//inline Matrix4<T> Matrix4<T>::GetInverse() const
+//{
+//	Matrix4<T> res = *this;
+//	res.Invert();
+//	return res;
+//}
 
 
 template <typename T>
 inline void Matrix4<T>::Transpose(void)
 {
 	T t01 = val[0][1], t02 = val[0][2], t03 = val[0][3],
-		t12 = val[1][2], t13 = val[1][3], t23 = val[2][3];
+	  t12 = val[1][2], t13 = val[1][3], t23 = val[2][3];
 
 	val[0][1] = val[1][0]; val[0][2] = val[2][0]; val[0][3] = val[3][0];
 	val[1][2] = val[2][1]; val[1][3] = val[3][1]; val[2][3] = val[3][2];
 
 	val[1][0] = t01, val[2][0] = t02, val[3][0] = t03,
-		val[2][1] = t12, val[3][1] = t13, val[3][2] = t23;
+	val[2][1] = t12, val[3][1] = t13, val[3][2] = t23;
 }
 
 
@@ -577,7 +565,7 @@ inline Matrix4<T> Matrix4<T>::GetTranspose(void) const
 
 template <typename T>
 template <typename U>
-inline Matrix4<U> Matrix4<T>::CovertToType()
+inline Matrix4<U> Matrix4<T>::CovertToType() const
 {
 	return Matrix4<U>(
 		static_cast<U>(val[0][0]), static_cast<U>(val[0][1]), static_cast<U>(val[0][2]), static_cast<U>(val[0][3]),
@@ -587,54 +575,44 @@ inline Matrix4<U> Matrix4<T>::CovertToType()
 }
 
 
-template <typename T>
-Vector4<T> Matrix4<T>::MultiplyLeft(const Vector4<T>& vec) const
-{
-	Vector4<T> res = Vector4<T>();
-
-	/* Iterate all columns in matrix */
-	for (int col = 0; col < 4; col++)
-	{
-		T sum = 0;
-		/* Iterator that repeat 4 times */
-		for (int i = 0; i < 4; i++)
-		{
-			sum += vec[i] * val[i][col];
-		}
-		res[col] = sum;
-	}
-	return res;
-}
-
-
-template <typename T>
-Vector4<T> Matrix4<T>::MultiplyRight(const Vector4<T>& vec) const
-{
-	Vector4<T> res = Vector4<T>();
-
-	/* Iterator all rows in matrix */
-	for (int row = 0; row < 4; row++)
-	{
-		T sum = 0;
-		/* Iterator that repeat 4 times */
-		for (int i = 0; i < 4; i++)
-		{
-			sum += val[row][i] * vec[i];
-		}
-		res[row] = sum;
-	}
-	return res;
-}
-
-
-template <typename T>
-inline Vector3<T> Matrix4<T>::TransformPoint(const Vector3<T>& point) const
-{
-	Vector4<T> Point = MultiplyRight(Vector4<T>(point[0], point[1], point[2], 1.0f));
-
-	float inv_w = 1.0f / Point[3];
-	return Vector3<T>(Point[0] * inv_w, Point[1] * inv_w, Point[2] * inv_w);
-}
+//template <typename T>
+//Vector4<T> Matrix4<T>::MultiplyLeft(const Vector4<T>& vec) const
+//{
+//	Vector4<T> res = Vector4<T>();
+//
+//	/* Iterate all columns in matrix */
+//	for (int col = 0; col < 4; col++)
+//	{
+//		T sum = 0;
+//		/* Iterator that repeat 4 times */
+//		for (int i = 0; i < 4; i++)
+//		{
+//			sum += vec[i] * val[i][col];
+//		}
+//		res[col] = sum;
+//	}
+//	return res;
+//}
+//
+//
+//template <typename T>
+//Vector4<T> Matrix4<T>::MultiplyRight(const Vector4<T>& vec) const
+//{
+//	Vector4<T> res = Vector4<T>();
+//
+//	/* Iterator all rows in matrix */
+//	for (int row = 0; row < 4; row++)
+//	{
+//		T sum = 0;
+//		/* Iterator that repeat 4 times */
+//		for (int i = 0; i < 4; i++)
+//		{
+//			sum += val[row][i] * vec[i];
+//		}
+//		res[row] = sum;
+//	}
+//	return res;
+//}
 
 
 template <typename T>
@@ -737,11 +715,45 @@ bool Matrix4<T>::operator== (const Matrix4<T>& other) const
 	{
 		for (int col = 0; col < 4; col++)
 		{
-			if (val[row][col] != other[row][col])
+			if (AreEqual(static_cast<float>(val[row][col]), static_cast<float>(other[row][col])) == false)
 				return false;
 		}
 	}
 	return true;
+}
+
+
+template <typename T>
+inline Matrix4<T> Matrix4<T>::GetInverseRotTrans() const
+{
+	/* Constructs a new Matrix4 instance where the top-left 3x3 portion contains the transpose of the original matrix's 
+	 * rotation component. The elements in the 4th column are the negated dot products of each column of the rotation 
+	 * component with the translation component. The elements in the bottom row are set to 0, except for the last element, 
+	 * which is set to 1 to maintain the homogeneous coordinate 
+	 * By obtaining the inverse of a transformation matrix, users can use it to transform points in the opposite direction, 
+	 * enabling operations such as un-rotating or un-translating coordinates.*/
+	return Matrix4<T>(
+		val[0][0], val[1][0], val[2][0], -((val[0][0] * val[0][3]) + (val[1][0] * val[1][3]) + (val[2][0] * val[2][3])),
+		val[0][1], val[1][1], val[2][1], -((val[0][1] * val[0][3]) + (val[1][1] * val[1][3]) + (val[2][1] * val[2][3])),
+		val[0][2], val[1][2], val[2][2], -((val[0][2] * val[0][3]) + (val[1][2] * val[1][3]) + (val[2][2] * val[2][3])),
+		0.0f, 0.0f, 0.0f, 1.0f);
+}
+
+
+template <typename T>
+inline Vector3<T> Matrix4<T>::TransformPoint(const Vector3<T>& point) const
+{
+	/* Convert the point's coordinates to homogeneous coordinate */
+	Vector4<T> Point = *this * Vector4<T>(point[0], point[1], point[2], 1.0f);
+
+	/* The 4th element of the resulting transformed point is the homogeneous coordinate. 
+	 * The variable "invHomo" stores the inverse of the homogeneous coordinate. The 
+	 * purpose of dividing the transformed point by "invHomo" is to normalize the coordinates
+	 * This normalization step ensures that the transformed point retains its relative 
+	 * position in 3D space. It effectively brings the point back from homogeneous coordinates 
+	 * to Cartesian coordinates. */
+	float invHomo = 1.0f / Point[3];
+	return Vector3<T>(Point[0] * invHomo, Point[1] * invHomo, Point[2] * invHomo);
 }
 
 
