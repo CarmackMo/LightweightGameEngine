@@ -591,7 +591,11 @@ inline const T& Vector4<T>::operator[] (int idx) const
 template <typename T>
 inline bool Vector4<T>::operator== (const Vector4<T>& other) const
 {
-	return (val[0] == other[0]) && (val[1] == other[1]) && (val[2] == other[2]) && (val[3] == other[3]);
+	return (
+		AreEqual(static_cast<float>(val[0]), static_cast<float>(other[0])) == true &&
+		AreEqual(static_cast<float>(val[1]), static_cast<float>(other[1])) == true &&
+		AreEqual(static_cast<float>(val[2]), static_cast<float>(other[2])) == true &&
+		AreEqual(static_cast<float>(val[3]), static_cast<float>(other[3])) == true);
 }
 
 

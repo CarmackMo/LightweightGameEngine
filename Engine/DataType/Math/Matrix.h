@@ -367,38 +367,57 @@ inline void Matrix3UnitTest()
 
 inline void Matrix4UnitTest()
 {
-	Matrix4<double> sample = Matrix4<double>(
-		1, 2, 3, 4,
-		5, 6, 7, 8,
-		9, 10, 11, 12,
-		13, 14, 15, 16
-	);
+	Matrix4<float> case0 = Matrix4<float>(
+		1.1f, 0.0f, 0.0f, 0.0f,
+		0.0f, 2.2f, 2.3f, 0.0f,
+		0.0f, 3.2f, 3.3f, 0.0f,
+		0.0f, 0.0f, 0.0f, 4.4f);
+	Matrix4<int> case1 = Matrix4<int>(
+		1, 0, 0, 0,
+		0, 2, 0, 0,
+		0, 0, 3, 0,
+		0, 0, 0, 4);
+	Vector4<float> case2 = Vector4<float>(1.0f, 2.0f, 3.0f, 4.0f);
 
-	/* Operator Test */
-	Matrix4<double> temp1;
-	temp1 = sample + Matrix4<double>(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
-	assert(temp1 == Matrix4<double>(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17));
-	temp1 = sample - Matrix4<double>(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
-	assert(temp1 == Matrix4<double>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15));
-	temp1 = sample * 2;
-	assert(temp1 == Matrix4<double>(2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32));
-	temp1 = sample * Matrix4<double>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
-	assert(temp1 == Matrix4<double>(90, 100, 110, 120, 202, 228, 254, 280, 314, 356, 398, 440, 426, 484, 542, 600));
-	assert(2 == sample[0][1]);
-
-	/* Math Operation Test */
-	Vector4<double> temp2;
-	temp2 = Vector4<double>(1, 2, 3, 4) * sample;
-	assert(temp2 == Vector4<double>(90, 100, 110, 120));
-	temp2 = sample * Vector4<double>(1, 2, 3, 4);
-	assert(temp2 == Vector4<double>(30, 70, 110, 150));
-	temp1 = sample.GetTranspose();
-	assert(temp1 == Matrix4<double>(1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15, 4, 8, 12, 16));
-	sample = Matrix4<double>(1, 1, 1, -1, 1, 1, -1, 1, 1, -1, 1, 1, -1, 1, 1, 1);
-	temp1 = sample.GetInverse<double>();
-	assert(temp1 == Matrix4<double>(0.25, 0.25, 0.25, -0.25, 0.25, 0.25, -0.25, 0.25, 0.25, -0.25, 0.25, 0.25, -0.25, 0.25, 0.25, 0.25));
+	Matrix4<float> temp0;
+	Matrix4<int> temp1;
+	Vector4<float> temp2;
 
 
+	assert(AreEqual(case0.Det(1, 1), 15.972f));
+
+	temp0 = case0;
+	temp0.Invert();
+	assert(temp0 == Matrix4<float>(.9090909f, 0, 0, 0, 0, -32.999961f, 22.999971f, 0, 0, 31.999961f, -21.999975f, 0, 0, 0, 0, .22727272f));
+	temp0 = case0.GetInverse<float>();
+	assert(temp0 == Matrix4<float>(.9090909f, 0, 0, 0, 0, -32.999961f, 22.999971f, 0, 0, 31.999961f, -21.999975f, 0, 0, 0, 0, .22727272f));
+	temp1 = case1;
+	temp1.Invert();
+	assert(temp1 == Matrix4<int>(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+	temp0 = case1.GetInverse<float>();
+	assert(temp0 == Matrix4<float>(1, 0, 0, 0, 0, .5f, 0, 0, 0, 0, .33333333f, 0, 0, 0, 0, .25f));
+
+	temp0 = case0;
+	temp0.Transpose();
+	assert(temp0 == Matrix4<float>(1.1f, 0.0f, 0.0f, 0.0f, 0.0f, 2.2f, 3.2f, 0.0f, 0.0f, 2.3f, 3.3f, 0.0f, 0.0f, 0.0f, 0.0f, 4.4f));
+	temp0 = case0.GetTranspose();
+	assert(temp0 == Matrix4<float>(1.1f, 0.0f, 0.0f, 0.0f, 0.0f, 2.2f, 3.2f, 0.0f, 0.0f, 2.3f, 3.3f, 0.0f, 0.0f, 0.0f, 0.0f, 4.4f));
+
+	temp0 = case0 + Matrix4<float>(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+	assert(temp0 == Matrix4<float>(2.1f, 1, 1, 1, 1, 3.2f, 3.3f, 1, 1, 4.2f, 4.3f, 1, 1, 1, 1, 5.4f));
+	temp0 = temp0 - Matrix4<float>(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+	assert(temp0 == Matrix4<float>(1.1f, 0.0f, 0.0f, 0.0f, 0.0f, 2.2f, 2.3f, 0.0f, 0.0f, 3.2f, 3.3f, 0.0f, 0.0f, 0.0f, 0.0f, 4.4f));
+	temp0 = temp0 * 2;
+	assert(temp0 == Matrix4<float>(2.2f, 0.0f, 0.0f, 0.0f, 0.0f, 4.4f, 4.6f, 0.0f, 0.0f, 6.4f, 6.6f, 0.0f, 0.0f, 0.0f, 0.0f, 8.8f));
+	temp0 = temp0 / 2;
+	assert(temp0 == Matrix4<float>(1.1f, 0.0f, 0.0f, 0.0f, 0.0f, 2.2f, 2.3f, 0.0f, 0.0f, 3.2f, 3.3f, 0.0f, 0.0f, 0.0f, 0.0f, 4.4f));
+	temp0 = case0 * case0;
+	assert(temp0 == Matrix4<float>(1.21f, 0, 0, 0, 0, 12.2f, 12.65f, 0, 0, 17.6f, 18.25f, 0, 0, 0, 0, 19.36f));
+
+	temp2 = case0 * case2;
+	assert(temp2 == Vector4<float>(1.1f, 11.3f, 16.3f, 17.6f));
+	temp2 = case2 * case0;
+	assert(temp2 == Vector4<float>(1.1f, 14, 14.5f, 17.6f));
 }
 
 #endif

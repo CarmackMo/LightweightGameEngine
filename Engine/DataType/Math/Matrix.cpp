@@ -77,10 +77,9 @@ void Matrix3<T>::Invert(void)
 	 * Calcualte the determinant of this instance, using first row elements as pivots */
 	T det = val[0][0] * Det(0, 0) - val[0][1] * Det(0, 1) + val[0][2] * Det(0, 2);
 
-	/* Calculate the adjugate matrix of this instance, the value at (i,j)
+	/* Calculate the cofactors matrix of this instance first, the value at (i,j)
 	 * equals to Det(i,j) */
 	Matrix3<T> adjugate;
-
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 3; j++)
@@ -89,6 +88,7 @@ void Matrix3<T>::Invert(void)
 		}
 	}
 
+	/* Calculate the adjugate matrix by transposing the cofactors matrix */
 	adjugate.Transpose();
 
 	/* Update the elements of this instance to make it inversed */
@@ -514,9 +514,9 @@ void Matrix4<T>::Invert(void)
 	T det = val[0][0] * Det(0, 0) - val[0][1] * Det(0, 1) +
 		val[0][2] * Det(0, 2) - val[0][3] * Det(0, 3);
 
-	/* Calculate the adjugate matrix of this instance, the value at (i,j)
+	/* Calculate the cofactors matrix of this instance first, the value at (i,j)
 	 * equals to Det(i,j) */
-	T adjugate[4][4];
+	Matrix4<T> adjugate;
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < 4; j++)
@@ -524,6 +524,9 @@ void Matrix4<T>::Invert(void)
 			adjugate[i][j] = static_cast<T>(pow(-1, i + j)) * Det(i, j);
 		}
 	}
+
+	/* Calculate the adjugate matrix by transposing the cofactors matrix */
+	adjugate.Transpose();
 
 	/* Update the elements of this instance to make it inversed */
 	for (int i = 0; i < 4; i++)
