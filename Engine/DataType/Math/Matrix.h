@@ -265,9 +265,9 @@ namespace Matrix
 inline void Matrix3UnitTest()
 {
 	Matrix3<float> case0 = Matrix3<float>(
-		1.1f, 0.0f, 0.0f,
+		1.1f, 0.0f, 1.3f,
 		0.0f, 2.2f, 0.0f,
-		0.0f, 0.0f, 3.3f);
+		3.1f, 0.0f, 3.3f);
 	Matrix3<int> case1 = Matrix3<int>(
 		1, 0, 0,
 		0, 2, 0,
@@ -280,14 +280,31 @@ inline void Matrix3UnitTest()
 
 	temp0 = case0;
 	temp0.Invert();
-	assert(temp0 == Matrix3<float>(.9090909f, 0, 0, 0, .45454545f, 0, 0, 0, .3030303f));
+	assert(temp0 == Matrix3<float>(-8.25f, 0, 3.25f, 0, .45454545f, 0, 7.75f, 0, -2.75f));
 	temp0 = case0.GetInverse<float>();
-	assert(temp0 == Matrix3<float>(.9090909f, 0, 0, 0, .45454545f, 0, 0, 0, .3030303f));
+	assert(temp0 == Matrix3<float>(-8.25f, 0, 3.25f, 0, .45454545f, 0, 7.75f, 0, -2.75f));
 	temp1 = case1;
 	temp1.Invert();
 	assert(temp1 == Matrix3<int>(1, 0, 0, 0, 0, 0, 0, 0, 0));
 	temp0 = case1.GetInverse<float>();
 	assert(temp0 == Matrix3<float>(1.0f, 0, 0, 0, .5f, 0, 0, 0, .3333333f));
+
+	temp0 = case0;
+	temp0.Transpose();
+	assert(temp0 == Matrix3<float>(1.1f, 0.0f, 3.1f, 0.0f, 2.2f, 0.0f, 1.3f, 0.0f, 3.3f));
+	temp0 = case0.GetTranspose();
+	assert(temp0 == Matrix3<float>(1.1f, 0.0f, 3.1f, 0.0f, 2.2f, 0.0f, 1.3f, 0.0f, 3.3f));
+
+	temp0 = case0 + Matrix3<float>(1, 1, 1, 1, 1, 1, 1, 1, 1);
+	assert(temp0 == Matrix3<float>(2.1f, 1, 2.3f, 1, 3.2f, 1, 4.1f, 1, 4.3f));
+	temp0 = temp0 - Matrix3<float>(1, 1, 1, 1, 1, 1, 1, 1, 1);
+	assert(temp0 == Matrix3<float>(1.1f, 0.0f, 1.3f, 0.0f, 2.2f, 0.0f, 3.1f, 0.0f, 3.3f));
+	temp0 = temp0 * 2;
+	assert(temp0 == Matrix3<float>(2.2f, 0.0f, 2.6f, 0.0f, 4.4f, 0.0f, 6.2f, 0.0f, 6.6f));
+	temp0 = temp0 / 2;
+	assert(temp0 == Matrix3<float>(1.1f, 0.0f, 1.3f, 0.0f, 2.2f, 0.0f, 3.1f, 0.0f, 3.3f));
+	temp0 = case0 * case0;
+	assert(temp0 == Matrix3<float>(5.24f, 0.0f, 5.72f, 0.0f, 4.84f, 0.0f, 13.64f, 0.0f, 14.92f));
 
 }
 
