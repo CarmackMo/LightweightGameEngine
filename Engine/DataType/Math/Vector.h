@@ -237,7 +237,7 @@ public:
 
 
 /********************************* Global APIs **************************************/
-/* Following global APIs are implemented as function templates. Noted that template
+/* Following global APIs are implemented as function templates. Note that template
  * is not a class or a function, it is a "pattern" that the compiler uses to generate 
  * a family of classes or functions. To use function templates, both the template 
  * declaration and definition must be visible to the compiler at the point of instantiation. 

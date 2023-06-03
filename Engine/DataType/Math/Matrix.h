@@ -38,37 +38,44 @@ public:
 	inline Vector3<T> GetRow(int row) const;
 	inline Vector3<T> GetCol(int col) const;
 
-	/* Calculate the determinant of the 2x2 minor matrix where M(row, col) is the pivot */
+	/* @brief Calculate the determinant of the 2x2 minor matrix using M[row][col] as the pivot.
+	 *		  To calculate the actual determinant of a Matrix3 instance, can refer to following formular: 
+	 *		  det = M[0][0]*Det(0,0) - M[0][1]*Det(0,1) + M[0][2]*Det(0,2), using first row elements
+	 *		  as pivots */
 	T Det(int row, int col) const;
 
 	/* @brief Invert this instance. Invert a matrix with type "int" might have incorrect result.
 	 *		  Because the real result of the inverse might be a float point number. */
 	void Invert(void);
-	/* @brief Return a matrix that is the inverse of this instance but don't modify this instance. */
-	inline Matrix3<T> GetInverse() const;
-	/* @brief Same functionality of Matrix<T>::GetInverse(). This function can avoid incorrect
-	 *		  result due to inappropriate data types. (e.g. the inverse of a <int> matrix might
-	 *		  has <float> result) */
+	/* @brief Same functionality of Matrix<T>::GetInverse(). User needs to sepcify the return type
+	 *		  to prevent incorrect result due to inappropriate data types. (e.g. the inverse of a 
+	 *		  <int> matrix might has <float> result, if return the result in its original type, the
+	 *		  result will be incorrect) */
 	template <typename U>
 	inline Matrix3<U> GetInverse() const;
+	///* @brief Return a matrix that is the inverse of this instance but don't modify this instance. */
+	//inline Matrix3<T> GetInverse() const;
 
-	/* Transpose this instance */
+	/* @brief Transpose this instance */
 	inline void Transpose(void);
-	/* Return a matrix that is the transpose of this instance but don't modify this instance */
+	/* @brief Return a matrix that is the transpose of this instance but don't modify this instance */
 	inline Matrix3<T> GetTranspose(void) const;
 
-	/* Return a transform matrix of this instance */
+	/* @brief Convert this instance into a 4x4 transformation matrix. The additional row and column 
+	 *		  represents translations and homogeneous coordinates respectively. Mathematically,
+	 *		  this convertion is known as an affine transformation, allowing the original matrix
+	 *		  to be used for 3D math in a homogenous coordinate system. */
 	inline Matrix4<T> GetTransform() const;
 
-	/* Convert current to a new matrix with type "U" */
+	/* @brief Convert current to a new matrix with type "U" */
 	template <typename U>
 	inline Matrix3<U> CovertToType();
 
-	/* Multiply vector by matrix */
-	/* Return v * M */
-	Vector3<T> MultiplyLeft(const Vector3<T>& vec) const;
-	/* Return M * v */
-	Vector3<T> MultiplyRight(const Vector3<T>& vec) const;
+	///* Multiply vector by matrix */
+	///* @brief Return vec * Mtx */
+	//Vector3<T> MultiplyLeft(const Vector3<T>& vec) const;
+	///* @brief Return Mtx * vec */
+	//Vector3<T> MultiplyRight(const Vector3<T>& vec) const;
 
 
 	inline T* operator[] (int row);
@@ -78,13 +85,13 @@ public:
 	inline Matrix3<T> operator* (T num) const;
 	inline Matrix3<T> operator/ (T num) const;
 	inline Matrix3<T>& operator= (const Matrix3<T>& other);
-	/* Multiply matrix by matrix, return this instance * other */
+	/* @brief Multiply matrix by matrix */
 	Matrix3<T> operator* (const Matrix3<T>& other) const;
 
 	bool operator== (const Matrix3<T>& other) const;
 
 
-	/* Identity matrix creator */
+	/* @brief Identity matrix creator */
 	inline static Matrix3<T> CreateIdentity(void);
 
 	/* @brief Rotate matrix around origin point, rotate counter-clockwise */
@@ -92,15 +99,14 @@ public:
 	inline static Matrix3<T> CreateYRotation(double rad);
 	inline static Matrix3<T> CreateZRotation(double rad);
 
-	/* Translation matrix creator */
+	/* @brief Translation matrix creator */
 	inline static Matrix3<T> CreateTranslation(const Vector2<T>& vec);
 	inline static Matrix3<T> CreateTranslation(T transX, T transY);
 
-	/* Scale matrix creator */
+	/* @brief Scale matrix creator */
 	inline static Matrix3<T> CreateScale(const Vector2<T>& vec);
 	inline static Matrix3<T> CreateScale(T scaleX, T scaleY);
 };
-
 
 
 /**
@@ -192,11 +198,61 @@ public:
 };
 
 
-
-
+/********************************* Global APIs **************************************/
+/* Following global APIs are implemented as function templates. Note that template
+ * is not a class or a function, it is a "pattern" that the compiler uses to generate
+ * a family of classes or functions. To use function templates, both the template
+ * declaration and definition must be visible to the compiler at the point of instantiation.
+ * As a result, template functions are typically declared and implemented in the same file.
+ */
 
 namespace Matrix
 {
+
+/* @brief Calculate vec = Mtx * vec; (i.e. column vector) */
+template <typename T>
+inline Vector3<T> operator* (const Matrix3<T>& mtx, const Vector3<T>& vec)
+{
+	Vector3<T> res = Vector3<T>();
+
+	/* Iterator all rows in matrix */
+	for (int row = 0; row < 3; row++)
+	{
+		T sum = 0;
+		/* Iterator that repeat 3 times */
+		for (int i = 0; i < 3; i++)
+		{
+			sum += mtx[row][i] * vec[i];
+		}
+		res[row] = sum;
+	}
+	return res;
+}
+
+
+/* @brief Calculate vec = vec * Mtx; (i.e. row vector) */
+template <typename T>
+inline Vector3<T> operator* (const Vector3<T>& vec, const Matrix3<T>& mtx)
+{
+	Vector3<T> res = Vector3<T>();
+
+	/* Iterate all columns in matrix */
+	for (int col = 0; col < 3; col++)
+	{
+		T sum = 0;
+		/* Iterator that repeat 3 times */
+		for (int i = 0; i < 3; i++)
+		{
+			sum += vec[i] * mtx[i][col];
+		}
+		res[col] = sum;
+	}
+	return res;
+}
+
+
+
+
 /********************************* Unit tests **************************************/
 
 #if defined(_DEBUG)

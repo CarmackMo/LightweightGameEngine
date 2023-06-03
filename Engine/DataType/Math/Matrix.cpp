@@ -62,9 +62,6 @@ inline Vector3<T> Matrix3<T>::GetCol(int col) const
 template <typename T>
 T Matrix3<T>::Det(int row, int col) const
 {
-	/* Calcualte the determinant based on the following formula:
-	 * det = a11(a22a33 - a23a32) - a12(a21a33 - a23a31) + a13(a21a32 - a22a31).
-	 * Note that needs to ensure positive-negative correctness. */
 	T res = static_cast<T>(pow(-1, row + col)) * 
 		(val[(row + 1) % 3][(col + 1) % 3] * val[(row + 2) % 3][(col + 2) % 3] -
 		 val[(row + 1) % 3][(col + 2) % 3] * val[(row + 2) % 3][(col + 1) % 3]);
@@ -77,7 +74,7 @@ template <typename T>
 void Matrix3<T>::Invert(void)
 {
 	/* Inverse of matrix M equals to Adj(M)/Det(M).
-	 * Calcualte the determinant of this instance, using first row */
+	 * Calcualte the determinant of this instance, using first row elements as pivots */
 	T det = val[0][0] * Det(0, 0) - val[0][1] * Det(0, 1) + val[0][2] * Det(0, 2);
 
 	/* Calculate the adjugate matrix of this instance, the value at (i,j)
@@ -105,13 +102,13 @@ void Matrix3<T>::Invert(void)
 }
 
 
-template <typename T>
-inline Matrix3<T> Matrix3<T>::GetInverse() const
-{
-	Matrix3<T> res = *this;
-	res.Invert();
-	return res;
-}
+//template <typename T>
+//inline Matrix3<T> Matrix3<T>::GetInverse() const
+//{
+//	Matrix3<T> res = *this;
+//	res.Invert();
+//	return res;
+//}
 
 
 template <typename T>
@@ -168,44 +165,44 @@ inline Matrix3<U> Matrix3<T>::CovertToType()
 }
 
 
-template <typename T>
-Vector3<T> Matrix3<T>::MultiplyLeft(const Vector3<T>& vec) const
-{
-	Vector3<T> res = Vector3<T>();
-
-	/* Iterate all columns in matrix */
-	for (int col = 0; col < 3; col++)
-	{
-		T sum = 0;
-		/* Iterator that repeat 4 times */
-		for (int i = 0; i < 3; i++)
-		{
-			sum += vec[i] * val[i][col];
-		}
-		res[col] = sum;
-	}
-	return res;
-}
-
-
-template <typename T>
-Vector3<T> Matrix3<T>::MultiplyRight(const Vector3<T>& vec) const
-{
-	Vector3<T> res = Vector3<T>();
-
-	/* Iterator all rows in matrix */
-	for (int row = 0; row < 3; row++)
-	{
-		T sum = 0;
-		/* Iterator that repeat 4 times */
-		for (int i = 0; i < 3; i++)
-		{
-			sum += val[row][i] * vec[i];
-		}
-		res[row] = sum;
-	}
-	return res;
-}
+//template <typename T>
+//Vector3<T> Matrix3<T>::MultiplyLeft(const Vector3<T>& vec) const
+//{
+//	Vector3<T> res = Vector3<T>();
+//
+//	/* Iterate all columns in matrix */
+//	for (int col = 0; col < 3; col++)
+//	{
+//		T sum = 0;
+//		/* Iterator that repeat 4 times */
+//		for (int i = 0; i < 3; i++)
+//		{
+//			sum += vec[i] * val[i][col];
+//		}
+//		res[col] = sum;
+//	}
+//	return res;
+//}
+//
+//
+//template <typename T>
+//Vector3<T> Matrix3<T>::MultiplyRight(const Vector3<T>& vec) const
+//{
+//	Vector3<T> res = Vector3<T>();
+//
+//	/* Iterator all rows in matrix */
+//	for (int row = 0; row < 3; row++)
+//	{
+//		T sum = 0;
+//		/* Iterator that repeat 4 times */
+//		for (int i = 0; i < 3; i++)
+//		{
+//			sum += val[row][i] * vec[i];
+//		}
+//		res[row] = sum;
+//	}
+//	return res;
+//}
 
 
 template <typename T>
