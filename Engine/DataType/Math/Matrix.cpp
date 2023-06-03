@@ -102,15 +102,6 @@ void Matrix3<T>::Invert(void)
 }
 
 
-//template <typename T>
-//inline Matrix3<T> Matrix3<T>::GetInverse() const
-//{
-//	Matrix3<T> res = *this;
-//	res.Invert();
-//	return res;
-//}
-
-
 template <typename T>
 template <typename U>
 inline Matrix3<U> Matrix3<T>::GetInverse() const
@@ -151,46 +142,6 @@ inline Matrix3<U> Matrix3<T>::ConvertToType() const
 		static_cast<U>(val[1][0]), static_cast<U>(val[1][1]), static_cast<U>(val[1][2]),
 		static_cast<U>(val[2][0]), static_cast<U>(val[2][1]), static_cast<U>(val[2][2]));
 }
-
-
-//template <typename T>
-//Vector3<T> Matrix3<T>::MultiplyLeft(const Vector3<T>& vec) const
-//{
-//	Vector3<T> res = Vector3<T>();
-//
-//	/* Iterate all columns in matrix */
-//	for (int col = 0; col < 3; col++)
-//	{
-//		T sum = 0;
-//		/* Iterator that repeat 4 times */
-//		for (int i = 0; i < 3; i++)
-//		{
-//			sum += vec[i] * val[i][col];
-//		}
-//		res[col] = sum;
-//	}
-//	return res;
-//}
-//
-//
-//template <typename T>
-//Vector3<T> Matrix3<T>::MultiplyRight(const Vector3<T>& vec) const
-//{
-//	Vector3<T> res = Vector3<T>();
-//
-//	/* Iterator all rows in matrix */
-//	for (int row = 0; row < 3; row++)
-//	{
-//		T sum = 0;
-//		/* Iterator that repeat 4 times */
-//		for (int i = 0; i < 3; i++)
-//		{
-//			sum += val[row][i] * vec[i];
-//		}
-//		res[row] = sum;
-//	}
-//	return res;
-//}
 
 
 template <typename T>
@@ -549,15 +500,6 @@ inline Matrix4<U> Matrix4<T>::GetInverse() const
 }
 
 
-//template <typename T>
-//inline Matrix4<T> Matrix4<T>::GetInverse() const
-//{
-//	Matrix4<T> res = *this;
-//	res.Invert();
-//	return res;
-//}
-
-
 template <typename T>
 inline void Matrix4<T>::Transpose(void)
 {
@@ -593,46 +535,6 @@ inline Matrix4<U> Matrix4<T>::CovertToType() const
 		static_cast<U>(val[2][0]), static_cast<U>(val[2][1]), static_cast<U>(val[2][2]), static_cast<U>(val[2][3]),
 		static_cast<U>(val[3][0]), static_cast<U>(val[3][1]), static_cast<U>(val[3][2]), static_cast<U>(val[3][3]));
 }
-
-
-//template <typename T>
-//Vector4<T> Matrix4<T>::MultiplyLeft(const Vector4<T>& vec) const
-//{
-//	Vector4<T> res = Vector4<T>();
-//
-//	/* Iterate all columns in matrix */
-//	for (int col = 0; col < 4; col++)
-//	{
-//		T sum = 0;
-//		/* Iterator that repeat 4 times */
-//		for (int i = 0; i < 4; i++)
-//		{
-//			sum += vec[i] * val[i][col];
-//		}
-//		res[col] = sum;
-//	}
-//	return res;
-//}
-//
-//
-//template <typename T>
-//Vector4<T> Matrix4<T>::MultiplyRight(const Vector4<T>& vec) const
-//{
-//	Vector4<T> res = Vector4<T>();
-//
-//	/* Iterator all rows in matrix */
-//	for (int row = 0; row < 4; row++)
-//	{
-//		T sum = 0;
-//		/* Iterator that repeat 4 times */
-//		for (int i = 0; i < 4; i++)
-//		{
-//			sum += val[row][i] * vec[i];
-//		}
-//		res[row] = sum;
-//	}
-//	return res;
-//}
 
 
 template <typename T>

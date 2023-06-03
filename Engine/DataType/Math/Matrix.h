@@ -55,8 +55,6 @@ public:
 	 *		  in its original type, the result will be incorrect) */
 	template <typename U>
 	inline Matrix3<U> GetInverse() const;
-	///* @brief Return a matrix that is the inverse of this instance but don't modify this instance. */
-	//inline Matrix3<T> GetInverse() const;
 
 	/* @brief Transpose this instance */
 	inline void Transpose(void);
@@ -67,11 +65,6 @@ public:
 	template <typename U>
 	inline Matrix3<U> ConvertToType() const;
 
-	///* Multiply vector by matrix */
-	///* @brief Return vec * Mtx */
-	//Vector3<T> MultiplyLeft(const Vector3<T>& vec) const;
-	///* @brief Return Mtx * vec */
-	//Vector3<T> MultiplyRight(const Vector3<T>& vec) const;
 
 	inline T* operator[] (int row);
 	inline const T* operator[] (int row) const;
@@ -150,8 +143,6 @@ public:
 	 *		  in its original type, the result will be incorrect) */
 	template <typename U>
 	inline Matrix4<U> GetInverse() const;
-	///* @brief Return a matrix that is the inverse of this instance but don't modify this instance. */
-	//inline Matrix4<T> GetInverse() const;
 
 	/* @brief Transpose this instance */
 	inline void Transpose(void);
@@ -162,11 +153,6 @@ public:
 	template <typename U>
 	inline Matrix4<U> CovertToType() const;
 
-	///* Multiply vector by matrix */
-	///* Return v * M */
-	//Vector4<T> MultiplyLeft(const Vector4<T>& vec) const;
-	///* Return M * v */
-	//Vector4<T> MultiplyRight(const Vector4<T>& vec) const;
 
 	inline T* operator[] (int row);
 	inline const T* operator[] (int row) const;
