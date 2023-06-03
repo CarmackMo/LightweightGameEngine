@@ -92,6 +92,10 @@ public:
 	 *		  to be used for 3D math in a homogenous coordinate system. */
 	inline Matrix4<T> ToTransform() const;
 
+	/* @brief Apply this instance as a transform matrix to the input point, return a new vector that
+	*		  represents the transformed point. (The point is transformed clockwise). */
+	inline Vector2<T> TransformPoint(const Vector2<T>& point) const;
+
 	/* @brief Identity matrix creator */
 	inline static Matrix3<T> CreateIdentity(void);
 
