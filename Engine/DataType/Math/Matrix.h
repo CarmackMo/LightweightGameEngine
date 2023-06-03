@@ -86,6 +86,12 @@ public:
 	bool operator== (const Matrix3<T>& other) const;
 
 
+	/* @brief Convert this instance into a 4x4 transformation matrix. The additional row and column 
+	 *		  represents translations and homogeneous coordinates respectively. Mathematically,
+	 *		  this convertion is known as an affine transformation, allowing the original matrix
+	 *		  to be used for 3D math in a homogenous coordinate system. */
+	inline Matrix4<T> ToTransform() const;
+
 	/* @brief Identity matrix creator */
 	inline static Matrix3<T> CreateIdentity(void);
 
@@ -101,12 +107,6 @@ public:
 	/* @brief Scale matrix creator */
 	inline static Matrix3<T> CreateScale(const Vector2<T>& vec);
 	inline static Matrix3<T> CreateScale(T scaleX, T scaleY);
-
-	/* @brief Convert this instance into a 4x4 transformation matrix. The additional row and column 
-	 *		  represents translations and homogeneous coordinates respectively. Mathematically,
-	 *		  this convertion is known as an affine transformation, allowing the original matrix
-	 *		  to be used for 3D math in a homogenous coordinate system. */
-	inline Matrix4<T> ToTransform() const;
 };
 
 
@@ -175,6 +175,7 @@ public:
 	Matrix4<T> operator* (const Matrix4<T>& other) const;
 
 	bool operator== (const Matrix4<T>& other) const;
+
 
 	/* @brief Return a matrix that is the inverse of a transformation matrix. It "undoes" the original 
 	 *		  transformation by taking the transpose of the rotation and applying the inverse translation.

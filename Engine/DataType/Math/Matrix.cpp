@@ -297,6 +297,34 @@ bool Matrix3<T>::operator== (const Matrix3<T>& other) const
 
 
 template <typename T>
+inline Matrix4<T> Matrix3<T>::ToTransform() const
+{
+	return Matrix4<T>(
+		val[0][0], val[0][1], val[0][2], 0.0f,
+		val[1][0], val[1][1], val[1][2], 0.0f,
+		val[2][0], val[2][1], val[2][2], 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f);
+}
+
+
+template <typename T>
+inline Vector2<T> Matrix3<T>::TransformPoint(const Vector2<T>& point) const
+{
+	/* Convert the point's coordinates to homogeneous coordinate */
+	Vector3<T> Point = *this * Vector3<T>(point[0], point[1], 1.0f);
+
+	/* The 3rd element of the resulting transformed point is the homogeneous coordinate.
+	 * The variable "invHomo" stores the inverse of the homogeneous coordinate. The
+	 * purpose of dividing the transformed point by "invHomo" is to normalize the coordinates
+	 * This normalization step ensures that the transformed point retains its relative
+	 * position in 3D space. It effectively brings the point back from homogeneous coordinates
+	 * to Cartesian coordinates. */
+	float invHomo = 1.0f / Point[2];
+	return Vector2<T>(Point[0] * invHomo, Point[1] * invHomo);
+}
+
+
+template <typename T>
 inline Matrix3<T> Matrix3<T>::CreateIdentity(void)
 {
 	Matrix3<double> res = Matrix3<double>(
@@ -390,17 +418,6 @@ inline Matrix3<T> Matrix3<T>::CreateScale(T scaleX, T scaleY)
 		0, scaleY, 0,
 		0, 0, 1);
 	return res.ConvertToType<T>();
-}
-
-
-template <typename T>
-inline Matrix4<T> Matrix3<T>::ToTransform() const
-{
-	return Matrix4<T>(
-		val[0][0], val[0][1], val[0][2], 0.0f,
-		val[1][0], val[1][1], val[1][2], 0.0f,
-		val[2][0], val[2][1], val[2][2], 0.0f,
-		0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 
