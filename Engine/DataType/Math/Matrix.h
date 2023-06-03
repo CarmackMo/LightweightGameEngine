@@ -1,6 +1,8 @@
 ﻿#pragma once
+#include <type_traits>
 #include "Debugger.h"
 #include "Vector.h"
+#include "Mathf.h"
 
 using namespace std;
 using namespace Engine::Debugger;
@@ -67,9 +69,9 @@ public:
 	 *		  to be used for 3D math in a homogenous coordinate system. */
 	inline Matrix4<T> GetTransform() const;
 
-	/* @brief Convert current to a new matrix with type "U" */
+	/* @brief Convert this instance to a new matrix with type "U", but don't modify this instance */
 	template <typename U>
-	inline Matrix3<U> CovertToType();
+	inline Matrix3<U> ConvertToType() const;
 
 	///* Multiply vector by matrix */
 	///* @brief Return vec * Mtx */
@@ -206,9 +208,6 @@ public:
  * As a result, template functions are typically declared and implemented in the same file.
  */
 
-namespace Matrix
-{
-
 /* @brief Calculate vec = Mtx * vec; (i.e. column vector) */
 template <typename T>
 inline Vector3<T> operator* (const Matrix3<T>& mtx, const Vector3<T>& vec)
@@ -253,11 +252,44 @@ inline Vector3<T> operator* (const Vector3<T>& vec, const Matrix3<T>& mtx)
 
 
 
+namespace Matrix
+{
+
+
 /********************************* Unit tests **************************************/
 
 #if defined(_DEBUG)
 
 #include <cassert>
+
+inline void Matrix3UnitTest()
+{
+	Matrix3<float> case0 = Matrix3<float>(
+		1.1f, 0.0f, 0.0f,
+		0.0f, 2.2f, 0.0f,
+		0.0f, 0.0f, 3.3f);
+	Matrix3<int> case1 = Matrix3<int>(
+		1, 0, 0,
+		0, 2, 0,
+		0, 0, 3);
+
+	Matrix3<float> temp0;
+	Matrix3<int> temp1;
+
+	assert(AreEqual(case0.Det(0, 1), 0.0f));
+
+	temp0 = case0;
+	temp0.Invert();
+	assert(temp0 == Matrix3<float>(.9090909f, 0, 0, 0, .45454545f, 0, 0, 0, .3030303f));
+	temp0 = case0.GetInverse<float>();
+	assert(temp0 == Matrix3<float>(.9090909f, 0, 0, 0, .45454545f, 0, 0, 0, .3030303f));
+	temp1 = case1;
+	temp1.Invert();
+	assert(temp1 == Matrix3<int>(1, 0, 0, 0, 0, 0, 0, 0, 0));
+	temp0 = case1.GetInverse<float>();
+	assert(temp0 == Matrix3<float>(1.0f, 0, 0, 0, .5f, 0, 0, 0, .3333333f));
+
+}
 
 inline void Matrix4UnitTest()
 {

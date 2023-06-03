@@ -85,6 +85,7 @@ int WINAPI wWinMain(
 
 
     /* Unit test for Matrix4 class  */
+    Matrix::Matrix3UnitTest();
     Matrix::Matrix4UnitTest();
     DEBUG_PRINT(" \n\n\n ############ \n Matrix4 unit test successful \n ############ \n\n\n");
 

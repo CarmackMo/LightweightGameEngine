@@ -115,8 +115,7 @@ template <typename T>
 template <typename U>
 inline Matrix3<U> Matrix3<T>::GetInverse() const
 {
-	Matrix3<T> ori = *this;
-	Matrix3<U> res = ori.CovertToType<U>();
+	Matrix3<U> res = this->ConvertToType<U>();
 	res.Invert();
 	return res;
 }
@@ -156,7 +155,7 @@ inline Matrix4<T> Matrix3<T>::GetTransform() const
 
 template <typename T>
 template <typename U>
-inline Matrix3<U> Matrix3<T>::CovertToType()
+inline Matrix3<U> Matrix3<T>::ConvertToType() const
 {
 	return Matrix3<U>(
 		static_cast<U>(val[0][0]), static_cast<U>(val[0][1]), static_cast<U>(val[0][2]),
@@ -300,7 +299,7 @@ bool Matrix3<T>::operator== (const Matrix3<T>& other) const
 	{
 		for (int col = 0; col < 3; col++)
 		{
-			if (val[row][col] != other[row][col])
+			if (AreEqual(static_cast<float>(val[row][col]), static_cast<float>(other[row][col])) == false)
 				return false;
 		}
 	}
@@ -315,7 +314,7 @@ inline Matrix3<T> Matrix3<T>::CreateIdentity(void)
 		1, 0, 0,
 		0, 1, 0,
 		0, 0, 1);
-	return res.CovertToType<T>();
+	return res.ConvertToType<T>();
 }
 
 
@@ -329,7 +328,7 @@ inline Matrix3<T> Matrix3<T>::CreateXRotation(double rad)
 		1, 0, 0,
 		0, cos_, -sin_,
 		0, sin_, cos_);
-	return res.CovertToType<T>();
+	return res.ConvertToType<T>();
 }
 
 
@@ -343,7 +342,7 @@ inline Matrix3<T> Matrix3<T>::CreateYRotation(double rad)
 		cos_, 0, sin_,
 		0, 1, 0,
 		-sin_, 0, cos_);
-	return res.CovertToType<T>();
+	return res.ConvertToType<T>();
 }
 
 
@@ -357,7 +356,7 @@ inline Matrix3<T> Matrix3<T>::CreateZRotation(double rad)
 		cos_, -sin_, 0,
 		sin_, cos_, 0,
 		0, 0, 1);
-	return res.CovertToType<T>();
+	return res.ConvertToType<T>();
 }
 
 
@@ -368,7 +367,7 @@ inline Matrix3<T> Matrix3<T>::CreateTranslation(const Vector2<T>& vec)
 		1, 0, vec[0],
 		0, 1, vec[1],
 		0, 0, 1);
-	return res.CovertToType<T>();
+	return res.ConvertToType<T>();
 }
 
 
@@ -379,7 +378,7 @@ inline Matrix3<T> Matrix3<T>::CreateTranslation(T transX, T transY)
 		1, 0, transX,
 		0, 1, transY,
 		0, 0, 1);
-	return res.CovertToType<T>();
+	return res.ConvertToType<T>();
 }
 
 
@@ -390,7 +389,7 @@ inline Matrix3<T> Matrix3<T>::CreateScale(const Vector2<T>& vec)
 		vec[0], 0, 0,
 		0, vec[1], 0,
 		0, 0, 1);
-	return res.CovertToType<T>();
+	return res.ConvertToType<T>();
 }
 
 
@@ -401,7 +400,7 @@ inline Matrix3<T> Matrix3<T>::CreateScale(T scaleX, T scaleY)
 		scaleX, 0, 0,
 		0, scaleY, 0,
 		0, 0, 1);
-	return res.CovertToType<T>();
+	return res.ConvertToType<T>();
 }
 
 
