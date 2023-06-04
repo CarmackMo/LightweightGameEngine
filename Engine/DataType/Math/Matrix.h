@@ -63,7 +63,7 @@ public:
 
 	/* @brief Convert this instance to a new matrix with type "U", but don't modify this instance */
 	template <typename U>
-	inline Matrix3<U> ConvertToType() const;
+	inline Matrix3<U> ConvertTo() const;
 
 
 	inline T* operator[] (int row);
@@ -151,7 +151,7 @@ public:
 
 	/* @brief Convert this instance to a new matrix with type "U", but don't modify this instance */
 	template <typename U>
-	inline Matrix4<U> CovertToType() const;
+	inline Matrix4<U> ConvertTo() const;
 
 
 	inline T* operator[] (int row);

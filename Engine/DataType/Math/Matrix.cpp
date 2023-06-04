@@ -106,7 +106,7 @@ template <typename T>
 template <typename U>
 inline Matrix3<U> Matrix3<T>::GetInverse() const
 {
-	Matrix3<U> res = this->ConvertToType<U>();
+	Matrix3<U> res = this->ConvertTo<U>();
 	res.Invert();
 	return res;
 }
@@ -135,7 +135,7 @@ inline Matrix3<T> Matrix3<T>::GetTranspose(void) const
 
 template <typename T>
 template <typename U>
-inline Matrix3<U> Matrix3<T>::ConvertToType() const
+inline Matrix3<U> Matrix3<T>::ConvertTo() const
 {
 	return Matrix3<U>(
 		static_cast<U>(val[0][0]), static_cast<U>(val[0][1]), static_cast<U>(val[0][2]),
@@ -282,7 +282,7 @@ inline Matrix3<T> Matrix3<T>::CreateIdentity(void)
 		1, 0, 0,
 		0, 1, 0,
 		0, 0, 1);
-	return res.ConvertToType<T>();
+	return res.ConvertTo<T>();
 }
 
 
@@ -296,7 +296,7 @@ inline Matrix3<T> Matrix3<T>::CreateXRotation(double rad)
 		1, 0, 0,
 		0, cos_, -sin_,
 		0, sin_, cos_);
-	return res.ConvertToType<T>();
+	return res.ConvertTo<T>();
 }
 
 
@@ -310,7 +310,7 @@ inline Matrix3<T> Matrix3<T>::CreateYRotation(double rad)
 		cos_, 0, sin_,
 		0, 1, 0,
 		-sin_, 0, cos_);
-	return res.ConvertToType<T>();
+	return res.ConvertTo<T>();
 }
 
 
@@ -324,7 +324,7 @@ inline Matrix3<T> Matrix3<T>::CreateZRotation(double rad)
 		cos_, -sin_, 0,
 		sin_, cos_, 0,
 		0, 0, 1);
-	return res.ConvertToType<T>();
+	return res.ConvertTo<T>();
 }
 
 
@@ -335,7 +335,7 @@ inline Matrix3<T> Matrix3<T>::CreateTranslation(const Vector2<T>& vec)
 		1, 0, vec[0],
 		0, 1, vec[1],
 		0, 0, 1);
-	return res.ConvertToType<T>();
+	return res.ConvertTo<T>();
 }
 
 
@@ -346,7 +346,7 @@ inline Matrix3<T> Matrix3<T>::CreateTranslation(T transX, T transY)
 		1, 0, transX,
 		0, 1, transY,
 		0, 0, 1);
-	return res.ConvertToType<T>();
+	return res.ConvertTo<T>();
 }
 
 
@@ -357,7 +357,7 @@ inline Matrix3<T> Matrix3<T>::CreateScale(const Vector2<T>& vec)
 		vec[0], 0, 0,
 		0, vec[1], 0,
 		0, 0, 1);
-	return res.ConvertToType<T>();
+	return res.ConvertTo<T>();
 }
 
 
@@ -368,7 +368,7 @@ inline Matrix3<T> Matrix3<T>::CreateScale(T scaleX, T scaleY)
 		scaleX, 0, 0,
 		0, scaleY, 0,
 		0, 0, 1);
-	return res.ConvertToType<T>();
+	return res.ConvertTo<T>();
 }
 
 
@@ -494,7 +494,7 @@ template <typename T>
 template <typename U>
 inline Matrix4<U> Matrix4<T>::GetInverse() const
 {
-	Matrix4<U> res = this->CovertToType<U>();
+	Matrix4<U> res = this->ConvertTo<U>();
 	res.Invert();
 	return res;
 }
@@ -527,7 +527,7 @@ inline Matrix4<T> Matrix4<T>::GetTranspose(void) const
 
 template <typename T>
 template <typename U>
-inline Matrix4<U> Matrix4<T>::CovertToType() const
+inline Matrix4<U> Matrix4<T>::ConvertTo() const
 {
 	return Matrix4<U>(
 		static_cast<U>(val[0][0]), static_cast<U>(val[0][1]), static_cast<U>(val[0][2]), static_cast<U>(val[0][3]),
@@ -687,7 +687,7 @@ inline Matrix4<T> Matrix4<T>::CreateIdentity(void)
 		0, 1, 0, 0,
 		0, 0, 1, 0,
 		0, 0, 0, 1);
-	return res.CovertToType<T>();
+	return res.ConvertTo<T>();
 }
 
 
@@ -702,7 +702,7 @@ inline Matrix4<T> Matrix4<T>::CreateXRotation(double rad)
 		0, cos_, -sin_, 0,
 		0, sin_, cos_, 0,
 		0, 0, 0, 1);
-	return res.CovertToType<T>();
+	return res.ConvertTo<T>();
 }
 
 
@@ -721,7 +721,7 @@ inline Matrix4<T> Matrix4<T>::CreateYRotation(double rad)
 		0, 1, 0, 0,
 		-sin_, 0, cos_, 0,
 		0, 0, 0, 1);
-	return res.CovertToType<T>();
+	return res.ConvertTo<T>();
 }
 
 
@@ -736,7 +736,7 @@ inline Matrix4<T> Matrix4<T>::CreateZRotation(double rad)
 		sin_, cos_, 0, 0,
 		0, 0, 1, 0,
 		0, 0, 0, 1);
-	return res.CovertToType<T>();
+	return res.ConvertTo<T>();
 }
 
 
@@ -748,7 +748,7 @@ inline Matrix4<T> Matrix4<T>::CreateTranslation(const Vector3<T>& vec)
 		0, 1, 0, vec[1],
 		0, 0, 1, vec[2],
 		0, 0, 0, 1);
-	return res.CovertToType<T>();
+	return res.ConvertTo<T>();
 }
 
 
@@ -760,7 +760,7 @@ inline Matrix4<T> Matrix4<T>::CreateTranslation(T transX, T transY, T transZ)
 		0, 1, 0, transY,
 		0, 0, 1, transZ,
 		0, 0, 0, 1);
-	return res.CovertToType<T>();
+	return res.ConvertTo<T>();
 }
 
 
@@ -772,7 +772,7 @@ inline Matrix4<T> Matrix4<T>::CreateScale(const Vector3<T>& vec)
 		0, vec[1], 0, 0,
 		0, 0, vec[2], 0,
 		0, 0, 0, 1);
-	return res.CovertToType<T>();
+	return res.ConvertTo<T>();
 }
 
 
@@ -784,7 +784,7 @@ inline Matrix4<T> Matrix4<T>::CreateScale(T scaleX, T scaleY, T scaleZ)
 		0, scaleY, 0, 0,
 		0, 0, scaleZ, 0,
 		0, 0, 0, 1);
-	return res.CovertToType<T>();
+	return res.ConvertTo<T>();
 }
 
 
