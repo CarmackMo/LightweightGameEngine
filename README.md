@@ -28,11 +28,12 @@ The game engine implements object instances monitor algorithm and runtime garbag
 + [Math](#math)
     - [Mathf](#mathf)
     - [Vector](#vector)
+    - [Matrix](#matrix)
 
 
 
 
-
+<br></br>
 ---
 <a id="math"></a>
 
@@ -84,11 +85,10 @@ This file implements various mathematical operations that are commonly used in c
     Functions that perform validation check for input values:
     ```cpp
     bool IsNAN(float val);
-    bool IsZero(float val)
+    bool IsZero(float val);
     ```
 
 
-<br></br>
 <br></br>
 
 
@@ -99,7 +99,7 @@ This file implements various mathematical operations that are commonly used in c
 This file contains the definitions and implementations of data structures known as "vector" which are commonly used in linear algebra calculations.
 
 + ### Features
-    - A vector is implemented by a one-dimensional array, which can be considered as a 1xN row vector or an Nx1 column vector. The current implementation supports three types of vector classes: `Vector2`, `Vector3`, and `Vector4`, representing vectors with size of 2, 3, and 4, respectively.
+    - A vector is implemented by a 1-dimensional array, which can be considered as a 1xN row vector or an Nx1 column vector. The current implementation supports three types of vector classes: `Vector2`, `Vector3`, and `Vector4`, representing vectors with size of 2, 3, and 4, respectively.
     - Each vector class is implemented as a template class that only accepts numerical types (e.g., `int`, `float`, `double`, `uint8`, `uint16`...) as template arguments.
     - Additionally, each vector class provides convenient shortcuts for special vector instances, such as the `Zero` vector (0,0,0), the `Up` vector (0,0,1), the `Down` vector (0,0,-1), and so on. These instances are implemented as static constant instances. Since the compiler cannot infer the type of a static instance at compile time, these instances need to be explicitly implemented in advance. The current implementation supports `int`, `short`, `long`, `float`, and `double` types for each static instance.
 
@@ -111,7 +111,7 @@ This file contains the definitions and implementations of data structures known 
     - Comparison operators
     - Indexing operators
 
-    There is a remark for the `Length()`, `Norm()`, and `GetNorm()` method. For vector instances with integer types, using its original type to perform intermeida calculate will cause data loss, since the result of division and square root might ba a non-integer number. In this case, one solution is to unify the return type to be `float` for integer type instances and float type instances, and let `Vector<double>` instances keep the same return type. However, the attempt to specify a different return type for `Vector<double>` instances using explicit template specialization was failed. In current implementation, all types of instances are using `float` as the only return type.
+    There is a remark for the `Length()`, `Norm()`, and `GetNorm()` fuction. For vector instances with integer types, using its original type to perform intermeida calculate will cause data loss, since the result of division and square root might ba a non-integer number. In this case, one solution is to unify the return type to be `float` for integer type instances and float type instances, and let `Vector<double>` instances keep the same return type. However, the attempt to specify a different return type for `Vector<double>` instances using explicit template specialization was failed. In current implementation, all types of instances are using `float` as the only return type.
 
 + ### Global APIs
     Furthermore, current implementation also provides global functions specifically designed for vector calculations. Noted these global functions are defined whithin the namespace of `Vector::`.
@@ -122,3 +122,77 @@ This file contains the definitions and implementations of data structures known 
     ```
 
 
+<br></br>
+
+
+<a id="Matrix"></a>
+
+## Matrix.h
+
+This file contains the definitions and implementations of data structures known as "matrix" which are commonly used in linear algebra calculations and 3D mathematical calculations.
+
++ ### Features
+    - The matrix class is implemented using a 2-dimensional array. Considering that most 3D mathematical calculations involve square matrices, the matrix class only supports square matrices to simplify program structure. The current implementation includes two types of matrix classes: `Matrix3` and `Matrix4`, representing matrix with size of 3x3 and 4x4, respectively.
+    - Each matrix class is implemented as a template class that only accepts numerical types (e.g., `int`, `float`, `double`, `uint8`, `uint16`...) as template arguments.
+    - Additionally, each matrix class provides convenient shortcuts to generate commonly used matrix instances in mathematical calculations, such as identity matrix, rotation matrix, translation matrix, and so on. These shortcuts are implemented as static functions.
+
++ ### Local APIs
+    Each matrix class offers a comprehensive set of functions and operators that are commonly used in linear algebra calculations and 3D mathematical calculations, which includes:
+    - Type conversion
+        ```cpp
+        Matrix<U> ConvertToType<U>()
+        ```
+    - Standard operators
+        ```cpp
+        Matrix<T> operator+ (Matrix<T> mtx);
+        Matrix<T> operator- (Matrix<T> mtx);
+        Matrix<T> operator* (Matrix<T> mtx);
+        Matrix<T> operator* (float val);
+        Matrix<T> operator/ (float val);
+
+        Matrix<T> operator= (Matrix<T> mtx);
+        Matrix<T> operator== (Matrix<T> mtx);
+        ```
+    - Indexing operations
+        ```cpp
+        /* User can access matrix elements by using following syntex: val = Mat[row][col]
+         * The first "[]" is a direct call to this operator, it returns a pointer to the starting
+         * address of the specified row array. The second "[]" is a noraml indexing to the array */
+        T* operator[] (int row);
+
+        Vector<T> GetRow(int row);
+        Vector<T> GetCol(int col);
+        ```
+    - Mathematical operations
+        ```cpp
+        /* Calculate the determinant of the minor matrix instead of the entire matrix */
+        T Det(int row, int col);
+
+        void        Invert();
+        Matrix<U>   GetInverse<U>();
+
+        void        Transpose();
+        Matrix<T>   GetTranspose();
+
+        Matrix<T>   ToTransform();
+        Matrix<T>   GetInverseRotTrans();
+        Vector<T>   TransformPoint(Vector<T> point);
+
+        static Matrix<T> CreateIdentity();
+        static Matrix<T> CreateXRotation(double rad);
+        static Matrix<T> CreateYRotation(double rad);
+        static Matrix<T> CreateZRotation(double rad);
+        static Matrix<T> CreateTranslation(Vector<T> vec);
+        static Matrix<T> CreateTranslation(T x, T y, T z);
+        static Matrix<T> CreateScale(Vector<T> vec);
+        static Matrix<T> CreateScale(T x, T y, T z)
+        ```
+
++ ### Global APIs
+    Furthermore, current implementation also provides global functions specifically designed for matrix calculations. In order to provide convenient access for uses, these function not included within the namespace of `Matrix`.
+    ```cpp
+    /* Calculate vec = Mtx * vec; (i.e. column vector) */
+    Vector<T> operator* (Matrix<T> mtx, Vector<T> vec);
+    /* Calculate vec = vec * Mtx; (i.e. row vector) */
+    Vector<T> operator* (Vector<T> vec, Matrix<T> mtx);
+    ```
