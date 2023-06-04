@@ -29,6 +29,8 @@ The game engine implements object instances monitor algorithm and runtime garbag
     - [Mathf](#mathf)
     - [Vector](#vector)
     - [Matrix](#matrix)
++ [Utility](#utility)
+    - [Singleton](#singleton)
 
 
 
@@ -228,3 +230,17 @@ This file contains the definitions and implementations of data structures known 
     /* Calculate vec = vec * Mtx; (i.e. row vector) */
     Vector<T> operator* (Vector<T> vec, Matrix<T> mtx);
     ```
+
+
+
+
+<br></br>
+<br></br>
+---
+<a id="utility"></a>
+
+# Utility
+
+<a id="singleton"></a>
+
+## Singleton.h

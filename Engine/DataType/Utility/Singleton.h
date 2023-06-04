@@ -47,6 +47,7 @@ public:
 	inline virtual void Destory();
 };
 
+
 template<class T>
 T* Singleton<T>::instance = nullptr;
 

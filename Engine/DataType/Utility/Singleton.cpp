@@ -3,7 +3,6 @@
 namespace Engine
 {
 
-
 template<class T>
 inline Singleton<T>::Singleton() { }
 
