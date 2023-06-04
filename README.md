@@ -106,10 +106,42 @@ This file contains the definitions and implementations of data structures known 
 + ### Local APIs
     Each vector class offers a comprehensive set of functions and operators that are commonly used in standard calculations, which includes:
     - Type conversion
-    - Numerical operators
-    - Assignment operators
-    - Comparison operators
+        ```cpp
+        Vector2<U> ConvertTo<U>();
+        ```
+    - Standard operators
+        ```cpp
+        void operator+= (Vector<T> vec);
+        void operator-= (Vector<T> vec);
+        void operator*= (Vector<T> vec);
+        void operator*= (T num);
+        void operator/= (Vector<T> vec);
+        void operator/= (T num);
+
+        Vector<T> operator+ (Vector<T> vec);
+        Vector<T> operator- (Vector<T> vec);
+        Vector<T> operator* (Vector<T> vec);
+        Vector<T> operator* (T num);
+        Vector<T> operator/ (Vector<T> vec);
+        Vector<T> operator/ (T num);
+
+        Vector<T> operator= (Vector<T> vec);
+        bool      operator== (Vector<T> vec);
+	    bool      operator!= (Vector<T> vec);
+
+        /* Negate */
+        Vector<T> operator- ();
+        ```
     - Indexing operators
+        ```cpp
+        T& operator[] (int idx);
+        ```
+    - Mathematical operations
+        ```cpp
+        float           Length();
+        void            Norm();
+        Vector<float>   GetNorm()
+        ```
 
     There is a remark for the `Length()`, `Norm()`, and `GetNorm()` fuction. For vector instances with integer types, using its original type to perform intermeida calculate will cause data loss, since the result of division and square root might ba a non-integer number. In this case, one solution is to unify the return type to be `float` for integer type instances and float type instances, and let `Vector<double>` instances keep the same return type. However, the attempt to specify a different return type for `Vector<double>` instances using explicit template specialization was failed. In current implementation, all types of instances are using `float` as the only return type.
 
@@ -132,7 +164,7 @@ This file contains the definitions and implementations of data structures known 
 This file contains the definitions and implementations of data structures known as "matrix" which are commonly used in linear algebra calculations and 3D mathematical calculations.
 
 + ### Features
-    - The matrix class is implemented using a 2-dimensional array. Considering that most 3D mathematical calculations involve square matrices, the matrix class only supports square matrices to simplify program structure. The current implementation includes two types of matrix classes: `Matrix3` and `Matrix4`, representing matrix with size of 3x3 and 4x4, respectively.
+    - The matrix class is implemented using a N-by-N 2-dimensional array. Considering that most 3D mathematical calculations involve square matrices, the matrix class only supports square matrices to simplify program structure. The current implementation includes two types of matrix classes: `Matrix3` and `Matrix4`, representing matrix with size of 3x3 and 4x4, respectively.
     - Each matrix class is implemented as a template class that only accepts numerical types (e.g., `int`, `float`, `double`, `uint8`, `uint16`...) as template arguments.
     - Additionally, each matrix class provides convenient shortcuts to generate commonly used matrix instances in mathematical calculations, such as identity matrix, rotation matrix, translation matrix, and so on. These shortcuts are implemented as static functions.
 
