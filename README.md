@@ -172,7 +172,7 @@ This file contains the definitions and implementations of data structures known 
     Each matrix class offers a comprehensive set of functions and operators that are commonly used in linear algebra calculations and 3D mathematical calculations, which includes:
     - Type conversion
         ```cpp
-        Matrix<U> ConvertToType<U>()
+        Matrix<U> ConvertTo<U>()
         ```
     - Standard operators
         ```cpp
