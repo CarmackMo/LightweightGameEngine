@@ -252,11 +252,11 @@ This file contains the definitions and implementations of data structures known 
     Ensuring that only one instance exists in the entire application is a key requirement for a class that is also a singleton. To achieve this, the constructor of the `Singleton` class is set to private, priventing users from directly instantiating a class instance. Additionally, certain class members such as the copy constructor and assignment operator are explicitly deleted to prevent implicit instantiation of the class. It is important to enforce these rules consistently in all classes derived from the `Singleton` base class, to maintain the rule of "one instance globally".
 
 + ### Features
-    + #### Pros
+    + **Pros**
         - **Single instance**: It guarantees that only one instance of the class is created. Benefits the scenarios where only one object should exist to control actions or resources.
         - **Global access**: The singleton instance can be accessed from anywhere in the codebase.
         - **Resource sharing**: It allows multiple parts of the code to share a common resource or state, avoiding the need for redundant object creation.
-    + #### Cons
+    + **Cons**
         - **Global state**: Changes made to the singleton instance can affect other parts of the application, leading to potential coupling and unexpected behavior. Making the code harder to test and maintain.
         - **Thread safety**: In a multi-threaded environment, special care must be taken to ensure that the singleton is thread-safe to avoid race conditions and data inconsistencies.
         - **Dependency management**: As the singleton instance is often accessed directly instead of through interfaces or dependency injection, it will be difficult to manage dependencies and introduce coupling between classes
