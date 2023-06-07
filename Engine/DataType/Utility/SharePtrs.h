@@ -119,6 +119,9 @@ protected:
 	T* ptr = nullptr;
 	RefCount<T>* refCount = nullptr;
 
+	PtrBase() = default;
+	~PtrBase() = default;
+
 	/* TODO */
 	void StandardConstruct(T* ptr, function<void(T*)> deleter = nullptr)
 	{
@@ -169,20 +172,6 @@ protected:
 		other.refCount = nullptr;
 	}
 
-public:
-	PtrBase() = default;
-
-	PtrBase(const PtrBase<T>&) = delete;
-	PtrBase& operator= (const PtrBase<T>&) = delete;
-
-	~PtrBase() = default;
-
-	/* TODO: */
-	inline unsigned long GetSmartCount()
-	{
-		return refCount != nullptr ? refCount->GetSmartCount() : 0;
-	}
-
 	/* TODO: */
 	inline void IncSmartRef() const
 	{
@@ -208,8 +197,25 @@ public:
 		if (refCount != nullptr)
 			refCount->DecWeakRef();
 	}
-};
 
+
+public:
+	PtrBase(const PtrBase<T>&) = delete;
+	PtrBase& operator= (const PtrBase<T>&) = delete;
+
+	/* TODO: */
+	inline T* Get() const
+	{
+		return ptr;
+	}
+
+	/* TODO: */
+	inline unsigned long GetSmartCount() const 
+	{
+		return refCount != nullptr ? refCount->GetSmartCount() : 0;
+	}
+
+};
 
 
 
@@ -293,8 +299,10 @@ public:
 	inline bool operator==(std::nullptr_t);
 	inline bool operator!=(std::nullptr_t);
 
-	inline bool operator==(const SmartPtr<T>& other);
-	inline bool operator!=(const SmartPtr<T>& other);
+	template <class U>
+	inline bool operator==(const SmartPtr<U>& other);
+	template <class U>
+	inline bool operator!=(const SmartPtr<U>& other);
 
 	/* Assignment operators */
 	SmartPtr<T>& operator=(const SmartPtr<T>& other);

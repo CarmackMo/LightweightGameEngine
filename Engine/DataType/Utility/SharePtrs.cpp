@@ -87,6 +87,57 @@ inline SmartPtr<T>::~SmartPtr()
 }
 
 
+/* Access operators */
+template <class T>
+inline T* SmartPtr<T>::operator->() 
+{ 
+	return this->Get(); 
+}
+
+template <class T>
+inline T& SmartPtr<T>::operator*() 
+{ 
+	return *(this->Get()); 
+}
+
+
+/* Comparision operators */
+template <class T>
+inline SmartPtr<T>::operator bool() 
+{ 
+	return this->Get() != nullptr; 
+}
+
+template <class T>
+inline bool SmartPtr<T>::operator==(std::nullptr_t) 
+{ 
+	return this->Get() == nullptr; 
+}
+
+template <class T>
+inline bool SmartPtr<T>::operator!=(std::nullptr_t) 
+{ 
+	return this->Get() != nullptr; 
+}
+
+template <class T>
+template <class U>
+inline bool SmartPtr<T>::operator==(const SmartPtr<U>& other) 
+{ 
+	return this->Get() == other.Get(); 
+}
+
+template <class T>
+template <class U>
+inline bool SmartPtr<T>::operator!=(const SmartPtr<U>& other) 
+{ 
+	return this->Get() != other.Get(); 
+}
+
+
+
+
+
 
 
 
