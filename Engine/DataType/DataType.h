@@ -14,8 +14,8 @@
 #include "./Math/Matrix.h"
 #include "./Math/Matrix.cpp"
 
-#include "./Utility/SharePtrs.h"
-#include "./Utility/SharePtrs.cpp"
+#include "./Utility/SmartPtrs.h"
+#include "./Utility/SmartPtrs.cpp"
 #include "./Utility/Singleton.h"
 #include "./Utility/Singleton.cpp"
 

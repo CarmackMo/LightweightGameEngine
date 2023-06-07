@@ -121,7 +121,7 @@
     <ClCompile Include="DataType\Engine\GameObject.cpp">
       <Filter>Source Files\DataType\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="DataType\Utility\SharePtrs.cpp">
+    <ClCompile Include="DataType\Utility\SmartPtrs.cpp">
       <Filter>Source Files\DataType\Utility</Filter>
     </ClCompile>
     <ClCompile Include="DataType\Utility\Singleton.cpp">
@@ -225,7 +225,7 @@
     <ClInclude Include="DataType\Engine\GameObject.h">
       <Filter>Source Files\DataType\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="DataType\Utility\SharePtrs.h">
+    <ClInclude Include="DataType\Utility\SmartPtrs.h">
       <Filter>Source Files\DataType\Utility</Filter>
     </ClInclude>
     <ClInclude Include="DataType\Utility\Singleton.h">
