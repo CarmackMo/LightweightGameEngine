@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include <utility>
 
 /* TODO: just for test */
 #include <memory>
@@ -116,7 +117,7 @@ class PtrBase
 {
 protected:
 	T* ptr = nullptr;
-	RefCount* refCount = nullptr;
+	RefCount<T>* refCount = nullptr;
 
 	/* TODO */
 	void StandardConstruct(T* ptr, function<void(T*)> deleter = nullptr)
@@ -136,7 +137,7 @@ protected:
 
 	/* TODO: */
 	template <class U>
-	void AliasMoveConstruct(const SmartPtr<U>&& other, T* ptr)
+	void AliasMoveConstruct(SmartPtr<U>&& other, T* ptr)
 	{
 		this->ptr = other.ptr;
 		this->refCount = other.refCount;
@@ -159,7 +160,7 @@ protected:
 	/* TODO: @brief Move constructor, using shallow copy to copy the pointer itself
 	 * Assume class "U" is convertible to class "T" */
 	template <class U>
-	void MoveConstruct(const SmartPtr<U>&& other)
+	void MoveConstruct(SmartPtr<U>&& other)
 	{
 		this->ptr = other.ptr;
 		this->refCount = other.refCount;
@@ -170,18 +171,20 @@ protected:
 
 public:
 	PtrBase() = default;
+
+	PtrBase(const PtrBase<T>&) = delete;
+	PtrBase& operator= (const PtrBase<T>&) = delete;
+
 	~PtrBase() = default;
-
-
 
 	/* TODO: */
 	inline unsigned long GetSmartCount()
 	{
-		return refCount != nullptr ? refCount->GetSmartCount();
+		return refCount != nullptr ? refCount->GetSmartCount() : 0;
 	}
 
 	/* TODO: */
-	inline void IncSmartRef()
+	inline void IncSmartRef() const
 	{
 		if (refCount != nullptr)
 			refCount->IncSmartRef();
@@ -194,7 +197,7 @@ public:
 			refCount->DecSmartRef();
 	}
 	/* TODO: */
-	inline void IncWeakRef()
+	inline void IncWeakRef() const
 	{
 		if (refCount != nullptr)
 			refCount->IncWeakRef();
@@ -222,7 +225,7 @@ public:
 *			reference must not exsit as well.
 */
 template <class T>
-class SmartPtr : PtrBase<T>
+class SmartPtr : public PtrBase<T>
 {
 private:
 	//T* objectPtr;
@@ -258,7 +261,7 @@ public:
 	template<class U>
 	inline SmartPtr(const SmartPtr<U>& other, T* ptr);
 	template<class U>
-	inline SmartPtr(const SmartPtr<U>&& other, T* ptr);
+	inline SmartPtr(SmartPtr<U>&& other, T* ptr);
 
 	/* TODO: @brief Copy Constructor */
 	inline SmartPtr(const SmartPtr<T>& other);
@@ -267,15 +270,15 @@ public:
 
 
 	/* TODO: @brief Move Constructor */
-	inline SmartPtr(const SmartPtr<T>&& other);
+	inline SmartPtr(SmartPtr<T>&& other);
 	template<class U>
-	inline SmartPtr(const SmartPtr<U>&& other);
+	inline SmartPtr(SmartPtr<U>&& other);
 
 	/* TODO: */
 	inline SmartPtr(const WeakPtr<T>& other);
 
 	/* TODO: */
-	inline ~SmartPtr() = default;
+	inline ~SmartPtr();
 
 
 
@@ -340,4 +343,17 @@ public:
 };
 
 
+
+
+
+namespace Memory
+{
+
+	inline void SmartPtrUnitTest()
+	{
+
+	}
+
+
+}//Namespace Memory
 }//Namespace Engine
