@@ -22,6 +22,77 @@ inline ReferenceCount::~ReferenceCount()
 
 template <class T>
 inline SmartPtr<T>::SmartPtr() :
+{ }
+
+template <class T>
+inline SmartPtr<T>::SmartPtr(nullptr_t)
+{ }
+
+template <class T>
+inline SmartPtr<T>::SmartPtr(T* ptr)
+{
+	this->StandardConstruct(ptr);
+}
+
+template <class T>
+inline SmartPtr<T>::SmartPtr(T* ptr, function<void(T*)> deleter)
+{
+	this->StandardConstruct(ptr, deleter);
+}
+
+template <class T>
+template <class U>
+inline SmartPtr<T>::SmartPtr(const SmartPtr<U>& other, T* ptr)
+{
+	this->AliasConstruct(other, ptr);
+}
+
+template <class T>
+template <class U>
+inline SmartPtr<T>::SmartPtr(const SmartPtr<U>&& other, T* ptr)
+{
+	this->AliasMoveConstruct(other, ptr);
+}
+
+template<class T>
+inline SmartPtr<T>::SmartPtr(const SmartPtr<T>& other)
+{
+	this->CopyConstruct(other);
+}
+
+template<class T>
+template<class U>
+inline SmartPtr<T>::SmartPtr(const SmartPtr<U>& other)
+{
+	this->CopyConstruct(other);
+}
+
+template<class T>
+inline SmartPtr<T>::SmartPtr(const SmartPtr<T>&& other)
+{
+	this->MoveConstruct(other);
+}
+
+template<class T>
+template<class U>
+inline SmartPtr<T>::SmartPtr(const SmartPtr<U>&& other)
+{
+	this->MoveConstruct(other);
+}
+
+template<class T>
+inline SmartPtr<T>::~SmartPtr()
+{
+	DecSmartRef();
+}
+
+
+
+
+
+/*********************** Old version ************************/
+template <class T>
+inline SmartPtr<T>::SmartPtr() :
 	objectPtr(nullptr),
 	refCount(nullptr)
 { }
