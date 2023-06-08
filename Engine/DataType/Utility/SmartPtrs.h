@@ -129,26 +129,6 @@ protected:
 		this->refCount = new RefCount<T>(ptr, deleter);
 	}
 
-	/* TODO: */
-	template <class U>
-	void AliasConstruct(const SmartPtr<U>& other, T* ptr)
-	{
-		other.IncSmartRef();
-		this->ptr = ptr;
-		this->refCount = other.refCount;
-	}
-
-	/* TODO: */
-	template <class U>
-	void AliasMoveConstruct(SmartPtr<U>&& other, T* ptr)
-	{
-		this->ptr = other.ptr;
-		this->refCount = other.refCount;
-
-		other.ptr = nullptr;
-		other.refCount = nullptr;
-	}
-
 	/* TODO: @brief Copy constructor, using shallow copy to data, since data is shared
 	 * by SmartPtr. Assume class "U" is convertible to class "T" */
 	template <class U>
@@ -163,7 +143,27 @@ protected:
 	/* TODO: @brief Move constructor, using shallow copy to copy the pointer itself
 	 * Assume class "U" is convertible to class "T" */
 	template <class U>
-	void MoveConstruct(SmartPtr<U>&& other)
+	void MoveConstruct(PtrBase<U>&& other)
+	{
+		this->ptr = other.ptr;
+		this->refCount = other.refCount;
+
+		other.ptr = nullptr;
+		other.refCount = nullptr;
+	}
+
+	/* TODO: */
+	template <class U>
+	void AliasConstruct(const SmartPtr<U>& other, T* ptr)
+	{
+		other.IncSmartRef();
+		this->ptr = ptr;
+		this->refCount = other.refCount;
+	}
+
+	/* TODO: */
+	template <class U>
+	void AliasMoveConstruct(SmartPtr<U>&& other, T* ptr)
 	{
 		this->ptr = other.ptr;
 		this->refCount = other.refCount;

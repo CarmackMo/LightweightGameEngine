@@ -293,8 +293,41 @@ This file implements smart pointers and the necessary components commonly used i
 + [RefCount](#refcount)
 + [PtrBase](#ptrbase)
 + [SmartPtr](#smartptr)
++ [WeakPtr](#weakptr)
+
 
 
 <a id="ptrbase"></a>
 
-## PtrBase
++ ## PtrBase
+
+    `PtrBase` is the base class of `SmartPtr` and `WeakPtr`. It acts as an contract of `SmartPtr` and `WeakPtr` that requires these two classes to obey certian member funciton implementation rules. Generally, `PtrBase` specifies the implementation rules of: constructors, reference increment/decrement, data accessor.  
+
+    - ### APIs
+    ```cpp
+    /* Constructor contract */
+    /* API for standard constructor of SmartPtr */
+    void StandardConstruct(T* ptr, std::function<void(T*)> deleter);
+    /* API for copy constructor of SmartPtr, considering class inheritance */
+    template <class U>
+    void CopyConstruct(SmartPtr<U>& other);
+    /* API for move constructor of SmartPtr, considering class inheritance */
+    template <class U>
+    void MoveConstruct(PtrBase<U>&& other);
+    /* API for alias constructor of SmartPtr, considering class inheritance */
+    template <class U>
+    void AliasConstruct(SmartPtr<U>& other);
+    /* API for alias move constructor of SmartPtr, considering class inheritance */
+    template <class U>
+    void AliasMoveConstruct(SmartPtr<U>&& other);
+
+    /* Reference count increment/decrement */
+    void IncSmartRef() const;
+    void DecSmartRef();
+    void IncWeakRef() const;
+    void DecWeakRef();
+
+    /* Data accessor */
+    T* Get() const;
+    unsigned long GetSmartCount() const;
+    ```
