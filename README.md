@@ -301,7 +301,7 @@ This file implements smart pointers and the necessary components commonly used i
 
 + ## PtrBase
 
-    `PtrBase` is the base class of `SmartPtr` and `WeakPtr`. It acts as an contract of `SmartPtr` and `WeakPtr` that requires these two classes to obey certian member funciton implementation rules. Generally, `PtrBase` specifies the implementation rules of: constructors, reference increment/decrement, data accessor.  
+    `PtrBase` is the base class for both `SmartPtr` and `WeakPtr`. It serves as a API contract for `SmartPtr` and `WeakPtr`, defining certain rules for their member function implementations. Therefore, `PtrBase` cannot be instantiated through copy constructor or assignment operations, and its data is set to be "protected". In general, `PtrBase` specifies the implementation rules for constructors, reference increment/decrement, and data accessor functions.
 
     - ### APIs
     ```cpp
