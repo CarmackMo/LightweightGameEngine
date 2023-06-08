@@ -31,6 +31,7 @@ The game engine implements object instances monitor algorithm and runtime garbag
     - [Matrix](#matrix)
 + [Utility](#utility)
     - [Singleton](#singleton)
+    - [Smart Pointers](#smartptr)
 
 
 
@@ -278,3 +279,22 @@ This file contains the definitions and implementations of data structures known 
     static T* Instance();
 	virtual void Destory();
     ```
+    
+
+<br></br>
+
+
+<a id="smartptr"></a>
+
+## SmartPtrs.h
+
+This file implements smart pointers and the necessary components commonly used in dynamic memory resource management. These components include `RefCount`, `PtrBase`, `SmartPtr`, and `WeakPtr`.
+
++ [RefCount](#refcount)
++ [PtrBase](#ptrbase)
++ [SmartPtr](#smartptr)
+
+
+<a id="ptrbase"></a>
+
+## PtrBase
