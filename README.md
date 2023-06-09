@@ -352,7 +352,20 @@ This file implements smart pointers that are commonly used in dynamic memory res
 
     As a derived class of `PtrBase` (See "[*PtrBase*](#ptrbase)" section for more details), `SmartPtr` holds a pointer to the managed object and a pointer to the control block. When creating a `SmartPtr` using one of its constructors, the managed object and the control block must be allocated separately. The pointer held directly by the `SmartPtr` is the one returned by `Get()`, while the pointer held by the control block is the one that will be deleted when the number of shared owners reaches 0. Note that these pointers are not necessarily equal. The current implementation of `SmartPtr` includes 4 types of constructors: standard constructor, copy constructor, alias constructor, and move constructor.
     - ### Standard Constructors:
-        Users can utilize the standard constructors to create smart pointers for managing objects. Users need to provide the pointer to the object as an argument to the constructor to create smart pointer. In the cases when the managed object has a type that cannot be deleted using the default delete-expression, users also need to provide a customized deleter.
+       Standard constructors allow users to directly construct smart pointers for managing objects. Users need to provide the pointer to the object as an argument to the constructor to create smart pointer. If no argument is provided or a null pointer is passed, a default empty `SmartPtr` will be created.
+       
+       In the cases when the managed object has a type that cannot be deleted using the default delete-expression, users also need to provide a customized deleter.
 
-        Note that constructing a new `SmartPtr` using the raw underlying pointer owned by another `SmartPtr` leads to undefined behavior. It is the responsibility of the users to ensure that such situations are prevented.
+        Note that constructing a new `SmartPtr` using the raw underlying pointer owned by another `SmartPtr` leads to undefined behavior. It is the responsibility of users to ensure that such situations are prevented.
+
+    - ### Copy Constructors
+        Copy constructors allow users to construct new `SmartPtr` that shares ownership of the object managed by the input `SmartPtr`. If the input `SmartPtr` manages no object, the created `SmartPtr` will be empty either. 
+        
+        Copy constructors support scenarios involving class inheritance, but it is the responsibility of users to ensure class `<U>` is convertible to class `<T>`.
     
+    - ### Alias Constructors
+        Alias constructors allow users to construct a `SmartPtr` which shares ownership information with the input `SmartPtr`, but holds an unmanaged pointer to an unrelated object. If this `SmartPtr` is the last of the group to go out of scope, it will call the stored deleter for the object originally managed by the input `SmarPtr`. However, calling `get()` on this `SmartPtr` will always return a copy of the unmanaged pointer. It is the responsibility of the users to make sure that this pointer remains valid as long as this `SmartPtr` exists. 
+
+        Alias constructors are mainly designed for the scenarios where users need to manage the member object *B* of object *A* but do not want to explicitly manage *A*. In such cases, user can first create a `SmartPtr` to *A* using standard constructor, and then create another `SmartPtr` to *B* using alias constructor. After that, destroy the `SmartPtr` to *A*. By this approach, *A* becomes inaccessable within the scope but still alive, while *B* will remain alive as long as its `SmartPtr` exists. See ["*What is shared_ptr's aliasing constructor for*"](https://stackoverflow.com/questions/27109379/what-is-shared-ptrs-aliasing-constructor-for) for more details.
+
+    - ### Move Constructors
