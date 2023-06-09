@@ -369,4 +369,8 @@ This file implements smart pointers that are commonly used in dynamic memory res
         Alias constructors are mainly designed for the scenarios where users need to manage the member object *B* of object *A* but do not want to explicitly manage *A*. In such cases, user can first create a `SmartPtr` to *A* using standard constructor, and then create another `SmartPtr` to *B* using alias constructor. After that, destroy the `SmartPtr` to *A*. By this approach, *A* becomes inaccessable within the scope but still alive, while *B* will remain alive as long as its `SmartPtr` exists. See ["*What is shared_ptr's aliasing constructor for*"](https://stackoverflow.com/questions/27109379/what-is-shared-ptrs-aliasing-constructor-for) for more details.
 
     - ### Move Constructors
-        Move constructor allow users to construct a `SmartPtr` from the right reference of another `SmartPtr`.
+        Move constructors allow users to construct a `SmartPtr` from the right reference of another `SmartPtr`. Move constructors significantly reduce the overhead of deep copying and unnecessary manipulation of reference count when creating temporary `SmartPtr` instances and initializing normal `SmartPtr` instances using those temporaries. 
+        
+        Temporary instances (i.e. right value) are generated in the scenarios such as returning an instance from a function or assigning the return instance of a function to a new instance. Without a defined move constructor, the compiler will invoke the copy constructor instead. However, the copy constructor typically performs deep copying, which can introduce significant overhead.
+        
+        See [*Introcution to move constructor*](http://c.biancheng.net/view/7847.html) for more details of move construction.
