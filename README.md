@@ -309,28 +309,32 @@ This file implements smart pointers that are commonly used in dynamic memory res
     /* Constructor contract */
     /* API for standard constructor of SmartPtr */
     void StandardConstruct(T* ptr, std::function<void(T*)> deleter);
+
     /* API for copy constructor of SmartPtr, considering class inheritance */
     template <class U>
-    void CopyConstruct(SmartPtr<U>& other);
+    void CopyConstruct(const SmartPtr<U>& other);
+
     /* API for move constructor of SmartPtr, considering class inheritance */
     template <class U>
     void MoveConstruct(PtrBase<U>&& other);
+
     /* API for alias constructor of SmartPtr, considering class inheritance */
     template <class U>
-    void AliasConstruct(SmartPtr<U>& other);
+    void AliasConstruct(const SmartPtr<U>& other, T* ptr);
+
     /* API for alias move constructor of SmartPtr, considering class inheritance */
     template <class U>
-    void AliasMoveConstruct(SmartPtr<U>&& other);
+    void AliasMoveConstruct(SmartPtr<U>&& other, T* ptr);
 
     /* Reference count increment/decrement */
-    void IncSmartRef() const;
+    void IncSmartRef();
     void DecSmartRef();
-    void IncWeakRef() const;
+    void IncWeakRef();
     void DecWeakRef();
 
     /* Data operating functions */
-    T*              Get() const;
-    unsigned long   GetSmartCount() const;
+    T*              Get();
+    unsigned long   GetSmartCount();
     void            Swap(PtrBase<T>& other);
     ```
     
@@ -374,3 +378,53 @@ This file implements smart pointers that are commonly used in dynamic memory res
         Temporary instances (i.e. right value) are generated in the scenarios such as returning an instance from a function or assigning the return instance of a function to a new instance. Without a defined move constructor, the compiler will invoke the copy constructor instead. However, the copy constructor typically performs deep copying, which can introduce significant overhead.
         
         See [*Introcution to move constructor*](http://c.biancheng.net/view/7847.html) for more details of move construction.
+
+    - ### APIs
+    ```cpp
+    /* Standard Constructors */
+    SmartPtr();
+	SmartPtr(nullptr_t);
+    SmartPtr(T* ptr);
+    SmartPtr(T* ptr, std::function<void(T*)> deleter);
+
+    /* Copy Constructors */
+    SmartPtr(const SmartPtr<T>& other);
+    template<class U> 
+	SmartPtr(const SmartPtr<U>& other);
+
+    /* Alias Constructors */
+    template<class U>
+	SmartPtr(const SmartPtr<U>& other, T* ptr);
+	template<class U>
+	SmartPtr(SmartPtr<U>&& other, T* ptr);
+
+    /* Move Constructor */
+    SmartPtr(SmartPtr<T>&& other);
+	template<class U>
+	SmartPtr(SmartPtr<U>&& other);
+
+
+    bool                    IsUnique();
+    void                    Reset();
+    template <class U> void Reset(U* ptr);
+    template <class U> void Reset(U* ptr, function<void(U*)> deleter);
+
+    /* Access operators */
+	T* operator->();
+	T& operator*();
+
+	/* Comparision operators */
+	operator bool();
+
+	bool operator==(std::nullptr_t);
+	bool operator!=(std::nullptr_t);
+
+	template <class U>
+	bool operator==(const SmartPtr<U>& other);
+	template <class U>
+	bool operator!=(const SmartPtr<U>& other);
+
+	/* TODO: Assignment operators */
+	SmartPtr<T>& operator=(const SmartPtr<T>& other);
+
+    ```

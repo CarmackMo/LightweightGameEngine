@@ -271,7 +271,7 @@ public:
 	 *	expression. 
 	 *  It is user's responsibility to make sure not to constructor a smart pointer using this funciton if the target object is
 	 *  already owned by another smart pointer. */
-	inline SmartPtr(T*, function<void(T*)> deleter);
+	inline SmartPtr(T* ptr, function<void(T*)> deleter);
 
 	/* TODO: @brief Aliasing constructor. See following link for more detail: 
 	 *	https://en.cppreference.com/w/cpp/memory/shared_ptr/shared_ptr
