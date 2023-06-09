@@ -296,12 +296,13 @@ This file implements smart pointers and the necessary components commonly used i
 + [WeakPtr](#weakptr)
 
 
-
 <a id="ptrbase"></a>
 
 + ## PtrBase
 
-    `PtrBase` is the base class for both `SmartPtr` and `WeakPtr`. It serves as a API contract for `SmartPtr` and `WeakPtr`, defining certain rules for their member function implementations. Therefore, `PtrBase` cannot be instantiated through copy constructor or assignment operations, and its data is set to be "protected". In general, `PtrBase` specifies the implementation rules for constructors, reference increment/decrement, and data accessor functions.
+    `PtrBase` is the base class for both `SmartPtr` and `WeakPtr`. It serves as a API contract for `SmartPtr` and `WeakPtr`, defining certain rules for their member function implementations. Therefore, `PtrBase` cannot be instantiated through copy constructor or assignment operations, and its data is set to be "protected". In general, `PtrBase` specifies the implementation rules for constructors, reference increment/decrement, and data operating functions.
+
+    In the typical implementation, `PtrBase` holds two pointers: one points to the managed object, and the other points to the control block.
 
     - ### APIs
     ```cpp
@@ -327,7 +328,24 @@ This file implements smart pointers and the necessary components commonly used i
     void IncWeakRef() const;
     void DecWeakRef();
 
-    /* Data accessor */
-    T* Get() const;
-    unsigned long GetSmartCount() const;
+    /* Data operating functions */
+    T*              Get() const;
+    unsigned long   GetSmartCount() const;
+    void            Swap(PtrBase<T>& other);
     ```
+    
+
+<a id="smartptr"></a>
+
++ ## SmartPtr
+
+    `SmartPtr` retains shared ownership of an object through a pointer. Several `SmartPtr` objects may own the same object. The managed object is destroyed and its memory deallocated when either of the following happens:
+
+    - The last remaining `SmartPtr` owning the object is destroyed;
+    - The last remaining `SmartPtr` owning the object is assigned another pointer via `operator=` or `Reset()`.
+    
+    The managed object is destroyed is destroyed using delete-expression or a custom deleter that is supplied to `SmartPtr` during construction. It's important to note that `SmartPtr` does not support delete-expression for array-type objects (i.e. `delete []`) by default, it is user's responsibility to provide apporpriate deleter during construction.
+
+    A `SmartPtr` can share ownership of an object while storing a pointer to another object. This feature allows for pointing to member objects while owning the object they belong to. The stored pointer is the one accessed by `Get()`, the dereference and the comparison operators. On the other hand, the managed pointer is the one to be destroyed when reference count reaches 0.
+
+    A `SmartPtr` may also own no objects, in which case it is called "empty" (An empty `SmartPtr` may have a non-null stored pointer if the aliasing constructor was used to create it).
