@@ -351,3 +351,8 @@ This file implements smart pointers that are commonly used in dynamic memory res
     A `SmartPtr` may also own no objects, in which case it is called "empty" (An empty `SmartPtr` may have a non-null stored pointer if the aliasing constructor was used to create it).
 
     As a derived class of `PtrBase` (See "[*PtrBase*](#ptrbase)" section for more details), `SmartPtr` holds a pointer to the managed object and a pointer to the control block. When creating a `SmartPtr` using one of its constructors, the managed object and the control block must be allocated separately. The pointer held directly by the `SmartPtr` is the one returned by `Get()`, while the pointer held by the control block is the one that will be deleted when the number of shared owners reaches 0. Note that these pointers are not necessarily equal. The current implementation of `SmartPtr` includes 4 types of constructors: standard constructor, copy constructor, alias constructor, and move constructor.
+    - ### Standard Constructors:
+        Users can utilize the standard constructors to create smart pointers for managing objects. Users need to provide the pointer to the object as an argument to the constructor to create smart pointer. In the cases when the managed object has a type that cannot be deleted using the default delete-expression, users also need to provide a customized deleter.
+
+        Note that constructing a new `SmartPtr` using the raw underlying pointer owned by another `SmartPtr` leads to undefined behavior. It is the responsibility of the users to ensure that such situations are prevented.
+    
