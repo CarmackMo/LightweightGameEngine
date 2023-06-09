@@ -288,7 +288,7 @@ This file contains the definitions and implementations of data structures known 
 
 ## SmartPtrs.h
 
-This file implements smart pointers and the necessary components commonly used in dynamic memory resource management. These components include `RefCount`, `PtrBase`, `SmartPtr`, and `WeakPtr`.
+This file implements smart pointers that are commonly used in dynamic memory resource management, and their necessary components. These components include `RefCount`, `PtrBase`, `SmartPtr`, and `WeakPtr`.
 
 + [RefCount](#refcount)
 + [PtrBase](#ptrbase)
@@ -302,7 +302,7 @@ This file implements smart pointers and the necessary components commonly used i
 
     `PtrBase` is the base class for both `SmartPtr` and `WeakPtr`. It serves as a API contract for `SmartPtr` and `WeakPtr`, defining certain rules for their member function implementations. Therefore, `PtrBase` cannot be instantiated through copy constructor or assignment operations, and its data is set to be "protected". In general, `PtrBase` specifies the implementation rules for constructors, reference increment/decrement, and data operating functions.
 
-    In the typical implementation, `PtrBase` holds two pointers: one points to the managed object, and the other points to the control block.
+    In the typical implementation, `PtrBase` holds two pointers: one points to the managed object, and the other points to the control block (See "[*RefCount*](#refcount)" section for more details).
 
     - ### APIs
     ```cpp
@@ -349,3 +349,5 @@ This file implements smart pointers and the necessary components commonly used i
     A `SmartPtr` can share ownership of an object while storing a pointer to another object. This feature allows for pointing to member objects while owning the object they belong to. The stored pointer is the one accessed by `Get()`, the dereference and the comparison operators. On the other hand, the managed pointer is the one to be destroyed when reference count reaches 0.
 
     A `SmartPtr` may also own no objects, in which case it is called "empty" (An empty `SmartPtr` may have a non-null stored pointer if the aliasing constructor was used to create it).
+
+    As a derived class of `PtrBase` (See "[*PtrBase*](#ptrbase)" section for more details), `SmartPtr` holds a pointer to the managed object and a pointer to the control block. When creating a `SmartPtr` using one of its constructors, the managed object and the control block must be allocated separately. The pointer held directly by the `SmartPtr` is the one returned by `Get()`, while the pointer held by the control block is the one that will be deleted when the number of shared owners reaches 0. Note that these pointers are not necessarily equal. The current implementation of `SmartPtr` includes 4 types of constructors: standard constructor, copy constructor, alias constructor, and move constructor.

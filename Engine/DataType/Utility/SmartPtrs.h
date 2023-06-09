@@ -345,7 +345,7 @@ public:
 	template <class U>
 	inline bool operator!=(const SmartPtr<U>& other);
 
-	/* Assignment operators */
+	/* TODO: Assignment operators */
 	SmartPtr<T>& operator=(const SmartPtr<T>& other);
 };
 
