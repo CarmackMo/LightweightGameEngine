@@ -215,6 +215,18 @@ public:
 		return refCount != nullptr ? refCount->GetSmartCount() : 0;
 	}
 
+	/* TODO: */
+	inline void Swap(PtrBase<T>& other)
+	{
+		T* tempPtr = this->ptr;
+		RefCount<T>* tempRef = this->refCount;
+
+		this->ptr = other.ptr;
+		this->refCount = other.refCount;
+
+		other.ptr = tempPtr;
+		other.refCount = tempRef;
+	}
 };
 
 
@@ -285,6 +297,35 @@ public:
 
 	/* TODO: */
 	inline ~SmartPtr();
+
+
+
+	/* TODO: */
+	inline bool IsUnique() const
+	{
+		return this->GetSmartCount() == 1;
+	}
+
+	/* TODO: @brief Release resource and convert this instance to empty SmartPtr object. */
+	void Reset()
+	{
+		SmartPtr().Swap(*this);
+	}
+	/* TODO: @brief Release original pointer and decrement pointer's reference count of 
+	 *	this instance. And take ownership of the new pointer "ptr". */
+	template <class U>
+	void Reset(U* ptr)
+	{
+		SmartPtr(ptr).Swap(*this);
+	}
+	/* TODO: @brief Release original pointer and decrement pointer's reference count of
+	 *	this instance. And take ownership of the new pointer "ptr" with deleter */
+	template <class U>
+	void Reset(U* ptr, function<void(U*)> deleter)
+	{
+		SmartPtr(ptr, deleter).Swap(*this);
+	}
+
 
 
 
