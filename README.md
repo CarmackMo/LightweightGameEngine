@@ -426,5 +426,11 @@ This file implements smart pointers that are commonly used in dynamic memory res
 
 	/* TODO: Assignment operators */
 	SmartPtr<T>& operator=(const SmartPtr<T>& other);
+    template<class U>
+	SmartPtr<T>& operator=(const SmartPtr<U>& other);
+
+    SmartPtr<T>& operator=(SmartPtr<T>&& other);
+    template<class U>
+	SmartPtr<T>& operator=(SmartPtr<U>&& other);
 
     ```

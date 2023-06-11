@@ -307,21 +307,21 @@ public:
 	}
 
 	/* TODO: @brief Release resource and convert this instance to empty SmartPtr object. */
-	void Reset()
+	inline void Reset()
 	{
 		SmartPtr().Swap(*this);
 	}
 	/* TODO: @brief Release original pointer and decrement pointer's reference count of 
 	 *	this instance. And take ownership of the new pointer "ptr". */
 	template <class U>
-	void Reset(U* ptr)
+	inline void Reset(U* ptr)
 	{
 		SmartPtr(ptr).Swap(*this);
 	}
 	/* TODO: @brief Release original pointer and decrement pointer's reference count of
 	 *	this instance. And take ownership of the new pointer "ptr" with deleter */
 	template <class U>
-	void Reset(U* ptr, function<void(U*)> deleter)
+	inline void Reset(U* ptr, function<void(U*)> deleter)
 	{
 		SmartPtr(ptr, deleter).Swap(*this);
 	}
@@ -346,25 +346,25 @@ public:
 	inline bool operator!=(const SmartPtr<U>& other);
 
 	/* TODO: Assignment operators */
-	SmartPtr<T>& operator=(const SmartPtr<T>& other)
+	inline SmartPtr<T>& operator=(const SmartPtr<T>& other)
 	{
 		SmartPtr(other).Swap(*this);
 		return *this;
 	}
 	template<class U>
-	SmartPtr<T>& operator=(const SmartPtr<U>& other)
+	inline SmartPtr<T>& operator=(const SmartPtr<U>& other)
 	{
 		SmartPtr(other).Swap(*this);
 		return *this;
 	}
 
-	SmartPtr<T>& operator=(SmartPtr<T>&& other)
+	inline SmartPtr<T>& operator=(SmartPtr<T>&& other)
 	{
 		SmartPtr(move(other)).Swap(*this);
 		return *this;
 	}
 	template<class U>
-	SmartPtr<T>& operator=(SmartPtr<U>&& other)
+	inline SmartPtr<T>& operator=(SmartPtr<U>&& other)
 	{
 		SmartPtr(move(other)).Swap(*this);
 		return *this;
