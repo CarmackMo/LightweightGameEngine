@@ -3,7 +3,7 @@
 #pragma region PhysicObject
 
 inline PhysicObject::PhysicObject() :
-	object(nullptr),
+	object(),
 	mass(0.0),
 	velocity(Vector2<double>::Zero),
 	force(Vector2<double>::Zero)

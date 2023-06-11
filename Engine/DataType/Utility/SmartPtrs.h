@@ -2,8 +2,6 @@
 #include <functional>
 #include <utility>
 
-/* TODO: just for test */
-#include <memory>
 
 using namespace std;
 
@@ -135,7 +133,6 @@ protected:
 	void CopyConstruct(const SmartPtr<U>& other)
 	{
 		other.IncSmartRef();
-
 		this->ptr = other.ptr;
 		this->refCount = other.refCount;
 	}
@@ -173,11 +170,20 @@ protected:
 	}
 
 	/* TODO: */
+	template <class U>
+	void WeakConstruct(const PtrBase<U>& other)
+	{
+		other.IncWeakRef();
+		
+		this->ptr = other.ptr;
+		this->refCount = other.refCount;
+	}
+
+	/* TODO: */
 	inline void IncSmartRef() const
 	{
 		if (refCount != nullptr)
 			refCount->IncSmartRef();
-			
 	}
 	/* TODO: */
 	inline void DecSmartRef()
@@ -198,7 +204,6 @@ protected:
 			refCount->DecWeakRef();
 	}
 
-
 public:
 	PtrBase(const PtrBase<T>&) = delete;
 	PtrBase& operator= (const PtrBase<T>&) = delete;
@@ -218,15 +223,20 @@ public:
 	/* TODO: */
 	inline void SwapPtr(PtrBase<T>& other)
 	{
-		T* tempPtr = this->ptr;
-		RefCount<T>* tempRef = this->refCount;
+		std::swap(this->ptr, other.ptr);
+		std::swap(this->refCount, other.refCount);
 
-		this->ptr = other.ptr;
-		this->refCount = other.refCount;
+		
+		//T* tempPtr = this->ptr;
+		//RefCount<T>* tempRef = this->refCount;
 
-		other.ptr = tempPtr;
-		other.refCount = tempRef;
+		//this->ptr = other.ptr;
+		//this->refCount = other.refCount;
+
+		//other.ptr = tempPtr;
+		//other.refCount = tempRef;
 	}
+
 };
 
 
@@ -246,12 +256,6 @@ template <class T>
 class SmartPtr : public PtrBase<T>
 {
 private:
-	//T* objectPtr;
-	//ReferenceCount* refCount;
-
-	/* TODO: just for test */
-	std::shared_ptr<int> temp = std::shared_ptr<int>();
-	std::default_delete<int> dt;
 
 public:
 	friend class WeakPtr<T>;
@@ -387,33 +391,121 @@ public:
 *			created from this smart pointer will not have reference as well.
 */
 template<class T>
-class WeakPtr
+class WeakPtr : public PtrBase<T>
 {
 private:
-	T* objectPtr;
-	ReferenceCount* refCount;
 
 public:
 	friend class SmartPtr<T>;
 
-	inline WeakPtr();
-	inline WeakPtr(const WeakPtr<T>& other);
-	inline WeakPtr(const SmartPtr<T>& other);
-	template<class U> inline WeakPtr(const WeakPtr<U>& other);		/* Copy constructor for class inheritance */
+	inline WeakPtr() {}
 
-	inline ~WeakPtr();
+	/* TODO: Copy constructor, copy construct from another weak pointer */
+	inline WeakPtr(const WeakPtr<T>& other)
+	{
+		this->WeakConstruct(other);
+	}
+	template<class U> 
+	inline WeakPtr(const WeakPtr<U>& other)
+	{
+		this->WeakConstruct(other);
+	}
+	/* TODO: Copy constructor, copy construct from Smart pointer */
+	template <class U>
+	inline WeakPtr(const SmartPtr<U>& other)
+	{
+		this->WeakConstruct(other);
+	}
 
-	/* Comparision operators */
-	inline operator bool();
+	/* TODO: Move constructor */
+	inline WeakPtr(WeakPtr<T>&& other)
+	{
+		this->MoveConstruct(move(other));
+	}
+	template <class U>
+	inline WeakPtr(WeakPtr<U>&& other)
+	{
+		this->MoveConstruct(move(other));
+	}
+	
+	/* TODO: */
+	inline ~WeakPtr()
+	{
+		this->DecWeakRef();
+	}
 
-	inline bool operator==(std::nullptr_t);
-	inline bool operator!=(std::nullptr_t);
+	/* TODO: */
+	inline void Reset()
+	{
+		WeakPtr().Swap(*this);
+	}
+	/* TODO: */
+	inline void Swap(WeakPtr<T>& other)
+	{
+		this->SwapPtr(other);
+	}
+	/* TODO: */
+	inline bool Expired() const
+	{
+		return this->GetSmartCount() == 0;
+	}
 
-	inline bool operator==(const WeakPtr<T>& other);
-	inline bool operator!=(const WeakPtr<T>& other);
 
-	/* Assignment operators */
-	WeakPtr<T>& operator=(const WeakPtr<T>& other);
+	/* TODO: Comparision operators */
+	inline operator bool()
+	{
+		return this->Get() != nullptr;
+	}
+
+	inline bool operator==(std::nullptr_t)
+	{
+		return this->Get() == nullptr;
+	}
+	inline bool operator!=(std::nullptr_t)
+	{
+		return this->Get() != nullptr;
+	}
+
+	inline bool operator==(const WeakPtr<T>& other)
+	{
+		return this->Get() == other.Get();
+	}
+	inline bool operator!=(const WeakPtr<T>& other)
+	{
+		return this->Get() == other.Get();
+	}
+
+	/* TODO: Assignment operators */
+	inline WeakPtr<T>& operator=(const WeakPtr<T>& other)
+	{
+		WeakPtr(other).Swap(*this);
+		return *this;
+	}
+	template <class U>
+	inline WeakPtr<T>& operator=(const WeakPtr<U>& other)
+	{
+		WeakPtr(other).Swap(*this);
+		return *this;
+	}
+
+	inline WeakPtr<T>& operator=(WeakPtr<T>&& other)
+	{
+		WeakPtr(std::move(other)).Swap(*this);
+		return *this;
+	}
+	template <class U>
+	inline WeakPtr<T>& operator=(WeakPtr<U>&& other)
+	{
+		WeakPtr(std::move(other)).Swap(*this);
+		return *this;
+	}
+
+	template <class U>
+	inline WeakPtr<T>& operator=(const SmartPtr<U>& other)
+	{
+		WeakPtr(other).Swap(*this);
+		return *this;
+	}
 };
 
 
