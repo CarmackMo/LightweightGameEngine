@@ -346,7 +346,29 @@ public:
 	inline bool operator!=(const SmartPtr<U>& other);
 
 	/* TODO: Assignment operators */
-	SmartPtr<T>& operator=(const SmartPtr<T>& other);
+	SmartPtr<T>& operator=(const SmartPtr<T>& other)
+	{
+		SmartPtr(other).Swap(*this);
+		return *this;
+	}
+	template<class U>
+	SmartPtr<T>& operator=(const SmartPtr<U>& other)
+	{
+		SmartPtr(other).Swap(*this);
+		return *this;
+	}
+
+	SmartPtr<T>& operator=(SmartPtr<T>&& other)
+	{
+		SmartPtr(move(other)).Swap(*this);
+		return *this;
+	}
+	template<class U>
+	SmartPtr<T>& operator=(SmartPtr<U>&& other)
+	{
+		SmartPtr(move(other)).Swap(*this);
+		return *this;
+	}
 };
 
 
