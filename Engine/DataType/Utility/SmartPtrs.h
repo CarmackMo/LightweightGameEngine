@@ -216,7 +216,7 @@ public:
 	}
 
 	/* TODO: */
-	inline void Swap(PtrBase<T>& other)
+	inline void SwapPtr(PtrBase<T>& other)
 	{
 		T* tempPtr = this->ptr;
 		RefCount<T>* tempRef = this->refCount;
@@ -304,6 +304,12 @@ public:
 	inline bool IsUnique() const
 	{
 		return this->GetSmartCount() == 1;
+	}
+
+	/* TODO: */
+	inline void Swap(SmartPtr<T>& other)
+	{
+		this->SwapPtr(other);
 	}
 
 	/* TODO: @brief Release resource and convert this instance to empty SmartPtr object. */
