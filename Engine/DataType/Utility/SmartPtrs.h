@@ -327,9 +327,6 @@ public:
 	}
 
 
-
-
-
 	/* Access operators */
 	inline T* operator->();
 	inline T& operator*();
