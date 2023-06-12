@@ -369,10 +369,8 @@ public:
 	inline bool operator==(std::nullptr_t);
 	inline bool operator!=(std::nullptr_t);
 
-	template <class U>
-	inline bool operator==(const SmartPtr<U>& other);
-	template <class U>
-	inline bool operator!=(const SmartPtr<U>& other);
+	inline bool operator==(const SmartPtr<T>& other);
+	inline bool operator!=(const SmartPtr<T>& other);
 
 	/* TODO: Assignment operators */
 	inline SmartPtr<T>& operator=(const SmartPtr<T>& other)
@@ -618,6 +616,68 @@ inline void SmartPtrUnitTest()
 	/* Test for accessor operators */
 	ptr6->derVal = 9;
 	(*ptr7).basVal = 8;
+}
+
+
+inline void WeakPtrUnitTest()
+{
+	class Base
+	{
+	public:
+		friend class Derive;
+
+		int basVal = 2;
+
+		Base() { }
+		~Base() { printf("Destroying 'Base' class!\n"); }
+	};
+
+	class Derive : public Base
+	{
+	public:
+		int derVal = 3;
+		Derive() {}
+		~Derive() { printf("Destroying 'Derive' class!\n"); }
+	};
+
+	void* temp = malloc(sizeof(Derive));
+	Derive* derive = new(temp) Derive();
+
+	SmartPtr<Derive> sPtr1 = SmartPtr<Derive>(derive);
+	SmartPtr<Base> sPtr2 = SmartPtr<Base>(sPtr1);
+
+	/* Test for WeakPtr copy constructor */
+	WeakPtr<Derive> wPtr1 = WeakPtr<Derive>(sPtr1);
+	WeakPtr<Base> wPtr2 = WeakPtr<Base>(wPtr1);
+	WeakPtr<Base> wPtr3 = WeakPtr<Base>(sPtr1);
+
+	/* Test for WeakPtr default constructor and move constructor */
+	WeakPtr<Base> wPtr4;
+	wPtr4 = WeakPtr<Base>(wPtr1);
+
+	/* Test for WeakPtr Rest() and assignment operators */
+	wPtr4.Reset();
+	wPtr4 = wPtr1;
+	wPtr4 = sPtr1;	// Weak reference count should still be 5
+
+	/* Test for creating SmartPtr from WeakPtr */
+	SmartPtr<Base> sPtr3 = SmartPtr<Base>(wPtr1);
+
+	/* Test for comparison operators */
+	bool res;
+	res = wPtr4 == wPtr2;
+	res = wPtr4 == wPtr1;
+	res = wPtr4 == nullptr;
+	res = wPtr4 != nullptr;
+
+	/* Test for Expire() */
+	res = wPtr4.Expired();
+	res = sPtr3.IsUnique();
+	sPtr1.Reset();
+	sPtr2.Reset();
+	res = sPtr3.IsUnique();
+	sPtr3.Reset();
+	res = wPtr4.Expired();
 }
 
 #endif

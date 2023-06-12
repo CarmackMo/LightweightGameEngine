@@ -108,15 +108,13 @@ inline bool SmartPtr<T>::operator!=(std::nullptr_t)
 }
 
 template <class T>
-template <class U>
-inline bool SmartPtr<T>::operator==(const SmartPtr<U>& other) 
+inline bool SmartPtr<T>::operator==(const SmartPtr<T>& other) 
 { 
 	return this->Get() == other.Get(); 
 }
 
 template <class T>
-template <class U>
-inline bool SmartPtr<T>::operator!=(const SmartPtr<U>& other) 
+inline bool SmartPtr<T>::operator!=(const SmartPtr<T>& other) 
 { 
 	return this->Get() != other.Get(); 
 }

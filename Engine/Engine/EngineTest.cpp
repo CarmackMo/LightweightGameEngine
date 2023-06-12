@@ -92,6 +92,7 @@ int WINAPI wWinMain(
 
     /* Unit test for SmartPtr and WeakPtr */
     Memory::SmartPtrUnitTest();
+    Memory::WeakPtrUnitTest();
     DEBUG_PRINT(" \n\n\n ############ \n SmartPtr & WeakPtr unit test successful \n ############ \n\n\n");
 
 
