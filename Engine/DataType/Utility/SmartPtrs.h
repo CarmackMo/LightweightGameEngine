@@ -102,9 +102,8 @@ private:
 
 public:
 	explicit RefCount(T* ptr, function<void(T*)> deleter = nullptr) :
-		RefCountBase(),
-		ptr(ptr),
-		deleter(deleter) {}
+		RefCountBase(), ptr(ptr), deleter(deleter) 
+	{}
 };
 
 
@@ -218,23 +217,10 @@ protected:
 			refCount->DecWeakRef();
 	}
 
-public:
-	friend class PtrBase;
-	friend class SmartPtr<T>;
-
-	PtrBase(const PtrBase<T>&) = delete;
-	PtrBase& operator= (const PtrBase<T>&) = delete;
-
 	/* TODO: */
 	inline T* Get() const
 	{
 		return ptr;
-	}
-
-	/* TODO: */
-	inline unsigned long GetSmartCount() const 
-	{
-		return refCount != nullptr ? refCount->GetSmartCount() : 0;
 	}
 
 	/* TODO: */
@@ -252,6 +238,20 @@ public:
 
 		//other.ptr = tempPtr;
 		//other.refCount = tempRef;
+	}
+
+
+public:
+	friend class PtrBase;
+	friend class SmartPtr<T>;
+
+	PtrBase(const PtrBase<T>&) = delete;
+	PtrBase& operator= (const PtrBase<T>&) = delete;
+
+	/* TODO: */
+	inline unsigned long GetSmartCount() const 
+	{
+		return refCount != nullptr ? refCount->GetSmartCount() : 0;
 	}
 
 };
@@ -544,14 +544,80 @@ namespace Memory
 #include <stdlib.h>
 #include "Debugger.h"
 
+using namespace Engine::Debugger;
 
-inline void SmartWeakPtrUnitTest()
+inline void SmartPtrUnitTest()
 {
-	int* arr = (int*)malloc(sizeof(int) * 10);
+	/* Preparation */
+	class Member
+	{
+	public:
+		int memVal = 1;
+		Member() {}
+		~Member() { DEBUG_PRINT("Destroying 'Member' class!\n"); }
+	};
 
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
-	_CrtDumpMemoryLeaks();
+	class Base
+	{
+	public:
+		int basVal = 2;
+		Member* member;
+
+		Base() { void* temp = malloc(sizeof(Member)); member = new(temp) Member(); }
+		~Base() { delete member; DEBUG_PRINT("Destroying 'Base' class!\n"); }
+	};
+
+	class Derive : public Base
+	{
+	public:
+		int derVal = 3;
+		Derive() {}
+		~Derive() { DEBUG_PRINT("Destroying 'Derive' class!\n"); }
+	};
+
+	int* num = (int*)malloc(sizeof(int));
+	int* arr = (int*)malloc(sizeof(int) * 10);
+	function<void(int*)> deleter = [](int* p) { free(p); };
+
+
+	/* Test for SmartPtr standard constructor and Reset() */
+	SmartPtr<int> ptr0;
+	SmartPtr<int> ptr1 = SmartPtr<int>(nullptr);
+	SmartPtr<int> ptr2 = SmartPtr<int>(num);
+	ptr2.Reset();
+	SmartPtr<int> ptr3 = SmartPtr<int>(arr, deleter);
+	ptr3.Reset();
+
+	/* Test for SmartPtr alias constructor */
+	void* temp = malloc(sizeof(Base));
+	Base* base = new(temp) Base();
+	SmartPtr<Base> ptr4 = SmartPtr<Base>(base);
+	SmartPtr<Member> ptr5 = SmartPtr<Member>(ptr4, base->member);
+	ptr4.Reset();
+	ptr5.Reset();
+
+	/* Test for SmartPtr copy constructor */
+	temp = malloc(sizeof(Derive));
+	Derive* derive = new(temp) Derive();
+	SmartPtr<Derive> ptr6 = SmartPtr<Derive>(derive);
+	SmartPtr<Base> ptr7 = SmartPtr<Base>(ptr6);
+
+	/* Test for SmartPtr move constructor and move assignment */
+	ptr4 = SmartPtr<Base>(ptr6);
+
+	/* Test for comparison operators */
+	bool res = ptr4 == ptr7;
+	res = ptr3 == nullptr;
+	res = ptr3 != nullptr;
+
+	/* Test for Reset(T* ptr) */
+	temp = malloc(sizeof(Base));
+	base = new(temp) Base();
+	ptr4.Reset(base);
+
+	/* Test for accessor operators */
+	ptr6->derVal = 9;
+	(*ptr7).basVal = 8;
 }
 
 #endif
