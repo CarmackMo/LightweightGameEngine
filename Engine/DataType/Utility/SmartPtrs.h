@@ -8,6 +8,10 @@ using namespace std;
 namespace Engine
 {
 /* Forwared declaration */
+class RefCountBase;
+template <class T> class RefCount;
+
+template <class T> class PtrBase;
 template <class T> class SmartPtr;
 template <class T> class WeakPtr;
 
@@ -272,8 +276,6 @@ public:
 template <class T>
 class SmartPtr : public PtrBase<T>
 {
-private:
-
 public:
 	friend class WeakPtr<T>;
 
@@ -413,8 +415,6 @@ public:
 template<class T>
 class WeakPtr : public PtrBase<T>
 {
-private:
-
 public:
 	friend class SmartPtr<T>;
 
@@ -465,7 +465,7 @@ public:
 		this->SwapPtr(other);
 	}
 	/* TODO: */
-	inline bool Expired() const
+	inline bool IsExpired() const
 	{
 		return this->GetSmartCount() == 0;
 	}
@@ -671,13 +671,13 @@ inline void WeakPtrUnitTest()
 	res = wPtr4 != nullptr;
 
 	/* Test for Expire() */
-	res = wPtr4.Expired();
+	res = wPtr4.IsExpired();
 	res = sPtr3.IsUnique();
 	sPtr1.Reset();
 	sPtr2.Reset();
 	res = sPtr3.IsUnique();
 	sPtr3.Reset();
-	res = wPtr4.Expired();
+	res = wPtr4.IsExpired();
 }
 
 #endif
