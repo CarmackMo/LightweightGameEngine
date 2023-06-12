@@ -1,6 +1,7 @@
 #pragma once
 #include <functional>
 #include <utility>
+#include <cassert>
 
 
 using namespace std;
@@ -174,9 +175,23 @@ protected:
 	void WeakConstruct(const PtrBase<U>& other)
 	{
 		other.IncWeakRef();
-		
 		this->ptr = other.ptr;
 		this->refCount = other.refCount;
+	}
+
+	/* TODO: @brief: If the given WeakPtr is empty or is already expired, return false. Return
+	 *	true if construct success. */
+	template <class U>
+	bool ConstructFromWeak(const WeakPtr<U>& other)
+	{
+		if (other.refCount != nullptr && other.Expired() != true)
+		{
+			other.IncSmartRef();
+			this->ptr = other.ptr;
+			this->refCount = other.refCount;
+			return true;
+		}
+		return false;
 	}
 
 	/* TODO: */
@@ -297,7 +312,12 @@ public:
 	inline SmartPtr(SmartPtr<U>&& other);
 
 	/* TODO: */
-	inline SmartPtr(const WeakPtr<T>& other);
+	template <class U>
+	inline SmartPtr(const WeakPtr<U>& other)
+	{
+		bool res = this->ConstructFromWeak(other);
+		assert(res == true);
+	}
 
 	/* TODO: */
 	inline ~SmartPtr();
