@@ -3,70 +3,39 @@
 #include <utility>
 #include <cassert>
 
-
 using namespace std;
 
 namespace Engine
 {
 /* Forwared declaration */
-class ReferenceCount;
 template <class T> class SmartPtr;
 template <class T> class WeakPtr;
 
 
 
-class ReferenceCount
-{
-public:
-	unsigned long smartRefCount;
-	unsigned long weakRefCount;
-
-	inline ReferenceCount(unsigned long smartRef = 0, unsigned long weakRef = 0);
-	inline ~ReferenceCount();
-};
-
-
-/* TODO: implement for weak pointer and implement in .cpp file 
- * @brief Empty SmartPtr will not create RefCount object. Hence the RefCount will only
- *		  be created when the object that is going to be managed is onwed by at least 
- *		  one SmartPtr. Therefore, the initial value of "smartCount" should be 1. */
-template <class T>
-class RefCount
+/* TODO: implement for weak pointer and implement in .cpp file
+	* @brief Empty SmartPtr will not create RefCount object. Hence the RefCount will only
+	*		  be created when the object that is going to be managed is onwed by at least
+	*		  one SmartPtr. Therefore, the initial value of "smartCount" should be 1. */
+class RefCountBase
 {
 private:
-	T* ptr;
-	/* TODO: */
-	function<void(T*)> deleter;
-
 	unsigned long smartCount = 1;
 	unsigned long weakCount = 1;
 
-	void Destroy()
-	{
-		if (deleter != nullptr)
-			deleter(ptr);
-		else
-			delete ptr;
-	}
-
-	void DeleteThis()
-	{
-		delete this;
-	}
+	virtual void Destroy() = 0;
+	virtual void DeleteThis() = 0;
 
 
 public:
-	inline RefCount(T* ptr, function<void(T*)> deleter = nullptr) :
-		ptr(ptr),
-		deleter(deleter)
-	{}
+	inline RefCountBase() = default;
+	inline ~RefCountBase() = default;
 
 	/* @breif Prevent instantiating RefCount by copy constructor and assignment
-	 *		  operation. */
-	inline RefCount(const RefCount&) = delete;
-	inline RefCount& operator= (const RefCount&) = delete;
+		*		  operation. */
+	inline RefCountBase(const RefCountBase&) = delete;
+	inline RefCountBase& operator= (const RefCountBase&) = delete;
 
-	inline ~RefCount() = default;
 
 	inline void IncSmartRef()
 	{
@@ -110,13 +79,43 @@ public:
 
 
 
+template <class T>
+class RefCount : public RefCountBase
+{
+private:
+	T* ptr;
+	/* TODO: */
+	function<void(T*)> deleter;
+
+	void Destroy() override
+	{
+		if (deleter != nullptr)
+			deleter(ptr);
+		else
+			delete ptr;
+	}
+
+	void DeleteThis() override
+	{
+		delete this;
+	}
+
+public:
+	explicit RefCount(T* ptr, function<void(T*)> deleter = nullptr) :
+		RefCountBase(),
+		ptr(ptr),
+		deleter(deleter) {}
+};
+
+
+
 /* TODO: */
 template <class T>
 class PtrBase
 {
 protected:
 	T* ptr = nullptr;
-	RefCount<T>* refCount = nullptr;
+	RefCountBase* refCount = nullptr;
 
 	PtrBase() = default;
 	~PtrBase() = default;
@@ -220,6 +219,9 @@ protected:
 	}
 
 public:
+	friend class PtrBase;
+	friend class SmartPtr<T>;
+
 	PtrBase(const PtrBase<T>&) = delete;
 	PtrBase& operator= (const PtrBase<T>&) = delete;
 
@@ -387,13 +389,13 @@ public:
 
 	inline SmartPtr<T>& operator=(SmartPtr<T>&& other)
 	{
-		SmartPtr(move(other)).Swap(*this);
+		SmartPtr(std::move(other)).Swap(*this);
 		return *this;
 	}
 	template<class U>
 	inline SmartPtr<T>& operator=(SmartPtr<U>&& other)
 	{
-		SmartPtr(move(other)).Swap(*this);
+		SmartPtr(std::move(other)).Swap(*this);
 		return *this;
 	}
 };
@@ -440,12 +442,12 @@ public:
 	/* TODO: Move constructor */
 	inline WeakPtr(WeakPtr<T>&& other)
 	{
-		this->MoveConstruct(move(other));
+		this->MoveConstruct(std::move(other));
 	}
 	template <class U>
 	inline WeakPtr(WeakPtr<U>&& other)
 	{
-		this->MoveConstruct(move(other));
+		this->MoveConstruct(std::move(other));
 	}
 	
 	/* TODO: */
@@ -535,11 +537,24 @@ public:
 namespace Memory
 {
 
-	inline void SmartPtrUnitTest()
-	{
+/********************************* Unit tests **************************************/
+#if defined(_DEBUG)
+#define _CRTDBG_MAP_ALLOC
+#include <crtdbg.h>
+#include <stdlib.h>
+#include "Debugger.h"
 
-	}
 
+inline void SmartWeakPtrUnitTest()
+{
+	int* arr = (int*)malloc(sizeof(int) * 10);
+
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
+	_CrtDumpMemoryLeaks();
+}
+
+#endif
 
 }//Namespace Memory
 }//Namespace Engine

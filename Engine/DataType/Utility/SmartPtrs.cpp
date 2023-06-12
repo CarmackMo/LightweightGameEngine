@@ -3,19 +3,6 @@
 namespace Engine
 {
 
-#pragma region ReferenceCount
-
-inline ReferenceCount::ReferenceCount(unsigned long smartRef, unsigned long weakRef) :
-	smartRefCount(smartRef),
-	weakRefCount(weakRef)
-{ }
-
-
-inline ReferenceCount::~ReferenceCount()
-{ }
-
-#pragma endregion
-
 
 
 #pragma region SmartPtr
@@ -51,7 +38,7 @@ template <class T>
 template <class U>
 inline SmartPtr<T>::SmartPtr(SmartPtr<U>&& other, T* ptr)
 {
-	this->AliasMoveConstruct(move(other), ptr);
+	this->AliasMoveConstruct(std::move(other), ptr);
 }
 
 template<class T>
@@ -70,14 +57,14 @@ inline SmartPtr<T>::SmartPtr(const SmartPtr<U>& other)
 template<class T>
 inline SmartPtr<T>::SmartPtr(SmartPtr<T>&& other)
 {
-	this->MoveConstruct(move(other));
+	this->MoveConstruct(std::move(other));
 }
 
 template<class T>
 template<class U>
 inline SmartPtr<T>::SmartPtr(SmartPtr<U>&& other)
 {
-	this->MoveConstruct(move(other));
+	this->MoveConstruct(std::move(other));
 }
 
 template<class T>

@@ -72,22 +72,27 @@ int WINAPI wWinMain(
 
 #if defined(_DEBUG)
 
-    /* Vector class unit test */
+    /* Unit test for Vector class */
     Vector::Vector2UnitTest();
     Vector::Vector3UnitTest();
     DEBUG_PRINT(" \n\n\n ############ \n Vector2, Vector3 unit test successful \n ############ \n\n\n");
     
 
-    /* Mathf.h unit test */
+    /* Unit test for Mathf.h */
     RandInRangeIntUnitTest();
     RandInRangeFloatUnitTest();
     DEBUG_PRINT(" \n\n\n ############ \n Mathf.h unit test successful \n ############ \n\n\n");
 
 
-    /* Unit test for Matrix4 class  */
+    /* Unit test for Matrix class  */
     Matrix::Matrix3UnitTest();
     Matrix::Matrix4UnitTest();
-    DEBUG_PRINT(" \n\n\n ############ \n Matrix4 unit test successful \n ############ \n\n\n");
+    DEBUG_PRINT(" \n\n\n ############ \n Matrix unit test successful \n ############ \n\n\n");
+
+
+    /* Unit test for SmartPtr and WeakPtr */
+    Memory::SmartWeakPtrUnitTest();
+    DEBUG_PRINT(" \n\n\n ############ \n SmartPtr & WeakPtr unit test successful \n ############ \n\n\n");
 
 
     /* Unit Test for creating game object from Json file */ 
