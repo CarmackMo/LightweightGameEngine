@@ -290,6 +290,7 @@ This file contains the definitions and implementations of data structures known 
 
 This file implements smart pointers that are commonly used in dynamic memory resource management, and their necessary components. These components include `RefCount`, `PtrBase`, `SmartPtr`, and `WeakPtr`.
 
++ [RefCountBase](#refcountbase)
 + [RefCount](#refcount)
 + [PtrBase](#ptrbase)
 + [SmartPtr](#smartptr)
@@ -337,7 +338,7 @@ This file implements smart pointers that are commonly used in dynamic memory res
     unsigned long   GetSmartCount();
     void            Swap(PtrBase<T>& other);
     ```
-    
+
 
 <a id="smartptr"></a>
 
@@ -388,24 +389,20 @@ This file implements smart pointers that are commonly used in dynamic memory res
     SmartPtr(T* ptr, std::function<void(T*)> deleter);
 
     /* Copy Constructors */
-    SmartPtr(const SmartPtr<T>& other);
-    template<class U> 
-	SmartPtr(const SmartPtr<U>& other);
+                      SmartPtr(const SmartPtr<T>& other);
+    template<class U> SmartPtr(const SmartPtr<U>& other);
 
     /* Alias Constructors */
-    template<class U>
-	SmartPtr(const SmartPtr<U>& other, T* ptr);
-	template<class U>
-	SmartPtr(SmartPtr<U>&& other, T* ptr);
+    template<class U> SmartPtr(const SmartPtr<U>& other, T* ptr);
+	template<class U> SmartPtr(SmartPtr<U>&& other, T* ptr);
 
     /* Move Constructor */
-    SmartPtr(SmartPtr<T>&& other);
-	template<class U>
-	SmartPtr(SmartPtr<U>&& other);
+                      SmartPtr(SmartPtr<T>&& other);
+	template<class U> SmartPtr(SmartPtr<U>&& other);
 
-
+    /* Operations */
     bool                    IsUnique();
-    void                    Swap(SmartPtr<T>& other)
+    void                    Swap(SmartPtr<T>& other);
     void                    Reset();
     template <class U> void Reset(U* ptr);
     template <class U> void Reset(U* ptr, function<void(U*)> deleter);
@@ -425,7 +422,7 @@ This file implements smart pointers that are commonly used in dynamic memory res
 	template <class U>
 	bool operator!=(const SmartPtr<U>& other);
 
-	/* TODO: Assignment operators */
+	/* Assignment operators */
 	SmartPtr<T>& operator=(const SmartPtr<T>& other);
     template<class U>
 	SmartPtr<T>& operator=(const SmartPtr<U>& other);
@@ -435,3 +432,20 @@ This file implements smart pointers that are commonly used in dynamic memory res
 	SmartPtr<T>& operator=(SmartPtr<U>&& other);
 
     ```
+
+
+<a id="weakptr"></a>
+
++ ## WeakPtr
+
+    `WeakPtr` is a smart pointer that holds a non-owning ("weak") reference to an object that is managed by `SmartPtr`. A `WeakPtr` must be converted to `SmartPtr` in order to access the referenced object.
+
+    `WeakPtr` models temporary ownership: when an object needs to be accessed only if it exists, and it may be deleted at any time by someone else, `WeakPtr` is used to track the object, and it is converted to `SmartPtr` to assume temporary ownership. If the original `SmartPtr` is destroyed at this time, the object's lifetime is extended until the temporary `SmartPtr` is destroyed as well.
+
+    Another use for `WeakPtr` is to break reference cycles formed by objects managed by `SmartPtr`. If such cycle is orphaned (i.e., there are no outside shared pointers into the cycle), the `SmartPtr` reference counts cannot reach zero and the memory is leaked. To prevent this, one of the pointers in the cycle can be made weak.
+
+    Like `SmartPtr`, a typical implementation of `WeakPtr` stores two pointers:
+    + A pointer to the control block; 
+    + The stored pointer of the `SmartPtr` it was constructed from.
+
+    A separate stored pointer is necessary to ensure that converting a `SmartPtr` to `WeakPtr` and then back works correctly, even for aliased `SmartPtrs`. It is not possible to access the stored pointer in a `WeakPtr` without converting it into a `SmartPtr`.
