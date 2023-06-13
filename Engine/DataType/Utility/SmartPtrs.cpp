@@ -3,6 +3,56 @@
 namespace Engine
 {
 
+#pragma region RefCountBase
+
+inline void RefCountBase::IncSmartRef()
+{
+	smartCount++;
+}
+
+
+inline void RefCountBase::IncWeakRef()
+{
+	weakCount++;
+}
+
+
+inline void RefCountBase::DecSmartRef()
+{
+	smartCount--;
+	if (smartCount == 0)
+	{
+		Destroy();
+		DecWeakRef();
+	}
+}
+
+
+inline void RefCountBase::DecWeakRef()
+{
+	weakCount--;
+	if (weakCount == 0)
+	{
+		DeleteThis();
+	}
+}
+
+
+inline unsigned long RefCountBase::GetSmartCount()
+{
+	return smartCount;
+}
+
+
+inline unsigned long RefCountBase::GetWeakCount()
+{
+	return weakCount;
+}
+
+#pragma endregion
+
+
+
 #pragma region RefCount
 
 template <class T>

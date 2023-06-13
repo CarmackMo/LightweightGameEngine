@@ -35,51 +35,23 @@ public:
 	inline ~RefCountBase() = default;
 
 	/* @breif Prevent instantiating RefCount by copy constructor and assignment
-		*		  operation. */
+	 *		  operation. */
 	inline RefCountBase(const RefCountBase&) = delete;
 	inline RefCountBase& operator= (const RefCountBase&) = delete;
 
 
-	inline void IncSmartRef()
-	{
-		smartCount++;
-	}
+	inline void IncSmartRef();
 
-	inline void IncWeakRef()
-	{
-		weakCount++;
-	}
+	inline void IncWeakRef();
 
-	inline void DecSmartRef()
-	{
-		smartCount--;
-		if (smartCount == 0)
-		{
-			Destroy();
-			DecWeakRef();
-		}
-	}
+	inline void DecSmartRef();
 
-	inline void DecWeakRef()
-	{
-		weakCount--;
-		if (weakCount == 0)
-		{
-			DeleteThis();
-		}
-	}
+	inline void DecWeakRef();
 
-	inline unsigned long GetSmartCount()
-	{
-		return smartCount;
-	}
+	inline unsigned long GetSmartCount();
 
-	inline unsigned long GetWeakCount()
-	{
-		return weakCount;
-	}
+	inline unsigned long GetWeakCount();
 };
-
 
 
 template <class T>
@@ -96,8 +68,6 @@ private:
 public:
 	explicit RefCount(T* ptr, function<void(T*)> deleter = nullptr);
 };
-
-
 
 
 template <class T>
@@ -147,8 +117,11 @@ protected:
 
 
 	inline void IncSmartRef() const;
+
 	inline void DecSmartRef();
+
 	inline void IncWeakRef() const;
+
 	inline void DecWeakRef();
 
 
