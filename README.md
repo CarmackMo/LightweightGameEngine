@@ -359,8 +359,8 @@ This file implements smart pointers that are commonly used in dynamic memory res
        Standard constructors allow users to directly construct smart pointers for managing objects. Users need to provide the pointer to the object as an argument to the constructor to create smart pointer. If no argument is provided or a null pointer is passed, a default empty `SmartPtr` will be created.
        
        In the cases when the managed object has a type that cannot be deleted using the default delete-expression, users also need to provide a customized deleter.
-
-        Note that constructing a new `SmartPtr` using the raw underlying pointer owned by another `SmartPtr` leads to undefined behavior. It is the responsibility of users to ensure that such situations are prevented.
+       
+       Note that constructing a new `SmartPtr` using the raw underlying pointer owned by another `SmartPtr` leads to undefined behavior. It is the responsibility of users to ensure that such situations are prevented.
 
     - ### Copy Constructors
         Copy constructors allow users to construct new `SmartPtr` that shares ownership of the object managed by the input `SmartPtr`. If the input `SmartPtr` manages no object, the created `SmartPtr` will be empty either. 
@@ -405,6 +405,7 @@ This file implements smart pointers that are commonly used in dynamic memory res
 
 
     bool                    IsUnique();
+    void                    Swap(SmartPtr<T>& other)
     void                    Reset();
     template <class U> void Reset(U* ptr);
     template <class U> void Reset(U* ptr, function<void(U*)> deleter);

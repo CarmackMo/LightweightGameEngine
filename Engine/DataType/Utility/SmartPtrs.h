@@ -294,23 +294,23 @@ public:
 	 *		  managed by "other". If "other" manages no object, this instance manages no object
 	 *		  either. Using shallow copy to copy pointers */
 	inline SmartPtr(const SmartPtr<T>& other);
-	template<class U> 
+	template <class U> 
 	inline SmartPtr(const SmartPtr<U>& other);
 
 	/* @brief Aliasing constructor. Constructs a SmarPtr which shares ownership information with 
 	 *		  the initial value of "other", but holds an unrelated and unmanaged pointer "ptr". 
 	 *		  It is the responsibility of the users to make sure that "ptr" remains valid as long 
 	 *		  as this SmartPtr exists */
-	template<class U>
+	template <class U>
 	inline SmartPtr(const SmartPtr<U>& other, T* ptr);
-	template<class U>
+	template <class U>
 	inline SmartPtr(SmartPtr<U>&& other, T* ptr);
 
 	/* @brief Move constructors. Move-constructs a SmartPtr from "other". After the construction, 
 	 *		  this instance contains a copy of the previous state of "other", "other" is empty and
 	 *		  its stored pointer is null.  */
 	inline SmartPtr(SmartPtr<T>&& other);
-	template<class U>
+	template <class U>
 	inline SmartPtr(SmartPtr<U>&& other);
 
 	/* @brief Constructs a SmartPtr which shares ownership of the object managed by "other". It is
@@ -328,25 +328,16 @@ public:
 	/* @brief Swaps the managed objects. */
 	inline void Swap(SmartPtr<T>& other);
 
-	/* TODO: @brief Release resource and convert this instance to empty SmartPtr object. */
-	inline void Reset()
-	{
-		SmartPtr().Swap(*this);
-	}
-	/* TODO: @brief Release original pointer and decrement pointer's reference count of 
-	 *	this instance. And take ownership of the new pointer "ptr". */
+	/* @brief Release resource and convert this instance to empty SmartPtr object. */
+	inline void Reset();
+	/* @brief Release original pointer and decrement pointer's reference count. And take ownership 
+	 *		  of the new pointer "ptr". */
 	template <class U>
-	inline void Reset(U* ptr)
-	{
-		SmartPtr(ptr).Swap(*this);
-	}
-	/* TODO: @brief Release original pointer and decrement pointer's reference count of
-	 *	this instance. And take ownership of the new pointer "ptr" with deleter */
+	inline void Reset(U* ptr);
+	/* @brief Release original pointer and decrement pointer's reference count. And take ownership 
+	 *		  of the new pointer "ptr" with deleter */
 	template <class U>
-	inline void Reset(U* ptr, function<void(U*)> deleter)
-	{
-		SmartPtr(ptr, deleter).Swap(*this);
-	}
+	inline void Reset(U* ptr, function<void(U*)> deleter);
 
 
 	/* Access operators */
@@ -362,30 +353,14 @@ public:
 	inline bool operator==(const SmartPtr<T>& other);
 	inline bool operator!=(const SmartPtr<T>& other);
 
-	/* TODO: Assignment operators */
-	inline SmartPtr<T>& operator=(const SmartPtr<T>& other)
-	{
-		SmartPtr(other).Swap(*this);
-		return *this;
-	}
-	template<class U>
-	inline SmartPtr<T>& operator=(const SmartPtr<U>& other)
-	{
-		SmartPtr(other).Swap(*this);
-		return *this;
-	}
+	/* Assignment operators */
+	inline SmartPtr<T>& operator=(const SmartPtr<T>& other);
+	template <class U>
+	inline SmartPtr<T>& operator=(const SmartPtr<U>& other);
 
-	inline SmartPtr<T>& operator=(SmartPtr<T>&& other)
-	{
-		SmartPtr(std::move(other)).Swap(*this);
-		return *this;
-	}
+	inline SmartPtr<T>& operator=(SmartPtr<T>&& other);
 	template<class U>
-	inline SmartPtr<T>& operator=(SmartPtr<U>&& other)
-	{
-		SmartPtr(std::move(other)).Swap(*this);
-		return *this;
-	}
+	inline SmartPtr<T>& operator=(SmartPtr<U>&& other);
 };
 
 

@@ -7,6 +7,7 @@ namespace Engine
 
 #pragma region SmartPtr
 
+/* Constructors */
 template <class T>
 inline SmartPtr<T>::SmartPtr()
 { }
@@ -31,15 +32,15 @@ inline SmartPtr<T>::SmartPtr(T* ptr, function<void(T*)> deleter)
 }
 
 
-template<class T>
+template <class T>
 inline SmartPtr<T>::SmartPtr(const SmartPtr<T>& other)
 {
 	this->CopyConstruct(other);
 }
 
 
-template<class T>
-template<class U>
+template <class T>
+template <class U>
 inline SmartPtr<T>::SmartPtr(const SmartPtr<U>& other)
 {
 	this->CopyConstruct(other);
@@ -61,22 +62,22 @@ inline SmartPtr<T>::SmartPtr(SmartPtr<U>&& other, T* ptr)
 }
 
 
-template<class T>
+template <class T>
 inline SmartPtr<T>::SmartPtr(SmartPtr<T>&& other)
 {
 	this->MoveConstruct(std::move(other));
 }
 
 
-template<class T>
-template<class U>
+template <class T>
+template <class U>
 inline SmartPtr<T>::SmartPtr(SmartPtr<U>&& other)
 {
 	this->MoveConstruct(std::move(other));
 }
 
 
-template<class T>
+template <class T>
 template <class U>
 inline SmartPtr<T>::SmartPtr(const WeakPtr<U>& other)
 {
@@ -85,30 +86,49 @@ inline SmartPtr<T>::SmartPtr(const WeakPtr<U>& other)
 }
 
 
-template<class T>
+template <class T>
 inline SmartPtr<T>::~SmartPtr()
 {
 	this->DecSmartRef();
 }
 
 
-template<class T>
+/* Operations */
+template <class T>
 inline bool SmartPtr<T>::IsUnique() const
 {
 	return this->GetSmartCount() == 1;
 }
 
 
-template<class T>
+template <class T>
 inline void SmartPtr<T>::Swap(SmartPtr<T>& other)
 {
 	this->SwapPtr(other);
 }
 
 
+template <class T>
+inline void SmartPtr<T>::Reset()
+{
+	SmartPtr().Swap(*this);
+}
 
 
+template <class T>
+template <class U>
+inline void SmartPtr<T>::Reset(U* ptr)
+{
+	SmartPtr(ptr).Swap(*this);
+}
 
+
+template <class T>
+template <class U>
+inline void SmartPtr<T>::Reset(U* ptr, function<void(U*)> deleter)
+{
+	SmartPtr(ptr, deleter).Swap(*this);
+}
 
 
 /* Access operators */
@@ -157,10 +177,36 @@ inline bool SmartPtr<T>::operator!=(const SmartPtr<T>& other)
 }
 
 
+/* Assignment operators */
+template <class T>
+inline SmartPtr<T>& SmartPtr<T>::operator=(const SmartPtr<T>& other)
+{
+	SmartPtr(other).Swap(*this);
+	return *this;
+}
 
+template <class T>
+template <class U>
+inline SmartPtr<T>& SmartPtr<T>::operator=(const SmartPtr<U>& other)
+{
+	SmartPtr(other).Swap(*this);
+	return *this;
+}
 
+template <class T>
+inline SmartPtr<T>& SmartPtr<T>::operator=(SmartPtr<T>&& other)
+{
+	SmartPtr(std::move(other)).Swap(*this);
+	return *this;
+}
 
-
+template <class T>
+template<class U>
+inline SmartPtr<T>& SmartPtr<T>::operator=(SmartPtr<U>&& other)
+{
+	SmartPtr(std::move(other)).Swap(*this);
+	return *this;
+}
 
 #pragma endregion
 
