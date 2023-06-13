@@ -30,7 +30,6 @@ private:
 	virtual void Destroy() = 0;
 	virtual void DeleteThis() = 0;
 
-
 public:
 	inline RefCountBase() = default;
 	inline ~RefCountBase() = default;
@@ -88,31 +87,19 @@ class RefCount : public RefCountBase
 {
 private:
 	T* ptr;
-	/* TODO: */
 	function<void(T*)> deleter;
 
-	void Destroy() override
-	{
-		if (deleter != nullptr)
-			deleter(ptr);
-		else
-			delete ptr;
-	}
+	void Destroy() override;
 
-	void DeleteThis() override
-	{
-		delete this;
-	}
+	void DeleteThis() override;
 
 public:
-	explicit RefCount(T* ptr, function<void(T*)> deleter = nullptr) :
-		RefCountBase(), ptr(ptr), deleter(deleter) 
-	{}
+	explicit RefCount(T* ptr, function<void(T*)> deleter = nullptr);
 };
 
 
 
-/* TODO: */
+
 template <class T>
 class PtrBase
 {
@@ -123,126 +110,53 @@ protected:
 	PtrBase() = default;
 	~PtrBase() = default;
 
-	/* TODO */
-	void StandardConstruct(T* ptr, function<void(T*)> deleter = nullptr)
-	{
-		this->ptr = ptr;
-		this->refCount = new RefCount<T>(ptr, deleter);
-	}
+	void StandardConstruct(T* ptr, function<void(T*)> deleter = nullptr);
 
-	/* TODO: @brief Copy constructor, using shallow copy to data, since data is shared
-	 * by SmartPtr. Assume class "U" is convertible to class "T" */
+	/* @brief Performs copy-construct for SmartPtr. Using shallow copy to data, since data is 
+	 *		  shared by SmartPtrs owning the same object. It is the responsibility of the users 
+	 *		  to ensure "U*" is implicitly convertible to "T*" */
 	template <class U>
-	void CopyConstruct(const SmartPtr<U>& other)
-	{
-		other.IncSmartRef();
-		this->ptr = other.ptr;
-		this->refCount = other.refCount;
-	}
+	void CopyConstruct(const SmartPtr<U>& other);
 
-	/* TODO: @brief Move constructor, using shallow copy to copy the pointer itself
-	 * Assume class "U" is convertible to class "T" */
+	/* @brief Performs move-constructor for SmartPtr and WeakPtr. Using shallow copy to copy the
+	 *		  pointer itself. It is the responsibility of the users to ensure "U*" is implicitly 
+	 *		  convertible to "T*" */
 	template <class U>
-	void MoveConstruct(PtrBase<U>&& other)
-	{
-		this->ptr = other.ptr;
-		this->refCount = other.refCount;
+	void MoveConstruct(PtrBase<U>&& other);
 
-		other.ptr = nullptr;
-		other.refCount = nullptr;
-	}
-
-	/* TODO: */
+	/* @brief Performs aliasing-constructor for SmartPtr. It is the responsibility of the users 
+	 *		  to ensure "U*" is implicitly convertible to "T*" */
 	template <class U>
-	void AliasConstruct(const SmartPtr<U>& other, T* ptr)
-	{
-		other.IncSmartRef();
-		this->ptr = ptr;
-		this->refCount = other.refCount;
-	}
+	void AliasConstruct(const SmartPtr<U>& other, T* ptr);
 
-	/* TODO: */
+	/* @brief Performs aliasing-move-constructor for SmartPtr. It is the responsibility of the 
+	 *		  users to ensure "U*" is implicitly convertible to "T*" */
 	template <class U>
-	void AliasMoveConstruct(SmartPtr<U>&& other, T* ptr)
-	{
-		this->ptr = other.ptr;
-		this->refCount = other.refCount;
+	void AliasMoveConstruct(SmartPtr<U>&& other, T* ptr);
 
-		other.ptr = nullptr;
-		other.refCount = nullptr;
-	}
-
-	/* TODO: */
+	/* @brief Performs copy-construct for WeakPtr. Using shallow copy to data, since WeakPtr 
+	 *		  holds non-owning reference to share data that managed by SmartPtr. It is the 
+	 *		  responsibility of the users to ensure "U*" is implicitly convertible to "T*" */
 	template <class U>
-	void WeakConstruct(const PtrBase<U>& other)
-	{
-		other.IncWeakRef();
-		this->ptr = other.ptr;
-		this->refCount = other.refCount;
-	}
+	void WeakConstruct(const PtrBase<U>& other);
 
-	/* TODO: @brief: If the given WeakPtr is empty or is already expired, return false. Return
-	 *	true if construct success. */
+	/* @brief: Performs copy-construct from WeakPtr to SmartPtr. If the given WeakPtr is empty 
+	 *		   or is already expired, return false. Return true if construct success. */
 	template <class U>
-	bool ConstructFromWeak(const WeakPtr<U>& other)
-	{
-		if (other.refCount != nullptr && other.IsExpired() != true)
-		{
-			other.IncSmartRef();
-			this->ptr = other.ptr;
-			this->refCount = other.refCount;
-			return true;
-		}
-		return false;
-	}
+	bool ConstructFromWeak(const WeakPtr<U>& other);
 
-	/* TODO: */
-	inline void IncSmartRef() const
-	{
-		if (refCount != nullptr)
-			refCount->IncSmartRef();
-	}
-	/* TODO: */
-	inline void DecSmartRef()
-	{
-		if (refCount != nullptr)
-			refCount->DecSmartRef();
-	}
-	/* TODO: */
-	inline void IncWeakRef() const
-	{
-		if (refCount != nullptr)
-			refCount->IncWeakRef();
-	}
-	/* TODO: */
-	inline void DecWeakRef()
-	{
-		if (refCount != nullptr)
-			refCount->DecWeakRef();
-	}
 
-	/* TODO: */
-	inline T* Get() const
-	{
-		return ptr;
-	}
+	inline void IncSmartRef() const;
+	inline void DecSmartRef();
+	inline void IncWeakRef() const;
+	inline void DecWeakRef();
 
-	/* TODO: */
-	inline void SwapPtr(PtrBase<T>& other)
-	{
-		std::swap(this->ptr, other.ptr);
-		std::swap(this->refCount, other.refCount);
 
-		
-		//T* tempPtr = this->ptr;
-		//RefCount<T>* tempRef = this->refCount;
+	/* @brief Return the pointer of the managed object */
+	inline T* Get() const;
 
-		//this->ptr = other.ptr;
-		//this->refCount = other.refCount;
-
-		//other.ptr = tempPtr;
-		//other.refCount = tempRef;
-	}
+	/* @brief Swaps the managed objects. */
+	inline void SwapPtr(PtrBase<T>& other);
 
 
 public:
@@ -252,15 +166,9 @@ public:
 	PtrBase(const PtrBase<T>&) = delete;
 	PtrBase& operator= (const PtrBase<T>&) = delete;
 
-	/* TODO: */
-	inline unsigned long GetSmartCount() const 
-	{
-		return refCount != nullptr ? refCount->GetSmartCount() : 0;
-	}
+	inline unsigned long GetSmartCount() const;
 
 };
-
-
 
 
 /**

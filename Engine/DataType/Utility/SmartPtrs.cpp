@@ -3,6 +3,168 @@
 namespace Engine
 {
 
+#pragma region RefCount
+
+template <class T>
+void RefCount<T>::Destroy()
+{
+	if (deleter != nullptr)
+		deleter(ptr);
+	else
+		delete ptr;
+}
+
+
+template <class T>
+void RefCount<T>::DeleteThis()
+{
+	delete this;
+}
+
+
+template <class T>
+RefCount<T>::RefCount(T* ptr, function<void(T*)> deleter) :
+	RefCountBase(), ptr(ptr), deleter(deleter)
+{}
+
+#pragma endregion
+
+
+
+#pragma region PtrBase
+
+template <class T>
+void PtrBase<T>::StandardConstruct(T* ptr, function<void(T*)> deleter)
+{
+	this->ptr = ptr;
+	this->refCount = new RefCount<T>(ptr, deleter);
+}
+
+
+template <class T>
+template <class U>
+void PtrBase<T>::CopyConstruct(const SmartPtr<U>& other)
+{
+	other.IncSmartRef();
+	this->ptr = other.ptr;
+	this->refCount = other.refCount;
+}
+
+
+template <class T>
+template <class U>
+void PtrBase<T>::MoveConstruct(PtrBase<U>&& other)
+{
+	this->ptr = other.ptr;
+	this->refCount = other.refCount;
+
+	other.ptr = nullptr;
+	other.refCount = nullptr;
+}
+
+
+template <class T>
+template <class U>
+void PtrBase<T>::AliasConstruct(const SmartPtr<U>& other, T* ptr)
+{
+	other.IncSmartRef();
+	this->ptr = ptr;
+	this->refCount = other.refCount;
+}
+
+
+template <class T>
+template <class U>
+void PtrBase<T>::AliasMoveConstruct(SmartPtr<U>&& other, T* ptr)
+{
+	this->ptr = other.ptr;
+	this->refCount = other.refCount;
+
+	other.ptr = nullptr;
+	other.refCount = nullptr;
+}
+
+
+template <class T>
+template <class U>
+void PtrBase<T>::WeakConstruct(const PtrBase<U>& other)
+{
+	other.IncWeakRef();
+	this->ptr = other.ptr;
+	this->refCount = other.refCount;
+}
+
+
+template <class T>
+template <class U>
+bool PtrBase<T>::ConstructFromWeak(const WeakPtr<U>& other)
+{
+	if (other.refCount != nullptr && other.IsExpired() != true)
+	{
+		other.IncSmartRef();
+		this->ptr = other.ptr;
+		this->refCount = other.refCount;
+		return true;
+	}
+	return false;
+}
+
+
+template <class T>
+inline void PtrBase<T>::IncSmartRef() const
+{
+	if (refCount != nullptr)
+		refCount->IncSmartRef();
+}
+
+
+template <class T>
+inline void PtrBase<T>::DecSmartRef()
+{
+	if (refCount != nullptr)
+		refCount->DecSmartRef();
+}
+
+
+template <class T>
+inline void PtrBase<T>::IncWeakRef() const
+{
+	if (refCount != nullptr)
+		refCount->IncWeakRef();
+}
+
+
+template <class T>
+inline void PtrBase<T>::DecWeakRef()
+{
+	if (refCount != nullptr)
+		refCount->DecWeakRef();
+}
+
+
+template <class T>
+inline T* PtrBase<T>::Get() const
+{
+	return ptr;
+}
+
+
+template <class T>
+inline void PtrBase<T>::SwapPtr(PtrBase<T>& other)
+{
+	std::swap(this->ptr, other.ptr);
+	std::swap(this->refCount, other.refCount);
+}
+
+
+template <class T>
+inline unsigned long PtrBase<T>::GetSmartCount() const
+{
+	return refCount != nullptr ? refCount->GetSmartCount() : 0;
+}
+
+#pragma endregion
+
 
 
 #pragma region SmartPtr
