@@ -214,6 +214,152 @@ inline SmartPtr<T>& SmartPtr<T>::operator=(SmartPtr<U>&& other)
 
 #pragma region WeakPtr
 
+/* Constructors */
+template <class T>
+inline WeakPtr<T>::WeakPtr(const WeakPtr<T>& other)
+{
+	this->WeakConstruct(other);
+}
+
+
+template <class T>
+template <class U>
+inline WeakPtr<T>::WeakPtr(const WeakPtr<U>& other)
+{
+	this->WeakConstruct(other);
+}
+
+
+template <class T>
+template <class U>
+inline WeakPtr<T>::WeakPtr(const SmartPtr<U>& other)
+{
+	this->WeakConstruct(other);
+}
+
+
+template <class T>
+inline WeakPtr<T>::WeakPtr(WeakPtr<T>&& other)
+{
+	this->MoveConstruct(std::move(other));
+}
+
+
+template <class T>
+template <class U>
+inline WeakPtr<T>::WeakPtr(WeakPtr<U>&& other)
+{
+	this->MoveConstruct(std::move(other));
+}
+
+
+template <class T>
+inline WeakPtr<T>::~WeakPtr()
+{
+	this->DecWeakRef();
+}
+
+
+/* Operations */
+template <class T>
+inline bool WeakPtr<T>::IsExpired() const
+{
+	return this->GetSmartCount() == 0;
+}
+
+
+template <class T>
+inline void WeakPtr<T>::Swap(WeakPtr<T>& other)
+{
+	this->SwapPtr(other);
+}
+
+
+template <class T>
+inline void WeakPtr<T>::Reset()
+{
+	WeakPtr().Swap(*this);
+}
+
+
+/* Comparision operators */
+template <class T>
+inline WeakPtr<T>::operator bool()
+{
+	return this->Get() != nullptr;
+}
+
+
+template <class T>
+inline bool WeakPtr<T>::operator==(std::nullptr_t)
+{
+	return this->Get() == nullptr;
+}
+
+
+template <class T>
+inline bool WeakPtr<T>::operator!=(std::nullptr_t)
+{
+	return this->Get() != nullptr;
+}
+
+
+template <class T>
+inline bool WeakPtr<T>::operator==(const WeakPtr<T>& other)
+{
+	return this->Get() == other.Get();
+}
+
+
+template <class T>
+inline bool WeakPtr<T>::operator!=(const WeakPtr<T>& other)
+{
+	return this->Get() == other.Get();
+}
+
+
+/* Assignment operators */
+template <class T>
+inline WeakPtr<T>& WeakPtr<T>::operator=(const WeakPtr<T>& other)
+{
+	WeakPtr(other).Swap(*this);
+	return *this;
+}
+
+
+template <class T>
+template <class U>
+inline WeakPtr<T>& WeakPtr<T>::operator=(const WeakPtr<U>& other)
+{
+	WeakPtr(other).Swap(*this);
+	return *this;
+}
+
+
+template <class T>
+inline WeakPtr<T>& WeakPtr<T>::operator=(WeakPtr<T>&& other)
+{
+	WeakPtr(std::move(other)).Swap(*this);
+	return *this;
+}
+
+
+template <class T>
+template <class U>
+inline WeakPtr<T>& WeakPtr<T>::operator=(WeakPtr<U>&& other)
+{
+	WeakPtr(std::move(other)).Swap(*this);
+	return *this;
+}
+
+
+template <class T>
+template <class U>
+inline WeakPtr<T>& WeakPtr<T>::operator=(const SmartPtr<U>& other)
+{
+	WeakPtr(other).Swap(*this);
+	return *this;
+}
 
 #pragma endregion
 

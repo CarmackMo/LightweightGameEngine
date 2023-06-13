@@ -264,15 +264,13 @@ public:
 
 
 /**
-* @brief TODO: smart pointer...
-*
-* @remarks Does not allow reference count exists when object instance is not exist. When
-*			a new smart pointer is created after the object instance is deleted, it will
-*			generate potential harzard if the smart pointer reference count is increased.
-*			Therefore, when creating a new smart pointer by copying other smart pointer /
-*			weak pointer instance, if the object instance is not exsit, its corresponding
-*			reference must not exsit as well.
-*/
+ * @brief `SmartPtr` retains shared ownership of an object through a pointer. Several `SmartPtr` 
+ *		  objects may own the same object. The managed object is destroyed and its memory 
+ *		  deallocated when either of the following happens:
+ *			- The last remaining `SmartPtr` owning the object is destroyed;
+ *			- The last remaining `SmartPtr` owning the object is assigned another pointer via 
+ *			  `operator=` or `Reset()`.
+ */
 template <class T>
 class SmartPtr : public PtrBase<T>
 {
@@ -365,130 +363,72 @@ public:
 
 
 /**
-* @brief TODO: weak pointer...
-*
-* @remarks Allow reference count exsits when object instance is exist. Weak reference
-*			count records the amount of "observer" to the object instance no matter it
-*			exists or not. Therefore, when creating a new weak pointer by copying other
-*			smart pointer / weak pointer instance, reference count is allowed to be existed
-*			even if the object instance is not exist. But in most cases, smart pointer's
-*			reference count will not exist if its object instance is null. The weak pointer
-*			created from this smart pointer will not have reference as well.
-*/
+ * @brief WeakPtr is a smart pointer that holds a non-owning ("weak") reference to an object that is
+ *		  managed by SmartPtr. It must be converted to SmartPtr in order to access the referenced 
+ *		  object.
+ *		  WeakPtr models temporary ownership: when an object needs to be accessed only if it exists, 
+ *		  and it may be deleted at any time by someone else, WeakPtr is used to track the object, and 
+ *		  it is converted to SmartPtr to assume temporary ownership. If the original SmartPtr is 
+ *		  destroyed at this time, the object's lifetime is extended until the temporary SmartPtr is 
+ *		  destroyed as well. 
+ */
 template<class T>
 class WeakPtr : public PtrBase<T>
 {
 public:
 	friend class SmartPtr<T>;
 
+	/* @brief Stantard constructor. Constructs an empty WeakPtr */
 	inline WeakPtr() {}
 
-	/* TODO: Copy constructor, copy construct from another weak pointer */
-	inline WeakPtr(const WeakPtr<T>& other)
-	{
-		this->WeakConstruct(other);
-	}
-	template<class U> 
-	inline WeakPtr(const WeakPtr<U>& other)
-	{
-		this->WeakConstruct(other);
-	}
-	/* TODO: Copy constructor, copy construct from Smart pointer */
+	/* @brief Copy constructors. Constructs a WeakPtr which shares ownership of the object
+	 *		  managed by "other". If "other" manages no object, this instance manages no object
+	 *		  either. Using shallow copy to copy pointers. */
+	inline WeakPtr(const WeakPtr<T>& other);
+	template <class U> 
+	inline WeakPtr(const WeakPtr<U>& other);
 	template <class U>
-	inline WeakPtr(const SmartPtr<U>& other)
-	{
-		this->WeakConstruct(other);
-	}
+	inline WeakPtr(const SmartPtr<U>& other);
 
-	/* TODO: Move constructor */
-	inline WeakPtr(WeakPtr<T>&& other)
-	{
-		this->MoveConstruct(std::move(other));
-	}
+	/* @brief Move constructors. Move-constructs a WeakPtr instance from "Other". After this, 
+	 *		  "other" is empty */
+	inline WeakPtr(WeakPtr<T>&& other);
 	template <class U>
-	inline WeakPtr(WeakPtr<U>&& other)
-	{
-		this->MoveConstruct(std::move(other));
-	}
+	inline WeakPtr(WeakPtr<U>&& other);
 	
-	/* TODO: */
-	inline ~WeakPtr()
-	{
-		this->DecWeakRef();
-	}
-
-	/* TODO: */
-	inline void Reset()
-	{
-		WeakPtr().Swap(*this);
-	}
-	/* TODO: */
-	inline void Swap(WeakPtr<T>& other)
-	{
-		this->SwapPtr(other);
-	}
-	/* TODO: */
-	inline bool IsExpired() const
-	{
-		return this->GetSmartCount() == 0;
-	}
+	inline ~WeakPtr();
 
 
-	/* TODO: Comparision operators */
-	inline operator bool()
-	{
-		return this->Get() != nullptr;
-	}
+	/* @brief Checks whether the referenced object was already deleted */
+	inline bool IsExpired() const;
 
-	inline bool operator==(std::nullptr_t)
-	{
-		return this->Get() == nullptr;
-	}
-	inline bool operator!=(std::nullptr_t)
-	{
-		return this->Get() != nullptr;
-	}
+	/* @brief Swaps the managed objects */
+	inline void Swap(WeakPtr<T>& other);
 
-	inline bool operator==(const WeakPtr<T>& other)
-	{
-		return this->Get() == other.Get();
-	}
-	inline bool operator!=(const WeakPtr<T>& other)
-	{
-		return this->Get() == other.Get();
-	}
+	/* @brief Release resource, and convert this instance to empty WeakPtr object */
+	inline void Reset();
 
-	/* TODO: Assignment operators */
-	inline WeakPtr<T>& operator=(const WeakPtr<T>& other)
-	{
-		WeakPtr(other).Swap(*this);
-		return *this;
-	}
+
+	/* Comparision operators */
+	inline operator bool();
+
+	inline bool operator==(std::nullptr_t);
+	inline bool operator!=(std::nullptr_t);
+
+	inline bool operator==(const WeakPtr<T>& other);
+	inline bool operator!=(const WeakPtr<T>& other);
+
+	/* Assignment operators */
+	inline WeakPtr<T>& operator=(const WeakPtr<T>& other);
 	template <class U>
-	inline WeakPtr<T>& operator=(const WeakPtr<U>& other)
-	{
-		WeakPtr(other).Swap(*this);
-		return *this;
-	}
+	inline WeakPtr<T>& operator=(const WeakPtr<U>& other);
 
-	inline WeakPtr<T>& operator=(WeakPtr<T>&& other)
-	{
-		WeakPtr(std::move(other)).Swap(*this);
-		return *this;
-	}
+	inline WeakPtr<T>& operator=(WeakPtr<T>&& other);
 	template <class U>
-	inline WeakPtr<T>& operator=(WeakPtr<U>&& other)
-	{
-		WeakPtr(std::move(other)).Swap(*this);
-		return *this;
-	}
+	inline WeakPtr<T>& operator=(WeakPtr<U>&& other);
 
 	template <class U>
-	inline WeakPtr<T>& operator=(const SmartPtr<U>& other)
-	{
-		WeakPtr(other).Swap(*this);
-		return *this;
-	}
+	inline WeakPtr<T>& operator=(const SmartPtr<U>& other);
 };
 
 
