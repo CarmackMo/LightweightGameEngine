@@ -31,7 +31,7 @@ The game engine implements object instances monitor algorithm and runtime garbag
     - [Matrix](#matrix)
 + [Utility](#utility)
     - [Singleton](#singleton)
-    - [Smart Pointers](#smartptr)
+    - [Smart Pointers](#smartptrs)
 
 
 
@@ -284,7 +284,7 @@ This file contains the definitions and implementations of data structures known 
 <br></br>
 
 
-<a id="smartptr"></a>
+<a id="smartptrs"></a>
 
 ## SmartPtrs.h
 
