@@ -186,7 +186,7 @@ protected:
 	template <class U>
 	bool ConstructFromWeak(const WeakPtr<U>& other)
 	{
-		if (other.refCount != nullptr && other.Expired() != true)
+		if (other.refCount != nullptr && other.IsExpired() != true)
 		{
 			other.IncSmartRef();
 			this->ptr = other.ptr;
@@ -279,66 +279,54 @@ class SmartPtr : public PtrBase<T>
 public:
 	friend class WeakPtr<T>;
 
-	/* TODO: @brief Constructs a smart pointer with no managed object, i.e. empty smart
-	 *	pointer. A reference count object will be constructed but the reference count 
-	 *	will be 0. */
+	/* @brief Constructs a SmartPtr as the pointer to the managed object. If no input or a null 
+	 *		  pointer is given, construct an empty SmartPtr instead. It is user's responsibility 
+	 *		  to make sure not to constructor a SmartPtr using this constructor if the target 
+	 *		  object is already owned by another smart pointer. */
 	inline SmartPtr();
 	inline SmartPtr(nullptr_t);
-	/* TODO: @brief Constructs a smart pointer with input pointer as the pointer to the 
-	 *	managed object. If a nullptr is given, construct an empty smart pointer instead. 
-	 *  It is user's responsibility to make sure not to constructor a smart pointer using this funciton if the target object is
-	 *  already owned by another smart pointer. */
 	inline SmartPtr(T* ptr);
-	/* TODO: @brief Provides a mechanism for users to specify a customized deleter for
-	 *	data types, such as array types, that cannot be deleted using the regular "delete" 
-	 *	expression. 
-	 *  It is user's responsibility to make sure not to constructor a smart pointer using this funciton if the target object is
-	 *  already owned by another smart pointer. */
+	/* @brief Allow users to specify a customized deleter for data types (e.g. array type) that 
+	 *		  cannot be deleted using regular "delete" expression. */
 	inline SmartPtr(T* ptr, function<void(T*)> deleter);
 
-	/* TODO: @brief Aliasing constructor. See following link for more detail: 
-	 *	https://en.cppreference.com/w/cpp/memory/shared_ptr/shared_ptr
-	 *	https://stackoverflow.com/questions/27109379/what-is-shared-ptrs-aliasing-constructor-for */
+	/* @brief Copy constructors. Constructs a SmartPtr which shares ownership of the object 
+	 *		  managed by "other". If "other" manages no object, this instance manages no object
+	 *		  either. Using shallow copy to copy pointers */
+	inline SmartPtr(const SmartPtr<T>& other);
+	template<class U> 
+	inline SmartPtr(const SmartPtr<U>& other);
+
+	/* @brief Aliasing constructor. Constructs a SmarPtr which shares ownership information with 
+	 *		  the initial value of "other", but holds an unrelated and unmanaged pointer "ptr". 
+	 *		  It is the responsibility of the users to make sure that "ptr" remains valid as long 
+	 *		  as this SmartPtr exists */
 	template<class U>
 	inline SmartPtr(const SmartPtr<U>& other, T* ptr);
 	template<class U>
 	inline SmartPtr(SmartPtr<U>&& other, T* ptr);
 
-	/* TODO: @brief Copy Constructor */
-	inline SmartPtr(const SmartPtr<T>& other);
-	template<class U> 
-	inline SmartPtr(const SmartPtr<U>& other); 	/* Copy constructor for class inheritance */
-
-
-	/* TODO: @brief Move Constructor */
+	/* @brief Move constructors. Move-constructs a SmartPtr from "other". After the construction, 
+	 *		  this instance contains a copy of the previous state of "other", "other" is empty and
+	 *		  its stored pointer is null.  */
 	inline SmartPtr(SmartPtr<T>&& other);
 	template<class U>
 	inline SmartPtr(SmartPtr<U>&& other);
 
-	/* TODO: */
+	/* @brief Constructs a SmartPtr which shares ownership of the object managed by "other". It is
+	 *		  the responsibility of the users to ensure "other" is a valid WeakPtr (i.e. "other" is
+	 *		  neither empty nor the object it manages is deleted). */
 	template <class U>
-	inline SmartPtr(const WeakPtr<U>& other)
-	{
-		bool res = this->ConstructFromWeak(other);
-		assert(res == true);
-	}
+	inline SmartPtr(const WeakPtr<U>& other);
 
-	/* TODO: */
 	inline ~SmartPtr();
 
 
+	/* @brief Checks whether the managed object is managed only by the current SmartPtr instance. */
+	inline bool IsUnique() const;
 
-	/* TODO: */
-	inline bool IsUnique() const
-	{
-		return this->GetSmartCount() == 1;
-	}
-
-	/* TODO: */
-	inline void Swap(SmartPtr<T>& other)
-	{
-		this->SwapPtr(other);
-	}
+	/* @brief Swaps the managed objects. */
+	inline void Swap(SmartPtr<T>& other);
 
 	/* TODO: @brief Release resource and convert this instance to empty SmartPtr object. */
 	inline void Reset()
