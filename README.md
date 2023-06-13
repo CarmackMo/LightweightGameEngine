@@ -407,7 +407,7 @@ This file implements smart pointers that are commonly used in dynamic memory res
     template <class U> void Reset(U* ptr);
     template <class U> void Reset(U* ptr, function<void(U*)> deleter);
 
-    /* Access operators */
+    /* Accessor operators */
 	T* operator->();
 	T& operator*();
 
@@ -417,19 +417,15 @@ This file implements smart pointers that are commonly used in dynamic memory res
 	bool operator==(std::nullptr_t);
 	bool operator!=(std::nullptr_t);
 
-	template <class U>
-	bool operator==(const SmartPtr<U>& other);
-	template <class U>
-	bool operator!=(const SmartPtr<U>& other);
+	template <class U> bool operator==(const SmartPtr<U>& other);
+	template <class U> bool operator!=(const SmartPtr<U>& other);
 
 	/* Assignment operators */
-	SmartPtr<T>& operator=(const SmartPtr<T>& other);
-    template<class U>
-	SmartPtr<T>& operator=(const SmartPtr<U>& other);
+	                  SmartPtr<T>& operator=(const SmartPtr<T>& other);
+    template<class U> SmartPtr<T>& operator=(const SmartPtr<U>& other);
 
-    SmartPtr<T>& operator=(SmartPtr<T>&& other);
-    template<class U>
-	SmartPtr<T>& operator=(SmartPtr<U>&& other);
+                      SmartPtr<T>& operator=(SmartPtr<T>&& other);
+    template<class U> SmartPtr<T>& operator=(SmartPtr<U>&& other);
 
     ```
 
