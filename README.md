@@ -290,7 +290,6 @@ This file contains the definitions and implementations of data structures known 
 
 This file implements smart pointers that are commonly used in dynamic memory resource management, and their necessary components. These components include `RefCount`, `PtrBase`, `SmartPtr`, and `WeakPtr`.
 
-+ [RefCountBase](#refcountbase)
 + [RefCount](#refcount)
 + [PtrBase](#ptrbase)
 + [SmartPtr](#smartptr)
@@ -315,7 +314,7 @@ This file implements smart pointers that are commonly used in dynamic memory res
     template <class U>
     void CopyConstruct(const SmartPtr<U>& other);
 
-    /* API for move constructor of SmartPtr, considering class inheritance */
+    /* API for move constructor of SmartPtr and WeakPtr, considering class inheritance */
     template <class U>
     void MoveConstruct(PtrBase<U>&& other);
 
@@ -326,6 +325,15 @@ This file implements smart pointers that are commonly used in dynamic memory res
     /* API for alias move constructor of SmartPtr, considering class inheritance */
     template <class U>
     void AliasMoveConstruct(SmartPtr<U>&& other, T* ptr);
+
+    /* API for copy constructors of WeakPtr, considering class inheritance */
+    template <class U>
+	void WeakConstruct(const PtrBase<U>& other);
+
+    /* API for copy constructor of SmartPtr that converts a WeakPtr to SmartPtr,
+     * considering class inheritance */
+    template <class U>
+	bool ConstructFromWeak(const WeakPtr<U>& other);
 
     /* Reference count increment/decrement */
     void IncSmartRef();
@@ -415,15 +423,14 @@ This file implements smart pointers that are commonly used in dynamic memory res
 	operator bool();
 	bool operator==(std::nullptr_t);
 	bool operator!=(std::nullptr_t);
-	template <class U> bool operator==(const SmartPtr<U>& other);
-	template <class U> bool operator!=(const SmartPtr<U>& other);
+	bool operator==(const SmartPtr<T>& other);
+	bool operator!=(const SmartPtr<T>& other);
 
 	/* Assignment operators */
 	                  SmartPtr<T>& operator=(const SmartPtr<T>& other);
     template<class U> SmartPtr<T>& operator=(const SmartPtr<U>& other);
                       SmartPtr<T>& operator=(SmartPtr<T>&& other);
     template<class U> SmartPtr<T>& operator=(SmartPtr<U>&& other);
-
     ```
 
 
@@ -475,5 +482,4 @@ This file implements smart pointers that are commonly used in dynamic memory res
                        WeakPtr<T>& operator=(WeakPtr<T>&& other);
     template <class U> WeakPtr<T>& operator=(WeakPtr<U>&& other);
     template <class U> WeakPtr<T>& operator=(const SmartPtr<U>& other);
-
     ```
