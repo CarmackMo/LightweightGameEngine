@@ -17,10 +17,14 @@ template <class T> class WeakPtr;
 
 
 
-/* TODO: implement for weak pointer and implement in .cpp file
-	* @brief Empty SmartPtr will not create RefCount object. Hence the RefCount will only
-	*		  be created when the object that is going to be managed is onwed by at least
-	*		  one SmartPtr. Therefore, the initial value of "smartCount" should be 1. */
+/**
+ *	@brief `RefCount` serves as a control component of both `SmartPtr` and `WeakPtr`. In runtime, 
+ *		   `RefCount` is a dynamically-allocated object that holds:
+ *				- A pointer to the managed object;
+ *				- A user-defined deleter;
+ *				- The number of `SmartPtr` that own the managed object;
+ *				- the number of `WeakPtr` that refer to the managed object.
+ */
 class RefCountBase
 {
 private:
@@ -70,6 +74,11 @@ public:
 };
 
 
+/**
+ *	@brief `PtrBase` is the base class for both `SmartPtr` and `WeakPtr`. It serves as a API 
+ *		   contract for `SmartPtr` and `WeakPtr`, defining certain rules for their member 
+ *		   function implementations.
+ */
 template <class T>
 class PtrBase
 {

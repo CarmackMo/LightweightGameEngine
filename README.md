@@ -296,6 +296,41 @@ This file implements smart pointers that are commonly used in dynamic memory res
 + [WeakPtr](#weakptr)
 
 
+
+<a id="refcount"></a>
+
++ ## RefCount
+
+    `RefCount` serves as a control component of both `SmartPtr` and `WeakPtr`. In runtime, `RefCount` is a dynamically-allocated object that holds:
+    - A pointer to the managed object;
+    - A user-defined deleter;
+    - The number of `SmartPtr` that own the managed object;
+    - the number of `WeakPtr` that refer to the managed object.
+
+    As a control component, `RefCount` owns the direct authority of deleting the pointer to the managed object, releasing itself, and increasing or decreasing the reference count of both `SmartPtr` and `WeakPtr`. On the other hand, `PtrBase`, `SmartPtr` and `WeakPtr` rely on the provided APIs of `RefCount` to manage this data. They are not able to directly manipulate the data themselves.
+
+    - ### APIs
+    ```cpp
+    /* Delete the managed object */
+    virtual void Destroy() = 0;
+
+    /* Delete self instance */
+	virtual void DeleteThis() = 0;
+
+    void IncSmartRef();
+
+	void IncWeakRef();
+
+	void DecSmartRef();
+
+	void DecWeakRef();
+
+	unsigned long GetSmartCount();
+
+	unsigned long GetWeakCount();
+    ```
+
+
 <a id="ptrbase"></a>
 
 + ## PtrBase
