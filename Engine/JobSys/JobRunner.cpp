@@ -1,5 +1,11 @@
 #include "JobRunner.h"
 
+namespace Engine
+{
+namespace JobSystem
+{
+
+
 DWORD WINAPI JobRunner(void* i_pThreadInput)
 {
 	assert(i_pThreadInput);
@@ -34,3 +40,6 @@ DWORD WINAPI JobRunner(void* i_pThreadInput)
 #endif
 	return 0;
 }
+
+}//Namespace Engine
+}//Namespace JobSystem

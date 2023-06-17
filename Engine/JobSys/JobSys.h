@@ -5,7 +5,7 @@
 #include "JobRunner.h"
 #include "SharedJobQueue.h"
 
-
+using namespace Engine::JobSystem;
 
 
 struct JobQueueData

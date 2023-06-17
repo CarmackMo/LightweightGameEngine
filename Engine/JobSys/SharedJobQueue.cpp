@@ -1,5 +1,11 @@
 #include "SharedJobQueue.h"
 
+namespace Engine
+{
+namespace JobSystem
+{
+
+
 SharedJobQueue::SharedJobQueue(const std::string& i_Name) :
 	m_Name(i_Name),
 	m_WakeAndCheck(CONDITION_VARIABLE_INIT),
@@ -89,3 +95,6 @@ void SharedJobQueue::RequestShutdown()
 	m_bShutdownRequested = true;
 	WakeAllConditionVariable(&m_WakeAndCheck);
 }
+
+}//Namespace Engine
+}//Namespace JobSystem

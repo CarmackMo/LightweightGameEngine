@@ -1,5 +1,10 @@
 #include "HashedString.h"
 
+namespace Engine
+{
+namespace JobSystem
+{
+
 
 inline HashedString::HashedString() :
 	hash(Hash(""))
@@ -83,3 +88,7 @@ inline unsigned int HashedString::Hash(const void* ptr, size_t byteCount)
 
 	return hash ^ (hash >> 16);
 }
+
+
+}//Namespace Engine
+}//Namespace JobSystem

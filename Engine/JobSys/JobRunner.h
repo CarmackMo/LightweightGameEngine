@@ -2,6 +2,10 @@
 #include "Debugger.h"
 #include "SharedJobQueue.h"
 
+namespace Engine
+{
+namespace JobSystem
+{
 
 struct JobRunnerInput
 {
@@ -31,3 +35,6 @@ struct JobRunnerData
 
 
 DWORD WINAPI JobRunner(void* i_pJobRunnerInput);
+
+}//Namespace Engine
+}//Namespace JobSystem

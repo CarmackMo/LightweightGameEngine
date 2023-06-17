@@ -5,6 +5,12 @@
 #include "Event.h"
 
 
+namespace Engine
+{
+namespace JobSystem
+{
+
+
 class JobStatus
 {
 public:
@@ -43,3 +49,6 @@ private:
 	uint32_t	m_JobCount;
 	AutoResetEvent m_JobsFinishedEvent;
 };
+
+}//Namespace Engine
+}//Namespace JobSystem

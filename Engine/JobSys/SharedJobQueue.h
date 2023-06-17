@@ -1,8 +1,17 @@
 #pragma once
-#include "Dependency.h"
+#include <string>
+#include <queue>
+
 #include "HashedString.h"
 #include "JobStatus.h"
 #include "AtomicOperations.h"
+
+using namespace std;
+
+namespace Engine
+{
+namespace JobSystem
+{
 
 
 struct QueuedJob
@@ -22,6 +31,18 @@ struct QueuedJob
 
 class SharedJobQueue
 {
+private:
+	std::string m_Name;
+	std::queue<struct QueuedJob*>	m_Jobs;
+	CONDITION_VARIABLE m_WakeAndCheck;
+	mutable CRITICAL_SECTION m_QueueAccess;
+
+	uint32_t m_JobsRunning;
+	bool m_bShutdownRequested;
+
+	SharedJobQueue(const SharedJobQueue&) = delete;
+	SharedJobQueue& operator=(const SharedJobQueue&) = delete;
+
 public:
 	SharedJobQueue(const std::string& i_QueueName);
 
@@ -35,17 +56,10 @@ public:
 	bool ShutdownRequested() const { return m_bShutdownRequested; }
 
 	std::string GetName() const { return m_Name; }
-private:
-	SharedJobQueue(const SharedJobQueue&) = delete;
-	SharedJobQueue& operator=(const SharedJobQueue&) = delete;
-
-	std::string m_Name;
-	std::queue<struct QueuedJob*>	m_Jobs;
-	CONDITION_VARIABLE m_WakeAndCheck;
-	mutable CRITICAL_SECTION m_QueueAccess;
-
-	uint32_t m_JobsRunning;
-	bool m_bShutdownRequested;
 };
+
+}//Namespace Engine
+}//Namespace JobSystem
+
 
 #include "SharedJobQueue.inl"

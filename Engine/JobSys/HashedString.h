@@ -3,6 +3,13 @@
 #include <string.h>
 #include <stdlib.h>
 
+
+namespace Engine
+{
+namespace JobSystem
+{
+
+
 class HashedString
 {
 private:
@@ -32,3 +39,8 @@ public:
 	static inline unsigned int Hash(const void* ptr, size_t byteCount);
 
 };
+
+
+}//Namespace Engine
+}//Namespace JobSystem
+
