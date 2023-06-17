@@ -127,9 +127,6 @@
     <ClCompile Include="DataType\Utility\SmartPtrs.cpp">
       <Filter>Source Files\DataType\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="DataType\Utility\Singleton.cpp">
-      <Filter>Source Files\DataType\Utility</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataType\DataType.h">
@@ -250,9 +247,6 @@
     </None>
     <None Include="JSON\source\json_valueiterator.inl">
       <Filter>Source Files\JSON\source</Filter>
-    </None>
-    <None Include="JobSys\HashedString.inl">
-      <Filter>Source Files\JobSys</Filter>
     </None>
     <None Include="JobSys\JobSys.inl">
       <Filter>Source Files\JobSys</Filter>

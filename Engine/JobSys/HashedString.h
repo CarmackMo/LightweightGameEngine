@@ -1,13 +1,15 @@
 #pragma once
-#include "Dependency.h"
+#include <cassert>
+#include <string.h>
+#include <stdlib.h>
 
 class HashedString
 {
 private:
-	unsigned int 	m_Hash;
+	unsigned int hash;
 
-#ifdef DEBUG_KEEP_STRING
-	const char* m_pString;
+#if defined(_DEBUG)
+	char* str;
 #endif
 
 
@@ -15,16 +17,18 @@ public:
 	inline HashedString();
 	inline ~HashedString();
 
-	inline HashedString(const char* i_string);
-	inline HashedString(const HashedString& i_other);
-	inline HashedString& operator=(const HashedString& i_other);
+	inline HashedString(const char* str);
+	inline HashedString(const HashedString& other);
+	inline HashedString& operator=(const HashedString& other);
 
 	inline unsigned int Get() const;
 
-	inline bool operator==(const HashedString& i_other) const;
-	inline bool operator<(const HashedString& i_other) const;
+	inline bool operator==(const HashedString& other) const;
+	inline bool operator<(const HashedString& other) const;
 
-	static inline unsigned int Hash(const char* i_string);
-	static inline unsigned int Hash(const void* i_bytes, size_t i_count);
+	static inline unsigned int Hash(const char* str);
+	/* @brief Calculate the hash value of the given object using FNV hash algorithm.
+	 *		  See http://isthe.com/chongo/tech/comp/fnv/ */
+	static inline unsigned int Hash(const void* ptr, size_t byteCount);
 
 };

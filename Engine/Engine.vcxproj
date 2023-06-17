@@ -144,7 +144,6 @@
     <ClCompile Include="DataType\Math\Matrix.cpp" />
     <ClCompile Include="DataType\Math\Vector.cpp" />
     <ClCompile Include="DataType\Utility\SmartPtrs.cpp" />
-    <ClCompile Include="DataType\Utility\Singleton.cpp" />
     <ClCompile Include="Debugger\Debugger.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
     <ClCompile Include="Engine\EngineTest.cpp" />
@@ -202,7 +201,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Input\Input.inl" />
-    <None Include="JobSys\HashedString.inl" />
     <None Include="JobSys\JobSys.inl" />
     <None Include="JobSys\SharedJobQueue.inl" />
     <None Include="JSON\source\json_valueiterator.inl" />

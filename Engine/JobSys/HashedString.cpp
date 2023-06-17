@@ -1,80 +1,84 @@
 #include "HashedString.h"
 
 
-
-
 inline HashedString::HashedString() :
-	m_Hash(Hash(""))
+	hash(Hash(""))
 { }
 
-inline HashedString::HashedString(const char* i_string) :
-	m_Hash(Hash(i_string))
-#ifdef DEBUG_KEEP_STRING
-	, m_pString(strdup(i_string))
-#endif
-{ }
 
-inline HashedString::HashedString(const HashedString& i_other) :
-	m_Hash(i_other.m_Hash)
-#ifdef DEBUG_KEEP_STRING
-	, m_pString(strdup(i_other.m_pString))
+inline HashedString::HashedString(const char* str) :
+	hash(Hash(str))
+{
+#if defined(_DEBUG)
+	this->str= _strdup(str);
 #endif
-{ }
+}
+
+
+inline HashedString::HashedString(const HashedString& other) :
+	hash(other.hash)
+{
+#if defined(_DEBUG)
+	this->str = _strdup(other.str);
+#endif
+}
+
 
 inline HashedString::~HashedString()
 {
-#ifdef DEBUG_KEEP_STRING
-	if (m_pString)
-		free(m_pString)
+#if defined(_DEBUG)
+	if (str)
+		free(str);
 #endif
-
 }
 
-inline HashedString& HashedString::operator=(const HashedString& i_other)
+
+inline HashedString& HashedString::operator=(const HashedString& other)
 {
-	m_Hash = i_other.m_Hash;
+	this->hash = other.hash;
 
-#ifdef DEBUG_KEEP_STRING
-	if (m_pString)
-		free(m_pString)
-
-		m_pString = i_other.m_pString;
+#if defined(_DEBUG)
+	if (str)
+		free(str);
+	this->str = other.str;
 #endif
 
 	return *this;
 }
 
+
 inline unsigned int HashedString::Get(void) const
 {
-	return m_Hash;
-}
-
-inline bool HashedString::operator==(const HashedString& i_other) const
-{
-	return m_Hash == i_other.m_Hash;
-}
-
-inline bool HashedString::operator<(const HashedString& i_other) const
-{
-	return m_Hash < i_other.m_Hash;
+	return hash;
 }
 
 
-unsigned int HashedString::Hash(const char* i_string)
+inline bool HashedString::operator==(const HashedString& other) const
 {
-	assert(i_string);
-
-	return Hash(reinterpret_cast<void*>(const_cast<char*>(i_string)), strlen(i_string));
+	return this->hash == other.hash;
 }
 
-unsigned int HashedString::Hash(const void* i_bytes, size_t i_bytecount)
-{
-	// FNV hash, http://isthe.com/chongo/tech/comp/fnv/
 
-	register const unsigned char* p = static_cast<const unsigned char*>(i_bytes);
+inline bool HashedString::operator<(const HashedString& other) const
+{
+	return this->hash < other.hash;
+}
+
+
+inline unsigned int HashedString::Hash(const char* str)
+{
+	assert(str);
+
+	return Hash(reinterpret_cast<void*>(const_cast<char*>(str)), strlen(str));
+}
+
+
+inline unsigned int HashedString::Hash(const void* ptr, size_t byteCount)
+{
+	register const unsigned char* p = static_cast<const unsigned char*>(ptr);
 	unsigned int hash = 2166136261;
 
-	for (size_t i = 0; i < i_bytecount; ++i)
+	for (size_t i = 0; i < byteCount; ++i)
 		hash = 16777619 * (hash ^ p[i]);
 
 	return hash ^ (hash >> 16);
