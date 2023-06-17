@@ -197,7 +197,7 @@ public:
 	/* @brief Move constructors. Move-constructs a SmartPtr from "other". After the construction, 
 	 *		  this instance contains a copy of the previous state of "other", "other" is empty and
 	 *		  its stored pointer is null.  */
-	inline SmartPtr(SmartPtr<T>&& other);
+	inline SmartPtr(SmartPtr<T>&& other) noexcept;
 	template <class U>
 	inline SmartPtr(SmartPtr<U>&& other);
 
@@ -246,7 +246,7 @@ public:
 	template <class U>
 	inline SmartPtr<T>& operator=(const SmartPtr<U>& other);
 
-	inline SmartPtr<T>& operator=(SmartPtr<T>&& other);
+	inline SmartPtr<T>& operator=(SmartPtr<T>&& other) noexcept;
 	template<class U>
 	inline SmartPtr<T>& operator=(SmartPtr<U>&& other);
 };
@@ -282,7 +282,7 @@ public:
 
 	/* @brief Move constructors. Move-constructs a WeakPtr instance from "Other". After this, 
 	 *		  "other" is empty */
-	inline WeakPtr(WeakPtr<T>&& other);
+	inline WeakPtr(WeakPtr<T>&& other) noexcept;
 	template <class U>
 	inline WeakPtr(WeakPtr<U>&& other);
 	
@@ -313,7 +313,7 @@ public:
 	template <class U>
 	inline WeakPtr<T>& operator=(const WeakPtr<U>& other);
 
-	inline WeakPtr<T>& operator=(WeakPtr<T>&& other);
+	inline WeakPtr<T>& operator=(WeakPtr<T>&& other) noexcept;
 	template <class U>
 	inline WeakPtr<T>& operator=(WeakPtr<U>&& other);
 

@@ -56,6 +56,9 @@
     <Filter Include="Source Files\Mathf">
       <UniqueIdentifier>{e7b5024e-4710-489b-b545-45df73d7c495}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\JobSystem">
+      <UniqueIdentifier>{866cd3fd-215a-4c8e-8327-52c239a466e4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Physics\Physics.cpp">

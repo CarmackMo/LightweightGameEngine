@@ -24,8 +24,7 @@ public:
 	inline bool operator==(const HashedString& i_other) const;
 	inline bool operator<(const HashedString& i_other) const;
 
-	static unsigned int Hash(const char* i_string);
-	static unsigned int Hash(const void* i_bytes, size_t i_count);
-};
+	static inline unsigned int Hash(const char* i_string);
+	static inline unsigned int Hash(const void* i_bytes, size_t i_count);
 
-#include "HashedString.inl"
+};

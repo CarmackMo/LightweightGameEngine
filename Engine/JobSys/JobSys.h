@@ -1,6 +1,7 @@
 #pragma once
 #include "Dependency.h"
 #include "HashedString.h"
+#include "HashedString.cpp"
 #include "JobRunner.h"
 #include "SharedJobQueue.h"
 

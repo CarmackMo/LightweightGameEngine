@@ -35,16 +35,26 @@ class Singleton
 protected:
 	static T* instance;
 
-	inline Singleton();
-	inline ~Singleton();
+	inline Singleton() = default;
+	inline ~Singleton() = default;
 
 public:
 	inline Singleton(const Singleton& other) = delete;
 	inline void operator=(const Singleton& other) = delete;
 
-	inline static T* Instance();
+	inline static T* Instance()
+	{
+		if (instance == nullptr)
+			instance = new T();
 
-	inline virtual void Destory();
+		return instance;
+	}
+
+	inline virtual void Destory()
+	{
+		if (instance != nullptr)
+			delete instance;
+	}
 };
 
 

@@ -17,5 +17,4 @@
 #include "./Utility/SmartPtrs.h"
 #include "./Utility/SmartPtrs.cpp"
 #include "./Utility/Singleton.h"
-#include "./Utility/Singleton.cpp"
 

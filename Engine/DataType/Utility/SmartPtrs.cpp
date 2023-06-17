@@ -275,7 +275,7 @@ inline SmartPtr<T>::SmartPtr(SmartPtr<U>&& other, T* ptr)
 
 
 template <class T>
-inline SmartPtr<T>::SmartPtr(SmartPtr<T>&& other)
+inline SmartPtr<T>::SmartPtr(SmartPtr<T>&& other) noexcept
 {
 	this->MoveConstruct(std::move(other));
 }
@@ -406,7 +406,7 @@ inline SmartPtr<T>& SmartPtr<T>::operator=(const SmartPtr<U>& other)
 }
 
 template <class T>
-inline SmartPtr<T>& SmartPtr<T>::operator=(SmartPtr<T>&& other)
+inline SmartPtr<T>& SmartPtr<T>::operator=(SmartPtr<T>&& other) noexcept
 {
 	SmartPtr(std::move(other)).Swap(*this);
 	return *this;
@@ -451,7 +451,7 @@ inline WeakPtr<T>::WeakPtr(const SmartPtr<U>& other)
 
 
 template <class T>
-inline WeakPtr<T>::WeakPtr(WeakPtr<T>&& other)
+inline WeakPtr<T>::WeakPtr(WeakPtr<T>&& other) noexcept
 {
 	this->MoveConstruct(std::move(other));
 }
@@ -549,7 +549,7 @@ inline WeakPtr<T>& WeakPtr<T>::operator=(const WeakPtr<U>& other)
 
 
 template <class T>
-inline WeakPtr<T>& WeakPtr<T>::operator=(WeakPtr<T>&& other)
+inline WeakPtr<T>& WeakPtr<T>::operator=(WeakPtr<T>&& other) noexcept
 {
 	WeakPtr(std::move(other)).Swap(*this);
 	return *this;
