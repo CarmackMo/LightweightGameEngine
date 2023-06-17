@@ -15,7 +15,7 @@ inline HashedString::HashedString(const char* str) :
 	hash(Hash(str))
 {
 #if defined(_DEBUG)
-	this->str= _strdup(str);
+	this->str = _strdup(str);
 #endif
 }
 
@@ -74,13 +74,9 @@ inline unsigned int HashedString::Hash(const char* str)
 {
 	assert(str);
 
-	return Hash(reinterpret_cast<void*>(const_cast<char*>(str)), strlen(str));
-}
-
-
-inline unsigned int HashedString::Hash(const void* ptr, size_t byteCount)
-{
+	const void* ptr = reinterpret_cast<void*>(const_cast<char*>(str));
 	register const unsigned char* p = static_cast<const unsigned char*>(ptr);
+	size_t byteCount = strlen(str);
 	unsigned int hash = 2166136261;
 
 	for (size_t i = 0; i < byteCount; ++i)
