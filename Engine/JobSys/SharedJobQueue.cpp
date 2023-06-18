@@ -6,62 +6,56 @@ namespace JobSystem
 {
 
 
-SharedJobQueue::SharedJobQueue(const std::string& i_Name) :
-	m_Name(i_Name),
-	m_WakeAndCheck(CONDITION_VARIABLE_INIT),
+SharedJobQueue::SharedJobQueue(const string& queueName) :
+	m_Name(queueName),
 	m_JobsRunning(0),
-	m_bShutdownRequested(false)
+	m_bShutdownRequested(false),
+	m_WakeAndCheck(CONDITION_VARIABLE_INIT)
 {
 	InitializeCriticalSection(&m_QueueAccess);
 }
 
-bool SharedJobQueue::Add(struct QueuedJob* i_pJob)
-{
-	assert(i_pJob);
-	bool bAdded = false;
 
+bool SharedJobQueue::Add(struct QueuedJob* job)
+{
+	assert(job);
+	bool isAdded = false;
+
+	/* Blocks until the thread can take ownership of the specified critical 
+	 * section. The function returns when the calling thread is granted ownership. */
 	EnterCriticalSection(&m_QueueAccess);
 	if (m_bShutdownRequested == false)
 	{
-		if (i_pJob->pJobStatus)
-			i_pJob->pJobStatus->AddJob();
+		if (job->pJobStatus)
+			job->pJobStatus->AddJob();
 
-		m_Jobs.push(i_pJob);
-		bAdded = true;
+		m_Jobs.push(job);
+		isAdded = true;
 	}
+	/* Releases ownership of the specified critical section object. There is no 
+	 * guarantee about the order in which waiting threads will acquire ownership of 
+	 * the critical section. */
 	LeaveCriticalSection(&m_QueueAccess);
 
-	if (bAdded)
+	/* Wake a single thread waiting on the specified condition variable. */
+	if (isAdded)
 		WakeConditionVariable(&m_WakeAndCheck);
 
-	return bAdded;
+	return isAdded;
 }
+
 
 bool SharedJobQueue::HasJobs() const
 {
 	EnterCriticalSection(&m_QueueAccess);
-	bool bFinished = m_Jobs.empty() && (m_JobsRunning == 0);
+	bool isFinished = m_Jobs.empty() && (m_JobsRunning == 0);
 	LeaveCriticalSection(&m_QueueAccess);
 
-	return !bFinished;
+	return !isFinished;
 }
 
-void SharedJobQueue::StartingJob(QueuedJob* i_pJob)
-{
-	AtomicIncrement(m_JobsRunning);
 
-}
-void SharedJobQueue::FinishedJob(QueuedJob* i_pJob)
-{
-	if (i_pJob->pJobStatus)
-		i_pJob->pJobStatus->FinishJob();
-
-	delete i_pJob;
-
-	AtomicDecrement(m_JobsRunning);
-}
-
-struct QueuedJob* SharedJobQueue::GetWhenAvailable()
+QueuedJob* SharedJobQueue::GetWhenAvailable()
 {
 	EnterCriticalSection(&m_QueueAccess);
 
@@ -89,6 +83,25 @@ struct QueuedJob* SharedJobQueue::GetWhenAvailable()
 
 	return pJob;
 }
+
+
+void SharedJobQueue::StartingJob(QueuedJob* i_pJob)
+{
+	AtomicIncrement(m_JobsRunning);
+
+}
+
+
+void SharedJobQueue::FinishedJob(QueuedJob* i_pJob)
+{
+	if (i_pJob->pJobStatus)
+		i_pJob->pJobStatus->FinishJob();
+
+	delete i_pJob;
+
+	AtomicDecrement(m_JobsRunning);
+}
+
 
 void SharedJobQueue::RequestShutdown()
 {

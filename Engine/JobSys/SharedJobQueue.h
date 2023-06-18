@@ -29,26 +29,31 @@ struct QueuedJob
 	{}
 };
 
+
+/** 
+ *	@brief This class implements job queue that uses "CONDITION_VARIABLE" and
+ *		   "CRITICAL_SECTION to record thread status "*/
 class SharedJobQueue
 {
 private:
-	std::string m_Name;
-	std::queue<struct QueuedJob*>	m_Jobs;
-	CONDITION_VARIABLE m_WakeAndCheck;
-	mutable CRITICAL_SECTION m_QueueAccess;
+	string						m_Name;
+	queue<QueuedJob*>			m_Jobs;
+	uint32_t					m_JobsRunning;
+	bool						m_bShutdownRequested;
 
-	uint32_t m_JobsRunning;
-	bool m_bShutdownRequested;
+	CONDITION_VARIABLE			m_WakeAndCheck;
+	mutable CRITICAL_SECTION	m_QueueAccess;
+
 
 	SharedJobQueue(const SharedJobQueue&) = delete;
 	SharedJobQueue& operator=(const SharedJobQueue&) = delete;
 
 public:
-	SharedJobQueue(const std::string& i_QueueName);
+	SharedJobQueue(const string& queueName);
 
-	bool Add(QueuedJob* i_pJob);
+	bool Add(QueuedJob* job);
 	bool HasJobs() const;
-	struct QueuedJob* GetWhenAvailable();
+	QueuedJob* GetWhenAvailable();
 	void StartingJob(QueuedJob* i_pJob);
 	void FinishedJob(QueuedJob* i_pJob);
 
