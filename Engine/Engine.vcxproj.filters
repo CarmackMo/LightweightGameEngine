@@ -183,9 +183,6 @@
     <ClInclude Include="FileSys\FileSys.h">
       <Filter>Source Files\FileSys</Filter>
     </ClInclude>
-    <ClInclude Include="Sync\WaitableObject.h">
-      <Filter>Source Files\Sync</Filter>
-    </ClInclude>
     <ClInclude Include="Sync\Event.h">
       <Filter>Source Files\Sync</Filter>
     </ClInclude>
@@ -196,9 +193,6 @@
       <Filter>Source Files\JobSys</Filter>
     </ClInclude>
     <ClInclude Include="JobSys\JobRunner.h">
-      <Filter>Source Files\JobSys</Filter>
-    </ClInclude>
-    <ClInclude Include="JobSys\JobStatus.h">
       <Filter>Source Files\JobSys</Filter>
     </ClInclude>
     <ClInclude Include="JobSys\JobSys.h">
@@ -231,6 +225,9 @@
     <ClInclude Include="JobSys\Sync\AtomicOperations.h">
       <Filter>Source Files\JobSys\Sync</Filter>
     </ClInclude>
+    <ClInclude Include="JobSys\Sync\WaitableObject.h">
+      <Filter>Source Files\JobSys\Sync</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Physics\Physics.inl">
@@ -246,9 +243,6 @@
       <Filter>Source Files\JSON\source</Filter>
     </None>
     <None Include="JobSys\JobSys.inl">
-      <Filter>Source Files\JobSys</Filter>
-    </None>
-    <None Include="JobSys\SharedJobQueue.inl">
       <Filter>Source Files\JobSys</Filter>
     </None>
   </ItemGroup>

@@ -1,6 +1,6 @@
 #pragma once
 #include "Dependency.h"
-#include "WaitableObject.h"
+#include "./Sync/WaitableObject.h"
 
 
 

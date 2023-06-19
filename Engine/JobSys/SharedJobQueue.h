@@ -4,8 +4,9 @@
 #include <functional>
 
 #include "HashedString.h"
-#include "JobStatus.h"
+#include "Event.h"
 #include "./Sync/AtomicOperations.h"
+#include "./Sync/WaitableObject.h"
 
 using namespace std;
 
@@ -13,10 +14,14 @@ namespace Engine
 {
 namespace JobSystem
 {
+/* Forwared declaration */
+struct Job;
+class JobStatus;
+class SharedJobQueue;
 
 
 /**
- *	@brief This struct implements a handler that represents a job, which will be pushed
+ *	TODO: @brief This struct implements a handler that represents a job, which will be pushed
  *		   job queue and executed by the job system.
  */
 struct Job
@@ -35,8 +40,36 @@ struct Job
 };
 
 
+/**
+ *	TODO: @brief Control block that manage the status of all queued jobs. When all registered
+ *		   jobs are finished (i.e. jobCount is zero), a signal will be sent.
+ */
+class JobStatus
+{
+private:
+	uint32_t		jobCount;
+	AutoResetEvent	jobsFinishedEvent;
+
+	friend class SharedJobQueue;
+
+	uint32_t IncJobCount();
+	uint32_t DecJobCount();
+
+public:
+	JobStatus(unsigned int jobCount = 0);
+	~JobStatus() = default;
+	
+	JobStatus(const JobStatus&) = delete;
+	JobStatus& operator=(const JobStatus&) = delete;
+
+	uint32_t JobsLeft() const;
+
+	void WaitForZeroJobsLeft(int waitMS = WaitableObject::WaitInfinite);
+};
+
+
 /** 
- *	@brief This class implements a queue that stores jobs. Jobs need to be synchronously
+ *	TODO: @brief This class implements a queue that stores jobs. Jobs need to be synchronously
  *		   retrieved from the queue. If the there is no available job in the queue
  *		   and a get-job method is invoked, the thread owns the queue will sleep and
  *		   wait until new jobs are added to the queue. 
@@ -81,6 +114,3 @@ public:
 
 }//Namespace Engine
 }//Namespace JobSystem
-
-
-#include "SharedJobQueue.inl"

@@ -5,6 +5,47 @@ namespace Engine
 namespace JobSystem
 {
 
+#pragma region JobStatus
+
+JobStatus::JobStatus(unsigned int jobCount) :
+	jobCount(jobCount)
+{ }
+
+
+uint32_t JobStatus::IncJobCount()
+{
+	return AtomicIncrement(jobCount);
+}
+
+
+uint32_t JobStatus::DecJobCount()
+{
+	assert(jobCount > 0);
+
+	uint32_t newJobCount = AtomicDecrement(jobCount);
+	if (newJobCount == 0)
+		jobsFinishedEvent.Signal();
+
+	return newJobCount;
+}
+
+
+uint32_t JobStatus::JobsLeft() const 
+{ 
+	return jobCount; 
+}
+
+
+void JobStatus::WaitForZeroJobsLeft(int waitMS)
+{
+	jobsFinishedEvent.Wait(DWORD(waitMS));
+}
+
+#pragma endregion
+
+
+#pragma region SharedJobQueue
+
 SharedJobQueue::SharedJobQueue(const string& queueName) :
 	queueName(queueName),
 	jobsRunning(0),
@@ -26,7 +67,7 @@ bool SharedJobQueue::Add(struct Job* job)
 	if (stopRequested == false)
 	{
 		if (job->jobStatus)
-			job->jobStatus->AddJob();
+			job->jobStatus->IncJobCount();
 
 		jobQueue.push(job);
 		isAdded = true;
@@ -85,7 +126,7 @@ void SharedJobQueue::StartingJob(Job* job)
 void SharedJobQueue::FinishedJob(Job* job)
 {
 	if (job->jobStatus)
-		job->jobStatus->FinishJob();
+		job->jobStatus->DecJobCount();
 
 	delete job;
 
@@ -121,6 +162,8 @@ string SharedJobQueue::GetName() const
 {
 	return queueName;
 }
+
+#pragma endregion
 
 
 

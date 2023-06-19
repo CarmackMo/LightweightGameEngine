@@ -176,10 +176,10 @@
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="JobSys\HashedString.h" />
     <ClInclude Include="JobSys\JobRunner.h" />
-    <ClInclude Include="JobSys\JobStatus.h" />
     <ClInclude Include="JobSys\JobSys.h" />
     <ClInclude Include="JobSys\SharedJobQueue.h" />
     <ClInclude Include="JobSys\Sync\AtomicOperations.h" />
+    <ClInclude Include="JobSys\Sync\WaitableObject.h" />
     <ClInclude Include="JSON\header\json\allocator.h" />
     <ClInclude Include="JSON\header\json\assertions.h" />
     <ClInclude Include="JSON\header\json\config.h" />
@@ -195,13 +195,11 @@
     <ClInclude Include="Physics\Physics.h" />
     <ClInclude Include="Sync\Event.h" />
     <ClInclude Include="Sync\ScopeLock.h" />
-    <ClInclude Include="Sync\WaitableObject.h" />
     <ClInclude Include="Timer\Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Input\Input.inl" />
     <None Include="JobSys\JobSys.inl" />
-    <None Include="JobSys\SharedJobQueue.inl" />
     <None Include="JSON\source\json_valueiterator.inl" />
     <None Include="Physics\Physics.inl" />
     <None Include="Timer\Timer.inl" />
