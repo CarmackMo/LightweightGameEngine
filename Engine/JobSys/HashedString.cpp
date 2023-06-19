@@ -5,7 +5,6 @@ namespace Engine
 namespace JobSystem
 {
 
-
 inline HashedString::HashedString() :
 	hash(Hash(""))
 { }

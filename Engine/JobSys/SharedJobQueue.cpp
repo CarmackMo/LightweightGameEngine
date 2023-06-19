@@ -5,111 +5,124 @@ namespace Engine
 namespace JobSystem
 {
 
-
 SharedJobQueue::SharedJobQueue(const string& queueName) :
-	m_Name(queueName),
-	m_JobsRunning(0),
-	m_bShutdownRequested(false),
-	m_WakeAndCheck(CONDITION_VARIABLE_INIT)
+	queueName(queueName),
+	jobsRunning(0),
+	stopRequested(false),
+	queueNotEmpty(CONDITION_VARIABLE_INIT)
 {
-	InitializeCriticalSection(&m_QueueAccess);
+	InitializeCriticalSection(&queueLock);
 }
 
 
-bool SharedJobQueue::Add(struct QueuedJob* job)
+bool SharedJobQueue::Add(struct Job* job)
 {
 	assert(job);
 	bool isAdded = false;
 
 	/* Blocks until the thread can take ownership of the specified critical 
 	 * section. The function returns when the calling thread is granted ownership. */
-	EnterCriticalSection(&m_QueueAccess);
-	if (m_bShutdownRequested == false)
+	EnterCriticalSection(&queueLock);
+	if (stopRequested == false)
 	{
-		if (job->pJobStatus)
-			job->pJobStatus->AddJob();
+		if (job->jobStatus)
+			job->jobStatus->AddJob();
 
-		m_Jobs.push(job);
+		jobQueue.push(job);
 		isAdded = true;
 	}
 	/* Releases ownership of the specified critical section object. There is no 
 	 * guarantee about the order in which waiting threads will acquire ownership of 
 	 * the critical section. */
-	LeaveCriticalSection(&m_QueueAccess);
+	LeaveCriticalSection(&queueLock);
 
 	/* If the current queue is waiting to acquire available jobs, wake it. */
 	if (isAdded)
-		WakeConditionVariable(&m_WakeAndCheck);
+		WakeConditionVariable(&queueNotEmpty);
 
 	return isAdded;
 }
 
 
-bool SharedJobQueue::HasJobs() const
+Job* SharedJobQueue::Get()
 {
-	EnterCriticalSection(&m_QueueAccess);
-	bool isFinished = m_Jobs.empty() && (m_JobsRunning == 0);
-	LeaveCriticalSection(&m_QueueAccess);
-
-	return !isFinished;
-}
-
-
-QueuedJob* SharedJobQueue::Get()
-{
-	EnterCriticalSection(&m_QueueAccess);
+	EnterCriticalSection(&queueLock);
 
 	/* If current job queue is empty, sleep and wait until new jobs are added to 
 	 * the queue or the thread is shutted down. */
-	if (m_Jobs.empty() && (m_bShutdownRequested == false))
+	if (jobQueue.empty() && (stopRequested == false))
 	{
-		BOOL success = SleepConditionVariableCS(&m_WakeAndCheck, &m_QueueAccess, INFINITE);
+		BOOL success = SleepConditionVariableCS(&queueNotEmpty, &queueLock, INFINITE);
 		assert(success != 0);
 
-		if (m_bShutdownRequested == true)
+		if (stopRequested == true)
 		{
-			LeaveCriticalSection(&m_QueueAccess);
+			LeaveCriticalSection(&queueLock);
 			return nullptr;
 		}
 	}
 
 	/* Retrieve job from job queue. Note that this action can be proceeded even if
 	 * the current thread is shutted down. */
-	QueuedJob* job = nullptr;
-	if (!m_Jobs.empty())
+	Job* job = nullptr;
+	if (!jobQueue.empty())
 	{
-		job = m_Jobs.front();
-		m_Jobs.pop();
+		job = jobQueue.front();
+		jobQueue.pop();
 	}
 
-	LeaveCriticalSection(&m_QueueAccess);
+	LeaveCriticalSection(&queueLock);
 	return job;
 }
 
 
-void SharedJobQueue::StartingJob(QueuedJob* i_pJob)
+void SharedJobQueue::StartingJob(Job* job)
 {
-	AtomicIncrement(m_JobsRunning);
+	AtomicIncrement(jobsRunning);
 }
 
 
-void SharedJobQueue::FinishedJob(QueuedJob* i_pJob)
+void SharedJobQueue::FinishedJob(Job* job)
 {
-	if (i_pJob->pJobStatus)
-		i_pJob->pJobStatus->FinishJob();
+	if (job->jobStatus)
+		job->jobStatus->FinishJob();
 
-	delete i_pJob;
+	delete job;
 
-	AtomicDecrement(m_JobsRunning);
+	AtomicDecrement(jobsRunning);
 }
 
 
-void SharedJobQueue::RequestShutdown()
+void SharedJobQueue::RequestStop()
 {
-	m_bShutdownRequested = true;
+	stopRequested = true;
 	/* If the current queue is waiting to acquire available jobs, wake it. */
-	WakeAllConditionVariable(&m_WakeAndCheck);
+	WakeAllConditionVariable(&queueNotEmpty);
 }
+
+
+bool SharedJobQueue::IsStopped() const
+{
+	return stopRequested;
+}
+
+
+bool SharedJobQueue::HasJobs() const
+{
+	EnterCriticalSection(&queueLock);
+	bool isFinished = jobQueue.empty() && (jobsRunning == 0);
+	LeaveCriticalSection(&queueLock);
+
+	return !isFinished;
+}
+
+
+string SharedJobQueue::GetName() const
+{
+	return queueName;
+}
+
+
 
 }//Namespace Engine
 }//Namespace JobSystem

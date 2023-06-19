@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <queue>
+#include <functional>
 
 #include "HashedString.h"
 #include "JobStatus.h"
@@ -14,35 +15,42 @@ namespace JobSystem
 {
 
 
-struct QueuedJob
+/**
+ *	@brief This struct implements a handler that represents a job, which will be pushed
+ *		   job queue and executed by the job system.
+ */
+struct Job
 {
-	std::function<void()>	Function;
-	HashedString			QueueName;
-	std::string				JobName;
-	JobStatus* pJobStatus;
+	function<void()>	action;
+	HashedString		queueName;
+	string				jobName;
+	JobStatus*			jobStatus;
 
-	QueuedJob(std::function<void()> i_Function, const HashedString& i_QueueName, const std::string& i_JobName, JobStatus* i_pJobStatus = nullptr) :
-		Function(i_Function),
-		QueueName(i_QueueName),
-		JobName(i_JobName),
-		pJobStatus(i_pJobStatus)
+	Job(function<void()> function, const HashedString& queueName, const string& jobName, JobStatus* jobStatus = nullptr) :
+		action(function),
+		queueName(queueName),
+		jobName(jobName),
+		jobStatus(jobStatus)
 	{}
 };
 
 
 /** 
- *	@brief This class implements job queue that uses "CONDITION_VARIABLE" and
- *		   "CRITICAL_SECTION to record thread status "*/
+ *	@brief This class implements a queue that stores jobs. Jobs need to be synchronously
+ *		   retrieved from the queue. If the there is no available job in the queue
+ *		   and a get-job method is invoked, the thread owns the queue will sleep and
+ *		   wait until new jobs are added to the queue. 
+ */
 class SharedJobQueue
 {
 private:
-	string						m_Name;
-	queue<QueuedJob*>			m_Jobs;
-	uint32_t					m_JobsRunning;
-	bool						m_bShutdownRequested;
+	string						queueName;
+	queue<Job*>					jobQueue;
+	uint32_t					jobsRunning;
+	bool						stopRequested;
 
-	CONDITION_VARIABLE			m_WakeAndCheck;
-	mutable CRITICAL_SECTION	m_QueueAccess;
+	CONDITION_VARIABLE			queueNotEmpty;
+	mutable CRITICAL_SECTION	queueLock;
 
 
 	SharedJobQueue(const SharedJobQueue&) = delete;
@@ -50,24 +58,25 @@ private:
 
 public:
 	SharedJobQueue(const string& queueName);
+	~SharedJobQueue() = default;
 
-	bool Add(QueuedJob* job);
-	bool HasJobs() const;
-
+	bool Add(Job* job);
 	/*	@brief Retrieve the first job from the job queue. If there are no available 
 	 *		   jobs in the queue, the current thread will be put to sleep until new 
 	 *		   jobs are added to the queue or the current thread is terminated. This
 	 *		   will not return until current thread is waked up.
 	 *		   Even if the current thread has been terminated, other threads can 
 	 *		   still fetch jobs from it using this function. */
-	QueuedJob* Get();
-	void StartingJob(QueuedJob* i_pJob);
-	void FinishedJob(QueuedJob* i_pJob);
+	Job* Get();
 
-	void RequestShutdown();
-	bool ShutdownRequested() const { return m_bShutdownRequested; }
+	void StartingJob(Job* job);
+	void FinishedJob(Job* job);
 
-	std::string GetName() const { return m_Name; }
+	void RequestStop();
+	bool IsStopped() const;
+	bool HasJobs() const;
+
+	string GetName() const;
 };
 
 }//Namespace Engine

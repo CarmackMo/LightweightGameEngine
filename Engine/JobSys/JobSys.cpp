@@ -20,7 +20,7 @@ void RequestShutdown()
 	{
 		if (iter->second)
 		{
-			iter->second->m_SharedQueue.RequestShutdown();
+			iter->second->m_SharedQueue.RequestStop();
 
 			const size_t count = iter->second->m_Runners.size();
 			for (size_t i = 0; i < count; i++)
@@ -138,7 +138,7 @@ void RunJob(const HashedString& i_QueueName, std::function<void()> i_JobFunction
 	assert(existing->second);
 
 	Engine::Debugger::DEBUG_PRINT("Job System: Adding Job to Queue \"%s\". \n", existing->second->m_SharedQueue.GetName().c_str());
-	existing->second->m_SharedQueue.Add(new QueuedJob(i_JobFunction, i_QueueName, i_pJobName ? i_pJobName : std::string(), i_pJobStatus));
+	existing->second->m_SharedQueue.Add(new Job(i_JobFunction, i_QueueName, i_pJobName ? i_pJobName : std::string(), i_pJobStatus));
 }
 
 
