@@ -4,7 +4,7 @@
 #include <functional>
 
 #include "HashedString.h"
-#include "Event.h"
+#include "./Sync/Event.h"
 #include "./Sync/AtomicOperations.h"
 #include "./Sync/WaitableObject.h"
 
@@ -50,12 +50,12 @@ private:
 	uint32_t		jobCount;
 	AutoResetEvent	jobsFinishedEvent;
 
-	friend class SharedJobQueue;
-
 	uint32_t IncJobCount();
 	uint32_t DecJobCount();
 
 public:
+	friend class SharedJobQueue;
+
 	JobStatus(unsigned int jobCount = 0);
 	~JobStatus() = default;
 	

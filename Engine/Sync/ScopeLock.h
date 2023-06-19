@@ -1,6 +1,8 @@
 #pragma once
 #include "./Sync/WaitableObject.h"
 
+namespace Engine
+{
 
 class Mutex : public WaitableObject
 {
@@ -38,3 +40,5 @@ private:
 
 	Mutex* m_pMutex;
 };
+
+}//Namespace Engine

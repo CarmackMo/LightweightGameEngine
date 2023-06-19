@@ -153,11 +153,11 @@
     <ClCompile Include="JobSys\JobRunner.cpp" />
     <ClCompile Include="JobSys\JobSys.cpp" />
     <ClCompile Include="JobSys\SharedJobQueue.cpp" />
+    <ClCompile Include="JobSys\Sync\Event.cpp" />
     <ClCompile Include="JSON\source\json_reader.cpp" />
     <ClCompile Include="JSON\source\json_value.cpp" />
     <ClCompile Include="JSON\source\json_writer.cpp" />
     <ClCompile Include="Physics\Physics.cpp" />
-    <ClCompile Include="Sync\Event.cpp" />
     <ClCompile Include="Sync\ScopeLock.cpp" />
     <ClCompile Include="Timer\Timer.cpp" />
   </ItemGroup>
@@ -179,6 +179,7 @@
     <ClInclude Include="JobSys\JobSys.h" />
     <ClInclude Include="JobSys\SharedJobQueue.h" />
     <ClInclude Include="JobSys\Sync\AtomicOperations.h" />
+    <ClInclude Include="JobSys\Sync\Event.h" />
     <ClInclude Include="JobSys\Sync\WaitableObject.h" />
     <ClInclude Include="JSON\header\json\allocator.h" />
     <ClInclude Include="JSON\header\json\assertions.h" />
@@ -193,7 +194,6 @@
     <ClInclude Include="JSON\source\json_tool.h" />
     <ClInclude Include="Mathf\Mathf.h" />
     <ClInclude Include="Physics\Physics.h" />
-    <ClInclude Include="Sync\Event.h" />
     <ClInclude Include="Sync\ScopeLock.h" />
     <ClInclude Include="Timer\Timer.h" />
   </ItemGroup>

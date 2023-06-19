@@ -1,5 +1,8 @@
 #pragma once
-#include "Dependency.h"
+#include <Windows.h>
+
+namespace Engine
+{
 
 class WaitableObject
 {
@@ -22,3 +25,5 @@ private:
 	WaitableObject(const WaitableObject& i_other) = delete;
 	WaitableObject& operator=(const WaitableObject& i_other) = delete;
 };
+
+}//Namespace Engine

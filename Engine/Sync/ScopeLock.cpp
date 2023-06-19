@@ -1,4 +1,8 @@
+#include <cassert>
 #include "ScopeLock.h"
+
+namespace Engine
+{
 
 Mutex::Mutex(bool i_bTakeOwnership, const char* i_pName)
 {
@@ -49,3 +53,5 @@ void Mutex::Release(void)
 	BOOL result = ReleaseMutex(m_Handle);
 	assert(result == TRUE);
 }
+
+}//Namespace Engine

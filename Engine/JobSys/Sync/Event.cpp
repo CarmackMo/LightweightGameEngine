@@ -1,5 +1,10 @@
+#include <cassert>
 #include "Event.h"
 
+namespace Engine
+{
+
+#pragma region ManualResetEvent
 
 ManualResetEvent::ManualResetEvent(bool i_bInitiallySignaled, const char* i_pName)
 {
@@ -16,15 +21,18 @@ ManualResetEvent::ManualResetEvent(bool i_bInitiallySignaled, const char* i_pNam
 	assert(m_Handle != INVALID_HANDLE_VALUE);
 }
 
+
 ManualResetEvent::~ManualResetEvent()
 {
 	CloseHandle(m_Handle);
 }
 
+
 void ManualResetEvent::Reset(void)
 {
 	ResetEvent(m_Handle);
 }
+
 
 bool ManualResetEvent::Wait(wait_t i_WaitMilliseconds)
 {
@@ -34,11 +42,17 @@ bool ManualResetEvent::Wait(wait_t i_WaitMilliseconds)
 	return result == WAIT_OBJECT_0;
 }
 
+
 void ManualResetEvent::Signal(void)
 {
 	BOOL result = SetEvent(m_Handle);
 	assert(result == TRUE);
 }
+
+#pragma endregion
+
+
+#pragma region AutoResetEvent
 
 AutoResetEvent::AutoResetEvent(bool i_bInitiallySignaled, const char* i_pName)
 {
@@ -55,10 +69,12 @@ AutoResetEvent::AutoResetEvent(bool i_bInitiallySignaled, const char* i_pName)
 	assert(m_Handle != INVALID_HANDLE_VALUE);
 }
 
+
 AutoResetEvent::~AutoResetEvent()
 {
 	CloseHandle(m_Handle);
 }
+
 
 bool AutoResetEvent::Wait(wait_t i_WaitMilliseconds)
 {
@@ -68,8 +84,13 @@ bool AutoResetEvent::Wait(wait_t i_WaitMilliseconds)
 	return result == WAIT_OBJECT_0;
 }
 
+
 void AutoResetEvent::Signal(void)
 {
 	BOOL result = SetEvent(m_Handle);
 	assert(result == TRUE);
 }
+
+#pragma endregion
+
+}//Namespace Engine
