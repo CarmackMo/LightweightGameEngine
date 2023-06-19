@@ -56,8 +56,8 @@
     <Filter Include="Source Files\Mathf">
       <UniqueIdentifier>{e7b5024e-4710-489b-b545-45df73d7c495}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\JobSystem">
-      <UniqueIdentifier>{866cd3fd-215a-4c8e-8327-52c239a466e4}</UniqueIdentifier>
+    <Filter Include="Source Files\JobSys\Sync">
+      <UniqueIdentifier>{78f34a1a-34ec-4b64-8149-b4b514698523}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -90,9 +90,6 @@
     </ClCompile>
     <ClCompile Include="FileSys\FileSys.cpp">
       <Filter>Source Files\FileSys</Filter>
-    </ClCompile>
-    <ClCompile Include="Sync\AtomicOperations.cpp">
-      <Filter>Source Files\Sync</Filter>
     </ClCompile>
     <ClCompile Include="Sync\Event.cpp">
       <Filter>Source Files\Sync</Filter>
@@ -189,9 +186,6 @@
     <ClInclude Include="Sync\WaitableObject.h">
       <Filter>Source Files\Sync</Filter>
     </ClInclude>
-    <ClInclude Include="Sync\AtomicOperations.h">
-      <Filter>Source Files\Sync</Filter>
-    </ClInclude>
     <ClInclude Include="Sync\Event.h">
       <Filter>Source Files\Sync</Filter>
     </ClInclude>
@@ -233,6 +227,9 @@
     </ClInclude>
     <ClInclude Include="Mathf\Mathf.h">
       <Filter>Source Files\Mathf</Filter>
+    </ClInclude>
+    <ClInclude Include="JobSys\Sync\AtomicOperations.h">
+      <Filter>Source Files\JobSys\Sync</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

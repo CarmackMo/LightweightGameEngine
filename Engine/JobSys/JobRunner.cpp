@@ -20,7 +20,7 @@ DWORD WINAPI JobRunner(void* i_pThreadInput)
 	do
 	{
 		Engine::Debugger::DEBUG_PRINT("JobRunner \"%s\": Acquiring Job. \n", pInput->m_ThreadName.c_str());
-		QueuedJob* pJob = pInput->m_pQueue->GetWhenAvailable();
+		QueuedJob* pJob = pInput->m_pQueue->Get();
 		if (pJob)
 		{
 			Engine::Debugger::DEBUG_PRINT("JobRunner \"%s\": Starting Job \"%s\" on Processor %d. \n", pInput->m_ThreadName.c_str(), pJob->JobName.c_str(), GetCurrentProcessorNumber());

@@ -37,7 +37,7 @@ bool SharedJobQueue::Add(struct QueuedJob* job)
 	 * the critical section. */
 	LeaveCriticalSection(&m_QueueAccess);
 
-	/* Wake a single thread waiting on the specified condition variable. */
+	/* If the current queue is waiting to acquire available jobs, wake it. */
 	if (isAdded)
 		WakeConditionVariable(&m_WakeAndCheck);
 
@@ -55,14 +55,16 @@ bool SharedJobQueue::HasJobs() const
 }
 
 
-QueuedJob* SharedJobQueue::GetWhenAvailable()
+QueuedJob* SharedJobQueue::Get()
 {
 	EnterCriticalSection(&m_QueueAccess);
 
+	/* If current job queue is empty, sleep and wait until new jobs are added to 
+	 * the queue or the thread is shutted down. */
 	if (m_Jobs.empty() && (m_bShutdownRequested == false))
 	{
-		BOOL result = SleepConditionVariableCS(&m_WakeAndCheck, &m_QueueAccess, INFINITE);
-		assert(result != 0);
+		BOOL success = SleepConditionVariableCS(&m_WakeAndCheck, &m_QueueAccess, INFINITE);
+		assert(success != 0);
 
 		if (m_bShutdownRequested == true)
 		{
@@ -71,24 +73,23 @@ QueuedJob* SharedJobQueue::GetWhenAvailable()
 		}
 	}
 
-	struct QueuedJob* pJob = nullptr;
-
+	/* Retrieve job from job queue. Note that this action can be proceeded even if
+	 * the current thread is shutted down. */
+	QueuedJob* job = nullptr;
 	if (!m_Jobs.empty())
 	{
-		pJob = m_Jobs.front();
+		job = m_Jobs.front();
 		m_Jobs.pop();
 	}
 
 	LeaveCriticalSection(&m_QueueAccess);
-
-	return pJob;
+	return job;
 }
 
 
 void SharedJobQueue::StartingJob(QueuedJob* i_pJob)
 {
 	AtomicIncrement(m_JobsRunning);
-
 }
 
 
@@ -106,6 +107,7 @@ void SharedJobQueue::FinishedJob(QueuedJob* i_pJob)
 void SharedJobQueue::RequestShutdown()
 {
 	m_bShutdownRequested = true;
+	/* If the current queue is waiting to acquire available jobs, wake it. */
 	WakeAllConditionVariable(&m_WakeAndCheck);
 }
 

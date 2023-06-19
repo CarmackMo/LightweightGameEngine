@@ -4,7 +4,7 @@
 
 #include "HashedString.h"
 #include "JobStatus.h"
-#include "AtomicOperations.h"
+#include "./Sync/AtomicOperations.h"
 
 using namespace std;
 
@@ -53,7 +53,14 @@ public:
 
 	bool Add(QueuedJob* job);
 	bool HasJobs() const;
-	QueuedJob* GetWhenAvailable();
+
+	/*	@brief Retrieve the first job from the job queue. If there are no available 
+	 *		   jobs in the queue, the current thread will be put to sleep until new 
+	 *		   jobs are added to the queue or the current thread is terminated. This
+	 *		   will not return until current thread is waked up.
+	 *		   Even if the current thread has been terminated, other threads can 
+	 *		   still fetch jobs from it using this function. */
+	QueuedJob* Get();
 	void StartingJob(QueuedJob* i_pJob);
 	void FinishedJob(QueuedJob* i_pJob);
 

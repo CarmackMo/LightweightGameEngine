@@ -1,7 +1,7 @@
 #pragma once
 #include "Dependency.h"
 #include "WaitableObject.h"
-#include "AtomicOperations.h"
+#include "./Sync/AtomicOperations.h"
 #include "Event.h"
 
 
