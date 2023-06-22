@@ -15,34 +15,34 @@ Mutex::Mutex(bool i_bTakeOwnership, const char* i_pName)
 		int BytesNeeded = MultiByteToWideChar(CP_ACP, 0, i_pName, -1, pWChars, -1);
 	}
 
-	m_Handle = CreateMutex(NULL, (BOOL)i_bTakeOwnership, pWChars);
+	handle = CreateMutex(NULL, (BOOL)i_bTakeOwnership, pWChars);
 
-	assert(m_Handle != NULL);
+	assert(handle != NULL);
 }
 
 Mutex::~Mutex()
 {
-	BOOL result = CloseHandle(m_Handle);
+	BOOL result = CloseHandle(handle);
 	assert(result == TRUE);
 }
 
 bool Mutex::TryAcquire(void)
 {
-	DWORD result = WaitForSingleObject(m_Handle, 0);
+	DWORD result = WaitForSingleObject(handle, 0);
 
 	return result == WAIT_OBJECT_0;
 }
 
 void Mutex::Acquire(void)
 {
-	DWORD result = WaitForSingleObject(m_Handle, INFINITE);
+	DWORD result = WaitForSingleObject(handle, INFINITE);
 	assert(result == WAIT_OBJECT_0);
 
 }
 
 bool Mutex::Acquire(wait_t i_WaitMilliseconds)
 {
-	DWORD result = WaitForSingleObject(m_Handle, i_WaitMilliseconds);
+	DWORD result = WaitForSingleObject(handle, i_WaitMilliseconds);
 	assert(((i_WaitMilliseconds == WaitInfinite) && (result == WAIT_OBJECT_0)) || (result == WAIT_TIMEOUT));
 
 	return result == WAIT_OBJECT_0;
@@ -50,7 +50,7 @@ bool Mutex::Acquire(wait_t i_WaitMilliseconds)
 
 void Mutex::Release(void)
 {
-	BOOL result = ReleaseMutex(m_Handle);
+	BOOL result = ReleaseMutex(handle);
 	assert(result == TRUE);
 }
 

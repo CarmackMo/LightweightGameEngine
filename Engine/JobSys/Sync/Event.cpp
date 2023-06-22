@@ -6,38 +6,42 @@ namespace Engine
 
 #pragma region ManualResetEvent
 
-ManualResetEvent::ManualResetEvent(bool i_bInitiallySignaled, const char* i_pName)
+ManualResetEvent::ManualResetEvent(bool initiallySignaled, const char* name)
 {
+	/* Maps the input character string to a UTF-16 (wide character) string. Firstly, 
+	 * calcualte the buffer size, then create the buffer and map the string to buffer. */
 	wchar_t* wChars = nullptr;
-	int BytesNeeded = MultiByteToWideChar(CP_ACP, 0, i_pName, -1, wChars, -1);
-	if (BytesNeeded)
+	int bytesNeeded = MultiByteToWideChar(CP_ACP, 0, name, -1, wChars, -1);
+	if (bytesNeeded)
 	{
-		wChars = new wchar_t[BytesNeeded];
-		int BytesNeeded = MultiByteToWideChar(CP_ACP, 0, i_pName, -1, wChars, -1);
+		wChars = new wchar_t[bytesNeeded];
+		int bytesNeeded = MultiByteToWideChar(CP_ACP, 0, name, -1, wChars, -1);
 	}
 
-	m_Handle = CreateEvent(NULL, TRUE, i_bInitiallySignaled, wChars);
+	handle = CreateEvent(NULL, TRUE, initiallySignaled, wChars);
 
-	assert(m_Handle != INVALID_HANDLE_VALUE);
+	assert(handle != INVALID_HANDLE_VALUE);
 }
 
 
 ManualResetEvent::~ManualResetEvent()
 {
-	CloseHandle(m_Handle);
+	CloseHandle(handle);
 }
 
 
 void ManualResetEvent::Reset(void)
 {
-	ResetEvent(m_Handle);
+	ResetEvent(handle);
 }
 
 
-bool ManualResetEvent::Wait(wait_t i_WaitMilliseconds)
+bool ManualResetEvent::Wait(wait_t waitMS)
 {
-	DWORD result = WaitForSingleObject(m_Handle, i_WaitMilliseconds);
-	assert(((i_WaitMilliseconds == WaitInfinite) && (result == WAIT_OBJECT_0)) || (result == WAIT_TIMEOUT));
+	/* Return "WAIT_OBJECT_0" if the event is signaled, return "WAIT_TIMEOUT" if the 
+	 * time-out interval elapses. */
+	DWORD result = WaitForSingleObject(handle, waitMS);
+	assert((waitMS == WaitInfinite && result == WAIT_OBJECT_0) || (result == WAIT_TIMEOUT));
 
 	return result == WAIT_OBJECT_0;
 }
@@ -45,7 +49,7 @@ bool ManualResetEvent::Wait(wait_t i_WaitMilliseconds)
 
 void ManualResetEvent::Signal(void)
 {
-	BOOL result = SetEvent(m_Handle);
+	BOOL result = SetEvent(handle);
 	assert(result == TRUE);
 }
 
@@ -54,32 +58,36 @@ void ManualResetEvent::Signal(void)
 
 #pragma region AutoResetEvent
 
-AutoResetEvent::AutoResetEvent(bool i_bInitiallySignaled, const char* i_pName)
+AutoResetEvent::AutoResetEvent(bool initiallySignaled, const char* name)
 {
+	/* Maps the input character string to a UTF-16 (wide character) string. Firstly,
+	 * calcualte the buffer size, then create the buffer and map the string to buffer. */
 	wchar_t* wChars = nullptr;
-	int BytesNeeded = MultiByteToWideChar(CP_ACP, 0, i_pName, -1, wChars, -1);
-	if (BytesNeeded)
+	int bytesNeeded = MultiByteToWideChar(CP_ACP, 0, name, -1, wChars, -1);
+	if (bytesNeeded)
 	{
-		wChars = new wchar_t[BytesNeeded];
-		int BytesNeeded = MultiByteToWideChar(CP_ACP, 0, i_pName, -1, wChars, -1);
+		wChars = new wchar_t[bytesNeeded];
+		int BytesNeeded = MultiByteToWideChar(CP_ACP, 0, name, -1, wChars, -1);
 	}
 
-	m_Handle = CreateEvent(NULL, FALSE, i_bInitiallySignaled, wChars);
+	handle = CreateEvent(NULL, FALSE, initiallySignaled, wChars);
 
-	assert(m_Handle != INVALID_HANDLE_VALUE);
+	assert(handle != INVALID_HANDLE_VALUE);
 }
 
 
 AutoResetEvent::~AutoResetEvent()
 {
-	CloseHandle(m_Handle);
+	CloseHandle(handle);
 }
 
 
-bool AutoResetEvent::Wait(wait_t i_WaitMilliseconds)
+bool AutoResetEvent::Wait(wait_t waitMS)
 {
-	DWORD result = WaitForSingleObject(m_Handle, i_WaitMilliseconds);
-	assert((result == WAIT_OBJECT_0) || (result == WAIT_TIMEOUT && i_WaitMilliseconds != WaitInfinite));
+	/* Return "WAIT_OBJECT_0" if the event is signaled, return "WAIT_TIMEOUT" if the
+	 * time-out interval elapses. */
+	DWORD result = WaitForSingleObject(handle, waitMS);
+	assert((result == WAIT_OBJECT_0) || (result == WAIT_TIMEOUT && waitMS != WaitInfinite));
 
 	return result == WAIT_OBJECT_0;
 }
@@ -87,7 +95,7 @@ bool AutoResetEvent::Wait(wait_t i_WaitMilliseconds)
 
 void AutoResetEvent::Signal(void)
 {
-	BOOL result = SetEvent(m_Handle);
+	BOOL result = SetEvent(handle);
 	assert(result == TRUE);
 }
 
