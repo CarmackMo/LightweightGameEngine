@@ -7,8 +7,9 @@ namespace Engine
 class WaitableObject
 {
 protected:
-	/* See https://stackoverflow.com/questions/902967/what-is-a-windows-handle 
-	 * for more detail of windows "HANDLE" */
+	/* A handel to an event object.
+	 * See https://stackoverflow.com/questions/902967/what-is-a-windows-handle for 
+	 * more detail of windows "HANDLE" */
 	HANDLE handle;
 
 public:
@@ -22,7 +23,7 @@ public:
 	WaitableObject& operator=(const WaitableObject& i_other) = delete;
 
 	HANDLE GetHandle(void) { return handle; }
-
 };
+
 
 }//Namespace Engine
