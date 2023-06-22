@@ -13,9 +13,7 @@ protected:
 
 public:
 	/* A 32-bit unsigned integer */
-	typedef DWORD wait_t;
-
-	static const wait_t			WaitInfinite = INFINITE;
+	typedef DWORD WaitTime;
 
 	WaitableObject() : handle(INVALID_HANDLE_VALUE) {}
 	virtual ~WaitableObject() {}

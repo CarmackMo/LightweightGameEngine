@@ -64,7 +64,7 @@ public:
 
 	uint32_t JobsLeft() const;
 
-	void WaitForZeroJobsLeft(int waitMS = WaitableObject::WaitInfinite);
+	void WaitForZeroJobsLeft(int waitMS = INFINITE);
 };
 
 

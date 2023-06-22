@@ -11,7 +11,7 @@ namespace Engine
 class Event : public WaitableObject
 {
 public:
-	virtual bool Wait(wait_t waitMS) = 0;
+	virtual bool Wait(WaitTime waitMS) = 0;
 	virtual void Signal() = 0;
 };
 
@@ -36,7 +36,7 @@ public:
 	/*	@brief Waits until the event is in the signaled state or the time-out 
 	 *		   interval elapses. Return true if the event is signaled, otherwise 
 	 *		   return false. */
-	bool Wait(wait_t waitMS = INFINITE);
+	bool Wait(WaitTime waitMS = INFINITE);
 
 	/*	@breif Signal the event. */
 	void Signal();
@@ -61,7 +61,7 @@ public:
 	/*	@brief Waits until the event is in the signaled state or the time-out
 	 *		   interval elapses. Return true if the event is signaled, otherwise
 	 *		   return false. */
-	bool Wait(wait_t waitMS = INFINITE);
+	bool Wait(WaitTime waitMS = INFINITE);
 	
 	/*	@breif Signal the event. */
 	void Signal();

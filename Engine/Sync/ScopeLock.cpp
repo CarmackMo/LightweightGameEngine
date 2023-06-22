@@ -40,10 +40,10 @@ void Mutex::Acquire(void)
 
 }
 
-bool Mutex::Acquire(wait_t i_WaitMilliseconds)
+bool Mutex::Acquire(WaitTime i_WaitMilliseconds)
 {
 	DWORD result = WaitForSingleObject(handle, i_WaitMilliseconds);
-	assert(((i_WaitMilliseconds == WaitInfinite) && (result == WAIT_OBJECT_0)) || (result == WAIT_TIMEOUT));
+	assert(((i_WaitMilliseconds == INFINITE) && (result == WAIT_OBJECT_0)) || (result == WAIT_TIMEOUT));
 
 	return result == WAIT_OBJECT_0;
 }

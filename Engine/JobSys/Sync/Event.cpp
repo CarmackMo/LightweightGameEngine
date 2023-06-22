@@ -36,12 +36,12 @@ void ManualResetEvent::Reset(void)
 }
 
 
-bool ManualResetEvent::Wait(wait_t waitMS)
+bool ManualResetEvent::Wait(WaitTime waitMS)
 {
 	/* Return "WAIT_OBJECT_0" if the event is signaled, return "WAIT_TIMEOUT" if the 
 	 * time-out interval elapses. */
 	DWORD result = WaitForSingleObject(handle, waitMS);
-	assert((waitMS == WaitInfinite && result == WAIT_OBJECT_0) || (result == WAIT_TIMEOUT));
+	assert((waitMS == INFINITE && result == WAIT_OBJECT_0) || (result == WAIT_TIMEOUT));
 
 	return result == WAIT_OBJECT_0;
 }
@@ -82,12 +82,12 @@ AutoResetEvent::~AutoResetEvent()
 }
 
 
-bool AutoResetEvent::Wait(wait_t waitMS)
+bool AutoResetEvent::Wait(WaitTime waitMS)
 {
 	/* Return "WAIT_OBJECT_0" if the event is signaled, return "WAIT_TIMEOUT" if the
 	 * time-out interval elapses. */
 	DWORD result = WaitForSingleObject(handle, waitMS);
-	assert((result == WAIT_OBJECT_0) || (result == WAIT_TIMEOUT && waitMS != WaitInfinite));
+	assert((result == WAIT_OBJECT_0) || (result == WAIT_TIMEOUT && waitMS != INFINITE));
 
 	return result == WAIT_OBJECT_0;
 }

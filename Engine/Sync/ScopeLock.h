@@ -12,7 +12,7 @@ public:
 
 	bool TryAcquire();
 	void Acquire();
-	bool Acquire(wait_t i_WaitMilliseconds);
+	bool Acquire(WaitTime i_WaitMilliseconds);
 	void Release();
 
 private:
