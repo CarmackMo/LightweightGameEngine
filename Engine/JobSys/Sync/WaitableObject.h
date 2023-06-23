@@ -7,7 +7,7 @@ namespace Engine
 class WaitableObject
 {
 protected:
-	/* A handel to an event object.
+	/* A handel to an event object or a mutex object, both of which can be set waiting. 
 	 * See https://stackoverflow.com/questions/902967/what-is-a-windows-handle for 
 	 * more detail of windows "HANDLE" */
 	HANDLE handle;

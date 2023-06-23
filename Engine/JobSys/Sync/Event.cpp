@@ -18,7 +18,7 @@ ManualResetEvent::ManualResetEvent(bool initiallySignaled, const char* name)
 		int bytesNeeded = MultiByteToWideChar(CP_ACP, 0, name, -1, wChars, -1);
 	}
 
-	handle = CreateEvent(NULL, TRUE, initiallySignaled, wChars);
+	handle = CreateEvent(NULL, TRUE, (BOOL)initiallySignaled, wChars);
 
 	assert(handle != INVALID_HANDLE_VALUE);
 }
@@ -70,7 +70,7 @@ AutoResetEvent::AutoResetEvent(bool initiallySignaled, const char* name)
 		int BytesNeeded = MultiByteToWideChar(CP_ACP, 0, name, -1, wChars, -1);
 	}
 
-	handle = CreateEvent(NULL, FALSE, initiallySignaled, wChars);
+	handle = CreateEvent(NULL, FALSE, (BOOL)initiallySignaled, wChars);
 
 	assert(handle != INVALID_HANDLE_VALUE);
 }

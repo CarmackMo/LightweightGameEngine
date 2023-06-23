@@ -38,9 +38,6 @@
     <Filter Include="Source Files\JobSys">
       <UniqueIdentifier>{91dd9b6f-e371-42bd-9ad9-97e97e8bb049}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Sync">
-      <UniqueIdentifier>{f4f91eea-d779-4a1d-9e16-650994c6bb1d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Collision">
       <UniqueIdentifier>{6cf846ed-10c5-4c8b-921a-1907b6f6bdf4}</UniqueIdentifier>
     </Filter>
@@ -90,9 +87,6 @@
     </ClCompile>
     <ClCompile Include="FileSys\FileSys.cpp">
       <Filter>Source Files\FileSys</Filter>
-    </ClCompile>
-    <ClCompile Include="Sync\ScopeLock.cpp">
-      <Filter>Source Files\Sync</Filter>
     </ClCompile>
     <ClCompile Include="JobSys\HashedString.cpp">
       <Filter>Source Files\JobSys</Filter>
@@ -183,9 +177,6 @@
     <ClInclude Include="FileSys\FileSys.h">
       <Filter>Source Files\FileSys</Filter>
     </ClInclude>
-    <ClInclude Include="Sync\ScopeLock.h">
-      <Filter>Source Files\Sync</Filter>
-    </ClInclude>
     <ClInclude Include="JobSys\HashedString.h">
       <Filter>Source Files\JobSys</Filter>
     </ClInclude>
@@ -226,6 +217,12 @@
       <Filter>Source Files\JobSys\Sync</Filter>
     </ClInclude>
     <ClInclude Include="JobSys\Sync\Event.h">
+      <Filter>Source Files\JobSys\Sync</Filter>
+    </ClInclude>
+    <ClInclude Include="JobSys\Sync\ScopeLock.h">
+      <Filter>Source Files\JobSys\Sync</Filter>
+    </ClInclude>
+    <ClInclude Include="JobSys\Sync\Mutex.h">
       <Filter>Source Files\JobSys\Sync</Filter>
     </ClInclude>
   </ItemGroup>

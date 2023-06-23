@@ -18,12 +18,17 @@ public:
 
 /**
  *	@brief This class creates or opens a named or unnamed event object that requres
- *		   users tomanually reset the event object after it is signaled. Provides 
+ *		   users to manually reset the event object after it is signaled. Provides 
  *		   functions that manage the event object (reset, signal, set wait).
  */
 class ManualResetEvent : public Event
 {
 public:
+	/*	@brief If the input parameter "initiallySignaled" is set to true, the 
+	 *		   created event will be in a signaled state by default.  
+	 *		   In the case of creating a named event and an object already exists 
+	 *		   prior to this constructor call, the constructor will store a handler 
+	 *		   to the existing object instead. */
 	ManualResetEvent(bool initiallySignaled = false, const char* name = nullptr);
 	~ManualResetEvent();
 
@@ -38,7 +43,7 @@ public:
 	 *		   return false. */
 	bool Wait(WaitTime waitMS = INFINITE);
 
-	/*	@breif Signal the event. */
+	/*	@brief Signal the event. */
 	void Signal();
 };
 
@@ -52,6 +57,11 @@ public:
 class AutoResetEvent : public Event
 {
 public:
+	/*	@brief If the input parameter "initiallySignaled" is set to true, the
+	 *		   created event will be in a signaled state by default.
+	 *		   In the case of creating a named event and an object already exists
+	 *		   prior to this constructor call, the constructor will store a handler
+	 *		   to the existing object instead. */
 	AutoResetEvent(bool initiallySignaled = false, const char* name = nullptr);
 	~AutoResetEvent();
 
