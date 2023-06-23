@@ -10,9 +10,9 @@ private:
 	Mutex* mutex;
 
 public:
-	ScopeLock(Mutex& i_Mutex) : mutex(&i_Mutex)
+	ScopeLock(Mutex& mutex) : mutex(&mutex)
 	{
-		mutex->Acquire();
+		this->mutex->Acquire();
 	}
 	
 	~ScopeLock()
