@@ -41,24 +41,29 @@ HashedString CreateQueue(const std::string& i_Name, unsigned int i_numRunners)
 }
 
 
-void AddRunner(JobQueueData& i_QueueData)
+void AddRunner(JobQueueData& queueData)
 {
-	size_t runners = i_QueueData.m_Runners.size();
-
-	JobRunnerData* pNewRunner = new JobRunnerData(i_QueueData.m_SharedQueue);
+	JobRunner* jobRunner = new JobRunner(queueData.m_SharedQueue);
 
 #ifdef _DEBUG
+	size_t runners = queueData.m_Runners.size();
 	const size_t	sizeThreadName = 32;
 	char			ThreadName[sizeThreadName];
-	sprintf_s(ThreadName, sizeThreadName, "%s %d", i_QueueData.m_SharedQueue.GetName().c_str(), int(runners + 1));
-	pNewRunner->m_Input.m_ThreadName = ThreadName;
+	sprintf_s(ThreadName, sizeThreadName, "%s %d", queueData.m_SharedQueue.GetName().c_str(), int(runners + 1));
+	jobRunner->threadInput.threadName = ThreadName;
 #endif
 
-	pNewRunner->m_ThreadHandle = CreateThread(NULL, 0, JobRunner, &pNewRunner->m_Input, CREATE_SUSPENDED, &pNewRunner->m_ThreadID);
-	assert(pNewRunner->m_ThreadHandle != NULL);
+	/* Create a thread to proceed job runner routine. 
+	 * NULL:				the thread handle cannot be inherited
+	 * 0:					the initial size of the stack, in bytes, is zero. The new thread uses the default size for the executable.
+	 * JobRunnerRoutine:	the function to be executed by the thread. Also represents the starting address of the thread.
+	 * theadInput:			A pointer to a variable to be passed to the thread.
+	 * CREATE_SUSPENDED:	the thread is created in a suspended state, and does not run until user wake it. */
+	jobRunner->threadHandle = CreateThread(NULL, 0, JobRunnerRoutine, &jobRunner->threadInput, CREATE_SUSPENDED, &jobRunner->threadID);
+	assert(jobRunner->threadHandle != NULL);
 
-	i_QueueData.m_Runners.push_back(pNewRunner);
-	ResumeThread(pNewRunner->m_ThreadHandle);
+	queueData.m_Runners.push_back(jobRunner);
+	ResumeThread(jobRunner->threadHandle);
 }
 
 
@@ -114,10 +119,10 @@ void RequestShutdown()
 			const size_t count = iter->second->m_Runners.size();
 			for (size_t i = 0; i < count; i++)
 			{
-				JobRunnerData* pRunner = iter->second->m_Runners[i];
-				if (pRunner && pRunner->m_ThreadHandle != NULL)
+				JobRunner* pRunner = iter->second->m_Runners[i];
+				if (pRunner && pRunner->threadHandle != NULL)
 				{
-					AllThreads.push_back(pRunner->m_ThreadHandle);
+					AllThreads.push_back(pRunner->threadHandle);
 				}
 			}
 		}
@@ -137,7 +142,7 @@ void RequestShutdown()
 			const size_t count = iter->second->m_Runners.size();
 			for (size_t i = 0; i < count; i++)
 			{
-				JobRunnerData* pRunner = iter->second->m_Runners[i];
+				JobRunner* pRunner = iter->second->m_Runners[i];
 				if (pRunner)
 					delete pRunner;
 			}

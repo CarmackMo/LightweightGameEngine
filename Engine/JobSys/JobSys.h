@@ -1,5 +1,7 @@
 #pragma once
 #include "Dependency.h"
+
+#include <processthreadsapi.h>
 #include "HashedString.h"
 #include "HashedString.cpp"
 #include "JobRunner.h"
@@ -11,7 +13,7 @@ using namespace Engine::JobSystem;
 struct JobQueueData
 {
 	SharedJobQueue		m_SharedQueue;
-	std::vector<JobRunnerData*>	m_Runners;
+	std::vector<JobRunner*>	m_Runners;
 
 	JobQueueData(const std::string& i_QueueName) :
 		m_SharedQueue(i_QueueName)
@@ -25,6 +27,10 @@ struct JobQueueData
 
 
 void Init();
+
+void AddRunner(JobQueueData& i_QueueData);
+
+void AddRunner(const HashedString& i_QueueName);
 
 HashedString GetDefaultQueue();
 
