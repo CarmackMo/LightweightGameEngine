@@ -3,7 +3,7 @@
 #include <queue>
 #include <functional>
 
-#include "HashedString.h"
+#include "./HashedString.h"
 #include "./Sync/Event.h"
 #include "./Sync/AtomicOperations.h"
 #include "./Sync/WaitableObject.h"
@@ -41,8 +41,12 @@ struct Job
 
 
 /**
- *	TODO: @brief Control block that manage the status of all queued jobs. When all registered
- *		   jobs are finished (i.e. jobCount is zero), a signal will be sent.
+ *	TODO: @brief This class serves as the control block that manage the status of all 
+ *		   queued jobs. 
+ 
+ *		   When all registered jobs are finished (i.e. jobCount is zero), 
+ *		   JobStatus class will signal a event to tell all waiting thread that current
+ *		   job queue is empty.
  */
 class JobStatus
 {
@@ -64,15 +68,20 @@ public:
 
 	uint32_t JobsLeft() const;
 
+	/* @brief Set the current thread waiting until there is no job in the job queue. */
 	void WaitForZeroJobsLeft(int waitMS = INFINITE);
 };
 
 
 /** 
- *	TODO: @brief This class implements a queue that stores jobs. Jobs need to be synchronously
- *		   retrieved from the queue. If the there is no available job in the queue
- *		   and a get-job method is invoked, the thread owns the queue will sleep and
- *		   wait until new jobs are added to the queue. 
+ *	TODO: Need to do research on "CONDITION_VARIABLE", "CRITICAL_SECTION", mutable, and 
+ *		  mutex.
+ * 
+ *	@brief This class implements a queue that stores jobs. 
+ 
+ *		   Jobs need to be synchronously retrieved from the queue. If the there is no 
+ *		   available job in the queue and a get-job method is invoked, the thread owns 
+ *		   the queue will sleep and wait until new jobs are added to the queue. 
  */
 class SharedJobQueue
 {
@@ -94,12 +103,10 @@ public:
 	~SharedJobQueue() = default;
 
 	bool Add(Job* job);
-	/*	@brief Retrieve the first job from the job queue. If there are no available 
-	 *		   jobs in the queue, the current thread will be put to sleep until new 
-	 *		   jobs are added to the queue or the current thread is terminated. This
-	 *		   will not return until current thread is waked up.
-	 *		   Even if the current thread has been terminated, other threads can 
-	 *		   still fetch jobs from it using this function. */
+
+	/*	@brief Retrieve the first job from the job queue. If there is no job in the queue,  
+	 *		   the calling thread will wait until other thread add job to the queue, or 
+	 *		   the queue is shutted down. */
 	Job* Get();
 
 	void StartingJob(Job* job);

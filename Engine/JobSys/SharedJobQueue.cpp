@@ -61,8 +61,8 @@ bool SharedJobQueue::Add(struct Job* job)
 	assert(job);
 	bool isAdded = false;
 
-	/* Blocks until the thread can take ownership of the specified critical 
-	 * section. The function returns when the calling thread is granted ownership. */
+	/* Blocks until the calling thread can take ownership of the specified critical section. The 
+	 * function returns when the calling thread is granted ownership. */
 	EnterCriticalSection(&queueLock);
 	if (stopRequested == false)
 	{
@@ -77,7 +77,7 @@ bool SharedJobQueue::Add(struct Job* job)
 	 * the critical section. */
 	LeaveCriticalSection(&queueLock);
 
-	/* If the current queue is waiting to acquire available jobs, wake it. */
+	/* Wake other threads that is waiting the condition variable. */
 	if (isAdded)
 		WakeConditionVariable(&queueNotEmpty);
 
@@ -89,8 +89,8 @@ Job* SharedJobQueue::Get()
 {
 	EnterCriticalSection(&queueLock);
 
-	/* If current job queue is empty, sleep and wait until new jobs are added to 
-	 * the queue or the thread is shutted down. */
+	/* If job queue is empty, current therad will sleep and wait until new jobs are added to 
+	 * the queue or the queue is shutted down. */
 	if (jobQueue.empty() && (stopRequested == false))
 	{
 		BOOL success = SleepConditionVariableCS(&queueNotEmpty, &queueLock, INFINITE);
@@ -103,8 +103,8 @@ Job* SharedJobQueue::Get()
 		}
 	}
 
-	/* Retrieve job from job queue. Note that this action can be proceeded even if
-	 * the current thread is shutted down. */
+	/* Retrieve job from job queue. Note that this action can be proceeded even if the current
+	 * thread is shutted down. */
 	Job* job = nullptr;
 	if (!jobQueue.empty())
 	{
