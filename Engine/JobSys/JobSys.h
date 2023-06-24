@@ -28,14 +28,8 @@ void Init();
 
 HashedString GetDefaultQueue();
 
-inline const char* GetDefaultQueueName() noexcept {
-	static char DefaultQueueName[] = "Default";
-	return DefaultQueueName;
-}
+inline const char* GetDefaultQueueName() noexcept;
 
-inline HashedString GetDefaultQueue() {
-	return HashedString(GetDefaultQueueName());
-}
 HashedString CreateQueue(const std::string& i_Name, unsigned int i_numRunners);
 
 void RunJob(const HashedString& i_QueueName, std::function<void()> i_JobFunction, JobStatus* i_pJobStatus = nullptr, const char* pJobName = nullptr);
