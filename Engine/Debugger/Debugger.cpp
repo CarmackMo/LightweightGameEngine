@@ -1,3 +1,5 @@
+#include <windows.h>
+#include <stdio.h>
 #include "Debugger.h"
 
 using namespace Engine::Debugger;

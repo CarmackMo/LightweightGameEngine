@@ -150,7 +150,6 @@
     <ClCompile Include="FileSys\FileSys.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="JobSys\HashedString.cpp" />
-    <ClCompile Include="JobSys\JobRunner.cpp" />
     <ClCompile Include="JobSys\JobSys.cpp" />
     <ClCompile Include="JobSys\SharedJobQueue.cpp" />
     <ClCompile Include="JobSys\Sync\Event.cpp" />

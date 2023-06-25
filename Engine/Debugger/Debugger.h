@@ -1,12 +1,9 @@
 #pragma once
-#include <windows.h>
-#include <stdio.h>
 
 namespace Engine
 {
 namespace Debugger
 {
-
 
 class DebugManager
 {
@@ -18,7 +15,7 @@ public:
 };
 
 
-}
-}
+}//Namespace Engine
+}//Namespace Debugger
 
 #define DEBUG_PRINT(fmt,...) DebugManager::ConsolePrint((fmt),__FILE__,__LINE__,__VA_ARGS__)

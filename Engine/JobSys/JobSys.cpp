@@ -42,24 +42,26 @@ HashedString CreateQueue(const std::string& i_Name, unsigned int i_numRunners)
 
 
 void AddRunner(JobQueueData& queueData)
-{
+{	
 	JobRunner* jobRunner = new JobRunner(queueData.m_SharedQueue);
-
 #ifdef _DEBUG
 	size_t runners = queueData.m_Runners.size();
 	const size_t	sizeThreadName = 32;
 	char			ThreadName[sizeThreadName];
 	sprintf_s(ThreadName, sizeThreadName, "%s %d", queueData.m_SharedQueue.GetName().c_str(), int(runners + 1));
-	jobRunner->threadInput.threadName = ThreadName;
+	jobRunner->threadName = ThreadName;
 #endif
+
+
+
 
 	/* Create a thread to proceed job runner routine. 
 	 * NULL:				the thread handle cannot be inherited
 	 * 0:					the initial size of the stack, in bytes, is zero. The new thread uses the default size for the executable.
 	 * JobRunnerRoutine:	the function to be executed by the thread. Also represents the starting address of the thread.
-	 * theadInput:			A pointer to a variable to be passed to the thread.
+	 * jobRunner:			A pointer to a variable to be passed to the thread.
 	 * CREATE_SUSPENDED:	the thread is created in a suspended state, and does not run until user wake it. */
-	jobRunner->threadHandle = CreateThread(NULL, 0, JobRunnerRoutine, &jobRunner->threadInput, CREATE_SUSPENDED, &jobRunner->threadID);
+	jobRunner->threadHandle = CreateThread(NULL, 0, JobRunnerRoutine, jobRunner, CREATE_SUSPENDED, &jobRunner->threadID);
 	assert(jobRunner->threadHandle != NULL);
 
 	queueData.m_Runners.push_back(jobRunner);
