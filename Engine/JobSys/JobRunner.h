@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include "Debugger.h"
-#include "./SharedJobQueue.h"
+#include "./JobQueue.h"
 
 namespace Engine
 {
@@ -22,14 +22,14 @@ namespace JobSystem
  */
 struct JobRunner
 {
-	SharedJobQueue* jobQueue;
+	JobQueue*		jobQueue;
 	HANDLE			threadHandle;
 	DWORD			threadID;
 #ifdef _DEBUG
 	std::string		threadName;
 #endif
 
-	JobRunner(SharedJobQueue& jobQueue) :
+	JobRunner(JobQueue& jobQueue) :
 		jobQueue(&jobQueue),
 		threadHandle(INVALID_HANDLE_VALUE),
 		threadID(-1)

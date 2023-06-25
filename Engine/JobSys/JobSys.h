@@ -4,15 +4,15 @@
 #include <processthreadsapi.h>
 #include "HashedString.h"
 #include "HashedString.cpp"
-#include "JobRunner.h"
-#include "SharedJobQueue.h"
+#include "./JobRunner.h"
+#include "./JobQueue.h"
 
 using namespace Engine::JobSystem;
 
 
 struct JobQueueData
 {
-	SharedJobQueue		m_SharedQueue;
+	JobQueue			m_SharedQueue;
 	vector<JobRunner*>	m_Runners;
 
 	JobQueueData(const std::string& i_QueueName) :

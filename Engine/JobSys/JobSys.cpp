@@ -44,6 +44,7 @@ HashedString CreateQueue(const std::string& i_Name, unsigned int i_numRunners)
 void AddRunner(JobQueueData& queueData)
 {	
 	JobRunner* jobRunner = new JobRunner(queueData.m_SharedQueue);
+
 #ifdef _DEBUG
 	size_t runners = queueData.m_Runners.size();
 	const size_t	sizeThreadName = 32;
@@ -51,9 +52,6 @@ void AddRunner(JobQueueData& queueData)
 	sprintf_s(ThreadName, sizeThreadName, "%s %d", queueData.m_SharedQueue.GetName().c_str(), int(runners + 1));
 	jobRunner->threadName = ThreadName;
 #endif
-
-
-
 
 	/* Create a thread to proceed job runner routine. 
 	 * NULL:				the thread handle cannot be inherited

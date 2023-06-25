@@ -151,7 +151,7 @@
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="JobSys\HashedString.cpp" />
     <ClCompile Include="JobSys\JobSys.cpp" />
-    <ClCompile Include="JobSys\SharedJobQueue.cpp" />
+    <ClCompile Include="JobSys\JobQueue.cpp" />
     <ClCompile Include="JobSys\Sync\Event.cpp" />
     <ClCompile Include="JSON\source\json_reader.cpp" />
     <ClCompile Include="JSON\source\json_value.cpp" />
@@ -175,7 +175,7 @@
     <ClInclude Include="JobSys\HashedString.h" />
     <ClInclude Include="JobSys\JobRunner.h" />
     <ClInclude Include="JobSys\JobSys.h" />
-    <ClInclude Include="JobSys\SharedJobQueue.h" />
+    <ClInclude Include="JobSys\JobQueue.h" />
     <ClInclude Include="JobSys\Sync\AtomicOperations.h" />
     <ClInclude Include="JobSys\Sync\Event.h" />
     <ClInclude Include="JobSys\Sync\Mutex.h" />

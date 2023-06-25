@@ -17,7 +17,7 @@ namespace JobSystem
 /* Forwared declaration */
 struct Job;
 class JobStatus;
-class SharedJobQueue;
+class JobQueue;
 
 
 /**
@@ -58,7 +58,7 @@ private:
 	uint32_t DecJobCount();
 
 public:
-	friend class SharedJobQueue;
+	friend class JobQueue;
 
 	JobStatus(unsigned int jobCount = 0);
 	~JobStatus() = default;
@@ -83,7 +83,7 @@ public:
  *		   available job in the queue and a get-job method is invoked, the thread owns 
  *		   the queue will sleep and wait until new jobs are added to the queue. 
  */
-class SharedJobQueue
+class JobQueue
 {
 private:
 	string						queueName;
@@ -94,13 +94,12 @@ private:
 	CONDITION_VARIABLE			queueNotEmpty;
 	mutable CRITICAL_SECTION	queueLock;
 
-
-	SharedJobQueue(const SharedJobQueue&) = delete;
-	SharedJobQueue& operator=(const SharedJobQueue&) = delete;
-
 public:
-	SharedJobQueue(const string& queueName);
-	//~SharedJobQueue() = default;
+	JobQueue(const string& queueName);
+	~JobQueue() = default;
+
+	JobQueue(const JobQueue&) = delete;
+	JobQueue& operator=(const JobQueue&) = delete;
 
 	bool Add(Job* job);
 

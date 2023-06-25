@@ -94,7 +94,7 @@
     <ClCompile Include="JobSys\JobSys.cpp">
       <Filter>Source Files\JobSys</Filter>
     </ClCompile>
-    <ClCompile Include="JobSys\SharedJobQueue.cpp">
+    <ClCompile Include="JobSys\JobQueue.cpp">
       <Filter>Source Files\JobSys</Filter>
     </ClCompile>
     <ClCompile Include="Collision\Collision.cpp">
@@ -183,7 +183,7 @@
     <ClInclude Include="JobSys\JobSys.h">
       <Filter>Source Files\JobSys</Filter>
     </ClInclude>
-    <ClInclude Include="JobSys\SharedJobQueue.h">
+    <ClInclude Include="JobSys\JobQueue.h">
       <Filter>Source Files\JobSys</Filter>
     </ClInclude>
     <ClInclude Include="Collision\Collision.h">
