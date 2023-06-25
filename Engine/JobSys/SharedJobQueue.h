@@ -100,7 +100,7 @@ private:
 
 public:
 	SharedJobQueue(const string& queueName);
-	~SharedJobQueue() = default;
+	//~SharedJobQueue() = default;
 
 	bool Add(Job* job);
 

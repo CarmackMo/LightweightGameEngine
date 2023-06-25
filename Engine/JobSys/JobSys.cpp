@@ -105,7 +105,7 @@ bool HasJobs(const HashedString& i_QueueName)
 
 void RequestShutdown()
 {
-	Engine::Debugger::DEBUG_PRINT("Job System: Shutting down.");
+	Engine::Debugger::DEBUG_PRINT("Job System: Shutting down. \n");
 
 	bShutdownRequested = true;
 
@@ -131,7 +131,7 @@ void RequestShutdown()
 		++iter;
 	}
 
-	Engine::Debugger::DEBUG_PRINT("Job System: Waiting for Queue runner threads to shut down.");
+	Engine::Debugger::DEBUG_PRINT("Job System: Waiting for Queue runner threads to shut down. \n");
 
 	DWORD result = WaitForMultipleObjects(static_cast<DWORD>(AllThreads.size()), &AllThreads[0], TRUE, INFINITE);
 	assert(result == WAIT_OBJECT_0);
@@ -227,7 +227,8 @@ void BasicSample()
 			{
 				PrintOnInterval("Wahoo!!", 500, 10);
 			},
-			&JobStatus
+			&JobStatus,
+			"Wahoo!"
 		);
 
 		JobStatus.WaitForZeroJobsLeft();
@@ -241,7 +242,7 @@ void BasicSample()
 		ProcessFile ProcessFileInstance("File.txt", std::bind(PrintFileContents, _1, _2), GetDefaultQueue(), &JobStatus);
 
 		// use std::bind to bind an instance of a class that has operator() () (a functor)
-		RunJob(GetDefaultQueue(), std::bind(ProcessFileInstance), &JobStatus);
+		RunJob(GetDefaultQueue(), std::bind(ProcessFileInstance), &JobStatus, "File.txt");
 
 		// wait for FinishEvent to be signaled
 		JobStatus.WaitForZeroJobsLeft();

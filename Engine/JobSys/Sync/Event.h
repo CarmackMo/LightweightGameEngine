@@ -6,7 +6,7 @@ namespace Engine
 
 /**
  *	@brief A abstract class. It serves as a API contract of its derived classes: 
- *	"ManualResetEvent" and "AutoResetEvent"
+ *		   "ManualResetEvent" and "AutoResetEvent"
  */
 class Event : public WaitableObject
 {

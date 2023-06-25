@@ -39,6 +39,27 @@ struct JobRunner
 };
 
 
+
+struct JobRunnerTest
+{
+	SharedJobQueue* jobQueue;
+	HANDLE			threadHandle;
+	DWORD			threadID;
+#ifdef _DEBUG
+	std::string		threadName;
+#endif
+
+	JobRunnerTest(SharedJobQueue& jobQueue) :
+		jobQueue(&jobQueue),
+		threadHandle(INVALID_HANDLE_VALUE),
+		threadID(-1)
+	{}
+};
+
+
+
+
+
 /*	@brief Execute the job runner routine, which involves continuously retrieving jobs from 
  *		   the shared job queue and executing them until the job queue is shut down. If there 
  *		   are no jobs in the queue, this function will wait until new jobs are added. 
@@ -52,7 +73,8 @@ inline DWORD WINAPI JobRunnerRoutine(void* threadInput)
 #if defined (_DEBUG)
 	assert(threadInput);
 	assert(input->jobQueue);
-	Debugger::DEBUG_PRINT("JobRunner \"%s\": Starting Queue \"%s\". \n", input->threadName.c_str(), input->jobQueue->GetName().c_str());
+	const char* threadName = input->threadName.c_str();
+	Debugger::DEBUG_PRINT("JobRunner \"%s\": Starting Queue \"%s\". \n", threadName, input->jobQueue->GetName().c_str());
 #endif
 
 	do
@@ -61,7 +83,8 @@ inline DWORD WINAPI JobRunnerRoutine(void* threadInput)
 		if (job)
 		{
 #if defined (_DEBUG)
-			Debugger::DEBUG_PRINT("JobRunner \"%s\": Starting Job \"%s\" on Processor %d. \n", input->threadName.c_str(), job->jobName.c_str(), GetCurrentProcessorNumber());
+			string jobName = job->jobName;
+			Debugger::DEBUG_PRINT("JobRunner \"%s\": Starting Job \"%s\" on Processor %d. \n", threadName, jobName.c_str(), GetCurrentProcessorNumber());
 #endif
 
 			input->jobQueue->StartingJob(job);
@@ -69,7 +92,7 @@ inline DWORD WINAPI JobRunnerRoutine(void* threadInput)
 			input->jobQueue->FinishedJob(job);
 			
 #if defined (_DEBUG)
-			Debugger::DEBUG_PRINT("JobRunner \"%s\": Finished Job \"%s\". \n", input->threadName.c_str(), job->jobName.c_str());
+			Debugger::DEBUG_PRINT("JobRunner \"%s\": Finished Job \"%s\". \n", threadName, jobName.c_str());
 #endif
 		}
 
@@ -78,7 +101,7 @@ inline DWORD WINAPI JobRunnerRoutine(void* threadInput)
 	} while (isStopped == false);
 
 #ifdef _DEBUG
-	Debugger::DEBUG_PRINT("JobRunner \"%s\": Shutting down. \n", input->threadName.c_str());
+	Debugger::DEBUG_PRINT("JobRunner \"%s\": Shutting down. \n", threadName);
 #endif
 	return 0;
 }
