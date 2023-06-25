@@ -63,6 +63,8 @@ void AddRunner(JobQueueData& queueData)
 	assert(jobRunner->threadHandle != NULL);
 
 	queueData.m_Runners.push_back(jobRunner);
+
+	/* Start the job runner thread. */
 	ResumeThread(jobRunner->threadHandle);
 }
 
