@@ -91,9 +91,6 @@
     <ClCompile Include="JobSys\HashedString.cpp">
       <Filter>Source Files\JobSys</Filter>
     </ClCompile>
-    <ClCompile Include="JobSys\JobRunner.cpp">
-      <Filter>Source Files\JobSys</Filter>
-    </ClCompile>
     <ClCompile Include="JobSys\JobSys.cpp">
       <Filter>Source Files\JobSys</Filter>
     </ClCompile>
