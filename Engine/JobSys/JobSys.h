@@ -13,7 +13,7 @@ using namespace Engine::JobSystem;
 struct JobQueueData
 {
 	SharedJobQueue		m_SharedQueue;
-	std::vector<JobRunner*>	m_Runners;
+	vector<JobRunner*>	m_Runners;
 
 	JobQueueData(const std::string& i_QueueName) :
 		m_SharedQueue(i_QueueName)

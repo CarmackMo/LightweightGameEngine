@@ -9,39 +9,19 @@ namespace JobSystem
 {
 
 /**
- *	@brief This struct serves as the input parameter this is going past into the thread
- *		   function when creating a thread to run a new job runner.
+ *	@brief This class serves as an elementary executer for a specified shared job queue in 
+ *		   the job system.
+ *		   
+ *		   Each JobRunner instance stores essential data related to the runner thread it 
+ *		   belongs to, including a handler (i.e. pointer) to the thread, the thread ID, and 
+ *		   a pointer to the job queue that the instance operates on. Note that each runner 
+ *		   thread can own only one JobRunner instance.
+ *
+ *		   This class also serves as the input parameter that is going past into the thread
+ *		   function when creating a new runner thread.
  */
-struct JobRunnerInput
-{
-	SharedJobQueue* jobQueue;
-#ifdef _DEBUG
-	std::string		threadName;
-#endif
-
-	JobRunnerInput(SharedJobQueue& jobQueue) :
-		jobQueue(&jobQueue)
-	{}
-};
-
-
 struct JobRunner
 {
-	JobRunnerInput	threadInput;
-	HANDLE			threadHandle;
-	DWORD			threadID;
-
-	JobRunner(SharedJobQueue& queue) :
-		threadInput(queue),
-		threadHandle(INVALID_HANDLE_VALUE),
-		threadID(-1)
-	{}
-};
-
-
-
-struct JobRunnerTest
-{
 	SharedJobQueue* jobQueue;
 	HANDLE			threadHandle;
 	DWORD			threadID;
@@ -49,15 +29,12 @@ struct JobRunnerTest
 	std::string		threadName;
 #endif
 
-	JobRunnerTest(SharedJobQueue& jobQueue) :
+	JobRunner(SharedJobQueue& jobQueue) :
 		jobQueue(&jobQueue),
 		threadHandle(INVALID_HANDLE_VALUE),
 		threadID(-1)
 	{}
 };
-
-
-
 
 
 /*	@brief Execute the job runner routine, which involves continuously retrieving jobs from 
@@ -67,9 +44,9 @@ struct JobRunnerTest
  *	@param "threadInput": the external data passed to this function using "CreateThread()". */
 inline DWORD WINAPI JobRunnerRoutine(void* threadInput)
 {
-	JobRunnerInput* input = reinterpret_cast<JobRunnerInput*>(threadInput);
+	JobRunner* input = reinterpret_cast<JobRunner*>(threadInput);
 	bool isStopped = false;
-	
+
 #if defined (_DEBUG)
 	assert(threadInput);
 	assert(input->jobQueue);
@@ -83,14 +60,14 @@ inline DWORD WINAPI JobRunnerRoutine(void* threadInput)
 		if (job)
 		{
 #if defined (_DEBUG)
-			string jobName = job->jobName;
+			std::string jobName = job->jobName;
 			Debugger::DEBUG_PRINT("JobRunner \"%s\": Starting Job \"%s\" on Processor %d. \n", threadName, jobName.c_str(), GetCurrentProcessorNumber());
 #endif
 
 			input->jobQueue->StartingJob(job);
 			job->action();
 			input->jobQueue->FinishedJob(job);
-			
+
 #if defined (_DEBUG)
 			Debugger::DEBUG_PRINT("JobRunner \"%s\": Finished Job \"%s\". \n", threadName, jobName.c_str());
 #endif
@@ -105,6 +82,9 @@ inline DWORD WINAPI JobRunnerRoutine(void* threadInput)
 #endif
 	return 0;
 }
+
+
+
 
 }//Namespace Engine
 }//Namespace JobSystem
