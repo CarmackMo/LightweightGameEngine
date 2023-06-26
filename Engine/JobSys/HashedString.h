@@ -6,7 +6,7 @@
 
 namespace Engine
 {
-namespace JobSystem
+namespace JobSys
 {
 
 /**

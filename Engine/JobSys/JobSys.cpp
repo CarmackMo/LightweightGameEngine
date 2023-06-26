@@ -17,7 +17,7 @@ HashedString JobSystem::CreateQueue(const string& queueName, unsigned int runner
 {
 	HashedString hashedName = HashedString(queueName.c_str());
 
-	if (jobQueueMap.find(hashedName) != jobQueueMap.end())
+	if (jobQueueMap.find(hashedName) == jobQueueMap.end())
 	{
 		JobQueueManager* manager = new JobQueueManager(queueName);
 		jobQueueMap.emplace(hashedName, manager);
@@ -65,11 +65,9 @@ void JobSystem::AddRunnerToQueue(JobQueueManager* manager)
 
 bool JobSystem::AddRunnerToQueue(const HashedString& queueName)
 {
-	if (jobQueueMap.find(queueName) != jobQueueMap.end())
+	JobQueueManager* manager = GetQueue(queueName);
+	if (manager != nullptr)
 	{
-		JobQueueManager* manager = jobQueueMap[queueName];
-		assert(manager != nullptr);
-
 		this->AddRunnerToQueue(manager);
 		return true;
 	}
@@ -80,17 +78,14 @@ bool JobSystem::AddRunnerToQueue(const HashedString& queueName)
 
 bool JobSystem::AddJobToQueue(const HashedString& queueName, function<void()> jobFunction, const string& jobName)
 {
-	if (jobQueueMap.find(queueName) != jobQueueMap.end())
+	JobQueueManager* manager = GetQueue(queueName);
+	if (manager != nullptr)
 	{
-		JobQueueManager* manager = jobQueueMap[queueName];
-		assert(manager != nullptr);
-
-		manager->jobQueue.Add(new Job(jobFunction, queueName, jobName, &(manager->jobStatus)));
-
 #if defined (_DEBUG)
 		Engine::Debugger::DEBUG_PRINT("Job System: Adding Job to Queue \"%s\". \n", manager->jobQueue.GetName().c_str());
 #endif
 
+		manager->jobQueue.Add(new Job(jobFunction, queueName, jobName, &(manager->jobStatus)));
 		return true;
 	}
 	else
@@ -100,11 +95,10 @@ bool JobSystem::AddJobToQueue(const HashedString& queueName, function<void()> jo
 
 bool JobSystem::IsQueueHasJobs(const HashedString& queueName)
 {
-	map<HashedString, JobQueueManager*>::iterator iter = jobQueueMap.find(queueName);
-	if (iter != jobQueueMap.end())
+	JobQueueManager* manager = GetQueue(queueName);
+	if (manager != nullptr)
 	{
-		if (iter->second != nullptr)
-			return iter->second->jobQueue.HasJobs();
+		return manager->jobQueue.HasJobs();
 	}
 
 	return false;
@@ -178,6 +172,15 @@ bool JobSystem::IsStopped()
 HashedString JobSystem::GetDefaultQueue()
 {
 	return HashedString("Default");
+}
+
+
+JobQueueManager* JobSystem::GetQueue(const HashedString& queueName)
+{
+	if (jobQueueMap.find(queueName) != jobQueueMap.end())
+		return jobQueueMap[queueName];
+	else
+		return nullptr;
 }
 
 #pragma endregion

@@ -2,7 +2,7 @@
 
 namespace Engine
 {
-namespace JobSystem
+namespace JobSys
 {
 
 inline HashedString::HashedString() :

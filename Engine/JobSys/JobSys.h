@@ -8,7 +8,8 @@
 #include "./JobQueue.h"
 
 using namespace std;
-using namespace Engine::JobSystem;
+using namespace Engine::JobSys;
+
 
 struct JobQueueManager
 {
@@ -59,10 +60,39 @@ public:
 	bool IsStopped();
 
 	HashedString GetDefaultQueue();
+
+	JobQueueManager* GetQueue(const HashedString& queueName);
 };
 
 
+inline void JobSystemUnitTest()
+{
+	JobSystem jobSystem;
+	jobSystem.Init();
 
+	for (int num = 0; num < 4; num++)
+	{
+		bool success = jobSystem.AddJobToQueue(
+			jobSystem.GetDefaultQueue(),
+			[num]() {
+				for (int i = 0; i < (6 + 4 * num); i++)
+				{
+					Engine::Debugger::DEBUG_PRINT("$ Wahoo! No.%d $ \n", num);
+					std::cout << "Wahoo! No." << num << "\n";
+					Sleep(500);
+				}
+			},
+			"WAHOO " + to_string(num)
+		);
+
+		assert(success == true);
+	}
+
+	jobSystem.GetQueue(jobSystem.GetDefaultQueue())->jobStatus.WaitForZeroJobsLeft();
+
+
+	jobSystem.RequestStop();
+}
 
 
 

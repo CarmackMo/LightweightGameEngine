@@ -5,7 +5,7 @@
 
 namespace Engine
 {
-namespace JobSystem
+namespace JobSys
 {
 
 /**
@@ -87,4 +87,4 @@ inline DWORD WINAPI JobRunnerRoutine(void* threadInput)
 
 
 }//Namespace Engine
-}//Namespace JobSystem
+}//Namespace JobSys

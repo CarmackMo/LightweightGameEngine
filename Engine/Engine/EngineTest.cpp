@@ -106,9 +106,10 @@ int WINAPI wWinMain(
 
 
     /* Unit Test for job system */
-    Init();
-    BasicSample();
-    RequestShutdown();
+    //Init();
+    //BasicSample();
+    //RequestShutdown();
+    JobSystemUnitTest();
     DEBUG_PRINT(" \n\n\n ############ \n Job system unit test successful \n ############ \n\n\n");
 
 

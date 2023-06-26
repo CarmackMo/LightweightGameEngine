@@ -12,7 +12,7 @@ using namespace std;
 
 namespace Engine
 {
-namespace JobSystem
+namespace JobSys
 {
 /* Forwared declaration */
 struct Job;
