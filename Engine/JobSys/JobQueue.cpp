@@ -56,7 +56,7 @@ JobQueue::JobQueue(const string& queueName) :
 }
 
 
-bool JobQueue::Add(struct Job* job)
+bool JobQueue::Add(Job* job)
 {
 	assert(job);
 	bool isAdded = false;

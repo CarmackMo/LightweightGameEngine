@@ -7,19 +7,61 @@
 #include "./JobRunner.h"
 #include "./JobQueue.h"
 
+using namespace std;
 using namespace Engine::JobSystem;
 
-
-struct JobQueueData
+struct JobQueueManager
 {
-	JobQueue			m_SharedQueue;
-	vector<JobRunner*>	m_Runners;
+	JobQueue			jobQueue;
+	JobStatus			jobStatus;
+	vector<JobRunner*>	jobRunnerList;
 
-	JobQueueData(const std::string& i_QueueName) :
-		m_SharedQueue(i_QueueName)
-	{
-	}
+	JobQueueManager(const string& queueName) : jobQueue(queueName)
+	{}
 };
+
+
+
+class JobSystem
+{
+private:
+	bool								stopRequested = false;
+	map<HashedString, JobQueueManager*> jobQueueMap;
+
+public:
+	JobSystem() = default;
+	~JobSystem() = default;
+
+	/* @brief Create a default job queue with the queue name of "Default" and 2 job runner. */
+	void Init();
+
+	/* @brief Create a new job queue with the given name and return the hashed job queue name.
+	 *		  The hashed name serves as a unique identifier for the new job queue. If a job 
+	 *		  queue with the same name already exists, return the hashed name of the existed 
+	 *		  job queue instead. */
+	HashedString CreateQueue(const string& queueName, unsigned int runnerNum);
+
+	/* @brief Add a job runner thread to the specified job queue. */
+	void AddRunnerToQueue(JobQueueManager* manager);
+
+	/* @brief Add a job runner thread to the specified job queue. Return true if the job queue
+	 *		  exists and the adding is successful. Otherwise, return false. */
+	bool AddRunnerToQueue(const HashedString& queueName);
+
+	/* @brief Register a job to the specified job queue. Returen true if the job queue exists   
+	 *		  and the adding is successful. Otherwise, return false. */
+	bool AddJobToQueue(const HashedString& queueName, function<void()> jobFunction, const string& jobName = string());
+
+	/* @brief Check if the specified job queue exists and has unfinished jobs. */
+	bool IsQueueHasJobs(const HashedString& queueName);
+
+	void RequestStop();
+	bool IsStopped();
+
+	HashedString GetDefaultQueue();
+};
+
+
 
 
 
@@ -28,9 +70,9 @@ struct JobQueueData
 
 void Init();
 
-void AddRunner(JobQueueData& i_QueueData);
+void AddRunnerToQueue(JobQueueManager& i_QueueData);
 
-void AddRunner(const HashedString& i_QueueName);
+bool AddRunnerToQueue(const HashedString& queueName);
 
 HashedString GetDefaultQueue();
 
@@ -38,7 +80,10 @@ inline const char* GetDefaultQueueName() noexcept;
 
 HashedString CreateQueue(const std::string& i_Name, unsigned int i_numRunners);
 
-void RunJob(const HashedString& i_QueueName, std::function<void()> i_JobFunction, JobStatus* i_pJobStatus = nullptr, const char* pJobName = nullptr);
+
+
+bool AddJobToQueue(const HashedString& queueName, function<void()> jobFunction, string jobName = string());
+//void RunJob(const HashedString& queueName, function<void()> jobFunction, JobStatus* jobStatus = nullptr, string jobName = string());
 bool HasJobs(const HashedString& i_QueueName);
 
 void RequestShutdown();
@@ -54,11 +99,10 @@ void ProcessFileContents(uint8_t* i_pFileContents, size_t i_sizeFileContents, st
 class ProcessFile
 {
 public:
-	ProcessFile(const char* i_pFilename, std::function<void(uint8_t*, size_t)> i_Processor, const HashedString i_QueueName = GetDefaultQueue(), JobStatus* i_pJobStatus = nullptr) :
+	ProcessFile(const char* i_pFilename, std::function<void(uint8_t*, size_t)> i_Processor, const HashedString i_QueueName = GetDefaultQueue()) :
 		m_pFilename(i_pFilename),
 		m_Processor(i_Processor),
-		m_QueueName(i_QueueName),
-		m_pJobStatus(i_pJobStatus)
+		m_QueueName(i_QueueName)
 	{
 		assert(m_pFilename);
 	}
@@ -79,15 +123,24 @@ public:
 					// this works around C++11 issue with capturing member variable by value
 					std::function<void(uint8_t*, size_t)> Processor = m_Processor;
 
-					RunJob(
+
+					AddJobToQueue(
 						m_QueueName,
-						[pFileContents, sizeFileContents, Processor]()
-					{
-						ProcessFileContents(pFileContents, sizeFileContents, Processor);
-					},
-						m_pJobStatus,
+						[pFileContents, sizeFileContents, Processor]() {
+						ProcessFileContents(pFileContents, sizeFileContents, Processor); },
 						"ProcessFileContents"
-						);
+					);
+
+
+					//RunJob(
+					//	m_QueueName,
+					//	[pFileContents, sizeFileContents, Processor]()
+					//	{
+					//		ProcessFileContents(pFileContents, sizeFileContents, Processor);
+					//	},
+					//	m_pJobStatus,
+					//	"ProcessFileContents"
+					//	);
 				}
 				else
 				{
@@ -135,7 +188,6 @@ private:
 	const char* m_pFilename;
 	std::function<void(uint8_t*, size_t)>  m_Processor;
 	HashedString m_QueueName;
-	JobStatus* m_pJobStatus;
 };
 
 
