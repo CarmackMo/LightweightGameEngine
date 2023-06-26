@@ -1,8 +1,4 @@
 #pragma once
-#include <cassert>
-#include <string.h>
-#include <stdlib.h>
-
 
 namespace Engine
 {
@@ -25,20 +21,20 @@ private:
 #endif
 
 public:
-	inline HashedString();
-	inline ~HashedString();
+	HashedString();
+	~HashedString();
 
-	inline HashedString(const char* str);
-	inline HashedString(const HashedString& other);
-	inline HashedString& operator=(const HashedString& other);
+	HashedString(const char* str);
+	HashedString(const HashedString& other);
+	HashedString& operator=(const HashedString& other);
 
-	inline unsigned int Get() const;
+	unsigned int Get() const;
 
-	inline bool operator==(const HashedString& other) const;
-	inline bool operator<(const HashedString& other) const;
+	bool operator==(const HashedString& other) const;
+	bool operator<(const HashedString& other) const;
 
 	/* @brief Calculate the hash value of the given string object using FNV hash algorithm. */
-	static inline unsigned int Hash(const char* str);
+	static unsigned int Hash(const char* str);
 
 };
 

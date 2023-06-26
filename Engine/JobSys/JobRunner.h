@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <cassert>
 #include "Debugger.h"
 #include "./JobQueue.h"
 

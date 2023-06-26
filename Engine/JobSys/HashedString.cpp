@@ -1,3 +1,6 @@
+#include <cassert>
+#include <string.h>
+#include <stdlib.h>
 #include "HashedString.h"
 
 namespace Engine
@@ -5,12 +8,12 @@ namespace Engine
 namespace JobSys
 {
 
-inline HashedString::HashedString() :
+HashedString::HashedString() :
 	hash(Hash(""))
 { }
 
 
-inline HashedString::HashedString(const char* str) :
+HashedString::HashedString(const char* str) :
 	hash(Hash(str))
 {
 #if defined(_DEBUG)
@@ -19,7 +22,7 @@ inline HashedString::HashedString(const char* str) :
 }
 
 
-inline HashedString::HashedString(const HashedString& other) :
+HashedString::HashedString(const HashedString& other) :
 	hash(other.hash)
 {
 #if defined(_DEBUG)
@@ -28,7 +31,7 @@ inline HashedString::HashedString(const HashedString& other) :
 }
 
 
-inline HashedString::~HashedString()
+HashedString::~HashedString()
 {
 #if defined(_DEBUG)
 	if (str)
@@ -37,7 +40,7 @@ inline HashedString::~HashedString()
 }
 
 
-inline HashedString& HashedString::operator=(const HashedString& other)
+HashedString& HashedString::operator=(const HashedString& other)
 {
 	this->hash = other.hash;
 
@@ -51,25 +54,25 @@ inline HashedString& HashedString::operator=(const HashedString& other)
 }
 
 
-inline unsigned int HashedString::Get(void) const
+unsigned int HashedString::Get(void) const
 {
 	return hash;
 }
 
 
-inline bool HashedString::operator==(const HashedString& other) const
+bool HashedString::operator==(const HashedString& other) const
 {
 	return this->hash == other.hash;
 }
 
 
-inline bool HashedString::operator<(const HashedString& other) const
+bool HashedString::operator<(const HashedString& other) const
 {
 	return this->hash < other.hash;
 }
 
 
-inline unsigned int HashedString::Hash(const char* str)
+unsigned int HashedString::Hash(const char* str)
 {
 	assert(str);
 

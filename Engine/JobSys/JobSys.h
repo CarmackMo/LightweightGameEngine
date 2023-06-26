@@ -1,13 +1,14 @@
 #pragma once
-#include "Dependency.h"
-
+#include <map>
+#include <iostream>
+#include <Windows.h>
 #include <processthreadsapi.h>
-#include "HashedString.h"
-#include "HashedString.cpp"
+#include "./HashedString.h"
 #include "./JobRunner.h"
 #include "./JobQueue.h"
 
 using namespace std;
+using namespace Engine;
 using namespace Engine::JobSys;
 
 
@@ -65,34 +66,123 @@ public:
 };
 
 
+#if defined (_DEBUG)
+#include "./Sync/Mutex.h"
+#include "./Sync/ScopeLock.h"
+
 inline void JobSystemUnitTest()
 {
 	JobSystem jobSystem;
 	jobSystem.Init();
 
-	for (int num = 0; num < 4; num++)
+	/* Test 1: Testing non-blocking tasks in job system. Testing ordinary job system operations. */
+	Engine::Debugger::DEBUG_PRINT("Starting Test 1");
 	{
-		bool success = jobSystem.AddJobToQueue(
-			jobSystem.GetDefaultQueue(),
-			[num]() {
-				for (int i = 0; i < (6 + 4 * num); i++)
-				{
-					Engine::Debugger::DEBUG_PRINT("$ Wahoo! No.%d $ \n", num);
-					std::cout << "Wahoo! No." << num << "\n";
-					Sleep(500);
-				}
-			},
-			"WAHOO " + to_string(num)
-		);
 
-		assert(success == true);
+		for (int num = 0; num < 4; num++)
+		{
+			bool success = jobSystem.AddJobToQueue(
+				jobSystem.GetDefaultQueue(),
+				[num]() {
+					for (int i = 0; i < (6 + 4 * num); i++)
+					{
+						Engine::Debugger::DEBUG_PRINT("$ Wahoo! No.%d $ \n", num);
+						std::cout << "Wahoo! No." << num << "\n";
+						Sleep(400);
+					}
+				},
+				"WAHOO " + to_string(num)
+			);
+
+			assert(success == true);
+		}
+
+		jobSystem.GetQueue(jobSystem.GetDefaultQueue())->jobStatus.WaitForZeroJobsLeft();
+		
 	}
 
-	jobSystem.GetQueue(jobSystem.GetDefaultQueue())->jobStatus.WaitForZeroJobsLeft();
 
+	/* Test 2: Test blocking tasks in job system. Testing components: Mutex, ScopLock, etc. */
+	Engine::Debugger::DEBUG_PRINT("\n\nStarting Test 2");
+	{
+		/* Prepare for testing data */
+		struct JobSysTester
+		{
+			string name;
+
+			JobSysTester(const string& name) : name(name)
+			{}
+		};
+
+		vector<JobSysTester*>* allTester = new vector<JobSysTester*>();
+		vector<JobSysTester*>* newTester = new vector<JobSysTester*>();
+		Engine::Mutex* mutex = new Mutex();
+		int testerCount = 0;
+
+		function<void()> adder = [mutex, newTester, &testerCount]() {
+			Engine::ScopeLock lock(mutex);
+
+			for (int i = 0; i < 7; i++)
+			{
+				Engine::Debugger::DEBUG_PRINT("Creating Obj %d \n", testerCount);
+				newTester->push_back(new JobSysTester("Obj " + to_string(testerCount)));
+				testerCount++;
+				Sleep(600);
+			}
+		};
+
+		function<void()> mover = [mutex, allTester, newTester]() {
+			Engine::ScopeLock lock(mutex);
+
+			if (!newTester->empty())
+			{
+				for (vector<JobSysTester*>::iterator iter = newTester->begin(); iter != newTester->end(); iter++)
+				{
+					//Engine::Debugger::DEBUG_PRINT("Moving Obj: %s \n", (*iter)->name.c_str());
+					Engine::Debugger::DEBUG_PRINT("Moving Obj \n");
+					allTester->push_back((*iter));
+					Sleep(100);
+				}
+
+				newTester->clear();
+			}
+		};
+
+		/* Proceed testing */
+		HashedString queuName = jobSystem.CreateQueue("TesterLoader", 2);
+		
+		for (int i = 0; i < 5; i++)
+		{
+			jobSystem.AddJobToQueue(
+				queuName,
+				adder,
+				"Add Tester, Batch: " + to_string(i)
+			);
+
+			jobSystem.AddJobToQueue(
+				queuName,
+				mover,
+				"Move Tester, Batch: " + to_string(i)
+			);
+		}
+
+		jobSystem.GetQueue("TesterLoader")->jobStatus.WaitForZeroJobsLeft();
+		
+		/* Clean up remaining data */ 
+		mover();
+		for (vector<JobSysTester*>::iterator iter = allTester->begin(); iter != allTester->end(); iter++)
+		{
+			delete (*iter);
+		}
+
+		delete allTester, newTester, mutex, testerCount;
+	}
 
 	jobSystem.RequestStop();
 }
+#endif
+
+
 
 
 

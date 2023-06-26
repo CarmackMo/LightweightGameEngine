@@ -1,3 +1,4 @@
+#include <cassert>
 #include "./JobQueue.h"
 
 namespace Engine
