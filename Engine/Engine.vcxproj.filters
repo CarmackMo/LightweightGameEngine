@@ -236,8 +236,5 @@
     <None Include="JSON\source\json_valueiterator.inl">
       <Filter>Source Files\JSON\source</Filter>
     </None>
-    <None Include="JobSys\JobSys.inl">
-      <Filter>Source Files\JobSys</Filter>
-    </None>
   </ItemGroup>
 </Project>

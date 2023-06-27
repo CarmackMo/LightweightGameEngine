@@ -96,6 +96,11 @@ int WINAPI wWinMain(
     DEBUG_PRINT(" \n\n\n ############ \n SmartPtr & WeakPtr unit test successful \n ############ \n\n\n");
 
 
+    /* Unit Test for job system */
+    JobSystemUnitTest();
+    DEBUG_PRINT(" \n\n\n ############ \n Job system unit test successful \n ############ \n\n\n");
+
+
     /* Unit Test for creating game object from Json file */ 
     engine.CreateGameObject("JsonTest.json");
     SmartPtr<GameObject> jsonObj = engine.gameObjectList[1];
@@ -103,14 +108,6 @@ int WINAPI wWinMain(
     DEBUG_PRINT("Game object name: %s \n", jsonObj->name.c_str());
     DEBUG_PRINT("Game object position: (%lf, %lf) \n", jsonObj->position[0], jsonObj->position[1]);
     DEBUG_PRINT(" \n\n\n ############ \n JSON reader unit test successful \n ############ \n\n\n");
-
-
-    /* Unit Test for job system */
-    //Init();
-    //BasicSample();
-    //RequestShutdown();
-    JobSystemUnitTest();
-    DEBUG_PRINT(" \n\n\n ############ \n Job system unit test successful \n ############ \n\n\n");
 
 
     /* Unit Test for collision detection */
