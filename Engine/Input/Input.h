@@ -1,15 +1,13 @@
 #pragma once
+#include <vector>
 #include <unordered_map>
 #include <windows.h>
-#include "Utility/Singleton.h"
+#include "./Utility/Singleton.h"
 
 namespace Engine
 {
 namespace Input
 {
-
-using namespace std;
-
 
 enum KeyCode
 {
@@ -124,8 +122,8 @@ private:
 	uint8_t VKeyStates[256]; /* 0 represents key is released, 1 represents key is pressed */
 	uint8_t VKeyChange[256]; /* 0 represents key does not have a state change, 1 represents key has a state change */
 
-	unordered_map<KeyCode, vector<void(*)(void)>> keyUpCallbacks;		/* Store function pointers */
-	unordered_map<KeyCode, vector<void(*)(void)>> keyDownCallbacks;
+	std::unordered_map<KeyCode, std::vector<void(*)(void)>> keyUpCallbacks;		/* Store function pointers */
+	std::unordered_map<KeyCode, std::vector<void(*)(void)>> keyDownCallbacks;
 
 	InputManager();
 	~InputManager();

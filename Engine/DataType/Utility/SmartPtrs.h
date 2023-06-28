@@ -6,9 +6,6 @@
 
 namespace Engine
 {
-
-using namespace std;
-
 /* Forwared declaration */
 class RefCountBase;
 template <class T> class RefCount;
@@ -46,17 +43,44 @@ public:
 	inline RefCountBase& operator= (const RefCountBase&) = delete;
 
 
-	inline void IncSmartRef();
+	inline void IncSmartRef()
+	{
+		smartCount++;
+	}
 
-	inline void IncWeakRef();
+	inline void IncWeakRef()
+	{
+		weakCount++;
+	}
 
-	inline void DecSmartRef();
+	inline void DecSmartRef()
+	{
+		smartCount--;
+		if (smartCount == 0)
+		{
+			Destroy();
+			DecWeakRef();
+		}
+	}
 
-	inline void DecWeakRef();
+	inline void DecWeakRef()
+	{
+		weakCount--;
+		if (weakCount == 0)
+		{
+			DeleteThis();
+		}
+	}
 
-	inline unsigned long GetSmartCount();
+	inline unsigned long GetSmartCount()
+	{
+		return smartCount;
+	}
 
-	inline unsigned long GetWeakCount();
+	inline unsigned long GetWeakCount()
+	{
+		return weakCount;
+	}
 };
 
 
@@ -65,14 +89,25 @@ class RefCount : public RefCountBase
 {
 private:
 	T* ptr;
-	function<void(T*)> deleter;
+	std::function<void(T*)> deleter;
 
-	void Destroy() override;
+	inline void Destroy() override
+	{
+		if (deleter != nullptr)
+			deleter(ptr);
+		else
+			delete ptr;
+	}
 
-	void DeleteThis() override;
+	inline void DeleteThis() override
+	{
+		delete this;
+	}
 
 public:
-	explicit RefCount(T* ptr, function<void(T*)> deleter = nullptr);
+	explicit RefCount(T* ptr, std::function<void(T*)> deleter = nullptr) :
+		RefCountBase(), ptr(ptr), deleter(deleter)
+	{}
 };
 
 
@@ -91,56 +126,122 @@ protected:
 	PtrBase() = default;
 	~PtrBase() = default;
 
-	void StandardConstruct(T* ptr, function<void(T*)> deleter = nullptr);
+	inline void StandardConstruct(T* ptr, std::function<void(T*)> deleter = nullptr)
+	{
+		this->ptr = ptr;
+		this->refCount = new RefCount<T>(ptr, deleter);
+	}
 
 	/* @brief Performs copy-construct for SmartPtr. Using shallow copy to data, since data is 
 	 *		  shared by SmartPtrs owning the same object. It is the responsibility of the users 
 	 *		  to ensure "U*" is implicitly convertible to "T*" */
 	template <class U>
-	void CopyConstruct(const SmartPtr<U>& other);
+	inline void CopyConstruct(const SmartPtr<U>& other)
+	{
+		other.IncSmartRef();
+		this->ptr = other.ptr;
+		this->refCount = other.refCount;
+	}
 
 	/* @brief Performs move-constructor for SmartPtr and WeakPtr. Using shallow copy to copy the
 	 *		  pointer itself. It is the responsibility of the users to ensure "U*" is implicitly 
 	 *		  convertible to "T*" */
 	template <class U>
-	void MoveConstruct(PtrBase<U>&& other);
+	inline void MoveConstruct(PtrBase<U>&& other)
+	{
+		this->ptr = other.ptr;
+		this->refCount = other.refCount;
+
+		other.ptr = nullptr;
+		other.refCount = nullptr;
+	}
 
 	/* @brief Performs aliasing-constructor for SmartPtr. It is the responsibility of the users 
 	 *		  to ensure "U*" is implicitly convertible to "T*" */
 	template <class U>
-	void AliasConstruct(const SmartPtr<U>& other, T* ptr);
+	inline void AliasConstruct(const SmartPtr<U>& other, T* ptr)
+	{
+		other.IncSmartRef();
+		this->ptr = ptr;
+		this->refCount = other.refCount;
+	}
 
 	/* @brief Performs aliasing-move-constructor for SmartPtr. It is the responsibility of the 
 	 *		  users to ensure "U*" is implicitly convertible to "T*" */
 	template <class U>
-	void AliasMoveConstruct(SmartPtr<U>&& other, T* ptr);
+	inline void AliasMoveConstruct(SmartPtr<U>&& other, T* ptr)
+	{
+		this->ptr = other.ptr;
+		this->refCount = other.refCount;
+
+		other.ptr = nullptr;
+		other.refCount = nullptr;
+	}
 
 	/* @brief Performs copy-construct for WeakPtr. Using shallow copy to data, since WeakPtr 
 	 *		  holds non-owning reference to share data that managed by SmartPtr. It is the 
 	 *		  responsibility of the users to ensure "U*" is implicitly convertible to "T*" */
 	template <class U>
-	void WeakConstruct(const PtrBase<U>& other);
+	inline void WeakConstruct(const PtrBase<U>& other)
+	{
+		other.IncWeakRef();
+		this->ptr = other.ptr;
+		this->refCount = other.refCount;
+	}
 
 	/* @brief: Performs copy-construct from WeakPtr to SmartPtr. If the given WeakPtr is empty 
 	 *		   or is already expired, return false. Return true if construct success. */
 	template <class U>
-	bool ConstructFromWeak(const WeakPtr<U>& other);
+	inline bool ConstructFromWeak(const WeakPtr<U>& other)
+	{
+		if (other.refCount != nullptr && other.IsExpired() != true)
+		{
+			other.IncSmartRef();
+			this->ptr = other.ptr;
+			this->refCount = other.refCount;
+			return true;
+		}
+		return false;
+	}
 
 
-	inline void IncSmartRef() const;
+	inline void IncSmartRef() const
+	{
+		if (refCount != nullptr)
+			refCount->IncSmartRef();
+	}
 
-	inline void DecSmartRef();
+	inline void DecSmartRef()
+	{
+		if (refCount != nullptr)
+			refCount->DecSmartRef();
+	}
 
-	inline void IncWeakRef() const;
+	inline void IncWeakRef() const
+	{
+		if (refCount != nullptr)
+			refCount->IncWeakRef();
+	}
 
-	inline void DecWeakRef();
+	inline void DecWeakRef()
+	{
+		if (refCount != nullptr)
+			refCount->DecWeakRef();
+	}
 
 
 	/* @brief Return the pointer of the managed object */
-	inline T* Get() const;
+	inline T* Get() const
+	{
+		return ptr;
+	}
 
 	/* @brief Swaps the managed objects. */
-	inline void SwapPtr(PtrBase<T>& other);
+	inline void SwapPtr(PtrBase<T>& other)
+	{
+		std::swap(this->ptr, other.ptr);
+		std::swap(this->refCount, other.refCount);
+	}
 
 
 public:
@@ -150,7 +251,10 @@ public:
 	PtrBase(const PtrBase<T>&) = delete;
 	PtrBase& operator= (const PtrBase<T>&) = delete;
 
-	inline unsigned long GetSmartCount() const;
+	inline unsigned long GetSmartCount() const
+	{
+		return refCount != nullptr ? refCount->GetSmartCount() : 0;
+	}
 
 };
 
@@ -173,84 +277,170 @@ public:
 	 *		  pointer is given, construct an empty SmartPtr instead. It is user's responsibility 
 	 *		  to make sure not to constructor a SmartPtr using this constructor if the target 
 	 *		  object is already owned by another smart pointer. */
-	inline SmartPtr();
-	inline SmartPtr(nullptr_t);
-	inline SmartPtr(T* ptr);
+	inline SmartPtr() 
+	{}
+	inline SmartPtr(nullptr_t) 
+	{}
+	inline SmartPtr(T* ptr)
+	{
+		this->StandardConstruct(ptr);
+	}
 	/* @brief Allow users to specify a customized deleter for data types (e.g. array type) that 
 	 *		  cannot be deleted using regular "delete" expression. */
-	inline SmartPtr(T* ptr, function<void(T*)> deleter);
+	inline SmartPtr(T* ptr, std::function<void(T*)> deleter)
+	{
+		this->StandardConstruct(ptr, deleter);
+	}
 
 	/* @brief Copy constructors. Constructs a SmartPtr which shares ownership of the object 
 	 *		  managed by "other". If "other" manages no object, this instance manages no object
 	 *		  either. Using shallow copy to copy pointers */
-	inline SmartPtr(const SmartPtr<T>& other);
+	inline SmartPtr(const SmartPtr<T>& other)
+	{
+		this->CopyConstruct(other);
+	}
+
 	template <class U> 
-	inline SmartPtr(const SmartPtr<U>& other);
+	inline SmartPtr(const SmartPtr<U>& other)
+	{
+		this->CopyConstruct(other);
+	}
 
 	/* @brief Aliasing constructor. Constructs a SmarPtr which shares ownership information with 
 	 *		  the initial value of "other", but holds an unrelated and unmanaged pointer "ptr". 
 	 *		  It is the responsibility of the users to make sure that "ptr" remains valid as long 
 	 *		  as this SmartPtr exists */
 	template <class U>
-	inline SmartPtr(const SmartPtr<U>& other, T* ptr);
+	inline SmartPtr(const SmartPtr<U>& other, T* ptr)
+	{
+		this->AliasConstruct(other, ptr);
+	}
 	template <class U>
-	inline SmartPtr(SmartPtr<U>&& other, T* ptr);
+	inline SmartPtr(SmartPtr<U>&& other, T* ptr)
+	{
+		this->AliasMoveConstruct(std::move(other), ptr);
+	}
 
 	/* @brief Move constructors. Move-constructs a SmartPtr from "other". After the construction, 
 	 *		  this instance contains a copy of the previous state of "other", "other" is empty and
 	 *		  its stored pointer is null.  */
-	inline SmartPtr(SmartPtr<T>&& other) noexcept;
+	inline SmartPtr(SmartPtr<T>&& other) noexcept
+	{
+		this->MoveConstruct(std::move(other));
+	}
 	template <class U>
-	inline SmartPtr(SmartPtr<U>&& other);
+	inline SmartPtr(SmartPtr<U>&& other)
+	{
+		this->MoveConstruct(std::move(other));
+	}
 
 	/* @brief Constructs a SmartPtr which shares ownership of the object managed by "other". It is
 	 *		  the responsibility of the users to ensure "other" is a valid WeakPtr (i.e. "other" is
 	 *		  neither empty nor the object it manages is deleted). */
 	template <class U>
-	inline SmartPtr(const WeakPtr<U>& other);
+	inline SmartPtr(const WeakPtr<U>& other)
+	{
+		bool res = this->ConstructFromWeak(other);
+		assert(res == true);
+	}
 
-	inline ~SmartPtr();
+	inline ~SmartPtr()
+	{
+		this->DecSmartRef();
+	}
 
 
 	/* @brief Checks whether the managed object is managed only by the current SmartPtr instance. */
-	inline bool IsUnique() const;
+	inline bool IsUnique() const
+	{
+		return this->GetSmartCount() == 1;
+	}
 
 	/* @brief Swaps the managed objects. */
-	inline void Swap(SmartPtr<T>& other);
+	inline void Swap(SmartPtr<T>& other)
+	{
+		this->SwapPtr(other);
+	}
 
 	/* @brief Release resource and convert this instance to empty SmartPtr object. */
-	inline void Reset();
+	inline void Reset()
+	{
+		SmartPtr().Swap(*this);
+	}
 	/* @brief Release original pointer and decrement pointer's reference count. And take ownership 
 	 *		  of the new pointer "ptr". */
 	template <class U>
-	inline void Reset(U* ptr);
+	inline void Reset(U* ptr)
+	{
+		SmartPtr(ptr).Swap(*this);
+	}
 	/* @brief Release original pointer and decrement pointer's reference count. And take ownership 
 	 *		  of the new pointer "ptr" with deleter */
 	template <class U>
-	inline void Reset(U* ptr, function<void(U*)> deleter);
+	inline void Reset(U* ptr, std::function<void(U*)> deleter)
+	{
+		SmartPtr(ptr, deleter).Swap(*this);
+	}
 
 
 	/* Access operators */
-	inline T* operator->();
-	inline T& operator*();
+	inline T* operator->()
+	{
+		return this->Get();
+	}
+	inline T& operator*()
+	{
+		return *(this->Get());
+	}
 
 	/* Comparision operators */
-	inline operator bool();
+	inline operator bool()
+	{
+		return this->Get() != nullptr;
+	}
 
-	inline bool operator==(std::nullptr_t);
-	inline bool operator!=(std::nullptr_t);
+	inline bool operator==(std::nullptr_t)
+	{
+		return this->Get() == nullptr;
+	}
+	inline bool operator!=(std::nullptr_t)
+	{
+		return this->Get() != nullptr;
+	}
 
-	inline bool operator==(const SmartPtr<T>& other);
-	inline bool operator!=(const SmartPtr<T>& other);
+	inline bool operator==(const SmartPtr<T>& other)
+	{
+		return this->Get() == other.Get();
+	}
+	inline bool operator!=(const SmartPtr<T>& other)
+	{
+		return this->Get() != other.Get();
+	}
 
 	/* Assignment operators */
-	inline SmartPtr<T>& operator=(const SmartPtr<T>& other);
+	inline SmartPtr<T>& operator=(const SmartPtr<T>& other)
+	{
+		SmartPtr(other).Swap(*this);
+		return *this;
+	}
 	template <class U>
-	inline SmartPtr<T>& operator=(const SmartPtr<U>& other);
+	inline SmartPtr<T>& operator=(const SmartPtr<U>& other)
+	{
+		SmartPtr(other).Swap(*this);
+		return *this;
+	}
 
-	inline SmartPtr<T>& operator=(SmartPtr<T>&& other) noexcept;
+	inline SmartPtr<T>& operator=(SmartPtr<T>&& other) noexcept
+	{
+		SmartPtr(std::move(other)).Swap(*this);
+		return *this;
+	}
 	template<class U>
-	inline SmartPtr<T>& operator=(SmartPtr<U>&& other);
+	inline SmartPtr<T>& operator=(SmartPtr<U>&& other)
+	{
+		SmartPtr(std::move(other)).Swap(*this);
+		return *this;
+	}
 };
 
 
@@ -271,58 +461,120 @@ public:
 	friend class SmartPtr<T>;
 
 	/* @brief Stantard constructor. Constructs an empty WeakPtr */
-	inline WeakPtr() {}
+	inline WeakPtr() 
+	{}
 
 	/* @brief Copy constructors. Constructs a WeakPtr which shares ownership of the object
 	 *		  managed by "other". If "other" manages no object, this instance manages no object
 	 *		  either. Using shallow copy to copy pointers. */
-	inline WeakPtr(const WeakPtr<T>& other);
+	inline WeakPtr(const WeakPtr<T>& other)
+	{
+		this->WeakConstruct(other);
+	}
 	template <class U> 
-	inline WeakPtr(const WeakPtr<U>& other);
+	inline WeakPtr(const WeakPtr<U>& other)
+	{
+		this->WeakConstruct(other);
+	}
 	template <class U>
-	inline WeakPtr(const SmartPtr<U>& other);
+	inline WeakPtr(const SmartPtr<U>& other)
+	{
+		this->WeakConstruct(other);
+	}
 
 	/* @brief Move constructors. Move-constructs a WeakPtr instance from "Other". After this, 
 	 *		  "other" is empty */
-	inline WeakPtr(WeakPtr<T>&& other) noexcept;
+	inline WeakPtr(WeakPtr<T>&& other) noexcept
+	{
+		this->MoveConstruct(std::move(other));
+	}
 	template <class U>
-	inline WeakPtr(WeakPtr<U>&& other);
+	inline WeakPtr(WeakPtr<U>&& other)
+	{
+		this->MoveConstruct(std::move(other));
+	}
 	
-	inline ~WeakPtr();
+	inline ~WeakPtr()
+	{
+		this->DecWeakRef();
+	}
 
 
 	/* @brief Checks whether the referenced object was already deleted */
-	inline bool IsExpired() const;
+	inline bool IsExpired() const
+	{
+		return this->GetSmartCount() == 0;
+	}
 
 	/* @brief Swaps the managed objects */
-	inline void Swap(WeakPtr<T>& other);
+	inline void Swap(WeakPtr<T>& other)
+	{
+		this->SwapPtr(other);
+	}
 
 	/* @brief Release resource, and convert this instance to empty WeakPtr object */
-	inline void Reset();
+	inline void Reset()
+	{
+		WeakPtr().Swap(*this);
+	}
 
 
 	/* Comparision operators */
-	inline operator bool();
+	inline operator bool()
+	{
+		return this->Get() != nullptr;
+	}
 
-	inline bool operator==(std::nullptr_t);
-	inline bool operator!=(std::nullptr_t);
+	inline bool operator==(std::nullptr_t)
+	{
+		return this->Get() == nullptr;
+	}
+	inline bool operator!=(std::nullptr_t)
+	{
+		return this->Get() != nullptr;
+	}
 
-	inline bool operator==(const WeakPtr<T>& other);
-	inline bool operator!=(const WeakPtr<T>& other);
+	inline bool operator==(const WeakPtr<T>& other)
+	{
+		return this->Get() == other.Get();
+	}
+	inline bool operator!=(const WeakPtr<T>& other)
+	{
+		return this->Get() != other.Get();
+	}
 
 	/* Assignment operators */
-	inline WeakPtr<T>& operator=(const WeakPtr<T>& other);
+	inline WeakPtr<T>& operator=(const WeakPtr<T>& other)
+	{
+		WeakPtr(other).Swap(*this);
+		return *this;
+	}
 	template <class U>
-	inline WeakPtr<T>& operator=(const WeakPtr<U>& other);
+	inline WeakPtr<T>& operator=(const WeakPtr<U>& other)
+	{
+		WeakPtr(other).Swap(*this);
+		return *this;
+	}
 
-	inline WeakPtr<T>& operator=(WeakPtr<T>&& other) noexcept;
+	inline WeakPtr<T>& operator=(WeakPtr<T>&& other) noexcept
+	{
+		WeakPtr(std::move(other)).Swap(*this);
+		return *this;
+	}
 	template <class U>
-	inline WeakPtr<T>& operator=(WeakPtr<U>&& other);
+	inline WeakPtr<T>& operator=(WeakPtr<U>&& other)
+	{
+		WeakPtr(std::move(other)).Swap(*this);
+		return *this;
+	}
 
 	template <class U>
-	inline WeakPtr<T>& operator=(const SmartPtr<U>& other);
+	inline WeakPtr<T>& operator=(const SmartPtr<U>& other)
+	{
+		WeakPtr(other).Swap(*this);
+		return *this;
+	}
 };
-
 
 
 
@@ -337,7 +589,6 @@ namespace Memory
 #include <stdlib.h>
 #include "Debugger.h"
 
-using namespace Engine::Debugger;
 
 inline void SmartPtrUnitTest()
 {
@@ -347,7 +598,7 @@ inline void SmartPtrUnitTest()
 	public:
 		int memVal = 1;
 		Member() {}
-		~Member() { DEBUG_PRINT("Destroying 'Member' class!\n"); }
+		~Member() { DEBUG_PRINT("Destroying 'Member' class! \n"); }
 	};
 
 	class Base
@@ -370,7 +621,7 @@ inline void SmartPtrUnitTest()
 
 	int* num = (int*)malloc(sizeof(int));
 	int* arr = (int*)malloc(sizeof(int) * 10);
-	function<void(int*)> deleter = [](int* p) { free(p); };
+	std::function<void(int*)> deleter = [](int* p) { free(p); };
 
 
 	/* Test for SmartPtr standard constructor and Reset() */

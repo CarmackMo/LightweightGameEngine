@@ -110,7 +110,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Engine\Input;$(SolutionDir)Engine\Debugger;$(SolutionDir)Engine\DataType;$(SolutionDir)Engine\Timer;$(SolutionDir)Engine\Engine;$(SolutionDir)Engine\Physics;$(SolutionDir)Engine\FileSys;$(SolutionDir)Engine\JobSys;$(SolutionDir)Engine\Sync;$(SolutionDir)Engine\Mathf;$(SolutionDir)Engine\Collision;$(SolutionDir)Engine\JSON\header;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Engine\Input;$(SolutionDir)Engine\DataType;$(SolutionDir)Engine\Timer;$(SolutionDir)Engine\Engine;$(SolutionDir)Engine\Physics;$(SolutionDir)Engine\FileSys;$(SolutionDir)Engine\JobSys;$(SolutionDir)Engine\Sync;$(SolutionDir)Engine\Mathf;$(SolutionDir)Engine\Collision;$(SolutionDir)Engine\JSON\header;$(SolutionDir)Engine\Debugger;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -140,12 +140,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Collision\Collision.cpp" />
-    <ClCompile Include="DataType\Engine\GameObject.cpp" />
+    <ClCompile Include="DataType\Engines\GameObject.cpp" />
     <ClCompile Include="DataType\Math\Matrix.cpp" />
     <ClCompile Include="DataType\Math\Vector.cpp" />
     <ClCompile Include="DataType\Utility\SmartPtrs.cpp" />
     <ClCompile Include="Debugger\Debugger.cpp" />
-    <ClCompile Include="Engine\Engine.cpp" />
+    <ClCompile Include="Engine\GameEngine.cpp" />
     <ClCompile Include="Engine\EngineTest.cpp" />
     <ClCompile Include="FileSys\FileSys.cpp" />
     <ClCompile Include="Input\Input.cpp" />
@@ -162,14 +162,14 @@
   <ItemGroup>
     <ClInclude Include="Collision\Collision.h" />
     <ClInclude Include="DataType\DataType.h" />
-    <ClInclude Include="DataType\Engine\GameObject.h" />
+    <ClInclude Include="DataType\Engines\GameObject.h" />
     <ClInclude Include="DataType\Math\Matrix.h" />
     <ClInclude Include="DataType\Math\Vector.h" />
     <ClInclude Include="DataType\Utility\SmartPtrs.h" />
     <ClInclude Include="DataType\Utility\Singleton.h" />
     <ClInclude Include="Debugger\Debugger.h" />
     <ClInclude Include="Engine\Dependency.h" />
-    <ClInclude Include="Engine\Engine.h" />
+    <ClInclude Include="Engine\GameEngine.h" />
     <ClInclude Include="FileSys\FileSys.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="JobSys\HashedString.h" />

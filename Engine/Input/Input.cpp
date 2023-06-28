@@ -7,6 +7,10 @@ namespace Engine
 namespace Input
 {
 
+using std::vector;
+using std::unordered_map;
+
+
 InputManager::InputManager() :
 	readBufferInitSize(128),
 	readBufferSize(0),
@@ -109,7 +113,7 @@ void InputManager::Service(HRAWINPUT input)
 			/* Special case */
 			else 
 			{
-				Engine::Debugger::DEBUG_PRINT("Key 0x%02x Flags: 0x%04x\n", rawInput->data.keyboard.VKey, rawInput->data.keyboard.Flags);
+				DEBUG_PRINT("Key 0x%02x Flags: 0x%04x\n", rawInput->data.keyboard.VKey, rawInput->data.keyboard.Flags);
 			}
 		}
 	}

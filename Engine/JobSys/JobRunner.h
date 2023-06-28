@@ -27,7 +27,7 @@ struct JobRunner
 	HANDLE			threadHandle;
 	DWORD			threadID;
 #ifdef _DEBUG
-	string		threadName;
+	std::string		threadName;
 #endif
 
 	JobRunner(JobQueue& jobQueue) :
@@ -52,7 +52,7 @@ inline DWORD WINAPI JobRunnerRoutine(void* threadInput)
 	assert(threadInput);
 	assert(input->jobQueue);
 	const char* threadName = input->threadName.c_str();
-	Debugger::DEBUG_PRINT("JobRunner \"%s\": Starting Queue \"%s\". \n", threadName, input->jobQueue->GetName().c_str());
+	DEBUG_PRINT("JobRunner \"%s\": Starting Queue \"%s\". \n", threadName, input->jobQueue->GetName().c_str());
 #endif
 
 	do
@@ -62,7 +62,7 @@ inline DWORD WINAPI JobRunnerRoutine(void* threadInput)
 		{
 #if defined (_DEBUG)
 			std::string jobName = job->jobName;
-			Debugger::DEBUG_PRINT("JobRunner \"%s\": Starting Job \"%s\" on Processor %d. \n", threadName, jobName.c_str(), GetCurrentProcessorNumber());
+			DEBUG_PRINT("JobRunner \"%s\": Starting Job \"%s\" on Processor %d. \n", threadName, jobName.c_str(), GetCurrentProcessorNumber());
 #endif
 
 			input->jobQueue->StartingJob(job);
@@ -70,7 +70,7 @@ inline DWORD WINAPI JobRunnerRoutine(void* threadInput)
 			input->jobQueue->FinishedJob(job);
 
 #if defined (_DEBUG)
-			Debugger::DEBUG_PRINT("JobRunner \"%s\": Finished Job \"%s\". \n", threadName, jobName.c_str());
+			DEBUG_PRINT("JobRunner \"%s\": Finished Job \"%s\". \n", threadName, jobName.c_str());
 #endif
 		}
 
@@ -79,7 +79,7 @@ inline DWORD WINAPI JobRunnerRoutine(void* threadInput)
 	} while (isStopped == false);
 
 #ifdef _DEBUG
-	Debugger::DEBUG_PRINT("JobRunner \"%s\": Shutting down. \n", threadName);
+	DEBUG_PRINT("JobRunner \"%s\": Shutting down. \n", threadName);
 #endif
 	return 0;
 }

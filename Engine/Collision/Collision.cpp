@@ -1,5 +1,9 @@
 #include "Collision.h"
 
+
+using namespace Engine;
+
+
 std::vector<Object*>	m_CollisionObjects;
 
 

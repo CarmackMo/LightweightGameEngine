@@ -6,6 +6,11 @@ namespace Engine
 namespace JobSys
 {
 
+using std::queue;
+using std::string;
+using std::function;
+
+
 #pragma region JobStatus
 
 JobStatus::JobStatus(unsigned int jobCount) :

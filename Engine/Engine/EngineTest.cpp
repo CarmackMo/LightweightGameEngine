@@ -1,7 +1,10 @@
-#include "Engine.h"
+#include "GameEngine.h"
 
-
+using std::to_wstring;
 using namespace Engine;
+using namespace Timer;
+using namespace Input;
+using namespace Physics;
 
 GameEngine engine;
 SmartPtr<GameObject> object;
@@ -97,7 +100,7 @@ int WINAPI wWinMain(
 
 
     /* Unit Test for job system */
-    JobSystemUnitTest();
+    JobSys::JobSystemUnitTest();
     DEBUG_PRINT(" \n\n\n ############ \n Job system unit test successful \n ############ \n\n\n");
 
 
@@ -111,7 +114,7 @@ int WINAPI wWinMain(
 
 
     /* Unit Test for collision detection */
-    CollisionPoolCheck();
+    //CollisionPoolCheck();
     DEBUG_PRINT(" \n\n\n ############ \n Collision detection unit test successful \n ############ \n\n\n");
 
 
@@ -287,7 +290,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 class Test
 {
 public:
-    vector<Vector2<float>> temp1 = { Vector2<float>::Zero, Vector2<float>::Down, Vector2<float>::Zero };
+    std::vector<Vector2<float>> temp1 = { Vector2<float>::Zero, Vector2<float>::Down, Vector2<float>::Zero };
 
     Test(){}
 

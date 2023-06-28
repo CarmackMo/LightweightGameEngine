@@ -1,6 +1,6 @@
 #pragma once
-#include <string>
 #include <queue>
+#include <string>
 #include <functional>
 
 #include "./HashedString.h"
@@ -8,8 +8,6 @@
 #include "./Sync/AtomicOperations.h"
 #include "./Sync/WaitableObject.h"
 
-
-using namespace std;
 
 namespace Engine
 {
@@ -28,12 +26,12 @@ class JobQueue;
  */
 struct Job
 {
-	function<void()>	action;
-	HashedString		queueName;
-	string				jobName;
-	JobStatus*			jobStatus;
+	std::function<void()>	action;
+	HashedString			queueName;
+	std::string				jobName;
+	JobStatus*				jobStatus;
 
-	Job(function<void()> function, const HashedString& queueName, const string& jobName, JobStatus* jobStatus = nullptr) :
+	Job(std::function<void()> function, const HashedString& queueName, const std::string& jobName, JobStatus* jobStatus = nullptr) :
 		action(function),
 		queueName(queueName),
 		jobName(jobName),
@@ -88,8 +86,8 @@ public:
 class JobQueue
 {
 private:
-	string						queueName;
-	queue<Job*>					jobQueue;
+	std::string					queueName;
+	std::queue<Job*>			jobQueue;
 	uint32_t					jobsRunning;
 	bool						stopRequested;
 
@@ -97,7 +95,7 @@ private:
 	mutable CRITICAL_SECTION	queueLock;
 
 public:
-	JobQueue(const string& queueName);
+	JobQueue(const std::string& queueName);
 	~JobQueue() = default;
 
 	JobQueue(const JobQueue&) = delete;
@@ -117,7 +115,7 @@ public:
 	bool IsStopped() const;
 	bool HasJobs() const;
 
-	string GetName() const;
+	std::string GetName() const;
 };
 
 }//Namespace Engine

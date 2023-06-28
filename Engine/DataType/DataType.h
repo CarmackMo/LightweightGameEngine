@@ -4,17 +4,15 @@
 *	include this header file to your code									 *									
 *****************************************************************************/
 #pragma once
-#include "Dependency.h"
-
-#include "./Engine/GameObject.h"
-#include "./Engine/GameObject.cpp"
-
-#include "./Math/Vector.h"
-#include "./Math/Vector.cpp"
-#include "./Math/Matrix.h"
-#include "./Math/Matrix.cpp"
-
-#include "./Utility/SmartPtrs.h"
-#include "./Utility/SmartPtrs.cpp"
-#include "./Utility/Singleton.h"
+//#include "./Engines/GameObject.h"
+////#include "./Engines/GameObject.cpp"
+//
+//#include "./Math/Vector.h"
+////#include "./Math/Vector.cpp"
+//#include "./Math/Matrix.h"
+////#include "./Math/Matrix.cpp"
+//
+//#include "./Utility/SmartPtrs.h"
+////#include "./Utility/SmartPtrs.cpp"
+//#include "./Utility/Singleton.h"
 

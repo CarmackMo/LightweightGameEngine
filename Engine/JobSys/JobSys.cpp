@@ -1,12 +1,16 @@
 #include "JobSys.h"
 
 
-//namespace Engine
-//{
+namespace Engine
+{
+	using std::string;
+	using std::function;
+	using std::vector;
+	using std::map;
+	using namespace JobSys;
 
 
-
-#pragma region JobSystem
+//#pragma region JobSystem
 
 void JobSystem::Init()
 {
@@ -184,7 +188,7 @@ JobQueueManager* JobSystem::GetQueue(const HashedString& queueName)
 		return nullptr;
 }
 
-#pragma endregion
+//#pragma endregion
 
 
-//}//Namespace Engine
+}//Namespace Engine

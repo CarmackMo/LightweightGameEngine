@@ -44,9 +44,6 @@
     <Filter Include="Source Files\DataType\Math">
       <UniqueIdentifier>{68d6c5f8-2a46-4382-82a4-349d499d7322}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\DataType\Engine">
-      <UniqueIdentifier>{e775612d-c2d9-427b-8ffd-74073e101489}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\DataType\Utility">
       <UniqueIdentifier>{2e49cf5c-bbf1-4db7-8394-8cf26c30b76a}</UniqueIdentifier>
     </Filter>
@@ -56,6 +53,9 @@
     <Filter Include="Source Files\JobSys\Sync">
       <UniqueIdentifier>{78f34a1a-34ec-4b64-8149-b4b514698523}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\DataType\Engines">
+      <UniqueIdentifier>{e775612d-c2d9-427b-8ffd-74073e101489}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Physics\Physics.cpp">
@@ -64,7 +64,7 @@
     <ClCompile Include="Timer\Timer.cpp">
       <Filter>Source Files\Timer</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Engine.cpp">
+    <ClCompile Include="Engine\GameEngine.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
     <ClCompile Include="Engine\EngineTest.cpp">
@@ -106,14 +106,14 @@
     <ClCompile Include="DataType\Math\Vector.cpp">
       <Filter>Source Files\DataType\Math</Filter>
     </ClCompile>
-    <ClCompile Include="DataType\Engine\GameObject.cpp">
-      <Filter>Source Files\DataType\Engine</Filter>
-    </ClCompile>
     <ClCompile Include="DataType\Utility\SmartPtrs.cpp">
       <Filter>Source Files\DataType\Utility</Filter>
     </ClCompile>
     <ClCompile Include="JobSys\Sync\Event.cpp">
       <Filter>Source Files\JobSys\Sync</Filter>
+    </ClCompile>
+    <ClCompile Include="DataType\Engines\GameObject.cpp">
+      <Filter>Source Files\DataType\Engines</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -126,7 +126,7 @@
     <ClInclude Include="Timer\Timer.h">
       <Filter>Source Files\Timer</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Engine.h">
+    <ClInclude Include="Engine\GameEngine.h">
       <Filter>Source Files\Engine</Filter>
     </ClInclude>
     <ClInclude Include="Input\Input.h">
@@ -195,9 +195,6 @@
     <ClInclude Include="DataType\Math\Vector.h">
       <Filter>Source Files\DataType\Math</Filter>
     </ClInclude>
-    <ClInclude Include="DataType\Engine\GameObject.h">
-      <Filter>Source Files\DataType\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="DataType\Utility\SmartPtrs.h">
       <Filter>Source Files\DataType\Utility</Filter>
     </ClInclude>
@@ -221,6 +218,9 @@
     </ClInclude>
     <ClInclude Include="JobSys\Sync\Mutex.h">
       <Filter>Source Files\JobSys\Sync</Filter>
+    </ClInclude>
+    <ClInclude Include="DataType\Engines\GameObject.h">
+      <Filter>Source Files\DataType\Engines</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

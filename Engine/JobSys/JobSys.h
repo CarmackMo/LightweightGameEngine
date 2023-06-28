@@ -6,26 +6,20 @@
 #include "./HashedString.h"
 #include "./JobRunner.h"
 #include "./JobQueue.h"
-
-
-using namespace Engine::JobSys;
-using namespace Engine::Debugger;
-
-//namespace Engine
-//{
-//using namespace JobSys;
-//using namespace Debugger;
+#include "Debugger.h"
 
 
 
+namespace Engine
+{
 
 struct JobQueueManager
 {
-	JobQueue			jobQueue;
-	JobStatus			jobStatus;
-	vector<JobRunner*>	jobRunnerList;
+	JobSys::JobQueue				jobQueue;
+	JobSys::JobStatus				jobStatus;
+	std::vector<JobSys::JobRunner*>	jobRunnerList;
 
-	JobQueueManager(const string& queueName) : jobQueue(queueName)
+	JobQueueManager(const std::string& queueName) : jobQueue(queueName)
 	{}
 };
 
@@ -34,8 +28,8 @@ struct JobQueueManager
 class JobSystem
 {
 private:
-	bool								stopRequested = false;
-	map<HashedString, JobQueueManager*> jobQueueMap;
+	bool												stopRequested = false;
+	std::map<JobSys::HashedString, JobQueueManager*>	jobQueueMap;
 
 public:
 	JobSystem() = default;
@@ -48,32 +42,38 @@ public:
 	 *		  The hashed name serves as a unique identifier for the new job queue. If a job 
 	 *		  queue with the same name already exists, return the hashed name of the existed 
 	 *		  job queue instead. */
-	HashedString CreateQueue(const string& queueName, unsigned int runnerNum);
+	JobSys::HashedString CreateQueue(const std::string& queueName, unsigned int runnerNum);
 
 	/* @brief Add a job runner thread to the specified job queue. */
 	void AddRunnerToQueue(JobQueueManager* manager);
 
 	/* @brief Add a job runner thread to the specified job queue. Return true if the job queue
 	 *		  exists and the adding is successful. Otherwise, return false. */
-	bool AddRunnerToQueue(const HashedString& queueName);
+	bool AddRunnerToQueue(const JobSys::HashedString& queueName);
 
 	/* @brief Register a job to the specified job queue. Returen true if the job queue exists   
 	 *		  and the adding is successful. Otherwise, return false. */
-	bool AddJobToQueue(const HashedString& queueName, function<void()> jobFunction, const string& jobName = string());
+	bool AddJobToQueue(const JobSys::HashedString& queueName, std::function<void()> jobFunction, const std::string& jobName = std::string());
 
 	/* @brief Check if the specified job queue exists and has unfinished jobs. */
-	bool IsQueueHasJobs(const HashedString& queueName);
+	bool IsQueueHasJobs(const JobSys::HashedString& queueName);
 
 	void RequestStop();
 	bool IsStopped();
 
-	HashedString GetDefaultQueue();
+	JobSys::HashedString GetDefaultQueue();
 
-	JobQueueManager* GetQueue(const HashedString& queueName);
+	JobQueueManager* GetQueue(const JobSys::HashedString& queueName);
 };
 
 
+
+
+
 /********************************* Unit tests **************************************/
+
+namespace JobSys
+{
 
 #if defined (_DEBUG)
 #include "./Sync/Mutex.h"
@@ -100,7 +100,7 @@ inline void JobSystemUnitTest()
 						Sleep(400);
 					}
 				},
-				"WAHOO " + to_string(num)
+				"WAHOO " + std::to_string(num)
 			);
 
 			assert(success == true);
@@ -117,35 +117,35 @@ inline void JobSystemUnitTest()
 		/* Prepare for testing data */
 		struct JobSysTester
 		{
-			string name;
+			std::string name;
 
-			JobSysTester(const string& name) : name(name)
+			JobSysTester(const std::string& name) : name(name)
 			{}
 		};
 
-		vector<JobSysTester*>* allTester = new vector<JobSysTester*>();
-		vector<JobSysTester*>* newTester = new vector<JobSysTester*>();
+		std::vector<JobSysTester*>* allTester = new std::vector<JobSysTester*>();
+		std::vector<JobSysTester*>* newTester = new std::vector<JobSysTester*>();
 		Engine::Mutex* mutex = new Engine::Mutex();
 		int testerCount = 0;
 
-		function<void()> adder = [mutex, newTester, &testerCount]() {
+		std::function<void()> adder = [mutex, newTester, &testerCount]() {
 			Engine::ScopeLock lock(mutex);
 
 			for (int i = 0; i < 7; i++)
 			{
 				DEBUG_PRINT("Creating Obj %d \n", testerCount);
-				newTester->push_back(new JobSysTester("Obj " + to_string(testerCount)));
+				newTester->push_back(new JobSysTester("Obj " + std::to_string(testerCount)));
 				testerCount++;
 				Sleep(600);
 			}
 		};
 
-		function<void()> mover = [mutex, allTester, newTester]() {
+		std::function<void()> mover = [mutex, allTester, newTester]() {
 			Engine::ScopeLock lock(mutex);
 
 			if (!newTester->empty())
 			{
-				for (vector<JobSysTester*>::iterator iter = newTester->begin(); iter != newTester->end(); iter++)
+				for (std::vector<JobSysTester*>::iterator iter = newTester->begin(); iter != newTester->end(); iter++)
 				{
 					//Engine::Debugger::DEBUG_PRINT("Moving Obj: %s \n", (*iter)->name.c_str());
 					DEBUG_PRINT("Moving Obj \n");
@@ -158,20 +158,20 @@ inline void JobSystemUnitTest()
 		};
 
 		/* Proceed testing */
-		HashedString queuName = jobSystem.CreateQueue("TesterLoader", 2);
+		JobSys::HashedString queuName = jobSystem.CreateQueue("TesterLoader", 2);
 		
 		for (int i = 0; i < 5; i++)
 		{
 			jobSystem.AddJobToQueue(
 				queuName,
 				adder,
-				"Add Tester, Batch: " + to_string(i)
+				"Add Tester, Batch: " + std::to_string(i)
 			);
 
 			jobSystem.AddJobToQueue(
 				queuName,
 				mover,
-				"Move Tester, Batch: " + to_string(i)
+				"Move Tester, Batch: " + std::to_string(i)
 			);
 		}
 
@@ -179,7 +179,7 @@ inline void JobSystemUnitTest()
 		
 		/* Clean up remaining data */ 
 		mover();
-		for (vector<JobSysTester*>::iterator iter = allTester->begin(); iter != allTester->end(); iter++)
+		for (std::vector<JobSysTester*>::iterator iter = allTester->begin(); iter != allTester->end(); iter++)
 		{
 			delete (*iter);
 		}
@@ -192,10 +192,11 @@ inline void JobSystemUnitTest()
 
 #endif
 
+}
 
 
 
-//}//Namespace Engine
+}//Namespace Engine
 
 
 

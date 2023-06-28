@@ -1,10 +1,7 @@
 #pragma once
-#include "Dependency.h"
 #include "Timer.h"
-#include "DataType.h"
-
-using namespace std;
-using namespace Engine::Timer;
+#include "Engines/GameObject.h"
+#include "Utility/SmartPtrs.h"
 
 
 namespace Engine
@@ -16,32 +13,62 @@ class PhysicObject
 {
 public:
 	WeakPtr<GameObject> object;
-	double mass;
-	Vector2<double> velocity;
-	Vector2<double> force;
+	double				mass;
+	Vector2<double>		velocity;
+	Vector2<double>		force;
 
-	inline PhysicObject();
-	inline PhysicObject(const PhysicObject& other);
+	inline PhysicObject() :
+		object(),
+		mass(0.0),
+		velocity(Vector2<double>::Zero),
+		force(Vector2<double>::Zero)
+	{ }
+	inline PhysicObject(const PhysicObject& other) :
+		object(other.object),
+		mass(other.mass),
+		velocity(other.velocity),
+		force(other.force)
+	{ }
 	inline PhysicObject(const WeakPtr<GameObject>& object, 
 						double mass = 0.0, 
 						const Vector2<double>& velocity = Vector2<double>::Zero,
-						const Vector2<double>& force = Vector2<double>::Zero);
-	inline ~PhysicObject();
+						const Vector2<double>& force = Vector2<double>::Zero) :
+		object(object),
+		mass(mass),
+		velocity(velocity),
+		force(force)
+	{ }
+	
+	inline ~PhysicObject() {}
 
-	inline PhysicObject& operator=(const PhysicObject& other);
+	inline PhysicObject& operator=(const PhysicObject& other)
+	{
+		this->object = other.object;
+		this->mass = other.mass;
+		this->velocity = other.velocity;
+		this->force = other.force;
+		return *this;
+	}
 };
 
 
 class Physic : public Singleton<Physic>
 {
 private:
-	inline Physic();
-	inline ~Physic();
+	inline Physic() = default;
+	
+	inline ~Physic()
+	{
+		for (PhysicObject* obj : physicObjList)
+		{
+			delete obj;
+		}
+	}
 
 public:
 	friend class Singleton<Physic>;
 
-	vector<PhysicObject*> physicObjList;
+	std::vector<PhysicObject*> physicObjList;
 
 	/**
 	 * @brief Update the physical information for all regiseted gameobjects (e.g. force, speed...)
@@ -71,14 +98,15 @@ public:
 			const SmartPtr<GameObject>& object,
 			float mass = 0.0,
 			const Vector2<double>& velocity = Vector2<double>::Zero,
-			const Vector2<double>& force = Vector2<double>::Zero);
+			const Vector2<double>& force = Vector2<double>::Zero)
+	{
+		PhysicObject* obj = new PhysicObject(WeakPtr<GameObject>(object), mass, velocity, force);
+		physicObjList.push_back(obj);
+	}
 
 
 	//void RemovePhysicObj(WeakPtr<GameObject> object);
 };
-
-
-#include "Physics.inl"
 
 }
 }
