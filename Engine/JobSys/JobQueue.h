@@ -8,12 +8,14 @@
 #include "./Sync/AtomicOperations.h"
 #include "./Sync/WaitableObject.h"
 
+
 using namespace std;
 
 namespace Engine
 {
 namespace JobSys
 {
+
 /* Forwared declaration */
 struct Job;
 class JobStatus;

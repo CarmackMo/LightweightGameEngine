@@ -1,6 +1,10 @@
 #include "JobSys.h"
 
 
+//namespace Engine
+//{
+
+
 
 #pragma region JobSystem
 
@@ -45,11 +49,11 @@ void JobSystem::AddRunnerToQueue(JobQueueManager* manager)
 #endif
 
 	/* Create a thread to proceed job runner routine.
-	 * NULL:				the thread handle cannot be inherited
-	 * 0:					the initial size of the stack, in bytes, is zero. The new thread uses the default size for the executable.
-	 * JobRunnerRoutine:	the function to be executed by the thread. Also represents the starting address of the thread.
-	 * jobRunner:			A pointer to a variable to be passed to the thread.
-	 * CREATE_SUSPENDED:	the thread is created in a suspended state, and does not run until user wake it. */
+		* NULL:				the thread handle cannot be inherited
+		* 0:					the initial size of the stack, in bytes, is zero. The new thread uses the default size for the executable.
+		* JobRunnerRoutine:	the function to be executed by the thread. Also represents the starting address of the thread.
+		* jobRunner:			A pointer to a variable to be passed to the thread.
+		* CREATE_SUSPENDED:	the thread is created in a suspended state, and does not run until user wake it. */
 	jobRunner->threadHandle = CreateThread(NULL, 0, JobRunnerRoutine, jobRunner, CREATE_SUSPENDED, &jobRunner->threadID);
 	assert(jobRunner->threadHandle != NULL);
 
@@ -113,8 +117,8 @@ void JobSystem::RequestStop()
 	vector<JobRunner*> allRunners;
 	vector<JobQueueManager*> allManagers;
 
-	/* Request all job queues to stop. Record all JobRunner objects, JobQueueManager objects, and 
-	 * job runner threads for later termination. */
+	/* Request all job queues to stop. Record all JobRunner objects, JobQueueManager objects, and
+		* job runner threads for later termination. */
 	map<HashedString, JobQueueManager*>::iterator iter = jobQueueMap.begin();
 	while (iter != jobQueueMap.end())
 	{
@@ -183,3 +187,4 @@ JobQueueManager* JobSystem::GetQueue(const HashedString& queueName)
 #pragma endregion
 
 
+//}//Namespace Engine

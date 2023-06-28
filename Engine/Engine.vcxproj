@@ -197,7 +197,6 @@
     <ClInclude Include="Timer\Timer.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Input\Input.inl" />
     <None Include="JSON\source\json_valueiterator.inl" />
     <None Include="Physics\Physics.inl" />
     <None Include="Timer\Timer.inl" />

@@ -1,6 +1,7 @@
 #pragma once
-#include "Dependency.h"
+#include <fstream>
 #include "json/json.h"
+#include "Debugger.h"
 
 using namespace std;
 

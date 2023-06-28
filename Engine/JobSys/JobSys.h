@@ -8,9 +8,16 @@
 #include "./JobQueue.h"
 
 
-using namespace Engine;
-using namespace JobSys;
-using namespace Debugger;
+using namespace Engine::JobSys;
+using namespace Engine::Debugger;
+
+//namespace Engine
+//{
+//using namespace JobSys;
+//using namespace Debugger;
+
+
+
 
 struct JobQueueManager
 {

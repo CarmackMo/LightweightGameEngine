@@ -230,9 +230,6 @@
     <None Include="Timer\Timer.inl">
       <Filter>Source Files\Timer</Filter>
     </None>
-    <None Include="Input\Input.inl">
-      <Filter>Source Files\Input</Filter>
-    </None>
     <None Include="JSON\source\json_valueiterator.inl">
       <Filter>Source Files\JSON\source</Filter>
     </None>

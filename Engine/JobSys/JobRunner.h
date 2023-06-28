@@ -27,7 +27,7 @@ struct JobRunner
 	HANDLE			threadHandle;
 	DWORD			threadID;
 #ifdef _DEBUG
-	std::string		threadName;
+	string		threadName;
 #endif
 
 	JobRunner(JobQueue& jobQueue) :

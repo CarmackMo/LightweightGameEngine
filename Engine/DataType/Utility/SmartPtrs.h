@@ -3,10 +3,12 @@
 #include <utility>
 #include <cassert>
 
-using namespace std;
 
 namespace Engine
 {
+
+using namespace std;
+
 /* Forwared declaration */
 class RefCountBase;
 template <class T> class RefCount;

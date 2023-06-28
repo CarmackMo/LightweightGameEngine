@@ -1,11 +1,12 @@
 #pragma once
-#include "Dependency.h"
 #include "DataType.h"
 #include "Mathf.h"
 
-using namespace Engine;
+//using namespace Engine;
+
 
 #define M_PI       3.14159265358979323846
+
 
 
 

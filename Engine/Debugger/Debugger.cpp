@@ -2,7 +2,10 @@
 #include <stdio.h>
 #include "Debugger.h"
 
-using namespace Engine::Debugger;
+namespace Engine
+{
+namespace Debugger
+{
 
 template <typename T>
 void DebugManager::Print(const char* const text, T value)
@@ -38,3 +41,6 @@ void DebugManager::ConsolePrint(const char* i_pFmt, const char* i_pFile, unsigne
 
 	OutputDebugStringA(strOutput);
 }
+
+}//Namespace Debugger
+}//Namespace Engine

@@ -1,11 +1,15 @@
 #pragma once
-#include "Dependency.h"
-#include "DataType.h"
+#include <unordered_map>
+#include <windows.h>
+#include "Utility/Singleton.h"
 
 namespace Engine
 {
 namespace Input
 {
+
+using namespace std;
+
 
 enum KeyCode
 {
@@ -123,48 +127,62 @@ private:
 	unordered_map<KeyCode, vector<void(*)(void)>> keyUpCallbacks;		/* Store function pointers */
 	unordered_map<KeyCode, vector<void(*)(void)>> keyDownCallbacks;
 
-	inline InputManager();
-	inline ~InputManager();
+	InputManager();
+	~InputManager();
 
 public:
 	friend class Singleton<InputManager>;
 
-	inline void Update();
-	inline void ResizeReadBuffer(size_t bytes);
 	void Initialize();
 	void Service(HRAWINPUT input);
+
+	/* @brief Reset the change state of all VKey as "Unchanged" */
+	inline void Update()
+	{
+		
+		memset(VKeyChange, 0, sizeof(VKeyChange));
+	}
+
+	void ResizeReadBuffer(size_t bytes);
 
 	/**	
 	 *	@brief Return TRUE on the frame when the given key is pressed down 
 	 */
-	inline bool GetKeyDown(KeyCode keycode);
+	inline bool GetKeyDown(KeyCode keycode)
+	{
+		return VKeyStates[keycode] == 1 && VKeyChange[keycode] == 1;
+	}
 	/**
 	 *	@brief Return TRUE on the frame when the given key is released up
 	 */
-	inline bool GetKeyUp(KeyCode keycode);
+	inline bool GetKeyUp(KeyCode keycode)
+	{
+		return VKeyStates[keycode] == 0 && VKeyChange[keycode] == 1;
+	}
 	/**
 	 *	@brief Return TRUE when the given key is pressed
 	 */
-	inline bool GetKey(KeyCode keycode);
+	inline bool GetKey(KeyCode keycode)
+	{
+		return VKeyStates[keycode] == 1;
+	}
 
 	/**
 	 *	@brief Register function to call list. Function is called on the 
 	 *		   frame when the given key is released up.
 	 *  @param callback: pointer to the function.
 	 */
-	inline void AddOnKeyUpCallback(KeyCode keycode, void(*callback)(void));
+	void AddOnKeyUpCallback(KeyCode keycode, void(*callback)(void));
 	/**
 	 *	@brief Register function to call list. Function is called on the
 	 *		   frame when the given key is pressed down.
 	 *  @param callback: pointer to the function.
 	 */
-	inline void AddOnKeyDownCallback(KeyCode keycode, void(*callback)(void));
+	void AddOnKeyDownCallback(KeyCode keycode, void(*callback)(void));
 
 	void RemoveOnKeyUpCallback(KeyCode keycode, void(*callback)(void));
 	void RemoveOnKeyDownCallback(KeyCode keycode, void(*callback)(void));
 };
 
-#include "Input.inl"
-
-}
-}
+}//Namespace Input
+}//Namespace Engine
