@@ -6,6 +6,7 @@
 
 namespace Engine
 {
+
 #define MAX_DIFF 0.00001f
 #define USE_EFFICIENCY
 //#define USE_ACCURACY
@@ -220,8 +221,8 @@ inline void Swap(T& left, T& right)
 
 
 
-//namespace MathfTest
-//{
+namespace MathfTest
+{
 
 /********************************* Unit tests **************************************/
 
@@ -231,7 +232,7 @@ inline void Swap(T& left, T& right)
 #if defined(_DEBUG)
 
 #include <vector>
-#include "Debugger.h"
+
 
 inline void RandInRangeIntUnitTest()
 {
@@ -262,8 +263,6 @@ inline void RandInRangeIntUnitTest()
 		&& (variance < expectedVariance + threshold)
 		&& (mean > expectedMean - threshold)
 		&& (mean < expectedMean + threshold);
-
-	DEBUG_PRINT("Is RandInRangeInt() random: %d\n", res);
 }
 
 
@@ -296,11 +295,9 @@ inline void RandInRangeFloatUnitTest()
 		&& (variance < expectedVariance + threshold)
 		&& (mean > expectedMean - threshold)
 		&& (mean < expectedMean + threshold);
-
-	DEBUG_PRINT("Is RandInRangeFloat() random: %d\n", res);
 }
 
 #endif
 
-//}//Namespace Mathf
+}//Namespace Mathf
 }//Namespace Engine

@@ -1,10 +1,13 @@
+#include <vector>
 #include "Collision.h"
 
 
+
+using std::vector;
 using namespace Engine;
 
 
-std::vector<Object*>	m_CollisionObjects;
+vector<Object*>	m_CollisionObjects;
 
 
 

@@ -82,8 +82,8 @@ int WINAPI wWinMain(
     
 
     /* Unit test for Mathf.h */
-    RandInRangeIntUnitTest();
-    RandInRangeFloatUnitTest();
+    MathfTest::RandInRangeIntUnitTest();
+    MathfTest::RandInRangeFloatUnitTest();
     DEBUG_PRINT(" \n\n\n ############ \n Mathf.h unit test successful \n ############ \n\n\n");
 
 
