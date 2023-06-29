@@ -1,4 +1,7 @@
+#include <fstream>
+#include "json/json.h"
 #include "FileSys.h"
+#include "Debugger.h"
 
 using std::ios;
 using std::ifstream;
@@ -24,8 +27,5 @@ void ReadJSONFile()
 		string str = actualJson["Name"].asString();
 
 	}
-
-
-	
 
 }

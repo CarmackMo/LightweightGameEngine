@@ -68,12 +68,9 @@ public:
 
 
 
-
-
-/********************************* Unit tests **************************************/
-
 namespace JobSys
 {
+/********************************* Unit tests **************************************/
 
 #if defined (_DEBUG)
 #include "./Sync/Mutex.h"
@@ -97,7 +94,7 @@ inline void JobSystemUnitTest()
 					{
 						DEBUG_PRINT("$ Wahoo! No.%d $ \n", num);
 						std::cout << "Wahoo! No." << num << "\n";
-						Sleep(400);
+						Sleep(200);
 					}
 				},
 				"WAHOO " + std::to_string(num)
@@ -136,7 +133,7 @@ inline void JobSystemUnitTest()
 				DEBUG_PRINT("Creating Obj %d \n", testerCount);
 				newTester->push_back(new JobSysTester("Obj " + std::to_string(testerCount)));
 				testerCount++;
-				Sleep(600);
+				Sleep(50);
 			}
 		};
 
@@ -150,7 +147,7 @@ inline void JobSystemUnitTest()
 					//Engine::Debugger::DEBUG_PRINT("Moving Obj: %s \n", (*iter)->name.c_str());
 					DEBUG_PRINT("Moving Obj \n");
 					allTester->push_back((*iter));
-					Sleep(100);
+					Sleep(10);
 				}
 
 				newTester->clear();

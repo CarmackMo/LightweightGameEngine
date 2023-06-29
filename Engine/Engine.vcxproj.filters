@@ -73,9 +73,6 @@
     <ClCompile Include="Input\Input.cpp">
       <Filter>Source Files\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Debugger\Debugger.cpp">
-      <Filter>Source Files\Debugger</Filter>
-    </ClCompile>
     <ClCompile Include="JSON\source\json_reader.cpp">
       <Filter>Source Files\JSON\source</Filter>
     </ClCompile>
@@ -100,26 +97,14 @@
     <ClCompile Include="Collision\Collision.cpp">
       <Filter>Source Files\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="DataType\Math\Matrix.cpp">
-      <Filter>Source Files\DataType\Math</Filter>
-    </ClCompile>
     <ClCompile Include="DataType\Math\Vector.cpp">
       <Filter>Source Files\DataType\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="DataType\Utility\SmartPtrs.cpp">
-      <Filter>Source Files\DataType\Utility</Filter>
     </ClCompile>
     <ClCompile Include="JobSys\Sync\Event.cpp">
       <Filter>Source Files\JobSys\Sync</Filter>
     </ClCompile>
-    <ClCompile Include="DataType\Engines\GameObject.cpp">
-      <Filter>Source Files\DataType\Engines</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DataType\DataType.h">
-      <Filter>Source Files\DataType</Filter>
-    </ClInclude>
     <ClInclude Include="Physics\Physics.h">
       <Filter>Source Files\Physics</Filter>
     </ClInclude>
@@ -224,12 +209,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Physics\Physics.inl">
-      <Filter>Source Files\Physics</Filter>
-    </None>
-    <None Include="Timer\Timer.inl">
-      <Filter>Source Files\Timer</Filter>
-    </None>
     <None Include="JSON\source\json_valueiterator.inl">
       <Filter>Source Files\JSON\source</Filter>
     </None>

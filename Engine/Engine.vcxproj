@@ -140,11 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Collision\Collision.cpp" />
-    <ClCompile Include="DataType\Engines\GameObject.cpp" />
-    <ClCompile Include="DataType\Math\Matrix.cpp" />
     <ClCompile Include="DataType\Math\Vector.cpp" />
-    <ClCompile Include="DataType\Utility\SmartPtrs.cpp" />
-    <ClCompile Include="Debugger\Debugger.cpp" />
     <ClCompile Include="Engine\GameEngine.cpp" />
     <ClCompile Include="Engine\EngineTest.cpp" />
     <ClCompile Include="FileSys\FileSys.cpp" />
@@ -161,7 +157,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collision\Collision.h" />
-    <ClInclude Include="DataType\DataType.h" />
     <ClInclude Include="DataType\Engines\GameObject.h" />
     <ClInclude Include="DataType\Math\Matrix.h" />
     <ClInclude Include="DataType\Math\Vector.h" />
@@ -198,8 +193,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="JSON\source\json_valueiterator.inl" />
-    <None Include="Physics\Physics.inl" />
-    <None Include="Timer\Timer.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

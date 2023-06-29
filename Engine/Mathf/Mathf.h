@@ -220,7 +220,8 @@ inline void Swap(T& left, T& right)
 
 
 
-
+//namespace MathfTest
+//{
 
 /********************************* Unit tests **************************************/
 
@@ -301,4 +302,5 @@ inline void RandInRangeFloatUnitTest()
 
 #endif
 
+//}//Namespace Mathf
 }//Namespace Engine

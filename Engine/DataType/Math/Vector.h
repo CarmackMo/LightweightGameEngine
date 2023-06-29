@@ -2,6 +2,10 @@
 #include <cassert>
 #include "Mathf.h"
 
+
+/* TODO: Using array pointer instead of array to store data. This can improve the performance of construction */
+
+
 namespace Engine
 {
 /* Forwared declaration */

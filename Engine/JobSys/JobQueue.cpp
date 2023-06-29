@@ -50,7 +50,7 @@ void JobStatus::WaitForZeroJobsLeft(int waitMS)
 #pragma endregion
 
 
-#pragma region SharedJobQueue
+#pragma region JobQueue
 
 JobQueue::JobQueue(const string& queueName) :
 	queueName(queueName),

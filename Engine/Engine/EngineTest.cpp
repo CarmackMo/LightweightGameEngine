@@ -117,10 +117,6 @@ int WINAPI wWinMain(
     //CollisionPoolCheck();
     DEBUG_PRINT(" \n\n\n ############ \n Collision detection unit test successful \n ############ \n\n\n");
 
-
-
-
-
 #endif // defined(_DEBUG)
 
 

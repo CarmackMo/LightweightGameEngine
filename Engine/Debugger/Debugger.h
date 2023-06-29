@@ -4,14 +4,6 @@
 #include <Windows.h>	// for OutputDebugStringA(). Uggh.. this pulls in a lot of Windows specific stuff
 
 
-//namespace Engine
-//{
-
-//void ConsolePrint(const char* i_pFmt, const char* i_pFile, unsigned int i_Line, ...);
-
-//}//Namespace Engine
-
-
 inline void ConsolePrint(const char* i_pFmt, const char* i_pFile, unsigned int i_Line, ...)
 {
 	const size_t		lenTemp = 128;

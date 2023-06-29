@@ -5,6 +5,8 @@
 #include "Mathf.h"
 
 
+/* TODO: Using array pointer instead of array to store data. This can improve the performance of construction */
+
 namespace Engine
 {
 /* Forwared declaration */
@@ -121,10 +123,6 @@ public:
 		std::swap(val[0][1], val[1][0]);
 		std::swap(val[0][2], val[2][0]);
 		std::swap(val[1][2], val[2][1]);
-
-		//T t01 = val[0][1], t02 = val[0][2], t12 = val[1][2];
-		//val[0][1] = val[1][0]; val[0][2] = val[2][0]; val[1][2] = val[2][1];
-		//val[1][0] = t01; val[2][0] = t02; val[2][1] = t12;
 	}
 	/* @brief Return a matrix that is the transpose of this instance but don't modify this instance */
 	inline Matrix3<T> GetTranspose(void) const
@@ -467,13 +465,6 @@ public:
 		std::swap(val[0][1], val[1][0]); std::swap(val[0][2], val[2][0]);
 		std::swap(val[0][3], val[3][0]); std::swap(val[1][2], val[2][1]);
 		std::swap(val[1][3], val[3][1]); std::swap(val[2][3], val[3][2]);
-
-		//T t01 = val[0][1], t02 = val[0][2], t03 = val[0][3],
-		//  t12 = val[1][2], t13 = val[1][3], t23 = val[2][3];
-		//val[0][1] = val[1][0]; val[0][2] = val[2][0]; val[0][3] = val[3][0];
-		//val[1][2] = val[2][1]; val[1][3] = val[3][1]; val[2][3] = val[3][2];
-		//val[1][0] = t01, val[2][0] = t02, val[3][0] = t03,
-		//val[2][1] = t12, val[3][1] = t13, val[3][2] = t23;
 	}
 	/* @brief Return a matrix that is the transpose of this instance but don't modify this instance */
 	inline Matrix4<T> GetTranspose(void) const

@@ -3,14 +3,13 @@
 
 namespace Engine
 {
-	using std::string;
-	using std::function;
-	using std::vector;
-	using std::map;
-	using namespace JobSys;
 
+using std::string;
+using std::function;
+using std::vector;
+using std::map;
+using namespace JobSys;
 
-//#pragma region JobSystem
 
 void JobSystem::Init()
 {
@@ -187,8 +186,6 @@ JobQueueManager* JobSystem::GetQueue(const HashedString& queueName)
 	else
 		return nullptr;
 }
-
-//#pragma endregion
 
 
 }//Namespace Engine

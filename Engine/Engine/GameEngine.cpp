@@ -151,11 +151,6 @@ void GameEngine::CreateGameObject(string jsonPath)
 			physicManager->AddPhysicObj(obj, mass, velocity, force);
 
 		}
-
-
-
-
-		
 	}
 }
 

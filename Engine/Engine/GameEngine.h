@@ -1,10 +1,12 @@
 #pragma once
 #include <Windows.h>
+#include <fstream>
 
 #include "Engines/GameObject.h"
 #include "Utility/SmartPtrs.h"
 #include "Math/Vector.h"
 #include "Math/Matrix.h"
+#include "json/json.h"
 
 #include "Debugger.h"
 
