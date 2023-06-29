@@ -117,9 +117,6 @@
     <ClInclude Include="Input\Input.h">
       <Filter>Source Files\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Dependency.h">
-      <Filter>Source Files\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Debugger\Debugger.h">
       <Filter>Source Files\Debugger</Filter>
     </ClInclude>

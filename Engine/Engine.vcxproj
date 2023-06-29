@@ -163,7 +163,6 @@
     <ClInclude Include="DataType\Utility\SmartPtrs.h" />
     <ClInclude Include="DataType\Utility\Singleton.h" />
     <ClInclude Include="Debugger\Debugger.h" />
-    <ClInclude Include="Engine\Dependency.h" />
     <ClInclude Include="Engine\GameEngine.h" />
     <ClInclude Include="FileSys\FileSys.h" />
     <ClInclude Include="Input\Input.h" />
