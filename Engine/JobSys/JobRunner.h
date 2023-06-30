@@ -26,6 +26,7 @@ struct JobRunner
 	JobQueue*		jobQueue;
 	HANDLE			threadHandle;
 	DWORD			threadID;
+	bool			stopRequested;
 #ifdef _DEBUG
 	std::string		threadName;
 #endif
@@ -33,15 +34,29 @@ struct JobRunner
 	JobRunner(JobQueue& jobQueue) :
 		jobQueue(&jobQueue),
 		threadHandle(INVALID_HANDLE_VALUE),
-		threadID(-1)
+		threadID(-1),
+		stopRequested(false)
 	{}
+
+	void RequestStop()
+	{
+		stopRequested = true;
+	}
+
+	bool IsStopped()
+	{
+		return stopRequested;
+	}
 };
 
 
 /*	@brief Execute the job runner routine, which involves continuously retrieving jobs from 
- *		   the shared job queue and executing them until the job queue is shut down. If there 
- *		   are no jobs in the queue, this function will wait until new jobs are added. 
+ *		   the shared job queue and executing them until the job queue or job runner is 
+ *		   shutted down. If there are no jobs in the queue, this function will wait until 
+ *		   new jobs are added.
+ * 
  *		   This function also serves as the starting address for the job runner thread. 
+ * 
  *	@param "threadInput": the external data passed to this function using "CreateThread()". */
 inline DWORD WINAPI JobRunnerRoutine(void* threadInput)
 {
@@ -74,7 +89,7 @@ inline DWORD WINAPI JobRunnerRoutine(void* threadInput)
 #endif
 		}
 
-		isStopped = input->jobQueue->IsStopped();
+		isStopped = input->stopRequested || input->jobQueue->IsStopped();
 
 	} while (isStopped == false);
 
@@ -83,8 +98,6 @@ inline DWORD WINAPI JobRunnerRoutine(void* threadInput)
 #endif
 	return 0;
 }
-
-
 
 
 }//Namespace Engine

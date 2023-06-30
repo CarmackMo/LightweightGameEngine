@@ -109,21 +109,6 @@ bool JobSystem::IsQueueHasJobs(const HashedString& queueName)
 }
 
 
-
-bool JobSystem::RemoveRunnerFromQueue(const HashedString& queueName)
-{
-	JobQueueManager* manager = GetQueue(queueName);
-	if (manager != nullptr)
-	{
-
-	}
-	else
-		return false;
-}
-
-
-
-
 void JobSystem::RequestStop()
 {
 #if defined (_DEBUG)

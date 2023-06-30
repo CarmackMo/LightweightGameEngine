@@ -172,6 +172,5 @@ string JobQueue::GetName() const
 #pragma endregion
 
 
-
 }//Namespace Engine
 }//Namespace JobSystem
