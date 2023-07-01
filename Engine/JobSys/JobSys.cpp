@@ -97,19 +97,6 @@ bool JobSystem::AddJobToQueue(const HashedString& queueName, function<void()> jo
 }
 
 
-bool JobSystem::IsQueueHasJobs(const HashedString& queueName)
-{
-	JobQueueManager* manager = GetQueue(queueName);
-	if (manager != nullptr)
-	{
-		return manager->jobQueue.HasJobs();
-	}
-
-	return false;
-}
-
-
-
 bool JobSystem::RemoveRunnerFromQueue(const HashedString& queueName)
 {
 	JobQueueManager* manager = GetQueue(queueName);
@@ -131,6 +118,73 @@ bool JobSystem::RemoveRunnerFromQueue(const HashedString& queueName)
 }
 
 
+bool JobSystem::RemoveQueue(const HashedString& queueName)
+{
+	JobQueueManager* manager = GetQueue(queueName);
+	if (manager != nullptr)
+	{
+		vector<HANDLE> threads;
+		vector<JobRunner*> runners;
+
+		manager->jobQueue.RequestStop();
+
+		const size_t runnerCount = manager->jobRunnerList.size();
+		for (size_t i = 0; i < runnerCount; i++)
+		{
+			JobRunner* runner = manager->jobRunnerList[i];
+			if (runner != nullptr)
+			{
+				runners.push_back(runner);
+				if (runner->threadHandle != nullptr)
+					threads.push_back(runner->threadHandle);
+
+				runner->RequestStop();
+			}
+		}
+
+		/* Wait until all job runner thread are ternimated. */
+		DWORD result = WaitForMultipleObjects(static_cast<DWORD>(threads.size()), &threads[0], TRUE, INFINITE);
+		assert(result == WAIT_OBJECT_0);
+
+		/* Delete all remaining JobRunner and JobQueueManager objects. */
+		for (size_t i = 0; i < runners.size(); i++)
+			delete runners[i];
+
+		delete manager;
+		jobQueueMap.erase(queueName);
+
+		return true;
+	}
+	else
+		return false;
+}
+
+
+JobQueueManager* JobSystem::GetQueue(const HashedString& queueName)
+{
+	if (jobQueueMap.find(queueName) != jobQueueMap.end())
+		return jobQueueMap[queueName];
+	else
+		return nullptr;
+}
+
+
+HashedString JobSystem::GetDefaultQueue()
+{
+	return HashedString("Default");
+}
+
+
+bool JobSystem::IsQueueHasJobs(const HashedString& queueName)
+{
+	JobQueueManager* manager = GetQueue(queueName);
+	if (manager != nullptr)
+	{
+		return manager->jobQueue.HasJobs();
+	}
+
+	return false;
+}
 
 
 void JobSystem::RequestStop()
@@ -200,24 +254,6 @@ bool JobSystem::IsStopped()
 {
 	return stopRequested;
 }
-
-
-HashedString JobSystem::GetDefaultQueue()
-{
-	return HashedString("Default");
-}
-
-
-JobQueueManager* JobSystem::GetQueue(const HashedString& queueName)
-{
-	if (jobQueueMap.find(queueName) != jobQueueMap.end())
-		return jobQueueMap[queueName];
-	else
-		return nullptr;
-}
-
-
-
 
 
 }//Namespace Engine

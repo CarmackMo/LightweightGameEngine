@@ -41,8 +41,8 @@ public:
 
 	/* @brief Create a new job queue with the given name and return the hashed job queue name.
 	 *		  The hashed name serves as a unique identifier for the new job queue. If a job 
-	 *		  queue with the same name already exists, return the hashed name of the existed 
-	 *		  job queue instead. */
+	 *		  queue with the same hashed name already exists, return the hashed name directly
+	 *		  instead. */
 	JobSys::HashedString CreateQueue(const std::string& queueName, unsigned int runnerNum);
 
 	/* @brief Add a job runner thread to the specified job queue. */
@@ -56,22 +56,26 @@ public:
 	 *		  and the adding is successful. Otherwise, return false. */
 	bool AddJobToQueue(const JobSys::HashedString& queueName, std::function<void()> jobFunction, const std::string& jobName = std::string());
 
+	/* @brief Remove the first job runner from the specified job queue. The job queue must have 
+	 *		  at least one job runner; otherwise, the removal will have no effect. Return true 
+	 *		  if the job queue exists and the removal is successful. Otherwise, return false. */
+	bool RemoveRunnerFromQueue(const JobSys::HashedString& queueName);
+
+	/* @brief Remove the specified job queue from the job system. Return true if the job queue
+	 *		  exists and the removal is successful. Otherwise, return false. */
+	bool RemoveQueue(const JobSys::HashedString& queueName);
+
+	/* @brief Get the specified job queue with given queue hashed name. Return a null pointer 
+	 *		  if the job queue does not exist. */
+	JobQueueManager* GetQueue(const JobSys::HashedString& queueName);
+
+	JobSys::HashedString GetDefaultQueue();
+
 	/* @brief Check if the specified job queue exists and has unfinished jobs. */
 	bool IsQueueHasJobs(const JobSys::HashedString& queueName);
 
 	void RequestStop();
 	bool IsStopped();
-
-	JobSys::HashedString GetDefaultQueue();
-
-	JobQueueManager* GetQueue(const JobSys::HashedString& queueName);
-
-
-	/* @brief Remove the first job runner from the specified job queue. The job queue must have 
-	 *		  at least one job runner; otherwise, the removal will have no effect. Return true 
-	 *		  if the job queue exists and the removal is successful. Otherwise, return false. */
-	bool RemoveRunnerFromQueue(const JobSys::HashedString& queueName);
-	bool RemoveQueue(const JobSys::HashedString& queueName);
 };
 
 
@@ -123,7 +127,9 @@ inline void JobSystemUnitTest()
 		}
 
 		jobSystem.GetQueue(jobSystem.GetDefaultQueue())->jobStatus.WaitForZeroJobsLeft();
-		
+
+		bool success = jobSystem.RemoveQueue(jobSystem.GetDefaultQueue());
+		assert(success == true);
 	}
 
 	/* Test 2: Test blocking tasks in job system. Testing components: Mutex, ScopLock, etc. */
