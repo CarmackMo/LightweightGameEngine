@@ -67,7 +67,9 @@ public:
 	JobQueueManager* GetQueue(const JobSys::HashedString& queueName);
 
 
-	// TODO:
+	/* @brief Remove the first job runner from the specified job queue. The job queue must have 
+	 *		  at least one job runner; otherwise, the removal will have no effect. Return true 
+	 *		  if the job queue exists and the removal is successful. Otherwise, return false. */
 	bool RemoveRunnerFromQueue(const JobSys::HashedString& queueName);
 	bool RemoveQueue(const JobSys::HashedString& queueName);
 };
@@ -93,6 +95,17 @@ inline void JobSystemUnitTest()
 
 		for (int num = 0; num < 4; num++)
 		{
+			/* Remove one job runner from default queue. Sleep 100ms to make sure won't remove 
+			 * the job runner immediately before both runners has taken responsibility of at 
+			 * least one job */
+			if (num == 2)
+			{
+				Sleep(100);
+				jobSystem.RemoveRunnerFromQueue(jobSystem.GetDefaultQueue());
+
+			}
+
+			/* Add jobs to job queue. */
 			bool success = jobSystem.AddJobToQueue(
 				jobSystem.GetDefaultQueue(),
 				[num]() {
@@ -100,7 +113,7 @@ inline void JobSystemUnitTest()
 					{
 						DEBUG_PRINT("$ Wahoo! No.%d $ \n", num);
 						std::cout << "Wahoo! No." << num << "\n";
-						Sleep(200);
+						Sleep(100);
 					}
 				},
 				"WAHOO " + std::to_string(num)

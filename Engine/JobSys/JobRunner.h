@@ -38,12 +38,12 @@ struct JobRunner
 		stopRequested(false)
 	{}
 
-	void RequestStop()
+	inline void RequestStop()
 	{
 		stopRequested = true;
 	}
 
-	bool IsStopped()
+	inline bool IsStopped()
 	{
 		return stopRequested;
 	}

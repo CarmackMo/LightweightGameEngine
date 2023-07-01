@@ -44,7 +44,8 @@ uint32_t JobStatus::JobsLeft() const
 
 void JobStatus::WaitForZeroJobsLeft(int waitMS)
 {
-	jobsFinishedEvent.Wait(DWORD(waitMS));
+	if (jobCount > 0)
+		jobsFinishedEvent.Wait(DWORD(waitMS));
 }
 
 #pragma endregion

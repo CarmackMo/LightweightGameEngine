@@ -113,9 +113,18 @@ bool JobSystem::IsQueueHasJobs(const HashedString& queueName)
 bool JobSystem::RemoveRunnerFromQueue(const HashedString& queueName)
 {
 	JobQueueManager* manager = GetQueue(queueName);
-	if (manager != nullptr)
+	if (manager != nullptr && manager->jobRunnerList.size() > 1)
 	{
+		JobRunner* runner = manager->jobRunnerList[0];
+		runner->RequestStop();
 
+		DWORD result = WaitForSingleObject(runner->threadHandle, INFINITE);
+		assert(result == WAIT_OBJECT_0);
+
+		manager->jobRunnerList.erase(manager->jobRunnerList.begin());
+		delete runner;
+		
+		return true;
 	}
 	else
 		return false;
@@ -140,14 +149,15 @@ void JobSystem::RequestStop()
 	map<HashedString, JobQueueManager*>::iterator iter = jobQueueMap.begin();
 	while (iter != jobQueueMap.end())
 	{
-		if (iter->second != nullptr)
+		JobQueueManager* manager = iter->second;
+		if (manager != nullptr)
 		{
-			iter->second->jobQueue.RequestStop();
+			manager->jobQueue.RequestStop();
 
-			const size_t runnerCount = iter->second->jobRunnerList.size();
+			const size_t runnerCount = manager->jobRunnerList.size();
 			for (size_t i = 0; i < runnerCount; i++)
 			{
-				JobRunner* runner = iter->second->jobRunnerList[i];
+				JobRunner* runner = manager->jobRunnerList[i];
 				if (runner != nullptr)
 				{
 					allRunners.push_back(runner);
@@ -158,7 +168,7 @@ void JobSystem::RequestStop()
 				}
 			}
 
-			allManagers.push_back(iter->second);
+			allManagers.push_back(manager);
 		}
 		iter++;
 	}
