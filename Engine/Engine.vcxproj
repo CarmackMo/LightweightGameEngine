@@ -174,6 +174,7 @@
     <ClInclude Include="JobSys\Sync\Event.h" />
     <ClInclude Include="JobSys\Sync\Mutex.h" />
     <ClInclude Include="JobSys\Sync\ScopeLock.h" />
+    <ClInclude Include="JobSys\Sync\Semaphore.h" />
     <ClInclude Include="JobSys\Sync\WaitableObject.h" />
     <ClInclude Include="JSON\header\json\allocator.h" />
     <ClInclude Include="JSON\header\json\assertions.h" />

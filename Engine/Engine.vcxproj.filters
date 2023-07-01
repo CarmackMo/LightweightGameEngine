@@ -204,6 +204,9 @@
     <ClInclude Include="DataType\Engines\GameObject.h">
       <Filter>Source Files\DataType\Engines</Filter>
     </ClInclude>
+    <ClInclude Include="JobSys\Sync\Semaphore.h">
+      <Filter>Source Files\JobSys\Sync</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="JSON\source\json_valueiterator.inl">
