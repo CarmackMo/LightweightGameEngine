@@ -23,6 +23,9 @@ class JobQueue;
 /**
  *	TODO: @brief This struct implements a handler that represents a job, which will be pushed
  *		   job queue and executed by the job system.
+ * 
+ *		   Does not allow creating a new job object by copy construct or assign from an existing
+ *		   job object, to prevent undefined behavior.
  */
 struct Job
 {
@@ -37,6 +40,9 @@ struct Job
 		jobName(jobName),
 		jobStatus(jobStatus)
 	{}
+
+	Job(const Job& other) = delete;
+	Job& operator=(const Job& other) = delete;
 };
 
 
@@ -63,8 +69,8 @@ public:
 	JobStatus(unsigned int jobCount = 0);
 	~JobStatus() = default;
 	
-	JobStatus(const JobStatus&) = delete;
-	JobStatus& operator=(const JobStatus&) = delete;
+	JobStatus(const JobStatus& other) = delete;
+	JobStatus& operator=(const JobStatus& other) = delete;
 
 	uint32_t JobsLeft() const;
 

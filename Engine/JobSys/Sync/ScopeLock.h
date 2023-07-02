@@ -20,8 +20,8 @@ public:
 		mutex->Release();
 	}
 
-	ScopeLock(const ScopeLock&) = delete;
-	ScopeLock& operator=(const ScopeLock&) = delete;
+	ScopeLock(const ScopeLock& other) = delete;
+	ScopeLock& operator=(const ScopeLock& other) = delete;
 };
 
 }//Namespace Engine

@@ -14,13 +14,32 @@
 namespace Engine
 {
 
+struct JobFlowManager
+{
+	bool isAuto;
+	bool overflowFlag = false;
+	bool idleFlag = false;
+
+	static const DWORD interval = 100;
+	static const uint32_t threshold = 50;
+
+	JobFlowManager(bool isAuto) : isAuto(isAuto)
+	{}
+
+	~JobFlowManager() = default;
+};
+
+
 struct JobQueueManager
 {
 	JobSys::JobQueue				jobQueue;
 	JobSys::JobStatus				jobStatus;
 	std::vector<JobSys::JobRunner*>	jobRunnerList;
+	JobFlowManager					jobFlowManager;
 
-	JobQueueManager(const std::string& queueName) : jobQueue(queueName)
+	JobQueueManager(const std::string& queueName, bool autoFlowControl) : 
+		jobQueue(queueName),
+		jobFlowManager(JobFlowManager(autoFlowControl))
 	{}
 };
 
@@ -31,6 +50,8 @@ class JobSystem
 private:
 	bool												stopRequested = false;
 	std::map<JobSys::HashedString, JobQueueManager*>	jobQueueMap;
+
+	void JobFlowControl();
 
 public:
 	JobSystem() = default;
@@ -43,7 +64,7 @@ public:
 	 *		  The hashed name serves as a unique identifier for the new job queue. If a job 
 	 *		  queue with the same hashed name already exists, return the hashed name directly
 	 *		  instead. */
-	JobSys::HashedString CreateQueue(const std::string& queueName, unsigned int runnerNum);
+	JobSys::HashedString CreateQueue(const std::string& queueName, unsigned int runnerNum, bool autoFlowControl = false);
 
 	/* @brief Add a job runner thread to the specified job queue. */
 	void AddRunnerToQueue(JobQueueManager* manager);
@@ -57,8 +78,14 @@ public:
 	bool AddJobToQueue(const JobSys::HashedString& queueName, std::function<void()> jobFunction, const std::string& jobName = std::string());
 
 	/* @brief Remove the first job runner from the specified job queue. The job queue must have 
-	 *		  at least one job runner; otherwise, the removal will have no effect. Return true 
-	 *		  if the job queue exists and the removal is successful. Otherwise, return false. */
+	 *		  at least one job runner; otherwise, the removal will have no effect and return 
+	 *		  false. */
+	bool RemoveRunnerFromQueue(JobQueueManager* manager);
+
+	/* @brief Remove the first job runner from the specified job queue. The job queue must have 
+	 *		  at least one job runner; otherwise, the removal will have no effect and return 
+	 *		  false. Return true if the job queue exists and the removal is successful. 
+	 *		  Otherwise, return false. */
 	bool RemoveRunnerFromQueue(const JobSys::HashedString& queueName);
 
 	/* @brief Remove the specified job queue from the job system. Return true if the job queue

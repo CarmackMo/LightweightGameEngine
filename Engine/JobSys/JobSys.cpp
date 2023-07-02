@@ -6,24 +6,74 @@ namespace Engine
 
 using std::string;
 using std::function;
+using std::bind;
 using std::vector;
 using std::map;
 using namespace JobSys;
 
 
-void JobSystem::Init()
+
+
+void JobSystem::JobFlowControl(void)
 {
-	CreateQueue("Default", 2);
+	do
+	{
+		map<HashedString, JobQueueManager*>::iterator iter = jobQueueMap.begin();
+		while (iter != jobQueueMap.end())
+		{
+			JobQueueManager* manager = iter->second;
+			if (manager != nullptr && manager->jobFlowManager.isAuto == true)
+			{
+				if (manager->jobStatus.JobsLeft() > JobFlowManager::threshold)
+				{
+					if (manager->jobFlowManager.overflowFlag == true)
+					{
+						AddRunnerToQueue(manager);
+						manager->jobFlowManager.overflowFlag = false;
+					}
+					else
+						manager->jobFlowManager.overflowFlag = true;
+				}
+				else if (manager->jobStatus.JobsLeft() == 0)
+				{
+					if (manager->jobFlowManager.idleFlag == true)
+					{
+						RemoveRunnerFromQueue(manager);
+						manager->jobFlowManager.idleFlag = false;
+					}
+					else
+						manager->jobFlowManager.idleFlag = true;
+				}
+				else
+				{
+					manager->jobFlowManager.overflowFlag = false;
+					manager->jobFlowManager.idleFlag = false;
+				}
+			}
+
+			iter++;
+		}
+
+		Sleep(JobFlowManager::interval);
+
+	} while (IsStopped() == false);
 }
 
 
-HashedString JobSystem::CreateQueue(const string& queueName, unsigned int runnerNum)
+void JobSystem::Init()
+{
+	CreateQueue("Default", 2, false);
+	AddJobToQueue(GetDefaultQueue(), bind(&JobSystem::JobFlowControl, this), "Job Flow Control Routine");
+}
+
+
+HashedString JobSystem::CreateQueue(const string& queueName, unsigned int runnerNum, bool autoFlowControl)
 {
 	HashedString hashedName = HashedString(queueName.c_str());
 
 	if (jobQueueMap.find(hashedName) == jobQueueMap.end())
 	{
-		JobQueueManager* manager = new JobQueueManager(queueName);
+		JobQueueManager* manager = new JobQueueManager(queueName, autoFlowControl);
 		jobQueueMap.emplace(hashedName, manager);
 
 		for (unsigned int i = 0; i < runnerNum; i++)
@@ -97,10 +147,9 @@ bool JobSystem::AddJobToQueue(const HashedString& queueName, function<void()> jo
 }
 
 
-bool JobSystem::RemoveRunnerFromQueue(const HashedString& queueName)
+bool JobSystem::RemoveRunnerFromQueue(JobQueueManager* manager)
 {
-	JobQueueManager* manager = GetQueue(queueName);
-	if (manager != nullptr && manager->jobRunnerList.size() > 1)
+	if (manager->jobRunnerList.size() > 1)
 	{
 		JobRunner* runner = manager->jobRunnerList[0];
 		runner->RequestStop();
@@ -110,11 +159,39 @@ bool JobSystem::RemoveRunnerFromQueue(const HashedString& queueName)
 
 		manager->jobRunnerList.erase(manager->jobRunnerList.begin());
 		delete runner;
-		
+
 		return true;
 	}
 	else
 		return false;
+}
+
+
+bool JobSystem::RemoveRunnerFromQueue(const HashedString& queueName)
+{
+	JobQueueManager* manager = GetQueue(queueName);
+
+	if (manager != nullptr)
+		return RemoveRunnerFromQueue(manager);
+	else
+		return false;
+
+
+	//if (manager != nullptr && manager->jobRunnerList.size() > 1)
+	//{
+	//	JobRunner* runner = manager->jobRunnerList[0];
+	//	runner->RequestStop();
+
+	//	DWORD result = WaitForSingleObject(runner->threadHandle, INFINITE);
+	//	assert(result == WAIT_OBJECT_0);
+
+	//	manager->jobRunnerList.erase(manager->jobRunnerList.begin());
+	//	delete runner;
+	//	
+	//	return true;
+	//}
+	//else
+	//	return false;
 }
 
 

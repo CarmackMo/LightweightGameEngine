@@ -30,10 +30,9 @@ public:
 	  *		   to the existing mutex instead. */
 	inline Mutex(bool takeOwnership = false, const char* name = nullptr)
 	{
-		wchar_t* wChars = nullptr;
-
 		/* Maps the input character string to a UTF-16 (wide character) string. Firstly,
 		 * calcualte the buffer size, then create the buffer and map the string to buffer. */
+		wchar_t* wChars = nullptr;
 		int bytesNeeded = MultiByteToWideChar(CP_ACP, 0, name, -1, wChars, -1);
 		if (bytesNeeded)
 		{
@@ -51,6 +50,9 @@ public:
 		BOOL result = CloseHandle(handle);
 		assert(result == TRUE);
 	}
+
+	Mutex(const Mutex& other) = delete;
+	Mutex& operator=(const Mutex& other) = delete;
 
 	/*	@brief Check if the mutex can be acquired. */
 	bool CanAcquire()
@@ -83,11 +85,6 @@ public:
 		BOOL result = ReleaseMutex(handle);
 		assert(result == TRUE);
 	}
-
-private:
-	Mutex(const Mutex&) = delete;
-	Mutex& operator=(const Mutex&) = delete;
-
 };
 
 
