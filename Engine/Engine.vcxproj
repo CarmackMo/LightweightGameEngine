@@ -110,7 +110,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Engine\Input;$(SolutionDir)Engine\Debugger;$(SolutionDir)Engine\DataType;$(SolutionDir)Engine\Timer;$(SolutionDir)Engine\Engine;$(SolutionDir)Engine\Physics;$(SolutionDir)Engine\FileSys;$(SolutionDir)Engine\JobSys;$(SolutionDir)Engine\Sync;$(SolutionDir)Engine\Mathf;$(SolutionDir)Engine\Collision;$(SolutionDir)Engine\JSON\header;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Engine\Input;$(SolutionDir)Engine\DataType;$(SolutionDir)Engine\Timer;$(SolutionDir)Engine\Engine;$(SolutionDir)Engine\Physics;$(SolutionDir)Engine\FileSys;$(SolutionDir)Engine\JobSys;$(SolutionDir)Engine\Sync;$(SolutionDir)Engine\Mathf;$(SolutionDir)Engine\Collision;$(SolutionDir)Engine\JSON\header;$(SolutionDir)Engine\Debugger;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -140,18 +140,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Collision\Collision.cpp" />
-    <ClCompile Include="DataType\Engine\GameObject.cpp" />
-    <ClCompile Include="DataType\Math\Matrix.cpp" />
     <ClCompile Include="DataType\Math\Vector.cpp" />
-    <ClCompile Include="DataType\Utility\SmartPtrs.cpp" />
-    <ClCompile Include="Debugger\Debugger.cpp" />
-    <ClCompile Include="Engine\Engine.cpp" />
+    <ClCompile Include="Engine\GameEngine.cpp" />
     <ClCompile Include="Engine\EngineTest.cpp" />
     <ClCompile Include="FileSys\FileSys.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="JobSys\HashedString.cpp" />
     <ClCompile Include="JobSys\JobSys.cpp" />
-    <ClCompile Include="JobSys\SharedJobQueue.cpp" />
+    <ClCompile Include="JobSys\JobQueue.cpp" />
     <ClCompile Include="JobSys\Sync\Event.cpp" />
     <ClCompile Include="JSON\source\json_reader.cpp" />
     <ClCompile Include="JSON\source\json_value.cpp" />
@@ -161,25 +157,24 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collision\Collision.h" />
-    <ClInclude Include="DataType\DataType.h" />
-    <ClInclude Include="DataType\Engine\GameObject.h" />
+    <ClInclude Include="DataType\Engines\GameObject.h" />
     <ClInclude Include="DataType\Math\Matrix.h" />
     <ClInclude Include="DataType\Math\Vector.h" />
     <ClInclude Include="DataType\Utility\SmartPtrs.h" />
     <ClInclude Include="DataType\Utility\Singleton.h" />
     <ClInclude Include="Debugger\Debugger.h" />
-    <ClInclude Include="Engine\Dependency.h" />
-    <ClInclude Include="Engine\Engine.h" />
+    <ClInclude Include="Engine\GameEngine.h" />
     <ClInclude Include="FileSys\FileSys.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="JobSys\HashedString.h" />
     <ClInclude Include="JobSys\JobRunner.h" />
     <ClInclude Include="JobSys\JobSys.h" />
-    <ClInclude Include="JobSys\SharedJobQueue.h" />
+    <ClInclude Include="JobSys\JobQueue.h" />
     <ClInclude Include="JobSys\Sync\AtomicOperations.h" />
     <ClInclude Include="JobSys\Sync\Event.h" />
     <ClInclude Include="JobSys\Sync\Mutex.h" />
     <ClInclude Include="JobSys\Sync\ScopeLock.h" />
+    <ClInclude Include="JobSys\Sync\Semaphore.h" />
     <ClInclude Include="JobSys\Sync\WaitableObject.h" />
     <ClInclude Include="JSON\header\json\allocator.h" />
     <ClInclude Include="JSON\header\json\assertions.h" />
@@ -197,11 +192,7 @@
     <ClInclude Include="Timer\Timer.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Input\Input.inl" />
-    <None Include="JobSys\JobSys.inl" />
     <None Include="JSON\source\json_valueiterator.inl" />
-    <None Include="Physics\Physics.inl" />
-    <None Include="Timer\Timer.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

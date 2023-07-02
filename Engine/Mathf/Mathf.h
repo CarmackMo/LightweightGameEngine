@@ -3,9 +3,9 @@
 #include <cassert>
 #include "./Utility/Singleton.h"
 
-using namespace std;
-using namespace Engine;
 
+namespace Engine
+{
 
 #define MAX_DIFF 0.00001f
 #define USE_EFFICIENCY
@@ -30,7 +30,6 @@ template<typename T> inline void Swap(T& left, T& right);
 
 
 
-
 /**
  *	@brief A helper singleton class that mainly designed for handling random value generation. As a  
  *		   helper class, "Mathf" is suppose to be "private" to engine users (Although they can access
@@ -52,19 +51,19 @@ template<typename T> inline void Swap(T& left, T& right);
 class Mathf : public Singleton<Mathf>
 {
 private:
-	random_device rd;			/* Seed source for the random number engine, unique in the whole engine scope */
-	mt19937 generator;			/* Random number engine */
-	uniform_real_distribution<float> distf;
-	uniform_int_distribution<int> disti;
+	std::random_device						rd;			/* Seed source for the random number engine, unique in the whole engine scope */
+	std::mt19937							generator;			/* Random number engine */
+	std::uniform_real_distribution<float>	distf;
+	std::uniform_int_distribution<int>		disti;
 
 	inline Mathf() { Initialize(); }
 	inline ~Mathf() {};
 
 	inline void Initialize()
 	{
-		generator = mt19937(rd());
-		distf = uniform_real_distribution<float>(0.0f, nextafter(1.0f, FLT_MAX));
-		disti = uniform_int_distribution<int>(0, INT_MAX);
+		generator = std::mt19937(rd());
+		distf = std::uniform_real_distribution<float>(0.0f, nextafter(1.0f, FLT_MAX));
+		disti = std::uniform_int_distribution<int>(0, INT_MAX);
 	}
 
 	/** @brief Return a random float value within the range [0.0, 1.0], inclusive in both sides */
@@ -222,7 +221,8 @@ inline void Swap(T& left, T& right)
 
 
 
-
+namespace MathfTest
+{
 
 /********************************* Unit tests **************************************/
 
@@ -232,12 +232,12 @@ inline void Swap(T& left, T& right)
 #if defined(_DEBUG)
 
 #include <vector>
-#include "Debugger.h"
+
 
 inline void RandInRangeIntUnitTest()
 {
 	/* Generate random values */
-	vector<int> samples = vector<int>(1000);
+	std::vector<int> samples = std::vector<int>(1000);
 	for (int i = 0; i < 1000; i++)
 	{
 		samples[i] = RandInRange(1, 100);
@@ -263,15 +263,13 @@ inline void RandInRangeIntUnitTest()
 		&& (variance < expectedVariance + threshold)
 		&& (mean > expectedMean - threshold)
 		&& (mean < expectedMean + threshold);
-
-	Engine::Debugger::DEBUG_PRINT("Is RandInRangeInt() random: %d\n", res);
 }
 
 
 inline void RandInRangeFloatUnitTest()
 {
 	/* Generate random values */
-	vector<float> samples = vector<float>(1000);
+	std::vector<float> samples = std::vector<float>(1000);
 	for (int i = 0; i < 1000; i++)
 	{
 		samples[i] = RandInRange(1.0f, 100.0f);
@@ -297,8 +295,9 @@ inline void RandInRangeFloatUnitTest()
 		&& (variance < expectedVariance + threshold)
 		&& (mean > expectedMean - threshold)
 		&& (mean < expectedMean + threshold);
-
-	Engine::Debugger::DEBUG_PRINT("Is RandInRangeFloat() random: %d\n", res);
 }
 
 #endif
+
+}//Namespace Mathf
+}//Namespace Engine

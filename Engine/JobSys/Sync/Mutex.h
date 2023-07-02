@@ -1,3 +1,4 @@
+#pragma once
 #include <cassert>
 #include "./WaitableObject.h"
 
@@ -27,7 +28,7 @@ public:
 	  *		   In the case of creating a same-named mutex that already exists 
 	  *		   prior to this constructor call, the constructor will open a handler 
 	  *		   to the existing mutex instead. */
-	Mutex(bool takeOwnership = false, const char* name = nullptr)
+	inline Mutex(bool takeOwnership = false, const char* name = nullptr)
 	{
 		wchar_t* wChars = nullptr;
 
@@ -45,14 +46,11 @@ public:
 		assert(handle != NULL);
 	}
 	
-	~Mutex()
+	inline ~Mutex()
 	{
 		BOOL result = CloseHandle(handle);
 		assert(result == TRUE);
 	}
-
-	Mutex(const Mutex&) = delete;
-	Mutex& operator=(const Mutex&) = delete;
 
 	/*	@brief Check if the mutex can be acquired. */
 	bool CanAcquire()
@@ -85,6 +83,11 @@ public:
 		BOOL result = ReleaseMutex(handle);
 		assert(result == TRUE);
 	}
+
+private:
+	Mutex(const Mutex&) = delete;
+	Mutex& operator=(const Mutex&) = delete;
+
 };
 
 

@@ -1,6 +1,6 @@
 #pragma once
-#include <string>
 #include <queue>
+#include <string>
 #include <functional>
 
 #include "./HashedString.h"
@@ -8,16 +8,16 @@
 #include "./Sync/AtomicOperations.h"
 #include "./Sync/WaitableObject.h"
 
-using namespace std;
 
 namespace Engine
 {
-namespace JobSystem
+namespace JobSys
 {
+
 /* Forwared declaration */
 struct Job;
 class JobStatus;
-class SharedJobQueue;
+class JobQueue;
 
 
 /**
@@ -26,12 +26,12 @@ class SharedJobQueue;
  */
 struct Job
 {
-	function<void()>	action;
-	HashedString		queueName;
-	string				jobName;
-	JobStatus*			jobStatus;
+	std::function<void()>	action;
+	HashedString			queueName;
+	std::string				jobName;
+	JobStatus*				jobStatus;
 
-	Job(function<void()> function, const HashedString& queueName, const string& jobName, JobStatus* jobStatus = nullptr) :
+	Job(std::function<void()> function, const HashedString& queueName, const std::string& jobName, JobStatus* jobStatus = nullptr) :
 		action(function),
 		queueName(queueName),
 		jobName(jobName),
@@ -58,7 +58,7 @@ private:
 	uint32_t DecJobCount();
 
 public:
-	friend class SharedJobQueue;
+	friend class JobQueue;
 
 	JobStatus(unsigned int jobCount = 0);
 	~JobStatus() = default;
@@ -83,24 +83,23 @@ public:
  *		   available job in the queue and a get-job method is invoked, the thread owns 
  *		   the queue will sleep and wait until new jobs are added to the queue. 
  */
-class SharedJobQueue
+class JobQueue
 {
 private:
-	string						queueName;
-	queue<Job*>					jobQueue;
+	std::string					queueName;
+	std::queue<Job*>			jobQueue;
 	uint32_t					jobsRunning;
 	bool						stopRequested;
 
 	CONDITION_VARIABLE			queueNotEmpty;
 	mutable CRITICAL_SECTION	queueLock;
 
-
-	SharedJobQueue(const SharedJobQueue&) = delete;
-	SharedJobQueue& operator=(const SharedJobQueue&) = delete;
-
 public:
-	SharedJobQueue(const string& queueName);
-	//~SharedJobQueue() = default;
+	JobQueue(const std::string& queueName);
+	~JobQueue() = default;
+
+	JobQueue(const JobQueue&) = delete;
+	JobQueue& operator=(const JobQueue&) = delete;
 
 	bool Add(Job* job);
 
@@ -116,7 +115,7 @@ public:
 	bool IsStopped() const;
 	bool HasJobs() const;
 
-	string GetName() const;
+	std::string GetName() const;
 };
 
 }//Namespace Engine

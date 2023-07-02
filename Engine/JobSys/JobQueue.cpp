@@ -1,9 +1,15 @@
-#include "SharedJobQueue.h"
+#include <cassert>
+#include "./JobQueue.h"
 
 namespace Engine
 {
-namespace JobSystem
+namespace JobSys
 {
+
+using std::queue;
+using std::string;
+using std::function;
+
 
 #pragma region JobStatus
 
@@ -38,15 +44,16 @@ uint32_t JobStatus::JobsLeft() const
 
 void JobStatus::WaitForZeroJobsLeft(int waitMS)
 {
-	jobsFinishedEvent.Wait(DWORD(waitMS));
+	if (jobCount > 0)
+		jobsFinishedEvent.Wait(DWORD(waitMS));
 }
 
 #pragma endregion
 
 
-#pragma region SharedJobQueue
+#pragma region JobQueue
 
-SharedJobQueue::SharedJobQueue(const string& queueName) :
+JobQueue::JobQueue(const string& queueName) :
 	queueName(queueName),
 	jobsRunning(0),
 	stopRequested(false),
@@ -56,7 +63,7 @@ SharedJobQueue::SharedJobQueue(const string& queueName) :
 }
 
 
-bool SharedJobQueue::Add(struct Job* job)
+bool JobQueue::Add(Job* job)
 {
 	assert(job);
 	bool isAdded = false;
@@ -85,7 +92,7 @@ bool SharedJobQueue::Add(struct Job* job)
 }
 
 
-Job* SharedJobQueue::Get()
+Job* JobQueue::Get()
 {
 	EnterCriticalSection(&queueLock);
 
@@ -117,13 +124,13 @@ Job* SharedJobQueue::Get()
 }
 
 
-void SharedJobQueue::StartingJob(Job* job)
+void JobQueue::StartingJob(Job* job)
 {
 	AtomicIncrement(jobsRunning);
 }
 
 
-void SharedJobQueue::FinishedJob(Job* job)
+void JobQueue::FinishedJob(Job* job)
 {
 	if (job->jobStatus)
 		job->jobStatus->DecJobCount();
@@ -134,7 +141,7 @@ void SharedJobQueue::FinishedJob(Job* job)
 }
 
 
-void SharedJobQueue::RequestStop()
+void JobQueue::RequestStop()
 {
 	stopRequested = true;
 	/* If the current queue is waiting to acquire available jobs, wake it. */
@@ -142,13 +149,13 @@ void SharedJobQueue::RequestStop()
 }
 
 
-bool SharedJobQueue::IsStopped() const
+bool JobQueue::IsStopped() const
 {
 	return stopRequested;
 }
 
 
-bool SharedJobQueue::HasJobs() const
+bool JobQueue::HasJobs() const
 {
 	EnterCriticalSection(&queueLock);
 	bool isFinished = jobQueue.empty() && (jobsRunning == 0);
@@ -158,13 +165,12 @@ bool SharedJobQueue::HasJobs() const
 }
 
 
-string SharedJobQueue::GetName() const
+string JobQueue::GetName() const
 {
 	return queueName;
 }
 
 #pragma endregion
-
 
 
 }//Namespace Engine

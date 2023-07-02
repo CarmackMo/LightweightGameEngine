@@ -1,10 +1,10 @@
 #pragma once
-#include "Debugger.h"
+#include <cassert>
 #include "Mathf.h"
 
 
-using namespace std;
-using namespace Engine::Debugger;
+/* TODO: Using array pointer instead of array to store data. This can improve the performance of construction */
+
 
 namespace Engine
 {
@@ -23,71 +23,157 @@ template <typename T>
 class Vector2
 {
 private:
-	T val[2];
+	T val[2] = { static_cast<T>(0), static_cast<T>(0) };
 
 public:
 	/* Constructor */
-	inline Vector2();
-	inline Vector2(T x, T y);
-	inline Vector2(const Vector2<T>& other);
+	inline Vector2() = default;
+	inline Vector2(T x, T y)
+	{
+		val[0] = x; val[1] = y;
+	}
+	inline Vector2(const Vector2<T>& other)
+	{
+		val[0] = other[0]; val[1] = other[1];
+	}
 
-	/** @brief Convert this instance to a new Vector2 with type "U" */
+	/* @brief Convert this instance to a new Vector2 with type "U" */
 	template<typename U>
-	inline Vector2<U> ConvertTo();
-
-	/** 
-	 *	@brief Calcualte the length of this instance. Return the result in "float" type by 
+	inline Vector2<U> ConvertTo()
+	{
+		return Vector2<U>(static_cast<U>(val[0]), static_cast<U>(val[1]));
+	}
+ 
+	/*	@brief Calcualte the length of this instance. Return the result in "float" type by 
 	 *		   default. (Since I was not able to use explicit template specialization to 
 	 *		   specify return type for Vector<double> instances, I have to unify return 
-	 *		   type to be "float" to prevent data loss)
-	 */
-	inline float Length() const;
+	 *		   type to be "float" to prevent data loss) */
+	inline float Length() const
+	{
+		float lengthSq = static_cast<float>(val[0] * val[0] + val[1] * val[1]);
+		return sqrt(lengthSq);
+	}
+ 
+	/*	@brief Normalize this instance. Noted that normalize a vector with integer type might
+	 *		   have incorrect result. Because the division result might be a float point number. */
+	inline void Norm()
+	{
+		float len = Length();
 
-	/** 
-	 *	@brief Normalize this instance. Noted that normalize a vector with integer type might
-	 *		   have incorrect result. Because the division result might be a float point number.
-	 */
-	inline void Norm();
+		if (!IsZero(len))
+		{
+			val[0] = static_cast<T>(val[0] / len);
+			val[1] = static_cast<T>(val[1] / len);
+		}
+	}
 	/** @brief Get the normalization vector of this instance, but don't modify this instance */
-	inline Vector2<float> GetNorm() const;
+	inline Vector2<float> GetNorm() const
+	{
+		float len = Length();
+
+		if (IsZero(len))
+			return Vector2<float>::Zero;
+		else
+			return Vector2<float>(
+				static_cast<float>(val[0] / len),
+				static_cast<float>(val[1] / len));
+	}
 
 	/* Self modifying operators */
-	inline void operator+= (const Vector2<T>& other);
-	inline void operator-= (const Vector2<T>& other);
+	inline void operator+= (const Vector2<T>& other)
+	{
+		val[0] += other[0]; val[1] += other[1];
+	}
+	inline void operator-= (const Vector2<T>& other)
+	{
+		val[0] -= other[0]; val[1] -= other[1];
+	}
 
-	inline void operator*= (const Vector2<T>& other);
-	inline void operator*= (T num);
+	inline void operator*= (const Vector2<T>& other)
+	{
+		val[0] *= other[0]; val[1] *= other[1];
+	}
+	inline void operator*= (T num)
+	{
+		val[0] *= num; val[1] *= num;
+	}
 
-	inline void operator/= (const Vector2<T>& other);
-	inline void operator/= (T num);
+	inline void operator/= (const Vector2<T>& other) 
+	{
+		val[0] /= other[0]; val[1] /= other[1];
+	}
+	inline void operator/= (T num)
+	{
+		val[0] /= num; val[1] /= num;
+	}
 
 	/* Modifying operators */
-	inline Vector2<T> operator+ (const Vector2<T>& other) const;
-	inline Vector2<T> operator- (const Vector2<T>& other) const;
+	inline Vector2<T> operator+ (const Vector2<T>& other) const
+	{
+		return Vector2<T>(val[0] + other[0], val[1] + other[1]);
+	}
+	inline Vector2<T> operator- (const Vector2<T>& other) const
+	{
+		return Vector2<T>(val[0] - other[0], val[1] - other[1]);
+	}
 
-	inline Vector2<T> operator* (const Vector2<T>& other) const;
-	inline Vector2<T> operator* (T num) const;
+	inline Vector2<T> operator* (const Vector2<T>& other) const
+	{
+		return Vector2<T>(val[0] * other[0], val[1] * other[1]);
+	}
+	inline Vector2<T> operator* (T num) const
+	{
+		return Vector2<T>(val[0] * num, val[1] * num);
+	}
 
-	inline Vector2<T> operator/ (const Vector2<T>& other) const;
-	inline Vector2<T> operator/ (T num) const;
+	inline Vector2<T> operator/ (const Vector2<T>& other) const
+	{
+		return Vector2<T>(val[0] / other[0], val[1] / other[1]);
+	}
+	inline Vector2<T> operator/ (T num) const
+	{
+		return Vector2<T>(val[0] / num, val[1] / num);
+	}
+	inline friend Vector2<T> operator* (T left, Vector2<T> right) 
+	{ 
+		return Vector2<T>(left * right[0], left * right[1]); 
+	}
 
 	/* Assignment operators */
-	inline Vector2<T>& operator= (const Vector2<T>& other);
+	inline Vector2<T>& operator= (const Vector2<T>& other)
+	{
+		val[0] = other[0]; val[1] = other[1];
+		return *this;
+	}
 
 	/* Comparison operators */
-	inline bool operator== (const Vector2<T>& other) const;
-	inline bool operator!= (const Vector2<T>& other) const;
+	inline bool operator== (const Vector2<T>& other) const
+	{
+		return AreEqual(static_cast<float>(val[0]), static_cast<float>(other[0])) == true &&
+			   AreEqual(static_cast<float>(val[1]), static_cast<float>(other[1])) == true;
+	}
+	inline bool operator!= (const Vector2<T>& other) const
+	{
+		return AreEqual(static_cast<float>(val[0]), static_cast<float>(other[0])) == false ||
+			   AreEqual(static_cast<float>(val[1]), static_cast<float>(other[1])) == false;
+	}
 
 	/* Negate */
-	inline Vector2<T> operator- (void) const;
+	inline Vector2<T> operator- (void) const
+	{
+		return Vector2<T>(-val[0], -val[1]);
+	}
 
 	/* Indexing */
-	inline T& operator[] (int idx);
-	inline const T& operator[] (int idx) const;
+	inline T& operator[] (int idx)
+	{
+		return val[idx];
+	}
+	inline const T& operator[] (int idx) const
+	{
+		return val[idx];
+	}
 
-	/* Must implement here. Otherwise, the compiler cannot find the specific
-	 * template instance, and will report a LNK2019 error */
-	inline friend Vector2<T> operator* (T left, Vector2<T> right) { return Vector2<T>(left * right[0], left * right[1]); }
 
 	/* Static constant instances must be implemented explicitly for each 
 	 * template type. Since compiler cannot automatically determine the type 
@@ -115,74 +201,178 @@ template <typename T>
 class Vector3
 {
 private:
-	T val[3];
+	T val[3] = { static_cast<T>(0), static_cast<T>(0), static_cast<T>(0) };
 
 public:
 	/* Constructor */
-	inline Vector3();
-	inline Vector3(T x, T y, T z);
-	inline Vector3(const Vector3<T>& other);
+	inline Vector3() = default;
+	inline Vector3(T x, T y, T z)
+	{
+		val[0] = x; val[1] = y; val[2] = z;
+	}
+	inline Vector3(const Vector3<T>& other)
+	{
+		val[0] = other[0]; val[1] = other[1]; val[2] = other[2];
+	}
 
-	/* Convert a vector3 with type "U" to type "T" */
+	/* @brief Convert this instance to a new Vector3 with type "U" */
 	template <typename U>
-	inline Vector3<U> ConvertTo();
+	inline Vector3<U> ConvertTo()
+	{
+		return Vector3<U>(
+			static_cast<U>(val[0]),
+			static_cast<U>(val[1]),
+			static_cast<U>(val[2]));
+	}
 
-	inline T Dot(const Vector3<T>& other) const;
-	inline Vector3<T> Cross(const Vector3<T>& other) const;
+	inline T Dot(const Vector3<T>& other) const
+	{
+		return val[0] * other[0] + val[1] * other[1] + val[2] * other[2];
+	}
 
-	/** 
-	 *	@brief Calcualte the length of this instance. Return the result in "float" type by
+	inline Vector3<T> Cross(const Vector3<T>& other) const
+	{
+		return Vector3<T>(
+			val[1] * other[2] - val[2] * other[1],
+			val[2] * other[0] - val[0] * other[2],
+			val[0] * other[1] - val[1] * other[0]);
+	}
+ 
+	/*	@brief Calcualte the length of this instance. Return the result in "float" type by
 	 *		   default. (Since I was not able to use explicit template specialization to
 	 *		   specify return type for Vector<double> instances, I have to unify return
-	 *		   type to be "float" to prevent data loss)
-	 */
-	inline float Length() const;
+	 *		   type to be "float" to prevent data loss). */
+	inline float Length() const
+	{
+		float lengthSq = static_cast<float>(val[0] * val[0] + val[1] * val[1] + val[2] * val[2]);
+		return sqrt(lengthSq);
+	}
 	
-	/** 
-	 *	@brief Normalize this instance. Noted that normalize a vector with type "int" might 
-	 *		   have incorrect result. Because the division result might be a float point number.
-	 */
-	inline void Norm();
+ 
+	/*	@brief Normalize this instance. Noted that normalize a vector with type "int" might 
+	 *		   have incorrect result. Because the division result might be a float point number. */
+	inline void Norm()
+	{
+		float len = Length();
+
+		if (!IsZero(len))
+		{
+			val[0] = static_cast<T>(val[0] / len);
+			val[1] = static_cast<T>(val[1] / len);
+			val[2] = static_cast<T>(val[2] / len);
+		}
+	}
 	/** @brief Get the normalization vector of this instance, but don't modify this instance */
-	inline Vector3<float> GetNorm() const;
+	inline Vector3<float> GetNorm() const
+	{
+		float len = Length();
+
+		if (IsZero(len))
+			return Vector3<float>::Zero;
+		else
+			return Vector3<float>(
+				static_cast<float>(val[0] / len),
+				static_cast<float>(val[1] / len),
+				static_cast<float>(val[2] / len));
+	}
 
 	/* Self modifying operators */
-	inline void operator+= (const Vector3<T>& other);
-	inline void operator-= (const Vector3<T>& other);
+	inline void operator+= (const Vector3<T>& other)
+	{
+		val[0] += other[0]; val[1] += other[1]; val[2] += other[2];
+	}
+	inline void operator-= (const Vector3<T>& other)
+	{
+		val[0] -= other[0]; val[1] -= other[1]; val[2] -= other[2];
+	}
 
-	inline void operator*= (const Vector3<T>& other);
-	inline void operator*= (T num);
+	inline void operator*= (const Vector3<T>& other)
+	{
+		val[0] *= other[0]; val[1] *= other[1]; val[2] *= other[2];
+	}
+	inline void operator*= (T num)
+	{
+		val[0] *= num; val[1] *= num; val[2] *= num;
+	}
 
-	inline void operator/= (const Vector3<T>& other);
-	inline void operator/= (T num);
+	inline void operator/= (const Vector3<T>& other)
+	{
+		val[0] /= other[0]; val[1] /= other[1]; val[2] /= other[2];
+	}
+	inline void operator/= (T num)
+	{
+		val[0] /= num; val[1] /= num; val[2] /= num;
+	}
 
 	/* Modifying operators */
-	inline Vector3<T> operator+ (const Vector3<T>& other) const;
-	inline Vector3<T> operator- (const Vector3<T>& other) const;
+	inline Vector3<T> operator+ (const Vector3<T>& other) const
+	{
+		return Vector3<T>(val[0] + other[0], val[1] + other[1], val[2] + other[2]);
+	}
+	inline Vector3<T> operator- (const Vector3<T>& other) const
+	{
+		return Vector3<T>(val[0] - other[0], val[1] - other[1], val[2] - other[2]);
+	}
 
-	inline Vector3<T> operator* (const Vector3<T>& other) const;
-	inline Vector3<T> operator* (T num) const;
+	inline Vector3<T> operator* (const Vector3<T>& other) const
+	{
+		return Vector3<T>(val[0] * other[0], val[1] * other[1], val[2] * other[2]);
+	}
+	inline Vector3<T> operator* (T num) const
+	{
+		return Vector3(val[0] * num, val[1] * num, val[2] * num);
+	}
+	inline friend Vector3<T> operator* (T left, Vector3<T> right) 
+	{ 
+		return Vector3<T>(left * right[0], left * right[1], left * right[2]); 
+	}
 
-	inline Vector3<T> operator/ (const Vector3<T>& other) const;
-	inline Vector3<T> operator/ (T num) const;
+	inline Vector3<T> operator/ (const Vector3<T>& other) const
+	{
+		return Vector3<T>(val[0] / other[0], val[1] / other[1], val[2] / other[2]);
+	}
+	inline Vector3<T> operator/ (T num) const
+	{
+		return Vector3<T>(val[0] / num, val[1] / num, val[2] / num);
+	}
 
 	/* Assignment operators */
-	inline Vector3<T>& operator= (const Vector3<T>& other);
+	inline Vector3<T>& operator= (const Vector3<T>& other)
+	{
+		val[0] = other[0]; val[1] = other[1]; val[2] = other[2];
+		return *this;
+	}
 
 	/* Comparison operators */
-	inline bool operator== (const Vector3<T>& other) const;
-	inline bool operator!= (const Vector3<T>& other) const;
+	inline bool operator== (const Vector3<T>& other) const
+	{
+		return AreEqual(static_cast<float>(val[0]), static_cast<float>(other[0])) == true &&
+			   AreEqual(static_cast<float>(val[1]), static_cast<float>(other[1])) == true &&
+			   AreEqual(static_cast<float>(val[2]), static_cast<float>(other[2])) == true;
+	}
+	inline bool operator!= (const Vector3<T>& other) const
+	{
+		return AreEqual(static_cast<float>(val[0]), static_cast<float>(other[0])) == false ||
+			   AreEqual(static_cast<float>(val[1]), static_cast<float>(other[1])) == false ||
+			   AreEqual(static_cast<float>(val[2]), static_cast<float>(other[2])) == false;
+	}
 
 	/* Negate */
-	inline Vector3<T> operator- (void) const;
+	inline Vector3<T> operator- (void) const
+	{
+		return Vector3<T>(-val[0], -val[1], -val[2]);
+	}
 
 	/* Indexing */
-	inline T& operator[] (int idx);
-	inline const T& operator[] (int idx) const;
+	inline T& operator[] (int idx)
+	{
+		return val[idx];
+	}
+	inline const T& operator[] (int idx) const
+	{
+		return val[idx];
+	}
 
-	/* Must implement here. Otherwise, the compiler cannot find the specific
-	 * template instance, and will report a LNK2019 error */
-	inline friend Vector3<T> operator* (T left, Vector3<T> right) { return Vector3<T>(left * right[0], left * right[1], left * right[2]); }
 
 	/* Static constant instances must be implemented explicitly for each
 	 * template type. Since complier cannot automatically detemine the type
@@ -214,24 +404,60 @@ template<typename T>
 class Vector4
 {
 private:
-	T val[4];
+	T val[4] = {
+		static_cast<T>(0), static_cast<T>(0), 
+		static_cast<T>(0), static_cast<T>(0) };
 
 public:
-	inline Vector4();
-	inline Vector4(T w, T x, T y, T z);
-	inline Vector4(const Vector4<T>& other);
+	inline Vector4() = default;
+	inline Vector4(T w, T x, T y, T z)
+	{
+		val[0] = w, val[1] = x, val[2] = y, val[3] = z;
+	}
+	inline Vector4(const Vector4<T>& other)
+	{
+		val[0] = other[0], val[1] = other[1];
+		val[2] = other[2], val[3] = other[3];
+	}
 
-	/* Convert a vector4 with type "U" to type "T" */
+	/* @brief Convert this instance to a new Vector4 with type "U" */
 	template<typename U>
-	inline static Vector4<T> ConvertType(const Vector4<U>& other);
+	inline Vector4<U> ConvertTo()
+	{
+		return Vector4<T>(
+			static_cast<T>(val[0]), static_cast<T>(val[1]), 
+			static_cast<T>(val[2]), static_cast<T>(val[3]));
+	}
 
-	inline T& operator[] (int idx);
-	inline const T& operator[] (int idx) const;
-	inline bool operator== (const Vector4<T>& other) const;
+	/* Indexing */
+	inline T& operator[] (int idx)
+	{
+		return val[idx];
+	}
+	inline const T& operator[] (int idx) const
+	{
+		return val[idx];
+	}
+
+	/* Assignment */
+	inline bool operator== (const Vector4<T>& other) const
+	{
+		return (
+			AreEqual(static_cast<float>(val[0]), static_cast<float>(other[0])) == true &&
+			AreEqual(static_cast<float>(val[1]), static_cast<float>(other[1])) == true &&
+			AreEqual(static_cast<float>(val[2]), static_cast<float>(other[2])) == true &&
+			AreEqual(static_cast<float>(val[3]), static_cast<float>(other[3])) == true);
+	}
 
 
-	inline Vector4<T> operator* (const Vector4<T>& other) const;
-	inline Vector4<T> operator* (T num) const;
+	inline Vector4<T> operator* (const Vector4<T>& other) const
+	{
+		return Vector4<T>(val[0] * other[0], val[1] * other[1], val[2] * other[2], val[3] * other[3]);
+	}
+	inline Vector4<T> operator* (T num) const
+	{
+		return Vector4(val[0] * num, val[1] * num, val[2] * num, val[3] * num);
+	}
 
 };
 

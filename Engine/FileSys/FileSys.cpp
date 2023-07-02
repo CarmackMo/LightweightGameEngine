@@ -1,18 +1,23 @@
+#include <fstream>
+#include "json/json.h"
 #include "FileSys.h"
+#include "Debugger.h"
+
+using std::ios;
+using std::ifstream;
+using std::string;
 
 void ReadJSONFile()
 {
 	// Using fstream to get the file pointer in "file"
 	ifstream file("JsonTest.json", ios::in);
 	
-	
-
 	Json::Value actualJson;
 	Json::Reader reader;
 
 	if (file.fail())
 	{
-		Engine::Debugger::DEBUG_PRINT("Read file fail!! \n ");
+		DEBUG_PRINT("Read file fail!! \n ");
 	}
 	else
 	{
@@ -22,8 +27,5 @@ void ReadJSONFile()
 		string str = actualJson["Name"].asString();
 
 	}
-
-
-	
 
 }

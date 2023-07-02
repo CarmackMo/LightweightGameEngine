@@ -1,8 +1,12 @@
 #include "Physics.h"
 
-using namespace std;
-using namespace Engine;
-using namespace Engine::Physics;
+namespace Engine
+{
+namespace Physics
+{
+
+using std::vector;
+using namespace Timer;
 
 
 void Physic::Update()
@@ -61,7 +65,6 @@ void Physic::Update()
 }
 
 
-
 PhysicObject* Physic::FindPhysicObj(const SmartPtr<GameObject>& target)
 {
 	WeakPtr<GameObject> obj = WeakPtr<GameObject>(target);
@@ -76,6 +79,7 @@ PhysicObject* Physic::FindPhysicObj(const SmartPtr<GameObject>& target)
 	return nullptr;
 }
 
+
 bool Physic::AddForceToObj(const SmartPtr<GameObject>& object, const Vector2<double>& force)
 {
 	PhysicObject* physicObj = FindPhysicObj(object);
@@ -88,3 +92,9 @@ bool Physic::AddForceToObj(const SmartPtr<GameObject>& object, const Vector2<dou
 	else
 		return false;
 }
+
+
+}//Namespace Physics
+}//Namespace Engine
+
+

@@ -1,6 +1,30 @@
+#include <cassert>
 #include "Input.h"
+#include "Debugger.h"
 
-using namespace Engine::Input;
+namespace Engine
+{
+namespace Input
+{
+
+using std::vector;
+using std::unordered_map;
+
+
+InputManager::InputManager() :
+	readBufferInitSize(128),
+	readBufferSize(0),
+	readBuffer(nullptr)
+{
+	Initialize();
+}
+
+
+InputManager::~InputManager()
+{
+	if (readBuffer)
+		delete[] readBuffer;
+}
 
 
 void InputManager::Initialize()
@@ -89,7 +113,7 @@ void InputManager::Service(HRAWINPUT input)
 			/* Special case */
 			else 
 			{
-				Engine::Debugger::DEBUG_PRINT("Key 0x%02x Flags: 0x%04x\n", rawInput->data.keyboard.VKey, rawInput->data.keyboard.Flags);
+				DEBUG_PRINT("Key 0x%02x Flags: 0x%04x\n", rawInput->data.keyboard.VKey, rawInput->data.keyboard.Flags);
 			}
 		}
 	}
@@ -122,3 +146,41 @@ void InputManager::RemoveOnKeyDownCallback(KeyCode keycode, void(*callback)(void
 		}
 	}
 }
+
+
+void InputManager::ResizeReadBuffer(size_t bytes)
+{
+	assert(bytes);
+
+	if (bytes > readBufferSize)
+	{
+		if (readBuffer != nullptr)
+			delete[] readBuffer;
+
+		readBuffer = new BYTE[bytes];
+		assert(readBuffer);
+
+		readBufferSize = bytes;
+	}
+}
+
+
+void InputManager::AddOnKeyUpCallback(KeyCode keycode, void(*callback)(void))
+{
+	if (keyUpCallbacks.find(keycode) != keyUpCallbacks.end())
+		keyUpCallbacks.at(keycode).push_back(callback);
+	else
+		keyUpCallbacks.emplace(keycode, vector<void(*)(void)>(1, callback));
+}
+
+
+void InputManager::AddOnKeyDownCallback(KeyCode keycode, void(*callback)(void))
+{
+	if (keyDownCallbacks.find(keycode) != keyDownCallbacks.end())
+		keyDownCallbacks.at(keycode).push_back(callback);
+	else
+		keyDownCallbacks.emplace(keycode, vector<void(*)(void)>(1, callback));
+}
+
+}//Namespace Input
+}//Namespace Engine

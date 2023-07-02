@@ -1,6 +1,8 @@
 #pragma once
-#include "Dependency.h"
-#include "DataType.h"
+#include <cassert>
+#include <Windows.h>
+#include <inttypes.h>
+#include "Utility/Singleton.h"
 
 #define CONSTANT_TRAME_TIME
 
@@ -21,8 +23,13 @@ private:
 	LARGE_INTEGER frequency;
 	tick lastFrameTick;
 
-	inline Time();
-	inline ~Time();
+	inline Time() :
+		frequency({ 0 }),
+		lastFrameTick(0)
+	{
+		Initialize();
+	}
+	inline ~Time() = default;
 
 public:
 
@@ -30,23 +37,75 @@ public:
 
 	static double DeltaTime;
 
-	inline void Initialize();
+	inline void Initialize()
+	{
+		BOOL success = QueryPerformanceFrequency(&frequency);
+		assert(success == TRUE);
+		assert(frequency.QuadPart != 0);
+	}
 
-	inline tick GetCurrentTickCounter();
-	inline double GetTimeDiffInSecond(tick startTime, tick endTime);
-	inline double GetTimeDiffInMillisecond(tick startTime, tick endTime);
+	inline tick GetCurrentTickCounter()
+	{
+		if (frequency.QuadPart == 0)
+			Initialize();
 
-	inline double CalculateLastFrameTime();
+		LARGE_INTEGER tick;
+		BOOL success = QueryPerformanceCounter(&tick);
+		assert(success == TRUE);
+		return tick.QuadPart;
+	}
+	inline double GetTimeDiffInSecond(tick startTime, tick endTime)
+	{
+		if (frequency.QuadPart == 0)
+			Initialize();
 
-	inline double ConvertToMilliSecond(double second);
+		return static_cast<double>(endTime - startTime) / frequency.QuadPart;
+	}
+	inline double GetTimeDiffInMillisecond(tick startTime, tick endTime)
+	{
+		return GetTimeDiffInSecond(startTime, endTime) * 1000.0;
+	}
 
-	inline double GetDeltaTime();
-	inline void UpdateDeltaTime();
+	inline double CalculateLastFrameTime()
+	{
+		tick currentTick = GetCurrentTickCounter();
+		double lastFrameTime;
 
+		if (lastFrameTick)
+			lastFrameTime = GetTimeDiffInSecond(lastFrameTick, currentTick);
+		else
+			lastFrameTime = STANDARD_FRAME_TIME_SEC;
+
+		lastFrameTick = currentTick;
+		return lastFrameTime;
+	}
+
+	inline double ConvertToMilliSecond(double second)
+	{
+		return second * 1000.0;
+	}
+
+	inline double GetDeltaTime()
+	{
+		return DeltaTime;
+	}
+	inline void UpdateDeltaTime()
+	{
+		double lastFrameTime = CalculateLastFrameTime();
+
+#if defined (CONSTANT_TRAME_TIME)
+		DeltaTime = STANDARD_FRAME_TIME_SEC;
+#elif defined (CLAMP_FRAME_TIME)
+		if (lastFrameTime > MAX_FRAME_TIME_SEC)
+			DeltaTime = MAX_FRAME_TIME_SEC;
+		else
+			DeltaTime = lastFrameTime;
+#else
+		DeltaTime = lastFrameTime;
+#endif
+	}
 
 };
-
-#include "Timer.inl"
 
 }
 }

@@ -1,11 +1,12 @@
 #pragma once
 #include <string>
+#include <cassert>
 #include "Debugger.h"
-#include "./SharedJobQueue.h"
+#include "./JobQueue.h"
 
 namespace Engine
 {
-namespace JobSystem
+namespace JobSys
 {
 
 /**
@@ -22,25 +23,40 @@ namespace JobSystem
  */
 struct JobRunner
 {
-	SharedJobQueue* jobQueue;
+	JobQueue*		jobQueue;
 	HANDLE			threadHandle;
 	DWORD			threadID;
+	bool			stopRequested;
 #ifdef _DEBUG
 	std::string		threadName;
 #endif
 
-	JobRunner(SharedJobQueue& jobQueue) :
+	JobRunner(JobQueue& jobQueue) :
 		jobQueue(&jobQueue),
 		threadHandle(INVALID_HANDLE_VALUE),
-		threadID(-1)
+		threadID(-1),
+		stopRequested(false)
 	{}
+
+	inline void RequestStop()
+	{
+		stopRequested = true;
+	}
+
+	inline bool IsStopped()
+	{
+		return stopRequested;
+	}
 };
 
 
 /*	@brief Execute the job runner routine, which involves continuously retrieving jobs from 
- *		   the shared job queue and executing them until the job queue is shut down. If there 
- *		   are no jobs in the queue, this function will wait until new jobs are added. 
+ *		   the shared job queue and executing them until the job queue or job runner is 
+ *		   shutted down. If there are no jobs in the queue, this function will wait until 
+ *		   new jobs are added.
+ * 
  *		   This function also serves as the starting address for the job runner thread. 
+ * 
  *	@param "threadInput": the external data passed to this function using "CreateThread()". */
 inline DWORD WINAPI JobRunnerRoutine(void* threadInput)
 {
@@ -51,7 +67,7 @@ inline DWORD WINAPI JobRunnerRoutine(void* threadInput)
 	assert(threadInput);
 	assert(input->jobQueue);
 	const char* threadName = input->threadName.c_str();
-	Debugger::DEBUG_PRINT("JobRunner \"%s\": Starting Queue \"%s\". \n", threadName, input->jobQueue->GetName().c_str());
+	DEBUG_PRINT("JobRunner \"%s\": Starting Queue \"%s\". \n", threadName, input->jobQueue->GetName().c_str());
 #endif
 
 	do
@@ -61,7 +77,7 @@ inline DWORD WINAPI JobRunnerRoutine(void* threadInput)
 		{
 #if defined (_DEBUG)
 			std::string jobName = job->jobName;
-			Debugger::DEBUG_PRINT("JobRunner \"%s\": Starting Job \"%s\" on Processor %d. \n", threadName, jobName.c_str(), GetCurrentProcessorNumber());
+			DEBUG_PRINT("JobRunner \"%s\": Starting Job \"%s\" on Processor %d. \n", threadName, jobName.c_str(), GetCurrentProcessorNumber());
 #endif
 
 			input->jobQueue->StartingJob(job);
@@ -69,22 +85,20 @@ inline DWORD WINAPI JobRunnerRoutine(void* threadInput)
 			input->jobQueue->FinishedJob(job);
 
 #if defined (_DEBUG)
-			Debugger::DEBUG_PRINT("JobRunner \"%s\": Finished Job \"%s\". \n", threadName, jobName.c_str());
+			DEBUG_PRINT("JobRunner \"%s\": Finished Job \"%s\". \n", threadName, jobName.c_str());
 #endif
 		}
 
-		isStopped = input->jobQueue->IsStopped();
+		isStopped = input->stopRequested || input->jobQueue->IsStopped();
 
 	} while (isStopped == false);
 
 #ifdef _DEBUG
-	Debugger::DEBUG_PRINT("JobRunner \"%s\": Shutting down. \n", threadName);
+	DEBUG_PRINT("JobRunner \"%s\": Shutting down. \n", threadName);
 #endif
 	return 0;
 }
 
 
-
-
 }//Namespace Engine
-}//Namespace JobSystem
+}//Namespace JobSys

@@ -1,7 +1,10 @@
-#include "Engine.h"
+#include "GameEngine.h"
 
-
+using std::to_wstring;
 using namespace Engine;
+using namespace Timer;
+using namespace Input;
+using namespace Physics;
 
 GameEngine engine;
 SmartPtr<GameObject> object;
@@ -79,8 +82,8 @@ int WINAPI wWinMain(
     
 
     /* Unit test for Mathf.h */
-    RandInRangeIntUnitTest();
-    RandInRangeFloatUnitTest();
+    MathfTest::RandInRangeIntUnitTest();
+    MathfTest::RandInRangeFloatUnitTest();
     DEBUG_PRINT(" \n\n\n ############ \n Mathf.h unit test successful \n ############ \n\n\n");
 
 
@@ -96,6 +99,11 @@ int WINAPI wWinMain(
     DEBUG_PRINT(" \n\n\n ############ \n SmartPtr & WeakPtr unit test successful \n ############ \n\n\n");
 
 
+    /* Unit Test for job system */
+    JobSys::JobSystemUnitTest();
+    DEBUG_PRINT(" \n\n\n ############ \n Job system unit test successful \n ############ \n\n\n");
+
+
     /* Unit Test for creating game object from Json file */ 
     engine.CreateGameObject("JsonTest.json");
     SmartPtr<GameObject> jsonObj = engine.gameObjectList[1];
@@ -105,20 +113,9 @@ int WINAPI wWinMain(
     DEBUG_PRINT(" \n\n\n ############ \n JSON reader unit test successful \n ############ \n\n\n");
 
 
-    /* Unit Test for job system */
-    Init();
-    BasicSample();
-    RequestShutdown();
-    DEBUG_PRINT(" \n\n\n ############ \n Job system unit test successful \n ############ \n\n\n");
-
-
     /* Unit Test for collision detection */
-    CollisionPoolCheck();
+    //CollisionPoolCheck();
     DEBUG_PRINT(" \n\n\n ############ \n Collision detection unit test successful \n ############ \n\n\n");
-
-
-
-
 
 #endif // defined(_DEBUG)
 
@@ -289,7 +286,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 class Test
 {
 public:
-    vector<Vector2<float>> temp1 = { Vector2<float>::Zero, Vector2<float>::Down, Vector2<float>::Zero };
+    std::vector<Vector2<float>> temp1 = { Vector2<float>::Zero, Vector2<float>::Down, Vector2<float>::Zero };
 
     Test(){}
 

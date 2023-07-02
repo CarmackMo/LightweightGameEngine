@@ -44,9 +44,6 @@
     <Filter Include="Source Files\DataType\Math">
       <UniqueIdentifier>{68d6c5f8-2a46-4382-82a4-349d499d7322}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\DataType\Engine">
-      <UniqueIdentifier>{e775612d-c2d9-427b-8ffd-74073e101489}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\DataType\Utility">
       <UniqueIdentifier>{2e49cf5c-bbf1-4db7-8394-8cf26c30b76a}</UniqueIdentifier>
     </Filter>
@@ -56,6 +53,9 @@
     <Filter Include="Source Files\JobSys\Sync">
       <UniqueIdentifier>{78f34a1a-34ec-4b64-8149-b4b514698523}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\DataType\Engines">
+      <UniqueIdentifier>{e775612d-c2d9-427b-8ffd-74073e101489}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Physics\Physics.cpp">
@@ -64,7 +64,7 @@
     <ClCompile Include="Timer\Timer.cpp">
       <Filter>Source Files\Timer</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Engine.cpp">
+    <ClCompile Include="Engine\GameEngine.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
     <ClCompile Include="Engine\EngineTest.cpp">
@@ -72,9 +72,6 @@
     </ClCompile>
     <ClCompile Include="Input\Input.cpp">
       <Filter>Source Files\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Debugger\Debugger.cpp">
-      <Filter>Source Files\Debugger</Filter>
     </ClCompile>
     <ClCompile Include="JSON\source\json_reader.cpp">
       <Filter>Source Files\JSON\source</Filter>
@@ -94,46 +91,31 @@
     <ClCompile Include="JobSys\JobSys.cpp">
       <Filter>Source Files\JobSys</Filter>
     </ClCompile>
-    <ClCompile Include="JobSys\SharedJobQueue.cpp">
+    <ClCompile Include="JobSys\JobQueue.cpp">
       <Filter>Source Files\JobSys</Filter>
     </ClCompile>
     <ClCompile Include="Collision\Collision.cpp">
       <Filter>Source Files\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="DataType\Math\Matrix.cpp">
-      <Filter>Source Files\DataType\Math</Filter>
-    </ClCompile>
     <ClCompile Include="DataType\Math\Vector.cpp">
       <Filter>Source Files\DataType\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="DataType\Engine\GameObject.cpp">
-      <Filter>Source Files\DataType\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="DataType\Utility\SmartPtrs.cpp">
-      <Filter>Source Files\DataType\Utility</Filter>
     </ClCompile>
     <ClCompile Include="JobSys\Sync\Event.cpp">
       <Filter>Source Files\JobSys\Sync</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DataType\DataType.h">
-      <Filter>Source Files\DataType</Filter>
-    </ClInclude>
     <ClInclude Include="Physics\Physics.h">
       <Filter>Source Files\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Timer\Timer.h">
       <Filter>Source Files\Timer</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Engine.h">
+    <ClInclude Include="Engine\GameEngine.h">
       <Filter>Source Files\Engine</Filter>
     </ClInclude>
     <ClInclude Include="Input\Input.h">
       <Filter>Source Files\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Dependency.h">
-      <Filter>Source Files\Engine</Filter>
     </ClInclude>
     <ClInclude Include="Debugger\Debugger.h">
       <Filter>Source Files\Debugger</Filter>
@@ -183,7 +165,7 @@
     <ClInclude Include="JobSys\JobSys.h">
       <Filter>Source Files\JobSys</Filter>
     </ClInclude>
-    <ClInclude Include="JobSys\SharedJobQueue.h">
+    <ClInclude Include="JobSys\JobQueue.h">
       <Filter>Source Files\JobSys</Filter>
     </ClInclude>
     <ClInclude Include="Collision\Collision.h">
@@ -194,9 +176,6 @@
     </ClInclude>
     <ClInclude Include="DataType\Math\Vector.h">
       <Filter>Source Files\DataType\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="DataType\Engine\GameObject.h">
-      <Filter>Source Files\DataType\Engine</Filter>
     </ClInclude>
     <ClInclude Include="DataType\Utility\SmartPtrs.h">
       <Filter>Source Files\DataType\Utility</Filter>
@@ -222,22 +201,16 @@
     <ClInclude Include="JobSys\Sync\Mutex.h">
       <Filter>Source Files\JobSys\Sync</Filter>
     </ClInclude>
+    <ClInclude Include="DataType\Engines\GameObject.h">
+      <Filter>Source Files\DataType\Engines</Filter>
+    </ClInclude>
+    <ClInclude Include="JobSys\Sync\Semaphore.h">
+      <Filter>Source Files\JobSys\Sync</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Physics\Physics.inl">
-      <Filter>Source Files\Physics</Filter>
-    </None>
-    <None Include="Timer\Timer.inl">
-      <Filter>Source Files\Timer</Filter>
-    </None>
-    <None Include="Input\Input.inl">
-      <Filter>Source Files\Input</Filter>
-    </None>
     <None Include="JSON\source\json_valueiterator.inl">
       <Filter>Source Files\JSON\source</Filter>
-    </None>
-    <None Include="JobSys\JobSys.inl">
-      <Filter>Source Files\JobSys</Filter>
     </None>
   </ItemGroup>
 </Project>
