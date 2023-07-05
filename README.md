@@ -18,12 +18,14 @@ The game engine implements object instances monitor algorithm and runtime garbag
 
 该项目实现了游戏引擎的物理系统，计时系统，动态内存分配系统。游戏引擎的的内存分配系统使用了本人在另一个个人项目中开发的[内存分配器](https://github.com/WaterFriend/MemoryAllocator) 。该项目除了必要的Window平台库（如WIndows.h），图形渲染库（如OpenCV）和C/C++基础库（如C Runtime Library 和 C++ Standard Library）外没有依赖额外的外部库。
 
-该引擎使用了智能指针和所有者-观察者设计模式来实现了对象实例的实时监控和运行垃圾的动态回收。
++ 使用了C++多态，C++模板实现了智能指针，并以此实现了对象引用的实时监控和运行时内存的动态回收。
++ 使用Windows API 实现了多线程任务队列系统，该系统支持根据阻塞的任务数量动态增删任务执行线程，依次优化任务队列的执行性能。
 
-在后续的开发中将会为引擎加入渲染系统和UI系统。
+
+在后续的开发中将会为引擎加入碰撞检测系统，渲染系统和UI系统。
 
 
-## Catalog
+## Catalog / 目录
 
 + [Math](#math)
     - [Mathf](#mathf)
@@ -32,6 +34,7 @@ The game engine implements object instances monitor algorithm and runtime garbag
 + [Utility](#utility)
     - [Singleton](#singleton)
     - [Smart Pointers](#smartptrs)
++ [Job System](#jobsys)
 
 
 
@@ -518,6 +521,17 @@ This file implements smart pointers that are commonly used in dynamic memory res
     template <class U> WeakPtr<T>& operator=(WeakPtr<U>&& other);
     template <class U> WeakPtr<T>& operator=(const SmartPtr<U>& other);
     ```
-        
+
+
+
+
+<br></br>
+<br></br>
+---
+<a id="jobsys"></a>
+
+# Job System
+
+Under developing...
 
 <br></br>

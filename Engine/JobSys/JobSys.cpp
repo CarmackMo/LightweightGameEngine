@@ -4,9 +4,9 @@
 namespace Engine
 {
 
-using std::string;
-using std::function;
 using std::bind;
+using std::function;
+using std::string;
 using std::vector;
 using std::map;
 using namespace JobSys;
@@ -14,7 +14,7 @@ using namespace JobSys;
 
 
 
-void JobSystem::JobFlowControl(void)
+void JobSystem::JobFlowControl()
 {
 	do
 	{
