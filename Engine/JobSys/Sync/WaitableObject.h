@@ -19,8 +19,8 @@ public:
 	WaitableObject() : handle(INVALID_HANDLE_VALUE) {}
 	virtual ~WaitableObject() {}
 
-	WaitableObject(const WaitableObject& i_other) = delete;
-	WaitableObject& operator=(const WaitableObject& i_other) = delete;
+	WaitableObject(const WaitableObject& other) = delete;
+	WaitableObject& operator=(const WaitableObject& other) = delete;
 
 	HANDLE GetHandle(void) { return handle; }
 };

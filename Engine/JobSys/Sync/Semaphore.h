@@ -25,10 +25,9 @@ public:
 	{
 		assert(initCount <= maxCount);
 
-		wchar_t* wChars = nullptr;
-
 		/* Maps the input character string to a UTF-16 (wide character) string. Firstly,
 		 * calcualte the buffer size, then create the buffer and map the string to buffer. */
+		wchar_t* wChars = nullptr;
 		int bytesNeeded = MultiByteToWideChar(CP_ACP, 0, name, -1, wChars, -1);
 		if (bytesNeeded)
 		{
@@ -46,8 +45,8 @@ public:
 		assert(result == TRUE);
 	}
 
-	Semaphore(const Semaphore&) = delete;
-	Semaphore& operator=(const Semaphore&) = delete;
+	Semaphore(const Semaphore& other) = delete;
+	Semaphore& operator=(const Semaphore& other) = delete;
 
 	void Increment(unsigned int count = 1)
 	{

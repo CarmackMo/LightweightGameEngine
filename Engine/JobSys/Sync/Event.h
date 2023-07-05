@@ -44,8 +44,8 @@ public:
 	ManualResetEvent(bool initiallySignaled = false, const char* name = nullptr);
 	~ManualResetEvent();
 
-	ManualResetEvent(const ManualResetEvent&) = delete;
-	ManualResetEvent& operator=(const ManualResetEvent&) = delete;
+	ManualResetEvent(const ManualResetEvent& other) = delete;
+	ManualResetEvent& operator=(const ManualResetEvent& other) = delete;
 
 	/*	@brief Reset the event. */
 	void Reset();
@@ -87,8 +87,8 @@ public:
 	AutoResetEvent(bool initiallySignaled = false, const char* name = nullptr);
 	~AutoResetEvent();
 
-	AutoResetEvent(const AutoResetEvent&) = delete;
-	AutoResetEvent& operator=(const AutoResetEvent&) = delete;
+	AutoResetEvent(const AutoResetEvent& other) = delete;
+	AutoResetEvent& operator=(const AutoResetEvent& other) = delete;
 
 	/*	@brief Waits until the event is signaled or the time-out interval elapses. Return 
 	 *		   true if the event is signaled, otherwise return false. */
