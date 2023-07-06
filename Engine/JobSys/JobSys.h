@@ -21,7 +21,7 @@ struct JobFlowManager
 	bool idleFlag = false;
 
 	static const DWORD interval = 100;
-	static const uint32_t threshold = 50;
+	static const uint32_t threshold = 25;
 
 	JobFlowManager(bool isAuto) : isAuto(isAuto)
 	{}
@@ -44,11 +44,14 @@ struct JobQueueManager
 };
 
 
-
+/** TODO: @brief The job system will have one private job queue by default, to run flow 
+ *		  controller routine. The default job queue has one job runner only.
+ */
 class JobSystem
 {
 private:
 	bool												stopRequested = false;
+	JobSys::HashedString								defaultQueueName;
 	std::map<JobSys::HashedString, JobQueueManager*>	jobQueueMap;
 
 	void JobFlowControl();
@@ -63,8 +66,10 @@ public:
 	/* @brief Create a new job queue with the given name and return the hashed job queue name.
 	 *		  The hashed name serves as a unique identifier for the new job queue. If a job 
 	 *		  queue with the same hashed name already exists, return the hashed name directly
-	 *		  instead. */
-	JobSys::HashedString CreateQueue(const std::string& queueName, unsigned int runnerNum, bool autoFlowControl = false);
+	 *		  instead. 
+	 *		  A job queue must have at least one job runner. If the user creates a job queue 
+	 *		  with a "runnerNum" value of 0, this function will automatically create a job runner. */
+	JobSys::HashedString CreateQueue(const std::string& queueName, unsigned int runnerNum = 1, bool autoFlowControl = false);
 
 	/* @brief Add a job runner thread to the specified job queue. */
 	void AddRunnerToQueue(JobQueueManager* manager);
@@ -96,8 +101,6 @@ public:
 	 *		  if the job queue does not exist. */
 	JobQueueManager* GetQueue(const JobSys::HashedString& queueName);
 
-	JobSys::HashedString GetDefaultQueue();
-
 	/* @brief Check if the specified job queue exists and has unfinished jobs. */
 	bool IsQueueHasJobs(const JobSys::HashedString& queueName);
 
@@ -121,8 +124,9 @@ inline void JobSystemUnitTest()
 	jobSystem.Init();
 
 	/* Test 1: Testing non-blocking tasks in job system. Testing ordinary job system operations. */
-	DEBUG_PRINT("Starting Test 1");
+	DEBUG_PRINT("Starting Test 1 \n");
 	{
+		JobSys::HashedString queueName = jobSystem.CreateQueue("SimulPrinter", 2, false);
 
 		for (int num = 0; num < 4; num++)
 		{
@@ -132,13 +136,13 @@ inline void JobSystemUnitTest()
 			if (num == 2)
 			{
 				Sleep(100);
-				jobSystem.RemoveRunnerFromQueue(jobSystem.GetDefaultQueue());
+				jobSystem.RemoveRunnerFromQueue(queueName);
 
 			}
 
 			/* Add jobs to job queue. */
 			bool success = jobSystem.AddJobToQueue(
-				jobSystem.GetDefaultQueue(),
+				queueName,
 				[num]() {
 					for (int i = 0; i < (6 + 4 * num); i++)
 					{
@@ -153,14 +157,14 @@ inline void JobSystemUnitTest()
 			assert(success == true);
 		}
 
-		jobSystem.GetQueue(jobSystem.GetDefaultQueue())->jobStatus.WaitForZeroJobsLeft();
+		jobSystem.GetQueue(queueName)->jobStatus.WaitForZeroJobsLeft();
 
-		bool success = jobSystem.RemoveQueue(jobSystem.GetDefaultQueue());
+		bool success = jobSystem.RemoveQueue(queueName);
 		assert(success == true);
 	}
 
 	/* Test 2: Test blocking tasks in job system. Testing components: Mutex, ScopLock, etc. */
-	DEBUG_PRINT("\n\nStarting Test 2");
+	DEBUG_PRINT("\n\nStarting Test 2 \n");
 	{
 		/* Prepare for testing data */
 		struct JobSysTester
@@ -206,24 +210,24 @@ inline void JobSystemUnitTest()
 		};
 
 		/* Proceed testing */
-		JobSys::HashedString queuName = jobSystem.CreateQueue("TesterLoader", 2);
+		JobSys::HashedString queueName = jobSystem.CreateQueue("TesterLoader", 2, false);
 		
 		for (int i = 0; i < 5; i++)
 		{
 			jobSystem.AddJobToQueue(
-				queuName,
+				queueName,
 				adder,
 				"Add Tester, Batch: " + std::to_string(i)
 			);
 
 			jobSystem.AddJobToQueue(
-				queuName,
+				queueName,
 				mover,
 				"Move Tester, Batch: " + std::to_string(i)
 			);
 		}
 
-		jobSystem.GetQueue("TesterLoader")->jobStatus.WaitForZeroJobsLeft();
+		jobSystem.GetQueue(queueName)->jobStatus.WaitForZeroJobsLeft();
 		
 		/* Clean up remaining data */ 
 		mover();
@@ -233,7 +237,38 @@ inline void JobSystemUnitTest()
 		}
 
 		delete allTester, newTester, mutex;
+		bool success = jobSystem.RemoveQueue(queueName);
+		assert(success == true);
 	}
+
+
+	/* Test 3: Test dynamic job flow controller. */
+	DEBUG_PRINT("\n\nStarting Test 3 \n");
+	{
+		std::function<void()> job = []() {
+			Sleep(150);
+		};
+
+		JobSys::HashedString queueName = jobSystem.CreateQueue("JobFlowController", 1, true);
+
+		
+		for (int i = 0; i < 3; i++)
+		{
+			for (int j = 0; j < 35; j++)
+			{
+				jobSystem.AddJobToQueue(
+					queueName, 
+					job, 
+					"Batch: " + std::to_string(i) + ", Job ID: " + std::to_string(j));
+			}
+
+			Sleep(3000);
+		}
+
+		jobSystem.GetQueue(queueName)->jobStatus.WaitForZeroJobsLeft();
+	}
+
+
 
 	jobSystem.RequestStop();
 }

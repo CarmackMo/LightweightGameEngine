@@ -24,6 +24,10 @@ void JobSystem::JobFlowControl()
 			JobQueueManager* manager = iter->second;
 			if (manager != nullptr && manager->jobFlowManager.isAuto == true)
 			{
+				/* If the amount of waiting jobs in current job queue is larger then overflow threshold.
+				 * Case 1: the overflow flag is TURE, add one more job runner to the queue and reset the
+				 *		   overflow flag.
+				 * Case 2: the overflow flat is FALSE, set the flag to TRUE. */
 				if (manager->jobStatus.JobsLeft() > JobFlowManager::threshold)
 				{
 					if (manager->jobFlowManager.overflowFlag == true)
@@ -34,6 +38,10 @@ void JobSystem::JobFlowControl()
 					else
 						manager->jobFlowManager.overflowFlag = true;
 				}
+				/* If the amount of waiting jobs in current job queue is less then zero.,
+				 * Case 1: the idle flag is TRUE, remove one job runner form the queue and reset the
+				 *		   flag.
+				 * Case 2: the idle flag is FALSE, set the flag to TRUE. */
 				else if (manager->jobStatus.JobsLeft() == 0)
 				{
 					if (manager->jobFlowManager.idleFlag == true)
@@ -62,8 +70,8 @@ void JobSystem::JobFlowControl()
 
 void JobSystem::Init()
 {
-	CreateQueue("Default", 2, false);
-	AddJobToQueue(GetDefaultQueue(), bind(&JobSystem::JobFlowControl, this), "Job Flow Control Routine");
+	defaultQueueName = CreateQueue("Default", 1, false);
+	AddJobToQueue(defaultQueueName, bind(&JobSystem::JobFlowControl, this), "Job Flow Control Routine");
 }
 
 
@@ -76,6 +84,7 @@ HashedString JobSystem::CreateQueue(const string& queueName, unsigned int runner
 		JobQueueManager* manager = new JobQueueManager(queueName, autoFlowControl);
 		jobQueueMap.emplace(hashedName, manager);
 
+		runnerNum = (runnerNum == 0) ? 1 : runnerNum;
 		for (unsigned int i = 0; i < runnerNum; i++)
 			this->AddRunnerToQueue(manager);
 
@@ -154,8 +163,16 @@ bool JobSystem::RemoveRunnerFromQueue(JobQueueManager* manager)
 		JobRunner* runner = manager->jobRunnerList[0];
 		runner->RequestStop();
 
-		DWORD result = WaitForSingleObject(runner->threadHandle, INFINITE);
+		/* The job queue may not have any jobs, and the job runner that is going to be removed could be
+		 * stuck in a deadlock state. To resolve this, we need to awaken the conditional variable of the 
+		 * job queue and allow the job runner to exit the deadlock. */
+		manager->jobQueue.WakeRunners();
+
+		DWORD result = WaitForSingleObject(runner->threadHandle, 3000);
 		assert(result == WAIT_OBJECT_0);
+
+		BOOL success = CloseHandle(runner->threadHandle);
+		assert(success == TRUE);
 
 		manager->jobRunnerList.erase(manager->jobRunnerList.begin());
 		delete runner;
@@ -175,23 +192,6 @@ bool JobSystem::RemoveRunnerFromQueue(const HashedString& queueName)
 		return RemoveRunnerFromQueue(manager);
 	else
 		return false;
-
-
-	//if (manager != nullptr && manager->jobRunnerList.size() > 1)
-	//{
-	//	JobRunner* runner = manager->jobRunnerList[0];
-	//	runner->RequestStop();
-
-	//	DWORD result = WaitForSingleObject(runner->threadHandle, INFINITE);
-	//	assert(result == WAIT_OBJECT_0);
-
-	//	manager->jobRunnerList.erase(manager->jobRunnerList.begin());
-	//	delete runner;
-	//	
-	//	return true;
-	//}
-	//else
-	//	return false;
 }
 
 
@@ -246,12 +246,6 @@ JobQueueManager* JobSystem::GetQueue(const HashedString& queueName)
 }
 
 
-HashedString JobSystem::GetDefaultQueue()
-{
-	return HashedString("Default");
-}
-
-
 bool JobSystem::IsQueueHasJobs(const HashedString& queueName)
 {
 	JobQueueManager* manager = GetQueue(queueName);
@@ -274,6 +268,13 @@ void JobSystem::RequestStop()
 	vector<HANDLE> allThreads;
 	vector<JobRunner*> allRunners;
 	vector<JobQueueManager*> allManagers;
+
+	/* The job flow controller may still be in the process of deleting job runners. It is necessary
+	 * to wait for the controller to complete the deletion before stopping the entire system.. */
+	JobQueueManager* defaultQueue = GetQueue(defaultQueueName);
+	defaultQueue->jobQueue.RequestStop();
+	DWORD temp = WaitForSingleObject(defaultQueue->jobRunnerList[0]->threadHandle, INFINITE);
+	assert(temp == WAIT_OBJECT_0);
 
 	/* Request all job queues to stop. Record all JobRunner objects, JobQueueManager objects, and
 	 * job runner threads for later termination. */
@@ -313,6 +314,12 @@ void JobSystem::RequestStop()
 	assert(result == WAIT_OBJECT_0);
 
 	/* Delete all remaining JobRunner and JobQueueManager objects. */
+	for (size_t i = 0; i < allThreads.size(); i++)
+	{
+		BOOL success = CloseHandle(allThreads[i]);
+		assert(success == TRUE);
+	}
+
 	for (size_t i = 0; i < allRunners.size(); i++)
 		delete allRunners[i];
 

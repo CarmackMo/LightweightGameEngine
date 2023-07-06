@@ -121,6 +121,8 @@ public:
 	bool IsStopped() const;
 	bool HasJobs() const;
 
+	void WakeRunners();
+
 	std::string GetName() const;
 };
 
