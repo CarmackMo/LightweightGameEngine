@@ -165,6 +165,12 @@ bool JobQueue::HasJobs() const
 }
 
 
+void JobQueue::WakeRunners()
+{
+	WakeAllConditionVariable(&queueNotEmpty);
+}
+
+
 string JobQueue::GetName() const
 {
 	return queueName;

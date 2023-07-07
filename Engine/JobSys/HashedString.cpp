@@ -47,7 +47,7 @@ HashedString& HashedString::operator=(const HashedString& other)
 #if defined(_DEBUG)
 	if (str)
 		free(str);
-	this->str = other.str;
+	this->str = _strdup(other.str);
 #endif
 
 	return *this;

@@ -1,3 +1,4 @@
+#include <crtdbg.h>
 #include "GameEngine.h"
 
 using std::to_wstring;
@@ -166,7 +167,8 @@ int WINAPI wWinMain(
     object.~SmartPtr();
     /**/
 
-
+    //#define _CRTDBG_MAP_ALLOC
+    _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
     _CrtDumpMemoryLeaks();
 
     return 0;
