@@ -12,8 +12,6 @@ using std::map;
 using namespace JobSys;
 
 
-
-
 void JobSystem::JobFlowControl()
 {
 	do
@@ -24,38 +22,39 @@ void JobSystem::JobFlowControl()
 			JobQueueManager* manager = iter->second;
 			if (manager != nullptr && manager->jobFlowManager.isAuto == true)
 			{
-				/* If the amount of waiting jobs in current job queue is larger then overflow threshold.
-				 * Case 1: the overflow flag is TURE, add one more job runner to the queue and reset the
-				 *		   overflow flag.
-				 * Case 2: the overflow flat is FALSE, set the flag to TRUE. */
-				if (manager->jobStatus.JobsLeft() > JobFlowManager::threshold)
+				/* If the amount of waiting jobs in current job queue is more than overflow threshold.
+				 * Case 1: the "isTooMany" flag is TURE, add one more job runner to the queue and reset
+				 *		   the "isTooMany" flag.
+				 * Case 2: the "isTooMany" flat is FALSE, set the flag to TRUE. */
+				if (manager->jobStatus.JobsLeft() > JobFlowManager::upperTHR)
 				{
-					if (manager->jobFlowManager.overflowFlag == true)
+					if (manager->jobFlowManager.isTooMany == true)
 					{
 						AddRunnerToQueue(manager);
-						manager->jobFlowManager.overflowFlag = false;
+						manager->jobFlowManager.isTooMany = false;
 					}
 					else
-						manager->jobFlowManager.overflowFlag = true;
+						manager->jobFlowManager.isTooMany = true;
 				}
-				/* If the amount of waiting jobs in current job queue is less then zero.,
-				 * Case 1: the idle flag is TRUE, remove one job runner form the queue and reset the
-				 *		   flag.
-				 * Case 2: the idle flag is FALSE, set the flag to TRUE. */
-				else if (manager->jobStatus.JobsLeft() == 0)
+				/* If the total amount of jobs in current job queue is more than the number of job 
+				 * runners in current job queue.
+				 * Case 1: the "isTooFew" flag is TRUE, remove one job runner form the queue and reset 
+				 *		   the "isTooFew" flag.
+				 * Case 2: the "isTooFew" flag is FALSE, set the flag to TRUE. */
+				else if (manager->jobStatus.JobsLeft() < manager->jobRunnerList.size())
 				{
-					if (manager->jobFlowManager.idleFlag == true)
+					if (manager->jobFlowManager.isTooFew == true)
 					{
 						RemoveRunnerFromQueue(manager);
-						manager->jobFlowManager.idleFlag = false;
+						manager->jobFlowManager.isTooFew = false;
 					}
 					else
-						manager->jobFlowManager.idleFlag = true;
+						manager->jobFlowManager.isTooFew = true;
 				}
 				else
 				{
-					manager->jobFlowManager.overflowFlag = false;
-					manager->jobFlowManager.idleFlag = false;
+					manager->jobFlowManager.isTooMany = false;
+					manager->jobFlowManager.isTooFew = false;
 				}
 			}
 

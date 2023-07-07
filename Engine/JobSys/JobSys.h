@@ -1,5 +1,6 @@
 #pragma once
 #include <map>
+#include <vector>
 #include <iostream>
 #include <Windows.h>
 #include <processthreadsapi.h>
@@ -10,18 +11,17 @@
 #include "Debugger.h"
 
 
-
 namespace Engine
 {
 
 struct JobFlowManager
 {
 	bool isAuto;
-	bool overflowFlag = false;
-	bool idleFlag = false;
+	bool isTooMany = false;
+	bool isTooFew  = false;
 
 	static const DWORD interval = 100;
-	static const uint32_t threshold = 25;
+	static const uint32_t upperTHR = 25;
 
 	JobFlowManager(bool isAuto) : isAuto(isAuto)
 	{}
@@ -199,8 +199,7 @@ inline void JobSystemUnitTest()
 			{
 				for (std::vector<JobSysTester*>::iterator iter = newTester->begin(); iter != newTester->end(); iter++)
 				{
-					//Engine::Debugger::DEBUG_PRINT("Moving Obj: %s \n", (*iter)->name.c_str());
-					DEBUG_PRINT("Moving Obj \n");
+					DEBUG_PRINT("Moving Obj %s \n", (*iter)->name.c_str());
 					allTester->push_back((*iter));
 					Sleep(10);
 				}
@@ -236,11 +235,12 @@ inline void JobSystemUnitTest()
 			delete (*iter);
 		}
 
-		delete allTester, newTester, mutex;
+		delete allTester;
+		delete newTester;
+		delete mutex;
 		bool success = jobSystem.RemoveQueue(queueName);
 		assert(success == true);
 	}
-
 
 	/* Test 3: Test dynamic job flow controller. */
 	DEBUG_PRINT("\n\nStarting Test 3 \n");
@@ -267,8 +267,6 @@ inline void JobSystemUnitTest()
 
 		jobSystem.GetQueue(queueName)->jobStatus.WaitForZeroJobsLeft();
 	}
-
-
 
 	jobSystem.RequestStop();
 }
