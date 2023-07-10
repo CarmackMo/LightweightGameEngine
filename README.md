@@ -40,7 +40,6 @@ The game engine implements object instances monitor algorithm and runtime garbag
 
 
 <br></br>
----
 <a id="math"></a>
 
 # Math
@@ -240,7 +239,6 @@ This file contains the definitions and implementations of data structures known 
 
 <br></br>
 <br></br>
----
 <a id="utility"></a>
 
 # Utility
@@ -527,11 +525,28 @@ This file implements smart pointers that are commonly used in dynamic memory res
 
 <br></br>
 <br></br>
----
 <a id="jobsys"></a>
 
 # Job System
 
-Under developing...
+## Introduction
+
+
+1.	任务系统在window api的基础上，对其进行了封装，从而实现了一个使用多线程和共享资源进行任务执行和任务管理的任务系统。
+2.	任务系统提供了多种API供用户管理任务以及任务系统自身。用户可以根据自己的程序需求，向任务系统新增新的任务队列，并把任务指派给指定的任务队列。此外，用户还可以根据任务系统和任务队列的负载，从任务系统中删除任务队列，或从指定的任务队列中删除任务执行者，从而节省系统资源。
+3.	此外任务系统实现了任务负载自动调节机制。用户在创建新的任务队列时，可以指明任务队列是否需要启动自动调节机制。自动调节机制会根据任务队列中的任务数量来自动增加或删减任务执行者，从而达到系统资源利用效率和任务执行效率两者的最大化平衡。
+4.	在进一步讲解任务系统前，需要先对任务系统的各个底层部件进行讲解。
+5.	
+
+
+
+
+1.	任务系统是由多个任务队列组成。
+2.	任务队列可被视为任务系统中任务调度的基础单位。
+3.	每个任务队列都管理着多个jobrunner。Jobrunner是每个任务队列中，任务执行的基础单位。每个jobrunner维护着一个通过window api开启的线程用以执行任务。
+4.	此外每个任务队列会维护着一个jobstatus实例，用以记录任务执行状态。
+5.	任务系统提供了多个API供用户对任务系统进行管理。用户可以根据实际任务需求来创建新的任务队列。
+ 
+
 
 <br></br>

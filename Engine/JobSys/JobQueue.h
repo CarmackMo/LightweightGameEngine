@@ -48,7 +48,7 @@ struct Job
 
 /**
  *	TODO: @brief This class serves as the control block that manage the status of all 
- *		   queued jobs. 
+ *		   queued jobs. Job count is consist of both waiting jobs and executing jobs.
  
  *		   When all registered jobs are finished (i.e. jobCount is zero), 
  *		   JobStatus class will signal a event to tell all waiting thread that current
@@ -74,7 +74,7 @@ public:
 
 	uint32_t JobsLeft() const;
 
-	/* @brief Set the current thread waiting until there is no job in the job queue. */
+	/* @brief Set the calling thread waiting until there is no job in the job queue. */
 	void WaitForZeroJobsLeft(int waitMS = INFINITE);
 };
 

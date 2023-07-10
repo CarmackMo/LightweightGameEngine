@@ -26,7 +26,7 @@ void JobSystem::JobFlowControl()
 				 * Case 1: the "isTooMany" flag is TURE, add one more job runner to the queue and reset
 				 *		   the "isTooMany" flag.
 				 * Case 2: the "isTooMany" flat is FALSE, set the flag to TRUE. */
-				if (manager->jobStatus.JobsLeft() > JobFlowManager::upperTHR)
+				if (manager->jobStatus.JobsLeft() > (manager->jobRunnerList.size() + JobFlowManager::upperTHR))
 				{
 					if (manager->jobFlowManager.isTooMany == true)
 					{
@@ -36,12 +36,13 @@ void JobSystem::JobFlowControl()
 					else
 						manager->jobFlowManager.isTooMany = true;
 				}
-				/* If the total amount of jobs in current job queue is more than the number of job 
-				 * runners in current job queue.
+				/* If the total amount of jobs in current job queue is less than lower threshold, or equals
+				 * to zero. 
 				 * Case 1: the "isTooFew" flag is TRUE, remove one job runner form the queue and reset 
 				 *		   the "isTooFew" flag.
 				 * Case 2: the "isTooFew" flag is FALSE, set the flag to TRUE. */
-				else if (manager->jobStatus.JobsLeft() < manager->jobRunnerList.size())
+				else if (manager->jobStatus.JobsLeft() < (manager->jobRunnerList.size() - JobFlowManager::lowerTHR) ||
+						 manager->jobStatus.JobsLeft() == 0)
 				{
 					if (manager->jobFlowManager.isTooFew == true)
 					{

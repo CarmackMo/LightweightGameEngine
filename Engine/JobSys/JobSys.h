@@ -22,6 +22,7 @@ struct JobFlowManager
 
 	static const DWORD interval = 100;
 	static const uint32_t upperTHR = 25;
+	static const uint32_t lowerTHR = 25;
 
 	JobFlowManager(bool isAuto) : isAuto(isAuto)
 	{}
