@@ -529,15 +529,25 @@ This file implements smart pointers that are commonly used in dynamic memory res
 
 # Job System
 
-## Introduction
+Job system is designed to utilize shared resources and multi-threads for tasks execution and managements by leveraging and encapsulating Windows APIs.
+
+The job system provides a range of APIs for users to manage tasks and the job system itself. Users can create job queues within the job system and assign tasks to specific queues based on the runtime demand of their program. Additionally, users can remove redundant job queues from the job system and remove idle job runners from specific job queues based on the workload of job system and each job queue, so as to optimize resource utilization.
+
+Furthermore, the job system implements an automatic workload adjustment mechanism. When creating a new job queue, users can choose to apply this mechanism. The adjustment mechanism dynamically creates or removes job runners based on the number of pending jobs in each job queue it manages. This ensures an optimized balance between efficient resource utilization and task execution efficiency.
+
+Before delving deeper into the job system, it is essential to introduce its underlying components first.
+
+## Components
+
+The job system is implemented using following components. Note that some of the underlying components (like `Mutex`, `Events`, `ScopeLock`, etc) are opened source for 
 
 
-1.	任务系统在window api的基础上，对其进行了封装，从而实现了一个使用多线程和共享资源进行任务执行和任务管理的任务系统。
-2.	任务系统提供了多种API供用户管理任务以及任务系统自身。用户可以根据自己的程序需求，向任务系统新增新的任务队列，并把任务指派给指定的任务队列。此外，用户还可以根据任务系统和任务队列的负载，从任务系统中删除任务队列，或从指定的任务队列中删除任务执行者，从而节省系统资源。
-3.	此外任务系统实现了任务负载自动调节机制。用户在创建新的任务队列时，可以指明任务队列是否需要启动自动调节机制。自动调节机制会根据任务队列中的任务数量来自动增加或删减任务执行者，从而达到系统资源利用效率和任务执行效率两者的最大化平衡。
-4.	在进一步讲解任务系统前，需要先对任务系统的各个底层部件进行讲解。
-5.	
 
++ [Waitable Objects](#waitable)
++ [Hashed String](#hashedstring)
++ [Job Queue](#jobqueue)
++ [Job Runner](#jobrunner)
++ [Job System](#jobsys)
 
 
 
@@ -546,6 +556,8 @@ This file implements smart pointers that are commonly used in dynamic memory res
 3.	每个任务队列都管理着多个jobrunner。Jobrunner是每个任务队列中，任务执行的基础单位。每个jobrunner维护着一个通过window api开启的线程用以执行任务。
 4.	此外每个任务队列会维护着一个jobstatus实例，用以记录任务执行状态。
 5.	任务系统提供了多个API供用户对任务系统进行管理。用户可以根据实际任务需求来创建新的任务队列。
+
+一些底层部件也可以被用户用来  
  
 
 
