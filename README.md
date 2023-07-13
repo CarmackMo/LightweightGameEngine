@@ -539,15 +539,33 @@ Before delving deeper into the job system, it is essential to introduce its unde
 
 ## Components
 
-The job system is implemented using following components. Note that some of the underlying components (like `Mutex`, `Events`, `ScopeLock`, etc) are opened source for 
-
-
+The job system is implemented using following components. Note that certain underlying components, such as `Mutex`, `Events`, `ScopeLock`, etc., are opened for users and can be customized by users for their specific development needs.
 
 + [Waitable Objects](#waitable)
 + [Hashed String](#hashedstring)
 + [Job Queue](#jobqueue)
 + [Job Runner](#jobrunner)
 + [Job System](#jobsys)
+
+
+<a id="waitable"></a>
+
++ ### Waitable Objects
+
+    - #### WaitableObject.h
+
+        This class encapsulaties Windows APIs for synchronizable objects such as *Events*, *Threads*, *Mutexes*. It serves as an API contract for all objects in the game engine that are intended to be thread-waitable and synchronizable.
+
+        Instances of this class maintain a handler to a Windows synchronizable object. It is the user's responsibility to design a customized constructor and destructor to properly manage the lifecycle of the handler, ensuring proper initialization and cleanup as needed.
+
+    - #### Event.h
+    
+
+
+
+
+
+
 
 
 
