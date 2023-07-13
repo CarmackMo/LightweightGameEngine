@@ -35,6 +35,7 @@ The game engine implements object instances monitor algorithm and runtime garbag
     - [Singleton](#singleton)
     - [Smart Pointers](#smartptrs)
 + [Job System](#jobsys)
++ [Collision Detection](#collision)
 
 
 
@@ -569,14 +570,16 @@ The job system is implemented using following components. Note that certain unde
 
 
 
-1.	任务系统是由多个任务队列组成。
-2.	任务队列可被视为任务系统中任务调度的基础单位。
-3.	每个任务队列都管理着多个jobrunner。Jobrunner是每个任务队列中，任务执行的基础单位。每个jobrunner维护着一个通过window api开启的线程用以执行任务。
-4.	此外每个任务队列会维护着一个jobstatus实例，用以记录任务执行状态。
-5.	任务系统提供了多个API供用户对任务系统进行管理。用户可以根据实际任务需求来创建新的任务队列。
 
-一些底层部件也可以被用户用来  
  
 
+
+<br></br>
+<br></br>
+<a id="collision"></a>
+
+# Collision Detection
+
+Under development...
 
 <br></br>
