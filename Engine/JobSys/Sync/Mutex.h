@@ -6,18 +6,31 @@ namespace Engine
 {
 
 /**
- *	@brief This class creates or opens a named or unnamed mutex object.
+ *	@brief A mutex object is a synchronization object whose state is set to signaled when it is 
+ *		   not owned by any thread, and nonsignaled when it is owned. Only one thread at a time 
+ *		   can own a mutex object.
+ * 
+ *		   The mutex object is useful in coordinating mutually exclusive access to a shared 
+ *		   resource. Note that critical section objects provide synchronization similar to that 
+ *		   provided by mutex objects, except that critical section objects can be used only by 
+ *		   the threads of a single process.
+ * 
+ *		   The creating thread of the mutex can set the "takeOwnership" flag to request initial 
+ *		   ownership of the mutex. Otherwise, a thread must use the "Acquire()" functions to 
+ *		   request ownership. If the mutex object is owned by another thread, the "Acquire()" 
+ *		   function blocks the requesting thread until the owning thread releases the mutex object.
+ *		   If more than one thread is waiting on a mutex, a waiting thread is selected. Do not 
+ *		   assume a first-in, first-out (FIFO) order.
+ * 
+ *		   After a thread obtains ownership of a mutex, it can specify the same mutex in repeated 
+ *		   calls to the "Acquire()" function without blocking its execution. This prevents a 
+ *		   thread from deadlocking itself while waiting for a mutex that it already owns.
  *		   
  *		   Two or more processes can create the same named mutex. The first process actually 
  *		   creates the mutex, and subsequent processes with sufficient access rights simply 
  *		   open a handle to the existing mutex.
- *		   
- *		   The state of a mutex object is signaled when it is not owned by any thread. The 
- *		   creating thread can use the "takeOwnership" flag to request initial ownership of 
- *		   the mutex. Otherwise, a thread must use one of the wait functions to request 
- *		   ownership. When the mutex's state is signaled, one waiting thread is granted 
- *		   ownership, the mutex's state changes to nonsignaled, and the wait function returns. 
- *		   Only one thread can own a mutex at any given time.
+ * 
+ *		   See https://learn.microsoft.com/en-us/windows/win32/sync/mutex-objects for more detail.
  */
 class Mutex : public WaitableObject
 {
@@ -58,12 +71,14 @@ public:
 	bool CanAcquire()
 	{
 		/* Return "WAIT_OBJECT_0" if the mutex is acquired by the calling thread
-		 * Return "WAIT_TIMEOUT"	*/
+		 * Return "WAIT_TIMEOUT" if the mutex is acquired by other thead.	*/
 		DWORD result = WaitForSingleObject(handle, 0);
 		return result == WAIT_OBJECT_0;
 	}
 
-	/* @brief Try to acquire the mutex ownership within "waitMS" interval. */
+	/* @brief Try to acquire the mutex ownership within "waitMS" interval. If the mutex
+	 *		  is not available, the calling thread will wait until either the mutex is 
+	 *		  released or the wait time is expired. */
 	DWORD Acquire(WaitTime waitMS = INFINITE)
 	{
 		/* The wait function will wait for the mutex state to be set to signaled (released) 

@@ -5,8 +5,17 @@ namespace Engine
 {
 
 /**
- *	@brief A abstract class. It serves as a API contract of its derived classes: 
- *		   "ManualResetEvent" and "AutoResetEvent"
+ *	@brief A event object is a synchronization object whose state can be explicitly set to 
+ *		   signaled by use of the "Signal()" function. A event object can either be a manual-reset
+ *		   object or be an auto-reset object.
+ * 
+ *		   The event object is useful in sending a signal to a thread notifying the occurrence 
+ *		   of an event.
+ * 
+ *		   This class is a abstract class. It serves as an API contract of its derived classes: 
+ *		   "ManualResetEvent" and "AutoResetEvent".
+ * 
+ *		   See https://learn.microsoft.com/en-us/windows/win32/sync/event-objects for more detail.
  */
 class Event : public WaitableObject
 {
@@ -94,7 +103,7 @@ public:
 	 *		   true if the event is signaled, otherwise return false. */
 	bool Wait(WaitTime waitMS = INFINITE);
 	
-	/*	@breif Signal the event. */
+	/*	@brief Signal the event. */
 	void Signal();
 };
 

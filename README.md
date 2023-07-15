@@ -554,13 +554,53 @@ The job system is implemented using following components. Note that certain unde
 + ### Waitable Objects
 
     - #### WaitableObject.h
+        This class encapsulaties Windows APIs for synchronization objects such as *Events*, *Threads*, *Mutexes*. It serves as an API contract for all objects in the game engine that are intended to be thread-waitable and synchronizable.
 
-        This class encapsulaties Windows APIs for synchronizable objects such as *Events*, *Threads*, *Mutexes*. It serves as an API contract for all objects in the game engine that are intended to be thread-waitable and synchronizable.
-
-        Instances of this class maintain a handler to a Windows synchronizable object. It is the user's responsibility to design a customized constructor and destructor to properly manage the lifecycle of the handler, ensuring proper initialization and cleanup as needed.
+        Instances of this class maintain a handler to a Windows synchronization object. It is the user's responsibility to design a customized constructor and destructor to properly manage the lifecycle of the handler, ensuring proper initialization and cleanup as needed.
 
     - #### Event.h
-    
+        A event object is a synchronization object whose state can be explicitly set to signaled by use of the *"Signal()"* function. A event object can either be a `ManualResetEvent` object or be an `AutoResetEvent` object.
+
+        Two or more processes can create the same named event. The first process actually creates the event, and subsequent processes with sufficient access rights simply open a handle to the existing event. Note that the *"initiallySignaled"* parameter of the subsequent processes will be ignored because it have already been set by the creating process.
+
+        The initial state of the event object is specified by the *"initiallySignaled"* parameter. All threads have the access to set or reset the event.
+
+        When a manual-reset event object is signaled, it remains signaled until it is explicitly reset to nonsignaled by the reset function. Any number of waiting threads, or threads that subsequently begin wait operations for the specified event object, can be released while the object's state is signaled.
+
+        When an auto-reset event object is signaled, it remains signaled until a single waiting thread is released; the system then automatically resets the state to nonsignaled. If no threads are waiting, the event object's state remains signaled.
+
+        See [Windows Event Objects](https://learn.microsoft.com/en-us/windows/win32/sync/event-objects) for more detail.
+
+    - #### Mutex.h
+        A mutex object is a synchronization object whose state is set to signaled when it is not owned by any thread, and nonsignaled when it is owned. Only one thread at a time can own a mutex object.
+        
+        The mutex object is useful in coordinating mutually exclusive access to a shared resource. Note that critical section objects provide synchronization similar to that provided by mutex objects, except that critical section objects can be used only by the threads of a single process.
+
+        The creating thread of the mutex can set the *"takeOwnership"* flag to request initial ownership of the mutex. Otherwise, a thread must use the *"Acquire()"* functions to request ownership. If the mutex object is owned by another thread, the *"Acquire()"* function blocks the requesting thread until the owning thread releases the mutex object If more than one thread is waiting on a mutex, a waiting thread is selected. Do not assume a first-in, first-out (FIFO) order.
+
+        After a thread obtains ownership of a mutex, it can specify the same mutex in repeated calls to the *"Acquire()"* function without blocking its execution. This prevents a thread from deadlocking itself while waiting for a mutex that it already owns.
+
+        Two or more processes can create the same named mutex. The first process actually creates the mutex, and subsequent processes with sufficient access rights simply open a handle to the existing mutex.
+
+        See [Windows Mutex Objects](https://learn.microsoft.com/en-us/windows/win32/sync/mutex-objects) for more detail.
+
+    - #### Semaphore.h
+        A semaphore object is a synchronization object that maintains a count between zero and a specified maximum value. The count is decremented each time a thread completes a wait for the semaphore object and incremented each time a thread releases the semaphore. When the count reaches zero, no more threads can successfully wait for the semaphore object state to become signaled. The state of a semaphore is set to signaled when its count is greater than zero, and nonsignaled when its count is zero.
+
+        The semaphore object is useful in controlling a shared resource that can support a limited number of users. It acts as a gate that limits the number of threads sharing the resource to a specified maximum number. If more than one thread is waiting on a semaphore, a waiting thread is selected. Do not assume a first-in, first-out (FIFO) order.
+
+        If the name of the new semaphore object matches the name of an existing named semaphore object, the calling thread with sufficient access rights simply open a handle to the existing mutex. If the name of the new semaphore matches the name of an existing event, mutex, waitable timer, job, or file-mapping object, the creation fails. This occurs because these objects share the same namespace.
+
+        Note that a thread that owns a mutex object can wait repeatedly for the same mutex object to become signaled without its execution becoming blocked. A thread that waits repeatedly for the same semaphore object, however, decrements the semaphore's count each time a wait operation is completed; the thread is blocked when the count gets to zero. Similarly, only the thread that owns a mutex can successfully call the mutex release function, though any thread can use semaphore release function to increase the count of a semaphore object.
+
+        See [Windows Semaphore Ojbects](https://learn.microsoft.com/en-us/windows/win32/sync/semaphore-objects) for more detail.
+
+    - #### ScopeLock.h
+        A scopelock object is a synchronization object that maintains a pointer to a mutex object. 
+        
+        At the time when a scopelock object is constructed, it attempts to acquire ownership of the associated mutex. If the mutex is currently owned by another thread, the construction of the scopelock object will be blocked until the mutex is released. The scopelock holds ownership of the mutex for the duration of its lifetime. Upon destruction of the scopelock object , the mutex is automatically released.  
+
+        The scopelock object is useful in preventing threads from generating dead lock.
 
 
 
@@ -569,8 +609,13 @@ The job system is implemented using following components. Note that certain unde
 
 
 
+1.	任务系统是由多个任务队列组成。
+2.	任务队列可被视为任务系统中任务调度的基础单位。
+3.	每个任务队列都管理着多个jobrunner。Jobrunner是每个任务队列中，任务执行的基础单位。每个jobrunner维护着一个通过window api开启的线程用以执行任务。
+4.	此外每个任务队列会维护着一个jobstatus实例，用以记录任务执行状态。
+5.	任务系统提供了多个API供用户对任务系统进行管理。用户可以根据实际任务需求来创建新的任务队列。
 
-
+一些底层部件也可以被用户用来  
  
 
 
