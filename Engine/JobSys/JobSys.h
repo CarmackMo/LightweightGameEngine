@@ -14,7 +14,11 @@
 namespace Engine
 {
 
-struct JobFlowManager
+/** 
+ *	@brief WorkloadManager serves as a workload management module for each job queue in the 
+ *		   job system.
+ */
+struct WorkloadManager
 {
 	bool isAuto;
 	bool isTooMany = false;
@@ -24,10 +28,10 @@ struct JobFlowManager
 	static const uint32_t upperTHR = 25;
 	static const uint32_t lowerTHR = 25;
 
-	JobFlowManager(bool isAuto) : isAuto(isAuto)
+	WorkloadManager(bool isAuto) : isAuto(isAuto)
 	{}
 
-	~JobFlowManager() = default;
+	~WorkloadManager() = default;
 };
 
 
@@ -36,11 +40,11 @@ struct JobQueueManager
 	JobSys::JobQueue				jobQueue;
 	JobSys::JobStatus				jobStatus;
 	std::vector<JobSys::JobRunner*>	jobRunnerList;
-	JobFlowManager					jobFlowManager;
+	WorkloadManager					workloadManager;
 
-	JobQueueManager(const std::string& queueName, bool autoFlowControl) : 
+	JobQueueManager(const std::string& queueName, bool workloadControl) : 
 		jobQueue(queueName),
-		jobFlowManager(JobFlowManager(autoFlowControl))
+		workloadManager(WorkloadManager(workloadControl))
 	{}
 };
 

@@ -10,16 +10,17 @@ namespace JobSys
 {
 
 /**
- *	@brief This class serves as an elementary executer for a specified shared job queue in 
- *		   the job system.
- *		   
- *		   Each JobRunner instance stores essential data related to the runner thread it 
- *		   belongs to, including a handler (i.e. pointer) to the thread, the thread ID, and 
- *		   a pointer to the job queue that the instance operates on. Note that each runner 
- *		   thread can own only one JobRunner instance.
+ *	@brief `JobRunner` object is an elementary job executer of the specific job queue it 
+ *		   assigned to. 
  *
- *		   This class also serves as the input parameter that is going past into the thread
- *		   function when creating a new runner thread.
+ *		   The job runner object serves as the control module for the thread that performs 
+ *		   the job execution. Each job runner object stores essential data of the thread, 
+ *		   including the handler to the threa, thread ID, and a pointer to the associated job
+ *		   queue. 
+ *
+ *		   The job runner object also serves as the thread input when creating a new thread 
+ *		   for job execution, while the instance of the job runner object is managed by the 
+ *		   job system in the main thread.
  */
 struct JobRunner
 {

@@ -20,49 +20,49 @@ void JobSystem::JobFlowControl()
 		while (iter != jobQueueMap.end())
 		{
 			JobQueueManager* manager = iter->second;
-			if (manager != nullptr && manager->jobFlowManager.isAuto == true)
+			if (manager != nullptr && manager->workloadManager.isAuto == true)
 			{
 				/* If the amount of waiting jobs in current job queue is more than overflow threshold.
 				 * Case 1: the "isTooMany" flag is TURE, add one more job runner to the queue and reset
 				 *		   the "isTooMany" flag.
 				 * Case 2: the "isTooMany" flat is FALSE, set the flag to TRUE. */
-				if (manager->jobStatus.JobsLeft() > (manager->jobRunnerList.size() + JobFlowManager::upperTHR))
+				if (manager->jobStatus.JobsLeft() > (manager->jobRunnerList.size() + WorkloadManager::upperTHR))
 				{
-					if (manager->jobFlowManager.isTooMany == true)
+					if (manager->workloadManager.isTooMany == true)
 					{
 						AddRunnerToQueue(manager);
-						manager->jobFlowManager.isTooMany = false;
+						manager->workloadManager.isTooMany = false;
 					}
 					else
-						manager->jobFlowManager.isTooMany = true;
+						manager->workloadManager.isTooMany = true;
 				}
 				/* If the total amount of jobs in current job queue is less than lower threshold, or equals
 				 * to zero. 
 				 * Case 1: the "isTooFew" flag is TRUE, remove one job runner form the queue and reset 
 				 *		   the "isTooFew" flag.
 				 * Case 2: the "isTooFew" flag is FALSE, set the flag to TRUE. */
-				else if (manager->jobStatus.JobsLeft() < (manager->jobRunnerList.size() - JobFlowManager::lowerTHR) ||
+				else if (manager->jobStatus.JobsLeft() < (manager->jobRunnerList.size() - WorkloadManager::lowerTHR) ||
 						 manager->jobStatus.JobsLeft() == 0)
 				{
-					if (manager->jobFlowManager.isTooFew == true)
+					if (manager->workloadManager.isTooFew == true)
 					{
 						RemoveRunnerFromQueue(manager);
-						manager->jobFlowManager.isTooFew = false;
+						manager->workloadManager.isTooFew = false;
 					}
 					else
-						manager->jobFlowManager.isTooFew = true;
+						manager->workloadManager.isTooFew = true;
 				}
 				else
 				{
-					manager->jobFlowManager.isTooMany = false;
-					manager->jobFlowManager.isTooFew = false;
+					manager->workloadManager.isTooMany = false;
+					manager->workloadManager.isTooFew = false;
 				}
 			}
 
 			iter++;
 		}
 
-		Sleep(JobFlowManager::interval);
+		Sleep(WorkloadManager::interval);
 
 	} while (IsStopped() == false);
 }
