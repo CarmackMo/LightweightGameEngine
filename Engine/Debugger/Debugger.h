@@ -6,7 +6,7 @@
 
 inline void ConsolePrint(const char* i_pFmt, const char* i_pFile, unsigned int i_Line, ...)
 {
-	const size_t		lenTemp = 128;
+	const size_t		lenTemp = 256;
 	char				strTemp[lenTemp] = "GLib: %s %u: ";
 
 	strcat_s(strTemp, i_pFmt);

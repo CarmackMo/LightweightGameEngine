@@ -532,7 +532,7 @@ This file implements smart pointers that are commonly used in dynamic memory res
 
 Job system is designed to utilize shared resources and multi-threads for tasks execution and managements by leveraging and encapsulating Windows APIs.
 
-The job system provides a range of APIs for users to manage tasks and the job system itself. Users can create job queues within the job system and assign tasks to specific queues based on the runtime demand of their program. Additionally, users can remove redundant job queues from the job system and remove idle job runners from specific job queues based on the workload of job system and each job queue, so as to optimize resource utilization.
+The job system provides a range of APIs for users to manage tasks and the job system itself. Users can create job queues within the job system and assign job runners to specific job queues based on the runtime demand of their program. Additionally, users can remove redundant job queues from the job system and remove idle job runners from specific job queues based on the workload of job system and each job queue, so as to optimize resource utilization.
 
 Furthermore, the job system implements an automatic workload adjustment mechanism. When creating a new job queue, users can choose to apply this mechanism. The adjustment mechanism dynamically creates or removes job runners based on the number of pending jobs in each job queue it manages. This ensures an optimized balance between efficient resource utilization and task execution efficiency.
 
@@ -559,7 +559,7 @@ The job system is implemented using following components. Note that certain unde
         Instances of this class maintain a handler to a Windows synchronization object. It is the user's responsibility to design a customized constructor and destructor to properly manage the lifecycle of the handler, ensuring proper initialization and cleanup as needed.
 
     - #### Event.h
-        A event object is a synchronization object whose state can be explicitly set to signaled by use of the *"Signal()"* function. A event object can either be a `ManualResetEvent` object or be an `AutoResetEvent` object.
+        A `Event` object is a synchronization object whose state can be explicitly set to signaled by use of the *"Signal()"* function. A event object can either be a `ManualResetEvent` object or be an `AutoResetEvent` object.
 
         Two or more processes can create the same named event. The first process actually creates the event, and subsequent processes with sufficient access rights simply open a handle to the existing event. Note that the *"initiallySignaled"* parameter of the subsequent processes will be ignored because it have already been set by the creating process.
 
@@ -572,7 +572,7 @@ The job system is implemented using following components. Note that certain unde
         See [Windows Event Objects](https://learn.microsoft.com/en-us/windows/win32/sync/event-objects) for more detail.
 
     - #### Mutex.h
-        A mutex object is a synchronization object whose state is set to signaled when it is not owned by any thread, and nonsignaled when it is owned. Only one thread at a time can own a mutex object.
+        A `Mutex` object is a synchronization object whose state is set to signaled when it is not owned by any thread, and nonsignaled when it is owned. Only one thread at a time can own a mutex object.
         
         The mutex object is useful in coordinating mutually exclusive access to a shared resource. Note that critical section objects provide synchronization similar to that provided by mutex objects, except that critical section objects can be used only by the threads of a single process.
 
@@ -585,7 +585,7 @@ The job system is implemented using following components. Note that certain unde
         See [Windows Mutex Objects](https://learn.microsoft.com/en-us/windows/win32/sync/mutex-objects) for more detail.
 
     - #### Semaphore.h
-        A semaphore object is a synchronization object that maintains a count between zero and a specified maximum value. The count is decremented each time a thread completes a wait for the semaphore object and incremented each time a thread releases the semaphore. When the count reaches zero, no more threads can successfully wait for the semaphore object state to become signaled. The state of a semaphore is set to signaled when its count is greater than zero, and nonsignaled when its count is zero.
+        A `Semaphore` object is a synchronization object that maintains a count between zero and a specified maximum value. The count is decremented each time a thread completes a wait for the semaphore object and incremented each time a thread releases the semaphore. When the count reaches zero, no more threads can successfully wait for the semaphore object state to become signaled. The state of a semaphore is set to signaled when its count is greater than zero, and nonsignaled when its count is zero.
 
         The semaphore object is useful in controlling a shared resource that can support a limited number of users. It acts as a gate that limits the number of threads sharing the resource to a specified maximum number. If more than one thread is waiting on a semaphore, a waiting thread is selected. Do not assume a first-in, first-out (FIFO) order.
 
@@ -596,14 +596,42 @@ The job system is implemented using following components. Note that certain unde
         See [Windows Semaphore Ojbects](https://learn.microsoft.com/en-us/windows/win32/sync/semaphore-objects) for more detail.
 
     - #### ScopeLock.h
-        A scopelock object is a synchronization object that maintains a pointer to a mutex object. 
+        A `ScopeLock` object is a synchronization object that maintains a pointer to a mutex object. 
         
-        At the time when a scopelock object is constructed, it attempts to acquire ownership of the associated mutex. If the mutex is currently owned by another thread, the construction of the scopelock object will be blocked until the mutex is released. The scopelock holds ownership of the mutex for the duration of its lifetime. Upon destruction of the scopelock object , the mutex is automatically released.  
+        At the time when a scopeLock object is constructed, it attempts to acquire ownership of the associated mutex. If the mutex is currently owned by another thread, the construction of the scopeLock object will be blocked until the mutex is released. The scopeLock holds ownership of the mutex for the duration of its lifetime. Upon destruction of the scopeLock object , the mutex is automatically released.  
 
-        The scopelock object is useful in preventing threads from generating dead lock.
+        The scopeLock object is useful in preventing threads from generating dead lock.
 
 
+<a id="hashedstring"></a>
 
++ ### HashedString.h
+    A `HashedString` object stores an unsigned integer hashed value, which is generated by applying the FNV hash algorithm to a regular C-style string. In the context of the job system, the hashed string object is used as a unique identifier for each job queue, ensuring its uniqueness within the job system.  
+
+
+<a id="jobqueue"></a>
+
++ ### JobQueue.h
+    
+    - #### Job
+        A `Job` object is a data structure that stores a specific function to be executed by one of the job runners in the job system. A job object cannot be created using copy constructor or assignment operation. Any attempt to duplicate an existing job object will result in undefined behavior.
+
+    - #### JobStatus
+        `JobStatus` serves as a control block for each job queue in the job system. A job status object records the total count of awaiting jobs and executing jobs within the job queue. Additionally, the job status object utilizes an `AutoResetEvent` objct to notify notify changes in the state of the job queue. 
+
+        Note that each job queue is bound to a unique job status object. Therefore, a job status object cannot be created using copy constructor or assignment operation. Any attempt to duplicate an existing job status object will result in undefined behavior.
+
+    - #### JobQueue
+        A `JobQueue` object is a data structure that responsible for storing and managing jobs. The jobs within the job queue object are executed in a first-in, first-out (FIFO) order.
+
+        The job queue object is designed to be a shared resource for job runners. To facilitate synchronization between job runners working on the same job queue, the job queue object maintains a `CONDITION_VARIABLE` object and a `CRITICAL_SECTION` object. These ensure that jobs are added to and retrieved from the queue in a synchronized manner.
+
+        Note that due to the unique dependencies (e.g. `JobStatus`) of the job queue object, a job queue object cannot be created using copy constructor or assignment operation. Any attempt to duplicate an existing job queue object will result in undefined behavior.
+
+
+<a id="jobrunner"></a>
+
++ ### JobRunner.h
 
 
 

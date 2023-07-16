@@ -144,11 +144,14 @@ bool JobSystem::AddJobToQueue(const HashedString& queueName, function<void()> jo
 	JobQueueManager* manager = GetQueue(queueName);
 	if (manager != nullptr)
 	{
+		Job* job = new Job(jobFunction, &(manager->jobStatus));
+
 #if defined (_DEBUG)
+		job->jobName = jobName;
 		DEBUG_PRINT("Job System: Adding Job to Queue \"%s\". \n", manager->jobQueue.GetName().c_str());
 #endif
 
-		manager->jobQueue.Add(new Job(jobFunction, queueName, jobName, &(manager->jobStatus)));
+		manager->jobQueue.Add(job);
 		return true;
 	}
 	else
