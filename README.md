@@ -659,7 +659,7 @@ To provide a clearer understanding of the job system's architecture, the followi
 
 ![Architecture](Images/Docs/Architecture.png)
 
-+ **[1]:** the job system utilizes an `unordered_map` to keep track of all job queues. Each job queue map element stores a pointer a `JobQueueManager` object as the value, while the key type employed in the job queue map is `HashedString`, which serves as the unique identifier of each job queue.
++ **[1]:** the job system utilizes an `unordered_map` to keep track of all job queues. Each job queue map element stores a pointer to a `JobQueueManager` object as the value, while the key type employed in the job queue map is `HashedString`, which serves as the unique identifier of each job queue.
 
 + **[2]:** job queue is serves as the fundamental unit for job scheduling in the job system. Each job queue manages multiple job runners, which serve as the fundamental units responsible for job execution within the job queue. 
 
@@ -670,16 +670,62 @@ To provide a clearer understanding of the job system's architecture, the followi
 + **[5]:** during initialization, the job system creates a default job queue by default. The default job queue is a private job queue within the job system, specifically designed to handle jobs for the functioning of the job system itself. In the current implementation, the default job queue contains a single job, which is responsible for executing the automatic workload adjustment mechanism.
 
 
+## Automatic Workload Adjustment 
+
+The number of jobs that a job queue needs to execute may vary over time. On one hand, if there are too many jobs waiting to be executed and insufficient job runners available, it can lead to a slowdown in program performance. On the other hand, if the number of job runners significantly exceeds the actual demand, those idle job runners will waste system resources. It is important to strike a balance between the demand and supply of job runners to optimize program performance and resource utilization.
+
+The current automatic workload adjustment mechanism provides a simple approach to address the aforementioned problem. Each job queue is equipped with a `WorkloadManager` object for the workload adjustment. The `WorkloadManager` keeps track of the workload status of the associated job queue. Two flags, *"isTooMany"* and *"isTooFew"*, are used by the `WorkloadManager` to indicate the workload status: whether there are too many or too few jobs in the queue. These flags are triggered based on a comparison between the number of waiting jobs and the corresponding threshold values. The default job queue in the job system maintains a routine to continuously check the status of these flags for each WorkloadManager and dynamically adjusts the number of job runners accordingly, adding or removing them as needed.
+
+
+## APIs
+```cpp
+/* Initialize the job system and create a default job queue */
+void Init();
+
+/* Create a new job queue with the given name and return the hashed job queue name. If a job 
+ * queue with the same hashed name already exists, return the hashed name directly instead. 
+ * A job queue must have at least one job runner. If the user creates a job queue with a 
+ * "runnerNum" value of 0, this function will automatically create a job runner. */
+HashedString CreateQueue(const string& queueName, unsigned int runnerNum = 1, bool autoFlowControl = false);
+
+/* Add a job runner thread to the specified job queue. */
+void AddRunnerToQueue(JobQueueManager* manager);
+
+/* Add a job runner thread to the specified job queue. Return true if the job queue exists and
+ * the adding is successful. Otherwise, return false. */
+bool AddRunnerToQueue(const HashedString& queueName);
+
+/* Register a job to the specified job queue. Returen true if the job queue exists and the
+ * adding is successful. Otherwise, return false. */
+bool AddJobToQueue(const HashedString& queueName, function<void()> jobFunction, const string& jobName = std::string());
+
+/* Remove the first job runner from the specified job queue. The job queue must have at least
+ * one job runner; otherwise, the removal will have no effect and return false. */
+bool RemoveRunnerFromQueue(JobQueueManager* manager);
+
+/* Remove the first job runner from the specified job queue. The job queue must have at least
+ * one job runner; otherwise, the removal will have no effect and return false. */
+bool RemoveRunnerFromQueue(const HashedString& queueName);
+
+/* Remove the specified job queue from the job system. Return true if the job queue exists and
+ * the removal is successful. Otherwise, return false. */
+bool RemoveQueue(const HashedString& queueName);
+
+/* Get the specified job queue with given queue hashed name. Return a null pointer if the job
+ * queue does not exist. */
+JobQueueManager* GetQueue(const HashedString& queueName);
+
+/* Check if the specified job queue exists and has unfinished jobs. */
+bool IsQueueHasJobs(const HashedString& queueName);
+
+/* Request the job system to terminate. */
+void RequestStop();
+
+bool IsStopped();
+```
 
 
 
-1.	任务系统是由多个任务队列组成。
-2.	任务队列可被视为任务系统中任务调度的基础单位。
-3.	每个任务队列都管理着多个jobrunner。Jobrunner是每个任务队列中，任务执行的基础单位。每个jobrunner维护着一个通过window api开启的线程用以执行任务。
-4.	此外每个任务队列会维护着一个jobstatus实例，用以记录任务执行状态。
-5.	任务系统提供了多个API供用户对任务系统进行管理。用户可以根据实际任务需求来创建新的任务队列。
-
-一些底层部件也可以被用户用来  
  
 
 
