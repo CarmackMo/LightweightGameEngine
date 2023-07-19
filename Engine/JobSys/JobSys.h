@@ -35,6 +35,9 @@ struct WorkloadManager
 };
 
 
+/**
+ *	@brief JobQueueManager serves as a comprehensive manager of a job queue.
+ */
 struct JobQueueManager
 {
 	JobSys::JobQueue				jobQueue;
@@ -46,6 +49,9 @@ struct JobQueueManager
 		jobQueue(queueName),
 		workloadManager(WorkloadManager(workloadControl))
 	{}
+
+	JobQueueManager(const JobQueueManager& other) = delete;
+	JobQueueManager& operator=(const JobQueueManager& other) = delete;
 };
 
 
@@ -59,11 +65,14 @@ private:
 	JobSys::HashedString								defaultQueueName;
 	std::map<JobSys::HashedString, JobQueueManager*>	jobQueueMap;
 
-	void JobFlowControl();
+	void WorkloadControl();
 
 public:
 	JobSystem() = default;
 	~JobSystem() = default;
+
+	JobSystem(const JobSystem& other) = delete;
+	JobSystem& operator=(const JobSystem& other) = delete;
 
 	/* @brief Create a default job queue with the queue name of "Default" and 2 job runner. */
 	void Init();

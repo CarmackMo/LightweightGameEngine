@@ -538,6 +538,7 @@ Furthermore, the job system implements an automatic workload adjustment mechanis
 
 Before delving deeper into the job system, it is essential to introduce its underlying components first.
 
+
 ## Components
 
 The job system is implemented using following components. Note that certain underlying components, such as `Mutex`, `Events`, `ScopeLock`, etc., are opened for users and can be customized by users for their specific development needs.
@@ -546,7 +547,7 @@ The job system is implemented using following components. Note that certain unde
 + [Waitable Objects](#waitable)
 + [Job Queue](#jobqueue)
 + [Job Runner](#jobrunner)
-+ [Job System](#jobsys)
++ [Job System](#jobsystem)
 
 
 <a id="hashedstring"></a>
@@ -639,7 +640,7 @@ The job system is implemented using following components. Note that certain unde
     The job runner object also serves as the thread input when creating a new thread for job execution, while the instance of the job runner object is managed by the job system in the main thread.
 
 
-<a id="jobsys"></a>
+<a id="jobsystem"></a>
 
 + ### JobSys.h
 
@@ -648,7 +649,25 @@ The job system is implemented using following components. Note that certain unde
 
         In addition, the workload manager object holds static constants for the upper threshold, lower threshold and the interval between each workload adjustment. Current implementation doesn't provide API for users to modify these data, any changes need to be made directly in the source code.
 
+    - #### JobQueueManager
+        `JobQueueManager` serves as a comprehensive manager of a job queue. The job queue manager object oversees the essential components required for the operation of a job queue, including the `JobQueue` object, a `JobStatus` object, a list of `JobRunner` objects, and a `WorkloadManager` object.
 
+
+## Architecture
+
+To provide a clearer understanding of the job system's architecture, the following is a concise blueprint outlining its key components and their interactions.
+
+![Architecture](Images/Docs/Architecture.png)
+
++ **[1]:** the job system utilizes an `unordered_map` to keep track of all job queues. Each job queue map element stores a pointer a `JobQueueManager` object as the value, while the key type employed in the job queue map is `HashedString`, which serves as the unique identifier of each job queue.
+
++ **[2]:** job queue is serves as the fundamental unit for job scheduling in the job system. Each job queue manages multiple job runners, which serve as the fundamental units responsible for job execution within the job queue. 
+
++ **[3]:** it is important to note that each job queue must have at least one job runner during runtime. When creating a new job queue, the job system will automatically add a job runner to the queue by default. When removing job runners from a job queue, if there is only one job runner remaining in the queue, the removal will not be executed.
+
++ **[4]:**  the job queue object maintains a `queue` to keep track of all scheduled jobs and a flag to record the status of the job queue. These components are designed as shared resources within the job queue and are protected by a `CRITICAL_SECTION` to ensure synchronized access.
+
++ **[5]:** during initialization, the job system creates a default job queue by default. The default job queue is a private job queue within the job system, specifically designed to handle jobs for the functioning of the job system itself. In the current implementation, the default job queue contains a single job, which is responsible for executing the automatic workload adjustment mechanism.
 
 
 

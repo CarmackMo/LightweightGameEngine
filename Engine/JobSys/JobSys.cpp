@@ -12,7 +12,7 @@ using std::map;
 using namespace JobSys;
 
 
-void JobSystem::JobFlowControl()
+void JobSystem::WorkloadControl()
 {
 	do
 	{
@@ -71,7 +71,7 @@ void JobSystem::JobFlowControl()
 void JobSystem::Init()
 {
 	defaultQueueName = CreateQueue("Default", 1, false);
-	AddJobToQueue(defaultQueueName, bind(&JobSystem::JobFlowControl, this), "Job Flow Control Routine");
+	AddJobToQueue(defaultQueueName, bind(&JobSystem::WorkloadControl, this), "Job Flow Control Routine");
 }
 
 
