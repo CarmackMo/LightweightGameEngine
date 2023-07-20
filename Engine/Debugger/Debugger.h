@@ -3,15 +3,15 @@
 #include <stdio.h>		// for vsprintf_s()
 #include <Windows.h>	// for OutputDebugStringA(). Uggh.. this pulls in a lot of Windows specific stuff
 
-
 inline void ConsolePrint(const char* i_pFmt, const char* i_pFile, unsigned int i_Line, ...)
 {
-	const size_t		lenTemp = 256;
-	char				strTemp[lenTemp] = "GLib: %s %u: ";
+	const size_t		lenTemp = 2048;
+	char				strTemp[lenTemp] = ": DEBUG: ";
 
 	strcat_s(strTemp, i_pFmt);
+	strcat_s(strTemp, i_pFile);
 
-	const size_t		lenOutput = 256;
+	const size_t		lenOutput = 2048;
 	char				strOutput[lenOutput];
 
 	// define a variable argument list variable 
@@ -19,10 +19,11 @@ inline void ConsolePrint(const char* i_pFmt, const char* i_pFile, unsigned int i
 
 	// initialize it. second parameter is variable immediately
 	// preceeding variable arguments
-	va_start(args, i_pFmt);
+	va_start(args, i_Line);
 
 	// (safely) print our formatted string to a char buffer
 	vsprintf_s(strOutput, lenOutput, strTemp, args);
+
 
 	va_end(args);
 
@@ -30,4 +31,4 @@ inline void ConsolePrint(const char* i_pFmt, const char* i_pFile, unsigned int i
 }
 
 
-#define DEBUG_PRINT(fmt,...) ConsolePrint((fmt),__FILE__,__LINE__,__VA_ARGS__)
+#define DEBUG_PRINT(fmt,...) ConsolePrint((fmt), __FILE__, __LINE__, __VA_ARGS__)

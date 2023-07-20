@@ -74,7 +74,7 @@ public:
 	JobSystem(const JobSystem& other) = delete;
 	JobSystem& operator=(const JobSystem& other) = delete;
 
-	/* @brief Create a default job queue with the queue name of "Default" and 2 job runner. */
+	/* @brief Initialize the job system and create a default job queue */
 	void Init();
 
 	/* @brief Create a new job queue with the given name and return the hashed job queue name.
