@@ -1,19 +1,16 @@
 ﻿#pragma once
 #include <type_traits>
 #include <utility>
+#include <cassert>
 #include "Vector.h"
 #include "Mathf.h"
 
-
-/* TODO: Using array pointer instead of array to store data. This can improve the performance of construction */
 
 namespace Engine
 {
 /* Forwared declaration */
 template <typename T> class Matrix3;
 template <typename T> class Matrix4;
-
-
 
 /**
  *	@brief 3x3 Matrix. The index of element in top-left corner is (0,0). Down and right is
@@ -24,40 +21,54 @@ template <typename T>
 class Matrix3
 {
 private:
-	T val[3][3];
+	T** val;
+
+	inline void Init()
+	{
+		val = new T*[3];
+		for (int i = 0; i < 3; i++)
+			val[i] = new T[3]{ static_cast<T>(0), static_cast<T>(0), static_cast<T>(0) };
+	}
 
 public:
 	/* Constructor */
 	inline Matrix3()
 	{
-		val[0][0] = static_cast<T>(0); val[0][1] = static_cast<T>(0); val[0][2] = static_cast<T>(0);
-		val[1][0] = static_cast<T>(0); val[1][1] = static_cast<T>(0); val[1][2] = static_cast<T>(0);
-		val[2][0] = static_cast<T>(0); val[2][1] = static_cast<T>(0); val[2][2] = static_cast<T>(0);
+		Init();
 	}
+
 	inline Matrix3(
 		T x00, T x01, T x02,
 		T x10, T x11, T x12,
 		T x20, T x21, T x22)
 	{
+		Init();
 		val[0][0] = x00; val[0][1] = x01; val[0][2] = x02;
 		val[1][0] = x10; val[1][1] = x11; val[1][2] = x12;
 		val[2][0] = x20; val[2][1] = x21; val[2][2] = x22;
 	}
+
 	inline Matrix3(const Matrix3<T>& other)
 	{
-		val[0][0] = other[0][0]; val[0][1] = other[0][1]; val[0][2] = other[0][2];
-		val[1][0] = other[1][0]; val[1][1] = other[1][1]; val[1][2] = other[1][2];
-		val[2][0] = other[2][0]; val[2][1] = other[2][1]; val[2][2] = other[2][2];
+		Init();
+		for (int i = 0; i < 3; i++)
+			memcpy_s(val[i], 3*sizeof(T), other.val[i], 3*sizeof(T));
 	}
 
-	/* Get the specific row / column of the matrix */
-	inline Vector3<T> GetRow(int row) const
+	inline Matrix3(Matrix3<T>&& other) noexcept
 	{
-		return Vector3<T>(val[row][0], val[row][1], val[row][2]);
+		this->val = other.val;
+		other.val = nullptr;
 	}
-	inline Vector3<T> GetCol(int col) const
+
+	inline ~Matrix3()
 	{
-		return Vector3<T>(val[0][col], val[1][col], val[2][col]);
+		if (val != nullptr)
+		{
+			for (int i = 0; i < 3; i++)
+				delete[] val[i];
+			delete[] val;
+		}
 	}
 
 	/* @brief Calculate the determinant of the 2x2 minor matrix using M[row][col] as the pivot.
@@ -68,7 +79,7 @@ public:
 	{
 		T res = static_cast<T>(pow(-1, row + col)) *
 			(val[(row + 1) % 3][(col + 1) % 3] * val[(row + 2) % 3][(col + 2) % 3] -
-				val[(row + 1) % 3][(col + 2) % 3] * val[(row + 2) % 3][(col + 1) % 3]);
+			 val[(row + 1) % 3][(col + 2) % 3] * val[(row + 2) % 3][(col + 1) % 3]);
 
 		return res;
 	}
@@ -143,14 +154,27 @@ public:
 			static_cast<U>(val[2][0]), static_cast<U>(val[2][1]), static_cast<U>(val[2][2]));
 	}
 
+	/* Get the specific row / column of the matrix */
+	inline Vector3<T> GetRow(int row) const
+	{
+		assert(row >= 0 && row <= 2);
+		return Vector3<T>(val[row][0], val[row][1], val[row][2]);
+	}
+	inline Vector3<T> GetCol(int col) const
+	{
+		assert(col >= 0 && col <= 2);
+		return Vector3<T>(val[0][col], val[1][col], val[2][col]);
+	}
 
 	/* Indexing */
 	inline T* operator[] (int row)
 	{
+		assert(row >= 0 && row <= 2);
 		return val[row];
 	}
 	inline const T* operator[] (int row) const
 	{
+		assert(row >= 0 && row <= 2);
 		return val[row];
 	}
 
@@ -350,34 +374,56 @@ template <typename T>
 class Matrix4
 {
 private:
-	T val[4][4];
+	T** val;
+
+	inline void Init()
+	{
+		val = new T * [4];
+		for (int i = 0; i < 4; i++)
+			val[i] = new T[4]{ static_cast<T>(0), static_cast<T>(0), static_cast<T>(0), static_cast<T>(0) };
+	}
 
 public:
 	/* Constructure */
 	inline Matrix4()
 	{
-		val[0][0] = static_cast<T>(0); val[0][1] = static_cast<T>(0); val[0][2] = static_cast<T>(0); val[0][3] = static_cast<T>(0);
-		val[1][0] = static_cast<T>(0); val[1][1] = static_cast<T>(0); val[1][2] = static_cast<T>(0); val[1][3] = static_cast<T>(0);
-		val[2][0] = static_cast<T>(0); val[2][1] = static_cast<T>(0); val[2][2] = static_cast<T>(0); val[2][3] = static_cast<T>(0);
-		val[3][0] = static_cast<T>(0); val[3][1] = static_cast<T>(0); val[3][2] = static_cast<T>(0); val[3][3] = static_cast<T>(0);
+		Init();
 	}
+
 	inline Matrix4(
 		T x00, T x01, T x02, T x03,
 		T x10, T x11, T x12, T x13,
 		T x20, T x21, T x22, T x23,
 		T x30, T x31, T x32, T x33)
 	{
+		Init();
 		val[0][0] = x00; val[0][1] = x01; val[0][2] = x02; val[0][3] = x03;
 		val[1][0] = x10; val[1][1] = x11; val[1][2] = x12; val[1][3] = x13;
 		val[2][0] = x20; val[2][1] = x21; val[2][2] = x22; val[2][3] = x23;
 		val[3][0] = x30; val[3][1] = x31; val[3][2] = x32; val[3][3] = x33;
 	}
+
 	inline Matrix4(const Matrix4<T>& other)
 	{
-		val[0][0] = other[0][0]; val[0][1] = other[0][1]; val[0][2] = other[0][2]; val[0][3] = other[0][3];
-		val[1][0] = other[1][0]; val[1][1] = other[1][1]; val[1][2] = other[1][2]; val[1][3] = other[1][3];
-		val[2][0] = other[2][0]; val[2][1] = other[2][1]; val[2][2] = other[2][2]; val[2][3] = other[2][3];
-		val[3][0] = other[3][0]; val[3][1] = other[3][1]; val[3][2] = other[3][2]; val[3][3] = other[3][3];
+		Init();
+		for (int i = 0; i < 4; i++)
+			memcpy_s(val[i], 4*sizeof(T), other.val[i], 4*sizeof(T));
+	}
+
+	inline Matrix4(Matrix4<T>&& other) noexcept
+	{
+		this->val = other.val;
+		other.val = nullptr;
+	}
+
+	inline ~Matrix4()
+	{
+		if (val != nullptr)
+		{
+			for (int i = 0; i < 4; i++)
+				delete[] val[i];
+			delete[] val;
+		}
 	}
 
 	/* @brief Calculate the determinant of the 3x3 minor matrix using M[row][col] as the pivot.
@@ -487,13 +533,27 @@ public:
 			static_cast<U>(val[3][0]), static_cast<U>(val[3][1]), static_cast<U>(val[3][2]), static_cast<U>(val[3][3]));
 	}
 
+	/* Get the specific row / column of the matrix */
+	inline Vector4<T> GetRow(int row) const
+	{
+		assert(row >= 0 && row <= 3);
+		return Vector4<T>(val[row][0], val[row][1], val[row][2], val[row][3]);
+	}
+	inline Vector4<T> GetCol(int col) const
+	{
+		assert(col >= 0 && col <= 3);
+		return Vector4<T>(val[0][col], val[1][col], val[2][col], val[3][col]);
+	}
+
 	/* Indexing */
 	inline T* operator[] (int row)
 	{
+		assert(row >= 0 && row <= 3);
 		return val[row];
 	}
 	inline const T* operator[] (int row) const
 	{
+		assert(row >= 0 && row <= 3);
 		return val[row];
 	}
 
@@ -807,8 +867,6 @@ namespace Matrix
 
 #if defined(_DEBUG)
 
-#include <cassert>
-
 inline void Matrix3UnitTest()
 {
 	Matrix3<float> case0 = Matrix3<float>(
@@ -824,6 +882,10 @@ inline void Matrix3UnitTest()
 	Matrix3<float> temp0;
 	Matrix3<int> temp1;
 	Vector3<float> temp2;
+
+
+	Matrix3<float> temp3 = case0;
+	assert(temp3 == Matrix3<float>(1.1f, 0.0f, 1.3f, 0.0f, 2.2f, 0.0f, 3.1f, 0.0f, 3.3f));
 
 	assert(AreEqual(case0.Det(0, 1), 0.0f));
 
@@ -862,6 +924,7 @@ inline void Matrix3UnitTest()
 
 }
 
+
 inline void Matrix4UnitTest()
 {
 	Matrix4<float> case0 = Matrix4<float>(
@@ -880,6 +943,9 @@ inline void Matrix4UnitTest()
 	Matrix4<int> temp1;
 	Vector4<float> temp2;
 
+
+	Matrix4<float> temp3 = case0;
+	assert(temp3 == Matrix4<float>(1.1f, 0, 0, 0, 0, 2.2f, 2.3f, 0, 0, 3.2f, 3.3f, 0, 0, 0, 0, 4.4f));
 
 	assert(AreEqual(case0.Det(1, 1), 15.972f));
 

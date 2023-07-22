@@ -3,9 +3,6 @@
 #include "Mathf.h"
 
 
-/* TODO: Using array pointer instead of array to store data. This can improve the performance of construction */
-
-
 namespace Engine
 {
 /* Forwared declaration */
@@ -40,7 +37,7 @@ public:
 		memcpy_s(val, 2*sizeof(T), other.val, 2*sizeof(T));
 	}
 
-	inline Vector2(Vector2<T>&& other)
+	inline Vector2(Vector2<T>&& other) noexcept
 	{
 		this->val = other.val;
 		other.val = nullptr;
@@ -235,7 +232,7 @@ public:
 		memcpy_s(val, 3*sizeof(T), other.val, 3*sizeof(T));
 	}
 
-	inline Vector3(Vector3<T>&& other)
+	inline Vector3(Vector3<T>&& other) noexcept
 	{
 		this->val = other.val;
 		other.val = nullptr;
@@ -456,7 +453,7 @@ public:
 		memcpy_s(val, 4*sizeof(T), other.val, 4*sizeof(T));
 	}
 
-	inline Vector4(Vector4<T>&& other)
+	inline Vector4(Vector4<T>&& other) noexcept
 	{
 		this->val = other.val;
 		other.val = nullptr;
