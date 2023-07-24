@@ -263,7 +263,7 @@ inline void JobSystemUnitTest()
 			Sleep(150);
 		};
 
-		JobSys::HashedString queueName = jobSystem.CreateQueue("JobFlowController", 1, true);
+		JobSys::HashedString queueName = jobSystem.CreateQueue("WorkloadTester", 1, true);
 
 		
 		for (int i = 0; i < 3; i++)

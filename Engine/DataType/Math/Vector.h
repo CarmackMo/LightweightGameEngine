@@ -3,9 +3,6 @@
 #include "Mathf.h"
 
 
-/* TODO: Using array pointer instead of array to store data. This can improve the performance of construction */
-
-
 namespace Engine
 {
 /* Forwared declaration */
@@ -23,18 +20,33 @@ template <typename T>
 class Vector2
 {
 private:
-	T val[2] = { static_cast<T>(0), static_cast<T>(0) };
+	/* A pointer to a 1x2 array */
+	T* val = new T[2] { static_cast<T>(0), static_cast<T>(0) };
 
 public:
 	/* Constructor */
 	inline Vector2() = default;
-	inline Vector2(T x, T y)
+
+	inline Vector2(T x, T y) : val(new T[2])
 	{
 		val[0] = x; val[1] = y;
 	}
-	inline Vector2(const Vector2<T>& other)
+
+	inline Vector2(const Vector2<T>& other) : val(new T[2])
 	{
-		val[0] = other[0]; val[1] = other[1];
+		memcpy_s(val, 2*sizeof(T), other.val, 2*sizeof(T));
+	}
+
+	inline Vector2(Vector2<T>&& other) noexcept
+	{
+		this->val = other.val;
+		other.val = nullptr;
+	}
+
+	inline ~Vector2()
+	{
+		if (val != nullptr)
+			delete[] val;
 	}
 
 	/* @brief Convert this instance to a new Vector2 with type "U" */
@@ -142,7 +154,7 @@ public:
 	/* Assignment operators */
 	inline Vector2<T>& operator= (const Vector2<T>& other)
 	{
-		val[0] = other[0]; val[1] = other[1];
+		memcpy_s(val, 2*sizeof(T), other.val, 2*sizeof(T));
 		return *this;
 	}
 
@@ -167,10 +179,12 @@ public:
 	/* Indexing */
 	inline T& operator[] (int idx)
 	{
+		assert(idx >= 0 && idx <= 1);
 		return val[idx];
 	}
 	inline const T& operator[] (int idx) const
 	{
+		assert(idx >= 0 && idx <= 1);
 		return val[idx];
 	}
 
@@ -201,18 +215,33 @@ template <typename T>
 class Vector3
 {
 private:
-	T val[3] = { static_cast<T>(0), static_cast<T>(0), static_cast<T>(0) };
+	/* A pointer to a 1x3 array */
+	T* val = new T[3] { static_cast<T>(0), static_cast<T>(0), static_cast<T>(0) };
 
 public:
 	/* Constructor */
 	inline Vector3() = default;
-	inline Vector3(T x, T y, T z)
+
+	inline Vector3(T x, T y, T z) : val(new T[3])
 	{
 		val[0] = x; val[1] = y; val[2] = z;
 	}
-	inline Vector3(const Vector3<T>& other)
+
+	inline Vector3(const Vector3<T>& other) : val(new T[3])
 	{
-		val[0] = other[0]; val[1] = other[1]; val[2] = other[2];
+		memcpy_s(val, 3*sizeof(T), other.val, 3*sizeof(T));
+	}
+
+	inline Vector3(Vector3<T>&& other) noexcept
+	{
+		this->val = other.val;
+		other.val = nullptr;
+	}
+
+	inline ~Vector3()
+	{
+		if (val != nullptr)
+			delete[] val;
 	}
 
 	/* @brief Convert this instance to a new Vector3 with type "U" */
@@ -339,7 +368,7 @@ public:
 	/* Assignment operators */
 	inline Vector3<T>& operator= (const Vector3<T>& other)
 	{
-		val[0] = other[0]; val[1] = other[1]; val[2] = other[2];
+		memcpy_s(val, 3*sizeof(T), other.val, 3*sizeof(T));
 		return *this;
 	}
 
@@ -366,10 +395,12 @@ public:
 	/* Indexing */
 	inline T& operator[] (int idx)
 	{
+		assert(idx >= 0 && idx <= 2);
 		return val[idx];
 	}
 	inline const T& operator[] (int idx) const
 	{
+		assert(idx >= 0 && idx <= 2);
 		return val[idx];
 	}
 
@@ -404,20 +435,34 @@ template<typename T>
 class Vector4
 {
 private:
-	T val[4] = {
-		static_cast<T>(0), static_cast<T>(0), 
+	/* A pointer to a 1x4 array */
+	T* val = new T[4]{
+		static_cast<T>(0), static_cast<T>(0),
 		static_cast<T>(0), static_cast<T>(0) };
 
 public:
 	inline Vector4() = default;
-	inline Vector4(T w, T x, T y, T z)
+
+	inline Vector4(T w, T x, T y, T z) : val(new T[4])
 	{
 		val[0] = w, val[1] = x, val[2] = y, val[3] = z;
 	}
-	inline Vector4(const Vector4<T>& other)
+
+	inline Vector4(const Vector4<T>& other) : val(new T[4])
 	{
-		val[0] = other[0], val[1] = other[1];
-		val[2] = other[2], val[3] = other[3];
+		memcpy_s(val, 4*sizeof(T), other.val, 4*sizeof(T));
+	}
+
+	inline Vector4(Vector4<T>&& other) noexcept
+	{
+		this->val = other.val;
+		other.val = nullptr;
+	}
+
+	inline ~Vector4()
+	{
+		if (val != nullptr)
+			delete[] val;
 	}
 
 	/* @brief Convert this instance to a new Vector4 with type "U" */
@@ -432,14 +477,23 @@ public:
 	/* Indexing */
 	inline T& operator[] (int idx)
 	{
+		assert(idx >= 0 && idx <= 3);
 		return val[idx];
 	}
 	inline const T& operator[] (int idx) const
 	{
+		assert(idx >= 0 && idx <= 3);
 		return val[idx];
 	}
 
 	/* Assignment */
+	inline Vector4<T>& operator= (const Vector4<T>& other)
+	{
+		memcpy_s(val, 4*sizeof(T), other.val, 4*sizeof(T));
+		return *this;
+	}
+
+	/* Comaprison */
 	inline bool operator== (const Vector4<T>& other) const
 	{
 		return (
@@ -448,7 +502,6 @@ public:
 			AreEqual(static_cast<float>(val[2]), static_cast<float>(other[2])) == true &&
 			AreEqual(static_cast<float>(val[3]), static_cast<float>(other[3])) == true);
 	}
-
 
 	inline Vector4<T> operator* (const Vector4<T>& other) const
 	{
@@ -526,8 +579,6 @@ inline Vector3<T> Cross(const Vector3<T>& lhs, const Vector3<T>& rhs)
 
 #if defined(_DEBUG)
 
-#include <cassert>
-
 inline void Vector2UnitTest()
 {
 	Vector2<int> case0 = Vector2<int>(4, 3);
@@ -539,6 +590,13 @@ inline void Vector2UnitTest()
 	Vector2<float> temp1;
 	Vector2<double> temp2;
 	float val0;
+
+
+	assert(AreEqual(temp1[0], 0.0f) && AreEqual(temp1[1], 0.0f));
+	assert(AreEqual(case1[0], 4.4f) && AreEqual(case1[1], 3.3f));
+
+	Vector2<float> temp4 = case1;
+	assert(AreEqual(temp4[0], 4.4f) && AreEqual(temp4[1], 3.3f));
 
 	temp0 = case1.ConvertTo<int>();
 	assert(temp0[0] == 4 && temp0[1] == 3);
@@ -613,6 +671,13 @@ inline void Vector3UnitTest()
 	Vector3<float> temp1;
 	Vector3<double> temp2;
 	float val0;
+
+
+	assert(AreEqual(temp1[0], 0.0f) && AreEqual(temp1[1], 0.0f) && AreEqual(temp1[2], 0.0f));
+	assert(AreEqual(case1[0], 3.3f) && AreEqual(case1[1], 4.4f) && AreEqual(case1[2], 5.5f));
+
+	Vector3<float> temp4 = case1;
+	assert(AreEqual(temp4[0], 3.3f) && AreEqual(temp4[1], 4.4f) && AreEqual(temp4[2], 5.5f));
 
 	temp0 = case1.ConvertTo<int>();
 	assert(temp0[0] == 3 && temp0[1] == 4 && temp0[2] == 5);

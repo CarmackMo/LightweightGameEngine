@@ -16,7 +16,7 @@ The game engine implements object instances monitor algorithm and runtime garbag
 
 这是一款基于C/C++开发的，Windows桌面平台的2D游戏引擎。  
 
-该项目实现了游戏引擎的物理系统，计时系统，动态内存分配系统。游戏引擎的的内存分配系统使用了本人在另一个个人项目中开发的[内存分配器](https://github.com/WaterFriend/MemoryAllocator) 。该项目除了必要的Window平台库（如WIndows.h），图形渲染库（如OpenCV）和C/C++基础库（如C Runtime Library 和 C++ Standard Library）外没有依赖额外的外部库。
+该项目实现了游戏引擎的物理系统，计时系统，动态内存分配系统。游戏引擎的的内存分配系统使用了本人在另一个个人项目中开发的[内存分配器](https://github.com/WaterFriend/MemoryAllocator) 。该项目除了必要的Window平台库（如WIndows.h），图形渲染库（如OpenGL）和C/C++基础库（如C Runtime Library 和 C++ Standard Library）外没有依赖额外的外部库。
 
 + 使用了C++多态，C++模板实现了智能指针，并以此实现了对象引用的实时监控和运行时内存的动态回收。
 + 使用Windows API 实现了多线程任务队列系统，该系统支持根据阻塞的任务数量动态增删任务执行线程，依次优化任务队列的执行性能。
