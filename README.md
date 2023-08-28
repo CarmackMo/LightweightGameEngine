@@ -3,12 +3,16 @@
 
 ## Introduction
 
-This project implements a 2D game engine that based on C/C++ and targeted on Windows platform. 
+This project implements a 2D game engine that is based on C/C++ and targeted on the Windows platform. 
 
+The project implements the game engine's physics system, timing system, and dynamic memory allocation system. The memory allocation system of the game engine utilizes a memory allocator developed by myself in another personal project [MemoryAllocator](https://github.com/WaterFriend/MemoryAllocator). 
 
-The game engine implements physics system, timer system, memory allocation system, and user input system. The memory allocation system in this game engine uses the memory allocator I developed in another [project](https://github.com/WaterFriend/MemoryAllocator) . Rendering system and user interface system will be implemented in the future version.
+C++ polymorphism and C++ templates are used to implement smart pointers, enabling real-time monitoring of object references and dynamic memory reclamation at runtime.
 
-The game engine implements object instances monitor algorithm and runtime garbage collection algorithm using smart pointer algorithm and owner-observer development pattern. 
+A multi-threaded task queue system is implemented using Windows multi-thread programming, which dynamically adjusts the number of task execution threads based on the count of blocked tasks, thus optimizing the performance of the task queue execution.
+
+In the subsequent development, collision detection system, rendering system, and UI system are queued to be developed.
+
 
 
 
