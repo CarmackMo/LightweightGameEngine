@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="cMatrix_transformation.cpp" />
+    <ClCompile Include="cQuaternion.cpp" />
+    <ClCompile Include="Functions.cpp" />
+    <ClCompile Include="sVector.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cMatrix_transformation.h" />
+    <ClInclude Include="Constants.h" />
+    <ClInclude Include="cQuaternion.h" />
+    <ClInclude Include="Functions.h" />
+    <ClInclude Include="sVector.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Functions.inl" />
+    <None Include="sVector.inl" />
+    <None Include="cQuaternion.inl" />
+    <None Include="cMatrix_transformation.inl" />
+  </ItemGroup>
+</Project>

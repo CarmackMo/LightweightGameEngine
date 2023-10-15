@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="OpenGlExtensions.h" />
+    <ClInclude Include="Windows\ExternalLibraries.win.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="20200815\glext.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="20200815\wglext.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="20200815\KHR\khrplatform.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Windows">
+      <UniqueIdentifier>{105febb7-2ce2-48b4-9b07-0dc5a182ec61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{24c7bc53-486a-4875-b9f8-b7a8f6853251}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Windows\OpenGlExtensions.win.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

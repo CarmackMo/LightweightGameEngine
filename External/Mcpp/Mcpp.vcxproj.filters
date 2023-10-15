@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{8f78c39f-d7cd-41bf-ada5-e464458551e2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="2.7.2\src\configed.H">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="2.7.2\src\internal.H">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="2.7.2\src\mcpp_lib.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="2.7.2\src\mcpp_out.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="2.7.2\src\noconfig.H">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="2.7.2\src\system.H">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Includes.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="2.7.2\src\directive.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="2.7.2\src\eval.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="2.7.2\src\expand.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="2.7.2\src\mbchar.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="2.7.2\src\support.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="2.7.2\src\system.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="2.7.2\src\main.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="License.txt" />
+  </ItemGroup>
+</Project>

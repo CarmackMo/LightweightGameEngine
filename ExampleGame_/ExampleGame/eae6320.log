@@ -1,0 +1,11 @@
+Opened log file "eae6320.log"
+Initialized time
+Registered main window class "John-Paul's EAE6320 Example Main Window Class"
+The user settings file "settings.ini" doesn't exist. Using default settings instead.
+Created main window "John-Paul's EAE6320 Example Game -- Direct3D"
+Set main window resolution to 512 x 512
+Failed to load shader from file data/Shaders/Vertex/standard.shader: Windows failed to open the file "data/Shaders/Vertex/standard.shader" for reading: The system cannot find the path specified.
+Application initialization failed!
+Destroyed main window
+Unregistered main window class
+Closing log file

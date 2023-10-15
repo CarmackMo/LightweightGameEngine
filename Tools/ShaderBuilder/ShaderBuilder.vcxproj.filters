@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="cShaderBuilder.cpp" />
+    <ClCompile Include="EntryPoint.cpp" />
+    <ClCompile Include="Direct3D\cShaderBuilder.d3d.cpp">
+      <Filter>Direct3D</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL\cShaderBuilder.gl.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cShaderBuilder.h" />
+    <ClInclude Include="Windows\ExternalLibraries.win.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Windows">
+      <UniqueIdentifier>{51a8e97f-93d0-44db-a0ef-38868e7b6897}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Direct3D">
+      <UniqueIdentifier>{08721d84-972f-41a5-88b2-68c73d187655}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OpenGL">
+      <UniqueIdentifier>{a15f124f-c31c-48eb-a5d3-2bc6f623d7b8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
