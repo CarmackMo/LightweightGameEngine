@@ -12,8 +12,17 @@
 - x64 platform uses Direct3D
 - Win32 platform uses OpenGL
 
-- 图形库是 platfrom-independent 的，其接口以及底层逻辑在设计和实现之初，考虑到了支持多平台的需求。而图形库的组件，例如 mesh，shader，effect，constant buffer等，则是platform-specific的，针对 Direct3D 和 OpenGL有各自对应的实现。
+- 图形库是 corss-platform 的，其接口以及底层逻辑在设计和实现之初，考虑到了支持多平台的需求。而图形库的组件，例如 mesh，shader，effect，constant buffer等，则是platform-specific的，针对 Direct3D 和 OpenGL有各自对应的实现。
 
+
+```
+TODO: 
+1. 需要更详细得解释 system update 和 simulation update 的区别，simulation 和 non-simulation 的逻辑。
+2. 需要解释为何渲染管线不属于simulation的一部分（大智对游戏引擎不熟悉），mian thread 和 rendering thead 是生产者和消费者的关系吗？会有asynchronize的问题吗？
+3. 讲得太底层（比如说下面说到 “主线程就是一个while(true)循环”），给人的感觉这个README像是写给自己的看的，而不是放在简历上用来对外展示自己skillset的，面向对象是自己，而不是面试官。容易让人underestimate我的工作。
+4. 可以考虑放 rendering pipeline 的架构图和流程图。
+5. 展示我用到的skill set，以及我的工作的能做什么，做到了什么程度，我这个项目的架构是怎么设计的。考虑到可能有的人会想clone下来跑，最好加上 how to run 的教程
+```
 
 <br></br>
 
@@ -30,6 +39,8 @@
     2. simulation update：该 update 也在 system update 所处的 `while(true)` 循环中执行，但执行速率受用户设置的 simulation rate 限制。simulation update 用于模拟游戏引擎的帧率更新，游戏引擎的所有游戏逻辑都应该在 simulation update 中运行。
 
 - 渲染线程本质上也是一个 `while(true)` 循环。渲染线程只负责向 GPU 提交渲染数据 （例如 vertex，index，shader等）然后调用渲染库接口 （Direct3D 和 OpenGL）进行绘制。
+
+
 
 
 - 渲染管线的流程如下：

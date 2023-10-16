@@ -74,10 +74,6 @@ namespace
 
 	eae6320::Graphics::cView s_view;
 
-
-
-
-
 }
 
 
@@ -159,7 +155,6 @@ eae6320::cResult eae6320::Graphics::SubmitMeshEffectData(
 }
 
 
-
 eae6320::cResult eae6320::Graphics::WaitUntilDataForANewFrameCanBeSubmitted(const unsigned int i_timeToWait_inMilliseconds)
 {
 	return Concurrency::WaitForEvent(s_whenDataForANewFrameCanBeSubmittedFromApplicationThread, i_timeToWait_inMilliseconds);
@@ -233,12 +228,6 @@ void eae6320::Graphics::RenderFrame()
 			}
 		}
 	}
-
-
-	size_t temp1 = sizeof(eae6320::Graphics::ConstantBufferFormats::sFrame);
-	size_t temp2 = sizeof(eae6320::Graphics::ConstantBufferFormats::sMeshEffectPair);
-	size_t temp3 = sizeof(eae6320::Graphics::ConstantBufferFormats::sDrawCall);
-
 
 	// Swap buffer
 	{
