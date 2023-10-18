@@ -1,3 +1,57 @@
+# 3D Game Engine
+
+
+## Introduction
+
+A lightweight game engine that is developed by C/C++ and targeted on the Windows operating system. The systems and components of this game engine include:
+
+- **Cross-platform rendering pipeline**
+- **Art asset pipeline**
+- **Job system**
+- **Maya plugin**
+- **Utility components**
+- **Math library**
+
+
+
+<br></br>
+
+## Catalog
+
++ [Rendering Pipeline](#RenderingPipeline)
++ [Art Asset Pipeline](#ArtAssetPipeline)
++ [Job System](#JobSystem)
++ [Maya Plugin](#MayaPlugin)
++ [Utility](#Utility)
+    - [Singleton](#Singleton)
+    - [Smart Pointers](#SmartPointers)
++ [Math](#Math)
+    - [Mathf](#Mathf)
+    - [Vector](#Vector)
+    - [Matrix](#Matrix)
+
+
+
+
+- Designed to seamlessly run on both the x64 and Win32 platforms. Developed using Direct3D for x64 platfrom and OpenGL for Win32 platform.
+- Comprehensive support for both GLSL and HLSL.
+- Developed platform-specific rendering components such as "mesh" and "effect" representations. Developed platform-independent interfaces for inter-system interactions.
+
+
+
+<br></br>
+<a id="RenderingPipeline"></a>
+
+# Rendering Pipeline
+
+
+
+
+
+
+
+
+
 # Total Achievement:
 
 1. Graphic library 
