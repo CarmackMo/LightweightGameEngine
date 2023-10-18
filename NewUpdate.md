@@ -19,7 +19,8 @@ A lightweight game engine that is developed by C/C++ and targeted on the Windows
 ## Catalog
 
 + [Rendering Pipeline](#RenderingPipeline)
-+ [Art Asset Pipeline](#ArtAssetPipeline)
+    - [Graphics Library](#GraphicsLibrary)
++ [Asset Pipeline](#AssetPipeline)
 + [Job System](#JobSystem)
 + [Maya Plugin](#MayaPlugin)
 + [Utility](#Utility)
@@ -44,8 +45,47 @@ A lightweight game engine that is developed by C/C++ and targeted on the Windows
 
 # Rendering Pipeline
 
+<a id="GraphicsLibrary"></a>
+
+- ## 3D Graphics Library
+
+    游戏引擎的渲染管线要若要进行渲染，一个3D图形渲染库是不可缺少的。为此，该游戏引擎实现了一个简易的跨平台的3D图形渲染库。该图形渲染库具备以下特点和功能：
+
+    + 跨平台性：该图像渲染库同时支持 x64 和 Win32 平台。在 x64 平台下该图形渲染库使用了 Direct3D 11 作为渲染后端，而在 Win32 平台下该图形渲染库使用了 OpenGL 4.6 作为渲染后端。由于在不同的平台下使用了不同的渲染后端和渲染逻辑，为此渲染库对自身的底层逻辑进行了封装，并设计了通用（universal/uniform）且平台独立（platform-independent）的接口以供外部系统的调用。该渲染库最终是静态库（Static Library）的形式部署在游戏引擎中，
+    + Vertex Transform: Achieved translation, rotation, and scale by leveraging homogeneous coordinate; supported transformation between different spaces (i.e., Model Space, World Space, Image (Camera) Space, Perspective (NDC) Space, Screen Space).
+    + Lighting: 基于 Lambert 光照模型实现了 Diffuse Lighting, Specular Lighting, Ambient Lighting.
+    + Shading（Work in progress）: Implemented Phong shading, Gouraud shading, and Flat shading;
+    + Texture（Work in progress）: Provided functionalities on applying image texture or procedure texture; performed perspective correction in affine space to correct distortion.
 
 
+游戏引擎的渲染管线是基于上述的图形渲染库实现的。由于渲染管线自身是一个庞大的系统，而且渲染管线作为游戏引擎架构的一个重要组成部分无法被单独剥离出来讲解，为此可参考下方的渲染管线架构图，以方便理解。
+
+【此处插入渲染管线的架构图】
+
+【此处是基于架构图，对渲染管线的介绍】
+
+
+值得一提的是，渲染管线还实现了一些通用的渲染组件，例如mesh，effect，constant buffer 等。由于渲染组件所使用的图形渲染库是跨平台的，因此和图形渲染库一样，这些渲染组件的底层逻辑采用了跨平台（platform-specific）实现，并对底层逻辑进行了封装，只对外暴露了平台独立的接口以供调用。为了方便理解，以下是渲染组件的类图（class diagram）
+
+【针对每个组件，插入组件的class diagram】
+
+【一些简单的介绍，要避免描述得过于底层，让读者知道我实现了这几种渲染组件即可】
+
+
+
+<br></br>
+<br></br>
+<a id="AssetPipeline"></a>
+
+# Asset Pipeline
+
+从某种角度来说，游戏引擎就像是一个库，它负责为游戏的实现和运行提供对应功能。因此对于游戏引擎来说，游戏资产（例如gameobject，mesh，shader，effect等）都属于外部数据，游戏引擎是这些数据的“消费者”。因此这些数据不应该以硬编码的形式保存在游戏引擎的代码中，而是应该是存放在电脑磁盘上，在游戏运行时再由游戏引擎从磁盘上读取并加载到游戏中。而资产管线的任务，是管理游戏资产从产生，到读取，再到加载这一系列过程。
+
+与渲染管线相似，资产管线也是一个庞大的系统。其很多功能不是直接实现在引擎中，而是以引擎插件的形式为游戏引擎所用。而且一些游戏资产的生产源是外部的软件（比如mesh的生产源是3D建模软件Maya），资产管线也专门实现了外部软件的插件以对资产进行管理。为了方便理解，可参考下方的资产管线的架构图和流程图，（这里将以 mesh 为例）
+
+【此处插入资产管线的架构图】
+
+【此处是基于架构图，对资产管线的介绍】
 
 
 
