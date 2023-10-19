@@ -18,8 +18,8 @@ A lightweight game engine that is developed by C/C++ and targeted on the Windows
 
 ## Catalog
 
++ [Graphics Library](#GraphicsLibrary)
 + [Rendering Pipeline](#RenderingPipeline)
-    - [Graphics Library](#GraphicsLibrary)
 + [Asset Pipeline](#AssetPipeline)
 + [Job System](#JobSystem)
 + [Maya Plugin](#MayaPlugin)
@@ -41,22 +41,28 @@ A lightweight game engine that is developed by C/C++ and targeted on the Windows
 
 
 <br></br>
+<a id="GraphicsLibrary"></a>
+
+# 3D Graphics Library
+
+游戏引擎的渲染管线要若要进行渲染，一个3D图形渲染库是不可缺少的。为此，该游戏引擎实现了一个简易的跨平台的3D图形渲染库。该图形渲染库具备以下特点和功能：
+
++ 跨平台性：该图像渲染库同时支持 x64 和 Win32 平台。在 x64 平台下该图形渲染库使用了 Direct3D 11 作为渲染后端，而在 Win32 平台下该图形渲染库使用了 OpenGL 4.6 作为渲染后端。由于在不同的平台下使用了不同的渲染后端和渲染逻辑，为此渲染库对自身的底层逻辑进行了封装，并设计了通用（universal/uniform）且平台独立（platform-independent）的接口以供外部系统的调用。该渲染库最终是静态库（Static Library）的形式部署在游戏引擎中，
+
++ Vertex Transform: Achieved translation, rotation, and scale by leveraging homogeneous coordinate; supported transformation between different spaces (i.e., Model Space, World Space, Image (Camera) Space, Perspective (NDC) Space, Screen Space).
+
++ Lighting: 基于 Lambert 光照模型实现了 Diffuse Lighting, Specular Lighting, Ambient Lighting.
+
++ Shading（Work in progress）: Implemented Phong shading, Gouraud shading, and Flat shading;
+
++ Texture（Work in progress）: Provided functionalities on applying image texture or procedure texture; performed perspective correction in affine space to correct distortion.
+
+
+ 
+<br></br>
 <a id="RenderingPipeline"></a>
 
 # Rendering Pipeline
-
-<a id="GraphicsLibrary"></a>
-
-- ## 3D Graphics Library
-
-    游戏引擎的渲染管线要若要进行渲染，一个3D图形渲染库是不可缺少的。为此，该游戏引擎实现了一个简易的跨平台的3D图形渲染库。该图形渲染库具备以下特点和功能：
-
-    + 跨平台性：该图像渲染库同时支持 x64 和 Win32 平台。在 x64 平台下该图形渲染库使用了 Direct3D 11 作为渲染后端，而在 Win32 平台下该图形渲染库使用了 OpenGL 4.6 作为渲染后端。由于在不同的平台下使用了不同的渲染后端和渲染逻辑，为此渲染库对自身的底层逻辑进行了封装，并设计了通用（universal/uniform）且平台独立（platform-independent）的接口以供外部系统的调用。该渲染库最终是静态库（Static Library）的形式部署在游戏引擎中，
-    + Vertex Transform: Achieved translation, rotation, and scale by leveraging homogeneous coordinate; supported transformation between different spaces (i.e., Model Space, World Space, Image (Camera) Space, Perspective (NDC) Space, Screen Space).
-    + Lighting: 基于 Lambert 光照模型实现了 Diffuse Lighting, Specular Lighting, Ambient Lighting.
-    + Shading（Work in progress）: Implemented Phong shading, Gouraud shading, and Flat shading;
-    + Texture（Work in progress）: Provided functionalities on applying image texture or procedure texture; performed perspective correction in affine space to correct distortion.
-
 
 游戏引擎的渲染管线是基于上述的图形渲染库实现的。由于渲染管线自身是一个庞大的系统，而且渲染管线作为游戏引擎架构的一个重要组成部分无法被单独剥离出来讲解，为此可参考下方的渲染管线架构图，以方便理解。
 
