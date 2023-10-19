@@ -64,11 +64,34 @@ A lightweight game engine that is developed by C/C++ and targeted on the Windows
 
 # Rendering Pipeline
 
-游戏引擎的渲染管线是基于上述的图形渲染库实现的。由于渲染管线自身是一个庞大的系统，而且渲染管线作为游戏引擎架构的一个重要组成部分无法被单独剥离出来讲解，为此可参考下方的渲染管线架构图，以方便理解。
+游戏引擎实现了一个跨平台的渲染管线。该渲染管线同时支持 x64 和 Win32 平台。在 x64 平台下该渲染管线使用了 Direct3D 11 作为渲染后端，而在 Win32 平台下该渲染管线使用了 OpenGL 4.6 作为渲染后端。由于在不同的平台下使用了不同的渲染后端和渲染逻辑，为此渲染管线对自身的底层逻辑进行了封装，并设计了通用（universal/uniform）且平台独立（platform-independent）的接口以供外部系统的调用。为了方便理解，可参考下方渲染管线的架构图
 
 【此处插入渲染管线的架构图】
 
 【此处是基于架构图，对渲染管线的介绍】
+
++ 从渲染管线的视角来看，游戏引擎可以被划分为两个部分：应用端和渲染端。两个部分各自维护着一个独立的线程。应用端的线程被称为“Game Engine Main Thread”，它负责游戏逻辑的运行，以及除了渲染以外其他所有引擎功能的运行。而渲染端的线程则被称为“Game Engine Rendering Thread”，它负责运行所有与渲染相关的功能。
+
++ 从渲染管线的视角来看，应用端和渲染端之间是生产者和消费者关系：应用端负责计算和“生产”渲染数据，而渲染端负责使用这些渲染数据绘制游戏画面。
+
++ 在游戏引擎启动时，Main Thead 负责初始化游戏引擎所有的系统，这其中包括了引擎的渲染管线。此外也是 Main Thead 负责创建一个新的线程来作为 Game Engine Rendering Thread。
+
++ 完成初始化后，Main Thead 会进入游戏的主循环（main loop）。主循环的功能是负责游戏每一帧的更新。主循环更新又额外分为系统更新（System Update）和模拟更新（Simulation Update）。
+    - 模拟更新负责的是对游戏状态的更新，例如物理更新，摄像机更新等。模拟更新的迭代速率是与游戏的帧率绑定的。
+    - 系统更新负责的是运行游戏引擎的各个系统的功能，例如监听用户输入，把渲染数据提交给渲染管线进行渲染等。系统更新的迭代速率是与 CPU clock cycle 绑定的。
+    - 系统更新和模拟更新不一样的迭代速率是会引发一些渲染问题。以渲染一个移动的模型为例，由于模型的transform是在模拟更新中更新的，每一帧（通常是30FPS或60FPS）才会更新一次。而系统更新则会在每一个 CPU clock cycle 向渲染管线提交transform矩阵进行渲染。如果系统更新直接向渲染管线提交由模拟更新计算得到的transform矩阵，那么渲染得到的模型移动将会是断断续续的。对于这类问题的解决方案是，在提交渲染数据时，游戏引擎会基于系统时间计算出渲染数据的预测值，再把预测值提交给渲染管线进行渲染。
+    - 在当前的实现中，渲染数据包括了 系统时间，摄像机信息，每个game object 的 mesh，shader 以及 transform矩阵 等数据。
+
++ 渲染数据提交至渲染端后，后续的渲染步骤由渲染管线全权负责处理。与应用端类似，渲染管线完成了自身的初始化后，会进入渲染循环（Render loop），负责游戏运行期画面的更新和渲染。如上文所述，应用端和渲染端扮演了生产者和消费者的关系，而游戏引擎使用了两个线程来分别运行应用端和渲染端。因此作为消费者的 rendering thread 需要在每一次渲染时堵塞地等待（blocking wait） main thread 完成渲染数据的提交后再进行渲染。
+    - 但堵塞同步本身并不是一个很好的设计，因为这会极大地拖慢引擎的运行性能。其优点是实现相对简单，线程安全性较好且更易于维护。由于该游戏引擎的架构相对简单，因此采用了这种设计来实现应用端和渲染端的同步。
+
++ 渲染管线维护着两个buffer用来暂存渲染数据。其中一个是“Receiver Buffer”，它负责接收从应用端提交的渲染数据。而另一个buffer是“Render Buffer”，它负责把渲染数据从Operating System的内存中提交到GPU的内存进行渲染。在一次渲染循环中，渲染数据首先会在应用端被计算出来，然后提交至渲染端的 “Receiver Buffer” 中进行暂存。在应用端完成所有数据的提交后，渲染数据会从 “Receiver Buffer” 迁移到 “Render Buffer”。接下来 “Receiver Buffer” 会继续接收应用端提交的用于下一次渲染的渲染数据，而 “Render Buffer” 则会把该次渲染的渲染数据提交给GPU进行渲染。
+    - 由于当前的渲染管线采用了阻塞等待的方式接收应用端提交的数据，因此其实只使用一个buffer来接收数据，然后提交给GPU渲染是足够的。使用双buffer的设计是考虑到未来该渲染管线会从单线程升级成多线程。一个线程负责接收应用端提交的渲染数据，另一个线程负责把渲染数据提交给GPU渲染。在多线程的设计下，如果只采用一个buffer完成上述步骤，那么正在被提交给GPU的数据很可能会被正在接收的来自应用端的数据给覆盖。因此需要采用双buffer，甚至是多个buffer的设计。
+
++ “Render Buffer” 完成数据提交后。渲染管线会调用渲染库的 draw call 进行该次画面的渲染。
+
+
++ ## Rendering Components
 
 
 值得一提的是，渲染管线还实现了一些通用的渲染组件，例如mesh，effect，constant buffer 等。由于渲染组件所使用的图形渲染库是跨平台的，因此和图形渲染库一样，这些渲染组件的底层逻辑采用了跨平台（platform-specific）实现，并对底层逻辑进行了封装，只对外暴露了平台独立的接口以供调用。为了方便理解，以下是渲染组件的类图（class diagram）
@@ -97,22 +120,6 @@ A lightweight game engine that is developed by C/C++ and targeted on the Windows
 
 
 
-
-# Total Achievement:
-
-1. Graphic library 
-2. Rndering pipeline
-3. Data/File pipeline
-
-
-<br></br>
-
-# Grpahic Library
-
-- x64 platform uses Direct3D
-- Win32 platform uses OpenGL
-
-- 图形库是 corss-platform 的，其接口以及底层逻辑在设计和实现之初，考虑到了支持多平台的需求。而图形库的组件，例如 mesh，shader，effect，constant buffer等，则是platform-specific的，针对 Direct3D 和 OpenGL有各自对应的实现。
 
 
 ```
