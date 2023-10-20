@@ -1,6 +1,5 @@
 # 3D Game Engine
 
-
 ## Introduction
 
 A lightweight game engine that is developed by C/C++ and targeted on the Windows operating system. The systems and components of this game engine include:
@@ -11,6 +10,9 @@ A lightweight game engine that is developed by C/C++ and targeted on the Windows
 - **Maya plugin**
 - **Utility components**
 - **Math library**
+
+Read this in other languages:
+[简体中文](README.zh-CN.md)
 
 
 
@@ -30,8 +32,7 @@ A lightweight game engine that is developed by C/C++ and targeted on the Windows
     - [Mathf](#Mathf)
     - [Vector](#Vector)
     - [Matrix](#Matrix)
-
-
++ [Future Plan](#FuturePlan)
 
 
 - Designed to seamlessly run on both the x64 and Win32 platforms. Developed using Direct3D for x64 platfrom and OpenGL for Win32 platform.
@@ -89,8 +90,8 @@ For a comprehensive understanding, the architecture diagram of the rendering pip
     ```
 
 + Following initialization, the main thread enters the engine's main loop. This loop is dedicated to the execution of overall engine functionalities and gameplay logics. Updates within this loop can be further categorized into *"System Update"* and *"Simulation Update"*.
-    - Simulation update is pivotal for frame-by-frame gameplay updates, such as physics update, camera updates and such. Simulation update is synchronized with the game's frame rate.
-    - System update, on the other hand, execute functionalities of game engine systems, like listing user input and submitting rendering data to the rendering side. The iteration frequency of system update is tied to the CPU clock cycle.
+    - Simulation update is responsible for frame-by-frame gameplay updates, such as physics update, camera updates and such. Simulation update is synchronized with the game's frame rate.
+    - System update, on the other hand, execute functionalities of game engine systems, like listerning user input and submitting rendering data to the rendering side. The iteration frequency of system update is tied to the CPU clock cycle.
     - The divergent iteration rates between system and simulation updates can induce certain rendering complications. 
     
         For instance, when rendering a moving mesh, the mesh's transform is updated within the simulation update, which updates on every frame (typically most games use a frame rate of 30FPS or 60FPS). However, in every CPU clock cycle, the system update submits the mesh's transform matrix to the rendering side. Should the system update directly submit the transform matrix (calculated in the simulation update) to the rendering side, the mesh movement would appear "jerky". 
@@ -136,6 +137,24 @@ For a comprehensive understanding, the architecture diagram of the rendering pip
 
     此外，如上文所述引擎的渲染管线采用了 “生产者-消费者” 的设计，因而渲染数据在渲染管线的运行流程中涉及了大量的数据迁移。为了更好地管理渲染数据的创建，复制，迁移以及回收，渲染数据使用了 “观察者” 开发模式进行开发。具体来说，渲染数据使用了由我实现的智能指针来实现 “开发者” 模式。
     ```
+
+
+
+<br></br>
+<br></br>
+<a id="FuturePlan"></a>
+
+# Future Plan
+
++ ## Rendering Pipeline
+
+    1. **Multi-threading Optimization:** there is a plan to explore advanced thread synchronization methods to streamline the rendering process and ensure better synchronization between threads.
+
+    2. **Extending Platform and Backend Support:** there is an intention to broaden the platform support, including Linux, MacOS, and mobile platforms. Additionally, expanding graphic API support is under consideration, with APIs such as Vulkan and Metal being potential candidates.
+
+    3. **Post-processing Effects:** there is a plan to integrate various of post-processing effects to elevate the visual aesthetics. Potential inclusions encompass tone mapping, blurring, and Screen Space Ambient Occlusion (SSAO), among others.
+
+    4. **Physically Based Rendering (PBR):** there is an intention to integrate rendering techniques related to physics. Techniques such as real-time shadows, global illumination, and Physically Based Rendering (PBR) are subjects of interest for future development.
 
 
 
