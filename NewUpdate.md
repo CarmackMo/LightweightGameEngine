@@ -106,6 +106,39 @@ For a comprehensive understanding, the architecture diagram of the rendering pip
 
 <br></br>
 <br></br>
+<a id="AssetPipeline"></a>
+
+# Asset Pipeline
+
+A game engine can be understood as a library responsible for providing specific functionalities essential for the development and execution of games. Consequently, game assets, such as game objects, meshes, shaders, and user data, are treated as external data by the game engine. The game engine acts as the "consumer" of these data. As such, these data should not be hard-coded into the game engine's source code. Instead, they should be stored on the disk and loaded into the game during runtime. The primary role of the asset pipeline is to oversee and manage the entire process, from the creation of game assets, their retrieval from storage, and finally, their loading into the game.
+
+Like the rendering pipeline, the asset pipeline constitutes a complex system. What distinguishes the asset pipeline is its functionalities do not directly operate within the game. Additionally, certain game assets originate from external software. For instance, models are produced using 3D modeling software such as **Maya**. Consequently, the asset pipeline incorporates plugins for these external software to manage such assets. 
+
+To provide a comprehensive understanding, the following section elaborates on the management of model data as an example, showcasing the architecture and flow of the asset pipeline.
+
+
+![Asset Pipeline Architecture](Documents/Images/AssetPipeline.png)
+
+
++ The game engine presently utilizes models produced by Maya. Since Maya is an external third-party software from the perspective of the game engine, the asset pipeline requires plugins to extract model data from Maya. Autodesk, the parent company of Maya, offers SDKs and APIs like the **Maya Devkit** and **OpenMaya** for developers to extend its functionalities. The current game engine employs these SDKs to create a plugin that extracts model data from Maya. During build-time, the game engine compiles this plugin, which is then loaded by users into Maya.
+
++ Once the game artists and technical artists finalize the model creation and modification, users can employ the plugin to export the model data. The current implementation facilitates the extraction of model attributes such as vertex positions, normals, tangents, vertex colors, and vertex index winding orders from Maya. Eventually, the plugin exports the Maya model into a .lua format file.
+    - Why is the model exported as a .lua file?  While .lua, being a human-readable file format, has limitations in terms of serialization/deserialization efficiency and security, it offers developers with data clarity and ease of data maintenance and debugging.
+
+        Take model assets as an example. During game development, various roles, including game artists, technical artists, and game engineers, will collaborate on model development. At this stage, data readability, maintainability, and debuggability are paramount, making human-readable formats ideal. Once the development phase concludes and data is finalized, the emphasis shifts to data process efficiency, security, and ease of preservation. At this stage, using binary file formats for data is optimal.
+
++ After exporting Maya model, the model file resides either on the computer's disk or within a source control system. During build-time, *“MeshBuilder”*, a game engine's module that is specialized designed for processing model files, will load the .lua model files from disk and preprocess model data.
+    - For instance, the default vertex index winding order for Maya models follows the right-handed rule. Since the game engine's rendering pipeline supports Direct3D in x64 platform and OpenGL in Win32 platform, and Direct3D uses left-handed winding order. The MeshBuilder adjusts the winding order to left-handed for outputs directed to the x64 platform during the preprocessing phase.
+
++ Post preprocessing phase, MeshBuilder compiles the model data into binary and exports it as a .mesh format file.
+    - Note: .mesh is a custom file extension. Using .mesh for model files aids users in managing multiple game asset files. However, users can customize the extension based on their requirements.
+
++ During run-time, the game retrieves the binary model file exported by MeshBuilder, deserializes the model data, and subsequently creates mesh instances using those data. (For more details about the rendering component "mesh", please refer to the [Rendering Pipeline](#RenderingPipeline) section)
+
+
+
+<br></br>
+<br></br>
 <a id="FuturePlan"></a>
 
 # Future Plan
@@ -120,41 +153,24 @@ For a comprehensive understanding, the architecture diagram of the rendering pip
 
     4. **Physically Based Rendering (PBR):** there is an intention to integrate rendering techniques related to physics. Techniques such as real-time shadows, global illumination, and Physically Based Rendering (PBR) are subjects of interest for future development.
 
++ ## Asset Pipeline
+    1. **Automation:** Presently, many processes within the asset pipeline are contingent on manual interventions by users. For instance, the installation of plugins, such as the one used for Maya, requires user-initiated actions. To improve this, there's a plan to infuse greater automation into the pipeline's operations.
 
+        ```
+        **自动化：** 当前的资产管线的许多过程中仍依赖于用户的手动操作，有计划在未来的开发中使资产管线的运作更加自动化。例如资产管线可以自动安装Maya插件。
+        ```
 
-<br></br>
-<br></br>
-<a id="AssetPipeline"></a>
+    2. **Asset Editor:** As of now, any edits to the asset files necessitate users to manipulate the source code directly. This can be cumbersome and prone to errors, especially for those not well-acquainted with code-based manipulations. Future development blueprint encompasses the creation of a asset editor that offers graphical user interface (GUI). 
 
-# Asset Pipeline
+        ```
+        2. **可视化资产编辑器：** 在当前的实现下，用户若需要编辑资产文件，只能通过代码编辑对资产文件的源码进行编辑。有计划在未来开发可视化的资产编辑器，使用户可以更加方便地编辑资产文件。
+        ```
 
-从某种角度来说，游戏引擎就像是一个库，它负责为游戏的开发和运行提供对应功能。因此对于游戏引擎来说，游戏资产（例如gameobject，mesh，shader，effect等）都属于外部数据，游戏引擎是这些数据的“消费者”。因此这些数据不应该以硬编码的形式保存在游戏引擎的代码中，而是应该是存放在电脑磁盘上，在游戏运行时再从磁盘上读取并加载到游戏中。而资产管线的任务，是管理游戏资产从产生，到读取，再到加载这一系列过程。
-
-与渲染管线一样资产管线也是一个庞大的系统。但资产管线比较特殊的地方在于，其很多功能不是直接实现在引擎中，而是以引擎插件的形式为游戏引擎所用。而且一些游戏资产的生产源是外部的软件（比如mesh的生产源是3D建模软件Maya），资产管线也专门实现了外部软件的插件以对资产进行管理。
-
-
-为了方便理解，文档的下方以资产管线对模型数据的管理为例，展现了资产管线的架构图和流程图
-
-![Asset Pipeline Architecture](Documents/Images/AssetPipeline .png)
-
-
-
-+ 当前游戏引擎使用的模型数据是由3D建模软件 *Maya* 提供的。由于Maya对于游戏引擎来说属于外部的第三方软件，因此资产管线需要使用插件来从Maya中提取模型数据。Autodesk官方提供了 *"Maya Devkit"*, *"OpenMaya"* 等SDK和API以供开发者实现拓展功能。当前的游戏引擎使用了Autodesk提供的SDK实现了一个能够从Maya中提取模型数据的插件。游戏引擎会在构建期（build-time）对插件进行编译构建。然后由用户把插件载入到Maya中
-
-+ 当游戏美术（game artist）和技术美术（technical artist）完成对模型的创建和修改后。用户可以使用插件导出模型数据。在当前的实现中，插件会从Maya中导出模型的顶点位置（vertex position），法向量（normal），切线值（tangent），顶点颜色（vertex color），以及顶点索引的构成顺序（index winding order）。最后插件会把Maya模型导出为 .lua 格式的模型文件。
-    - 注：为何要把模型导出为.lua文件？.lua文件作为人类可读文件格式（human-readable file format）存在着序列化和反序列化效率低下，文件安全性差等缺点。但其可读性良好，易于开发人员进行维护和调试。
+    3. **Enhanced Error Detection:** The existing error detection within the asset pipeline, particularly during data deserialization and conversion, is somewhat rudimentary. While it addresses basic error scenarios, there's room for improvement in terms of comprehensiveness. The future development intends to introduce a more robust and comprehensive error detection mechanism.
     
-        以模型为例，在游戏开发的过程中，游戏开发团队中多种职位会参与到对模型的开发，例如游戏美术会负责模型的雕刻，模型贴图的绘制，技术美术会负责模型的骨绑（rigging），模型动画的制作，游戏工程师会负责把模型导入到游戏中，以及实现模型的gameplay logic。这个阶段强调的数据的可读性，可维护性和可调试性，因此数据采用人类可读文件格式保存更为合适。而当对模型的开发已经完成，数据已经定型后。这个阶段强调的数据的易处理性，易保存性和安全性，在这个阶段才更适合使用二进制文件格式保存数据。
-    
-+ 完成对模型的导出后，模型文件会被存放在电脑磁盘中，或是版本管理系统中（source control）。在游戏的构建期（build-time），游戏引擎专门用于处理模型数据的模块 *“MeshBuilder”* 会读取磁盘上 .lua 格式的模型文件，并对模型数据进行预处理。
-    - 如：Maya模型的顶点索引构成顺序（index winding order）默认采用了右手顺序。而游戏引擎的渲染管线同时支持 Direct3D 和 OpenGL 两种渲染后端。Direct3D 采用左手顺序作为 winding order。因此 MeshBuilder 会在预处理时把输出至 x64 平台的模型的索引构成顺序改为左手顺序。
-
-+ 完成预处理后，MeshBuilder 会把模型数据编译为二进制数据，并导出为 .mesh 格式的二进制模型文件。
-    - 注：.mesh 是自定义的文件拓展名。采用 .mesh 作为模型文件拓展名是为了方便用户对多种游戏资产文件进行管理。用户可以根据自身需求使用其他名字作为模型文件的拓展名。
-
-+ 在游戏的运行期（Run-time），游戏会从指定位置读取由 MeshBuilder 导出的二进制模型文件，反序列化模型数据，最后使用模型数据创建 mesh 实例（关于渲染组件mesh类的介绍，可参考 [渲染管线](#RenderingPipeline)章节）
-
-
+        ```
+        3. **错误检测机制：** 当前资产管线对数据的读取和转换采用了较为单一的错误检测机制。有计划在未来为资产管线加入更加全面的错误检测机制。
+        ```
 
 
 
