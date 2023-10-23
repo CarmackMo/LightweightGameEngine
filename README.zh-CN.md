@@ -26,8 +26,6 @@ A lightweight game engine that is developed by C/C++ and targeted on the Windows
 
 + [任务队列系统](#JobSystem)
 
-+ [Maya插件](#MayaPlugin)
-
 + [通用组件](#Utility)
     - [单例](#Singleton)
     - [智能指针](#SmartPointers)
@@ -159,51 +157,98 @@ A lightweight game engine that is developed by C/C++ and targeted on the Windows
     哈希字符串对象存储了一个整型哈希值，该值是采用 **FNV哈希算法** 对字符串计算得出的。在任务队列系统的上下文中，哈希字符串对象用作每个任务队列的唯一标识符，确保其在任务队列系统中的唯一性。
 
 
-
-
-
 <a id="Waitable"></a>
 
-+ ### Waitable Objects
++ ### 可等待对象（Waitable Objects）
 
-    - #### Event
-        A `Event` object is a synchronization object whose state can be explicitly set to signaled by use of the *"Signal()"* function. A event object can either be a `ManualResetEvent` object or be an `AutoResetEvent` object.
+    - #### 事件（Event）
+        事件对象是一种同步对象，其状态可以通过使用 *"Signal()"* 函数明确设置为激活状态。一个事件可以是`手动重置事件（ManualResetEvent）`，或是`自动重置事件（ManualResetEvent）`。
 
-        When a manual-reset event object is signaled, it remains signaled until it is explicitly reset to nonsignaled by the reset function. Any number of waiting threads, or threads that subsequently begin wait operations for the specified event object, can be released while the object's state is signaled.
+        当手动重置事件对象被激活时，它会一直保持着激活状态（signaled），直到它被重置函数明确设置为关停状态（reset）。任何数量的等待中线程，在事件对象的状态被激活时方可被释放。当自动重置事件对象被激活时，它会先维持着激活状态，一旦有等待中的线程被释放，系统会自动把事件对象重置为关停状态。如果事件对象被激活时没有线程在等待，那么事件对象会一直保持着激活状态。
 
-        When an auto-reset event object is signaled, it remains signaled until a single waiting thread is released; the system then automatically resets the state to nonsignaled. If no threads are waiting, the event object's state remains signaled.
+        请查看 [Windows事件对象](https://learn.microsoft.com/en-us/windows/win32/sync/event-objects) 了解更多详情。
 
-        See [Windows Event Objects](https://learn.microsoft.com/en-us/windows/win32/sync/event-objects) for more detail.
+    - #### 互斥锁（Mutex）
+        互斥锁对象是一种同步对象，当它没有被任何线程占用时，其状态会被设置为激活状态，而当它被某个线程拥占用时，其状态会变为关停状态。同一时间下只能有一个线程可以占用互斥锁对象。
 
-    - #### Mutex
-        A `Mutex` object is a synchronization object whose state is set to signaled when it is not owned by any thread, and nonsignaled when it is owned. Only one thread at a time can own a mutex object.
-        
-        The mutex object is useful in coordinating mutually exclusive access to a shared resource. Note that critical section objects provide synchronization similar to that provided by mutex objects, except that critical section objects can be used only by the threads of a single process.
+        互斥锁对象在协调对共享资源的互斥访问时很有用。需要注意的是，临界区对象（critical section）提供了与互斥锁对象相似的同步功能，但临界区对象只能由同一个进程中的线程使用。
 
-        See [Windows Mutex Objects](https://learn.microsoft.com/en-us/windows/win32/sync/mutex-objects) for more detail.
+        请查看 [Windows互斥锁对象](https://learn.microsoft.com/en-us/windows/win32/sync/mutex-objects) 了解更多详情。
 
-    - #### Semaphore
-        A `Semaphore` object is a synchronization object that maintains a count between zero and a specified maximum value. The count is decremented each time a thread completes a wait for the semaphore object and incremented each time a thread releases the semaphore. When the count reaches zero, no more threads can successfully wait for the semaphore object state to become signaled. The state of a semaphore is set to signaled when its count is greater than zero, and nonsignaled when its count is zero.
+    - #### 信号量（Semaphore）
+        信号量对象是一种同步对象，它维护一个在零和指定最大值之间的计数。每当有线程开始对信号量对象占用时，计数减一；每当有线程释放信号量时，计数加一。当计数达到零时，其余的线程在不可占用信号量对象。当信号量的计数大于零时，其状态会设置为激活状态，而当计数为零时，其状态会重置为关停状态。
 
-        The semaphore object is useful in controlling a shared resource that can support a limited number of users. It acts as a gate that limits the number of threads sharing the resource to a specified maximum number. If more than one thread is waiting on a semaphore, a waiting thread is selected. Do not assume a first-in, first-out (FIFO) order.
+        信号量对象在控制可以支持有限数量用户的共享资源时很有用。它的机制类似一个门，限制着能够共享资源的最大线程数量。如果有多于一个线程正在等待信号量对象，信号量对象将选择一个任意的等待线程。其选择规律并不遵循先进先出（FIFO）的顺序。
 
-        See [Windows Semaphore Ojbects](https://learn.microsoft.com/en-us/windows/win32/sync/semaphore-objects) for more detail.
+        请查看 [Windows信号量对象](https://learn.microsoft.com/en-us/windows/win32/sync/semaphore-objects) 了解更多详情。
 
-    - #### ScopeLock
-        A `ScopeLock` object is a synchronization object that maintains a pointer to a mutex object. 
-        
-        At the time when a scopeLock object is constructed, it attempts to acquire ownership of the associated mutex. If the mutex is currently owned by another thread, the construction of the scopeLock object will be blocked until the mutex is released. The scopeLock holds ownership of the mutex for the duration of its lifetime. Upon destruction of the scopeLock object , the mutex is automatically released.  
+    - #### 局域锁（ScopeLock）
+        局域锁对象是一种同步对象，它维护着一个指向互斥锁对象的指针。
 
-        The scopeLock object is useful in preventing threads from generating dead lock.
+        当实例化范围锁对象时，对象会试图获得与之关联的互斥锁的所有权。如果互斥锁当前被另一个线程拥有，则范围锁对象的实例化将会进入阻塞等待，直到互斥锁被释放。范围锁在其生命周期内持有互斥锁的所有权。在范围锁对象析构时时，互斥锁会被自动释放。
+
+        通过这种机制，范围锁对象在防止线程产生死锁时很有用。
 
 
+<a id="Job"></a>
+
++ ### 任务对象（Job）
+    任务对象是一种数据结构，其存储要由任务执行单元执行的特定任务（该任务是由用户指定的）。任务对象使用了 **观察者设计模式（Observer design pattern）** 实现。因此任务对象的实例化必须通过其接口所提供的"工厂"函数来完成。任何在接口定义外的对任务对象的实例化和拷贝都会导致未知的错误。
 
 
+<a id="JobQueue"></a>
+
++ ### 任务队列（JobQueue）
+    任务队列对象是一种数据结构，负责存储和管理任务对象。在任务队列内部的任务对象按先进先出（FIFO）的顺序执行。
+
+    任务队列对象可能管理着多个并行的任务执行单元。为了便于对同一个任务队列上的任务执行单元进行同步，任务队列对象维护一个 `CONDITION_VARIABLE` 对象和一个 `CRITICAL_SECTION` 对象。这确保了任务对象能够以同步的方式添加到队列并从队列中检索。
+
+    与任务对象类似，任务队列对象也使用了**观察者设计模式**实现。任何在接口定义外的对任务队列对象的实例化和拷贝都会导致未知的错误。
 
 
+<a id="JobRunner"></a>
+
++ ### 任务执行单元（JobRunner）
+    如其名字所示，任务执行单元对象是任务队列中执行任务的最基本单元。它同时也是具体负责执行任务的线程的控制模块。
+    
+    每个任务执行单元对象存储了线程的基本数据，包括指向线程的句柄，线程ID，以及指向其所属任务队列的指针。
 
 
+<a id="JobQueueManager"></a>
 
++ ### 任务队列管理器（Job Queue Manager）
+    任务队列管理器充当着任务队列对象的管理者。任务队列管理器负责监督任务队列中所有构成组件，包括任务队列对象、任务状态对象（JobStatus）、任务队列所属的任务执行单元和一个工作负载管理器对象。
+
+
+<a id="JobQueueManager"></a>
+
++ ### 工作负载管理器（WorkloadManager）
+    工作负载管理器充当者任务队列系统内每个任务队列的工作负载管理模块。当用户启用 *"自动化负载调整"* 功能时，工作负载管理器会根据游戏引擎的实时工作量动态地为任务队列分配或移除任务执行单元。从而优化游戏引擎的性能。
+
+
+## 架构设计
+
+为了方便对任务队列系统架构的理解，以下是任务队列系统简易的架构图，概述了其关键组件及之间的相互运作。
+
+![Job System Architecture](Documents/Images/JobSystem.png)
+
+
++ **[1]:** 任务队列系统使用 `unordered_map` 来记录所有的任务队列。字典中的每个映射元素都存储了一个指向 `JobQueueManager` 对象的指针，而字典元素的键值是HashedString，它将作为每个任务队列的唯一标识符。
+
++ **[2]:** 任务队列是任务队列系统中任务调度的基本单位。而每个任务队列都管理多个任务执行单元，这些任务执行单元是任务队列内负责任务执行的最基本单位。
+
++ **[3]:** 需要注意的是，每个任务队列在运行时必须拥有至少一个任务执行单元。创建新的任务队列时，任务队列系统将默认为队列添加一个任务执行单元。当用户手动从任务队列中删除任务执行单元时，如果队列中只存在一个任务执行单元，那么删除操作将不会被执行。
+
++ **[4]:** 任务队列对象维护着一个队列（queue）来跟踪所有已调度的任务，以及一个标志（flag）来记录任务队列的状态。这些组件被设计为任务队列内的线程共享资源，并受到任务队列维护的临界区对象的保护以确保同步访问。
+
++ **[5]:** 在初始化期间，任务队列系统将自动创建一个默认任务队列。默认任务队列是任务队列系统内的一个私有任务队列，其专门设计用来处理任务队列系统本身的运行。此外，默认任务队列还负责运行自动工作负载调整机制。
+
+
+## 自动化工作负载调整（Automatic Workload Adjustment） 
+
+在游戏引擎的运行期中，任务队列需要执行的任务数量可能会随时间而变化。在一方面，如果有太多的任务等待被执行却没有足够的任务执行单元去消化这些任务，这回导致游戏性能下降。而在另一方面，如果任务执行单元的数量远远超出实际需求，那些闲置的任务执行单元将对系统资源造成。找到任务执行单元的需求和供应之间的平衡，以优化程序性能和资源利用至关重要。
+
+当前的自动化工作负载调整机制提供了一种简单的策略来解决上述问题。每个任务队列都维持着一个 `工作负载管理器` 用于工作负载调整。工作负载管理器记录着其对应的任务队列的工作负载状态。工作负载管理器使用两个状态来标识工作负载状态：队列中的任务是否太多或太少。这些状态是基于正在等待被执行的任务数量与之相应的阈值之间的比较来切换的。任务队列系统的私有任务队列会循环地执行一个检测程序，其会不断地检查每个工作负载管理器的状态，并相应地动态调整任务执行单元的数量，根据运行需求添加或删除它们。
 
 
 

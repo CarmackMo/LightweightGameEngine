@@ -26,8 +26,6 @@ Read this in other languages:
 
 + [Job System](#JobSystem)
 
-+ [Maya Plugin](#MayaPlugin)
-
 + [Utility](#Utility)
     - [Singleton](#Singleton)
     - [Smart Pointers](#SmartPointers)
@@ -238,7 +236,7 @@ The job system is implemented using following components. Note that certain unde
 
 To provide a clearer understanding of the job system's architecture, the following is a concise blueprint outlining its key components and their interactions.
 
-![Architecture](Images/Docs/Architecture.png)
+![Job System Architecture](Documents/Images/JobSystem.png)
 
 
 + **[1]:** the job system utilizes an `unordered_map` to keep track of all job queues. Each job queue map element stores a pointer to a `JobQueueManager` object as the value, while the key type employed in the job queue map is `HashedString`, which serves as the unique identifier of each job queue.
