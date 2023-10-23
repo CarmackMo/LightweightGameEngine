@@ -20,13 +20,11 @@ A lightweight game engine that is developed by C/C++ and targeted on the Windows
 
 ## 目录
 
-+ [3D图形库](#GraphicsLibrary)
-
 + [渲染管线](#RenderingPipeline)
 
 + [资产管线](#AssetPipeline)
 
-+ [任务系统](#JobSystem)
++ [任务队列系统](#JobSystem)
 
 + [Maya插件](#MayaPlugin)
 
@@ -43,6 +41,8 @@ A lightweight game engine that is developed by C/C++ and targeted on the Windows
 
 
 
+
+
 <br></br>
 <a id="RenderingPipeline"></a>
 
@@ -50,6 +50,9 @@ A lightweight game engine that is developed by C/C++ and targeted on the Windows
 
 游戏引擎实现了一个跨平台的渲染管线。该渲染管线同时支持 **x64** 和 **Win32** 平台。在x64平台下渲染管线使用了 **Direct3D 12** 作为渲染后端；而在 Win32 平台下，渲染管线使用了 **OpenGL 4.6** 作为渲染后端。
 由于在不同平台上使用了不同的渲染后端和逻辑，为此渲染管线对其底层逻辑进行了封装，并为外部系统的调用提供了通用、独立于平台的接口。
+
+
+## 架构设计
 
 为了方便理解，下面附上渲染管线的架构图：
 
@@ -87,6 +90,7 @@ A lightweight game engine that is developed by C/C++ and targeted on the Windows
 
 
 
+
 <br></br>
 <br></br>
 <a id="AssetPipeline"></a>
@@ -97,8 +101,10 @@ A lightweight game engine that is developed by C/C++ and targeted on the Windows
 
 与渲染管线一样，资产管线也构成了一个复杂的系统。但资产管线比较特殊的地方在于，其许多功能不会直接作用与游戏中。此外，一些游戏资产来源于外部软件（例如，模型资产来自3D建模软件 **Maya**）。因此，资产管线也专门实现了外部软件的插件以对资产进行管理。
 
-为了方便理解，以下部分以资产管线对模型资产的管理为例，展示了资产管线的架构和流程。
 
+## 架构设计
+
+为了方便理解，以下部分以资产管线对模型资产的管理为例，展示了资产管线的架构和流程。
 
 ![Asset Pipeline Architecture](Documents/Images/AssetPipeline.png)
 
@@ -115,6 +121,90 @@ A lightweight game engine that is developed by C/C++ and targeted on the Windows
 
 + 在预处理阶段之后，MeshBuilder 会把模型数据编译为二进制数据，并导出为 .mesh 格式的二进制模型文件。
     - 注：.mesh 是一个自定义的文件扩展名。采用 .mesh 作为模型文件拓展名是为了方便用户对多种游戏资产文件进行管理。用户可以根据自身需求使用其他名字作为模型文件的拓展名。
+
+
+
+
+<br></br>
+<br></br>
+<a id="JobSystem"></a>
+
+# 任务队列系统
+
+任务队列系统设计为使用多线程技术来管理游戏引擎各项任务的执行。
+
+任务队列系统为用户提供了一系列API，以便管理任务的执行和任务队列系统本身的运行。用户可以以根据运行时的需求动态地增加任务队列（Job Queue）并指派任务执行单元（Job Runner），从而提高游戏引擎的性能。此外，用户可以根据任务队列系统的工作负载删除多余的任务队列和空闲的任务执行单元，以优化游戏引擎的资源利用。
+
+此外，任务队列系统实现了一个自动化工作负载调整机制。当创建新的任务队列时，用户可以选择是否在任务队列上应用此机制。该机制根据任务队列中待处理任务的数量动态地创建或删除任务执行单元。从而确保了资源利用和任务执行效率之间的最佳平衡。
+
+在进一步介绍任务队列系统之前，首先介绍需要其基础组件。
+
+
+## 构成组件
+
+任务队列系统的实现使用了以下组件。其中一些组件除了在任务队列系统，也可以应用在其他开发场景中，如 `互斥锁（Mutex）`、`局域锁（ScopeLock）`、`事件（Event）` 等。用户可根据特定的开发需求使用。
+
++ [哈希字符串（Hashed String）](#HashedString)
++ [可等待对象（Waitable Objects）](#Waitable)
++ [任务对象（Job）](#Job)
++ [任务队列（Job Queue）](#JobQueue)
++ [任务执行单元（Job Runner）](#JobRunner)
++ [任务队列管理器（Job Queue Manager）](#JobQueueManager)
++ [工作负载管理器（Workload Manager）](#WorkloadManager)
+
+
+<a id="HashedString"></a>
+
++ ### 哈希字符串（Hashed String）
+    哈希字符串对象存储了一个整型哈希值，该值是采用 **FNV哈希算法** 对字符串计算得出的。在任务队列系统的上下文中，哈希字符串对象用作每个任务队列的唯一标识符，确保其在任务队列系统中的唯一性。
+
+
+
+
+
+<a id="Waitable"></a>
+
++ ### Waitable Objects
+
+    - #### Event
+        A `Event` object is a synchronization object whose state can be explicitly set to signaled by use of the *"Signal()"* function. A event object can either be a `ManualResetEvent` object or be an `AutoResetEvent` object.
+
+        When a manual-reset event object is signaled, it remains signaled until it is explicitly reset to nonsignaled by the reset function. Any number of waiting threads, or threads that subsequently begin wait operations for the specified event object, can be released while the object's state is signaled.
+
+        When an auto-reset event object is signaled, it remains signaled until a single waiting thread is released; the system then automatically resets the state to nonsignaled. If no threads are waiting, the event object's state remains signaled.
+
+        See [Windows Event Objects](https://learn.microsoft.com/en-us/windows/win32/sync/event-objects) for more detail.
+
+    - #### Mutex
+        A `Mutex` object is a synchronization object whose state is set to signaled when it is not owned by any thread, and nonsignaled when it is owned. Only one thread at a time can own a mutex object.
+        
+        The mutex object is useful in coordinating mutually exclusive access to a shared resource. Note that critical section objects provide synchronization similar to that provided by mutex objects, except that critical section objects can be used only by the threads of a single process.
+
+        See [Windows Mutex Objects](https://learn.microsoft.com/en-us/windows/win32/sync/mutex-objects) for more detail.
+
+    - #### Semaphore
+        A `Semaphore` object is a synchronization object that maintains a count between zero and a specified maximum value. The count is decremented each time a thread completes a wait for the semaphore object and incremented each time a thread releases the semaphore. When the count reaches zero, no more threads can successfully wait for the semaphore object state to become signaled. The state of a semaphore is set to signaled when its count is greater than zero, and nonsignaled when its count is zero.
+
+        The semaphore object is useful in controlling a shared resource that can support a limited number of users. It acts as a gate that limits the number of threads sharing the resource to a specified maximum number. If more than one thread is waiting on a semaphore, a waiting thread is selected. Do not assume a first-in, first-out (FIFO) order.
+
+        See [Windows Semaphore Ojbects](https://learn.microsoft.com/en-us/windows/win32/sync/semaphore-objects) for more detail.
+
+    - #### ScopeLock
+        A `ScopeLock` object is a synchronization object that maintains a pointer to a mutex object. 
+        
+        At the time when a scopeLock object is constructed, it attempts to acquire ownership of the associated mutex. If the mutex is currently owned by another thread, the construction of the scopeLock object will be blocked until the mutex is released. The scopeLock holds ownership of the mutex for the duration of its lifetime. Upon destruction of the scopeLock object , the mutex is automatically released.  
+
+        The scopeLock object is useful in preventing threads from generating dead lock.
+
+
+
+
+
+
+
+
+
+
 
 
 
