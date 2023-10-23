@@ -2,14 +2,13 @@
 
 ## 介绍
 
-A lightweight game engine that is developed by C/C++ and targeted on the Windows operating system. The systems and components of this game engine include:
+一个由C/C++开发并针对Windows操作系统的轻量级游戏引擎。该游戏引擎的系统和组件包括：
 
-- **Cross-platform rendering pipeline**
-- **Art asset pipeline**
-- **Job system**
-- **Maya plugin**
-- **Utility components**
-- **Math library**
+- **渲染管线**
+- **资产管线**
+- **任务队列系统**
+- **通用组件**
+- **简易数学库**
 
 英文版项目介绍可见此链接:
 [English](README.md)
