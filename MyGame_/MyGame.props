@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <GameName>MyGame_</GameName>
+    <GameDir>$(SolutionDir)$(GameName)\</GameDir>
+    <GameSourceContentDir>$(GameDir)Content\</GameSourceContentDir>
+    <GameIntermediateDir>$(IntermediateDir)..\$(GameName)\$(ProjectName)\</GameIntermediateDir>
+    <GameOutputDir>$(OutputDir)$(GameName)\</GameOutputDir>
+    <GameInstallDir>$(TempDir)$(GameName)\</GameInstallDir>
+    <GameLicenseDir>$(GameInstallDir)Licenses\</GameLicenseDir>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OutDir>$(GameOutputDir)</OutDir>
+    <IntDir>$(GameIntermediateDir)</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(GameDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <BuildMacro Include="GameName">
+      <Value>$(GameName)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="GameDir">
+      <Value>$(GameDir)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="GameSourceContentDir">
+      <Value>$(GameSourceContentDir)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="GameIntermediateDir">
+      <Value>$(GameIntermediateDir)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="GameOutputDir">
+      <Value>$(GameOutputDir)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="GameInstallDir">
+      <Value>$(GameInstallDir)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="GameLicenseDir">
+      <Value>$(GameLicenseDir)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+  </ItemGroup>
+</Project>

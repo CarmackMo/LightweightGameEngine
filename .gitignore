@@ -1,0 +1,60 @@
+# This file instructs git to ignore specific directories,
+# files, and file types
+# ("ignore" meaning that they won't be included
+# in the git repository)
+
+# EAE6320 Temporary Files
+#========================
+
+/temp
+
+# Visual Studio
+#==============
+
+# Explicitly temporary files
+#---------------------------
+
+/.vs
+
+# Solution User Settings
+#-----------------------
+
+*.suo
+
+# Project User Settings
+#----------------------
+
+*.vcxproj.user
+
+# Intellisense
+#-------------
+
+*.sdf
+*.opensdf
+/ipch
+*.VC.db
+*.VC.VC.opendb
+
+# Profiling
+#----------
+
+*.psess
+*.vsp
+*.vspx
+*.sap
+
+# Resources
+#----------
+
+*.aps
+
+# Windows
+#========
+
+desktop.ini
+Thumbs.db
+
+# Maya
+#=====
+
+**/.mayaswatches

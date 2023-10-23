@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="cHandle.h" />
+    <ClInclude Include="cManager.h" />
+    <ClInclude Include="ReferenceCountedAssets.h" />
+    <ClInclude Include="Windows\ExternalLibraries.win.h">
+      <Filter>Windows</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Windows">
+      <UniqueIdentifier>{e5d04a8a-b432-4019-8d23-3f4054fa1dcb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Empty.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cManager.inl" />
+  </ItemGroup>
+</Project>

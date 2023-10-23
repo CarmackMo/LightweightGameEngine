@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{94015084-a388-4a52-91dc-a84010c2a388}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resource Files\eaeAlien.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resource Files\eaeGamePad.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resource Files\vsDefault_large.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resource Files\vsDefault_small.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource Files\MyGame.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Resource Files\Resource.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource Files\targetver.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cMyGame.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="cMyGame.cpp" />
+    <ClCompile Include="EntryPoint.cpp" />
+  </ItemGroup>
+</Project>
