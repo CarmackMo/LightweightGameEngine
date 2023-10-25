@@ -1,4 +1,4 @@
-# 3D Game Engine
+# Lightweight Game Engine
 
 ## Introduction
 
