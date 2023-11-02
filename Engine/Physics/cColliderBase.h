@@ -83,7 +83,6 @@ namespace Physics
 
 		static cResult Create(cCollider*& o_collider, const sColliderSetting& i_setting);
 
-		void Initialize(eColliderType i_type);
 
 		// Property Getters
 		//--------------------------
@@ -96,15 +95,23 @@ namespace Physics
 		virtual void Update(const sRigidBodyState& i_rigidBody) = 0;
 
 
+	protected:
+
+		cCollider() = default;
+		cCollider(eColliderType i_type) : m_type(i_type) {};
+
 
 		// Data
 		//=====================
 
 	private:
 
-		eColliderType m_type;
+		eColliderType m_type = eColliderType::None;
 
 	};
+
+
+
 
 }// Namespace Physics
 }// Namespace eae6320

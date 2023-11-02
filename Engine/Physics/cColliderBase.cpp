@@ -45,13 +45,6 @@ eae6320::cResult eae6320::Physics::cCollider::Create(cCollider*& o_collider, con
 	return result;
 }
 
-
-void eae6320::Physics::cCollider::Initialize(eColliderType i_type)
-{
-	m_type = i_type;
-}
-
-
 eae6320::Physics::eColliderType eae6320::Physics::cCollider::GetType() const
 {
 	return m_type;

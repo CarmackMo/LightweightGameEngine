@@ -23,8 +23,8 @@ namespace Physics
 		//--------------------------
 
 		cSphereCollider() = default;
-		cSphereCollider(Math::sVector center, float radius) : m_center(center), m_radius(radius) { cCollider::Initialize(eColliderType::Sphere); }
-		cSphereCollider(float x, float y, float z, float radius) : m_center(Math::sVector(x,y,z)), m_radius(radius) { cCollider::Initialize(eColliderType::Sphere); }
+		cSphereCollider(Math::sVector center, float radius) : cCollider(eColliderType::Sphere), m_center(center), m_radius(radius) { }
+		cSphereCollider(float x, float y, float z, float radius) : cCollider(eColliderType::Sphere), m_center(Math::sVector(x,y,z)), m_radius(radius) { }
 
 		~cSphereCollider() = default;
 

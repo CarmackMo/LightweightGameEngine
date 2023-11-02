@@ -24,7 +24,7 @@ namespace Physics
 		//--------------------------
 
 		cAABBCollider() = default;
-		cAABBCollider(Math::sVector min, Math::sVector max) : m_min(min), m_max(max) { cCollider::Initialize(eColliderType::AABB); }
+		cAABBCollider(Math::sVector min, Math::sVector max) : cCollider(eColliderType::AABB), m_min(min), m_max(max) { }
 
 		~cAABBCollider() = default;
 

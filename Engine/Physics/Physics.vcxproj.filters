@@ -5,11 +5,13 @@
     <ClCompile Include="cAABBCollider.cpp" />
     <ClCompile Include="cColliderBase.cpp" />
     <ClCompile Include="cSphereCollider.cpp" />
+    <ClCompile Include="Physics.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sRigidBodyState.h" />
     <ClInclude Include="cAABBCollider.h" />
     <ClInclude Include="cColliderBase.h" />
     <ClInclude Include="cSphereCollider.h" />
+    <ClInclude Include="Physics.h" />
   </ItemGroup>
 </Project>
