@@ -11,8 +11,6 @@
 #include <Engine/Application/iApplication.h>
 #include <Engine/Camera/cCamera.h>
 #include <Engine/GameObject/cGameObject.h>
-#include <Engine/Graphics/cMesh.h>
-#include <Engine/Graphics/cEffect.h>
 #include <Engine/Physics/sRigidBodyState.h>
 #include <Engine/Results/Results.h>
 
@@ -20,6 +18,18 @@
 #if defined( EAE6320_PLATFORM_WINDOWS )
 	#include "Resource Files/Resource.h"
 #endif
+
+
+
+// TODO: Tempory code for collider testing
+#include <Engine/Graphics/cMesh.h>
+#include <Engine/Graphics/cEffect.h>
+#include <Engine/Physics/cColliderBase.h>
+#include <Engine/Physics/cSphereCollider.h>
+
+
+
+
 
 // Class Declaration
 //==================
@@ -132,6 +142,21 @@ namespace eae6320
 		cGameObject m_gameobject_Keqing;
 		cGameObject m_gameobject_Keqing_skin;
 		cGameObject m_gameobject_Ganyu;
+
+
+
+
+		// TODO: temporary colldier object
+		cGameObject m_AABBObject1;
+		cGameObject m_AABBObject2;
+		Physics::cSphereCollider m_sphereObject1;
+		Physics::cSphereCollider m_sphereObject2;
+		Physics::cSphereCollider m_sphereObject3;
+
+		cGameObject m_colliderObject_AABB1;
+		cGameObject m_colliderObject_sphere1;
+
+
 
 
 		bool isKeyPressed = false;

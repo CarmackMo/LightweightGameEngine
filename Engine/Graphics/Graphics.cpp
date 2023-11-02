@@ -23,7 +23,7 @@ namespace
 {
 	// Memory Budget
 	//-------------
-	constexpr uint16_t s_memoryBudget = 15;
+	constexpr uint32_t s_memoryBudget = 30;
 
 
 	// Constant buffer object
@@ -43,6 +43,8 @@ namespace
 		eae6320::Graphics::ConstantBufferFormats::sMeshEffectPair constantData_meshEffectPair[s_memoryBudget];
 
 		eae6320::Graphics::ConstantBufferFormats::sDrawCall constantData_drawCall[s_memoryBudget];
+
+		eae6320::Graphics::ConstantBufferFormats::sDebug constantData_debug[s_memoryBudget];
 
 		// Color data to clear the last frame (set background color for this frame)
 		// Black is usually used
@@ -128,9 +130,9 @@ void eae6320::Graphics::SubmitCameraMatrices(
 eae6320::cResult eae6320::Graphics::SubmitMeshEffectData(
 	ConstantBufferFormats::sMeshEffectPair i_meshEffectPairArray[], 
 	Math::cMatrix_transformation i_transformMatrix[],
-	uint16_t i_dataNumber = s_memoryBudget)
+	uint32_t i_meshEffectPairCount = s_memoryBudget)
 {
-	if (i_dataNumber < 0 || s_memoryBudget < i_dataNumber)
+	if (i_meshEffectPairCount < 0 || s_memoryBudget < i_meshEffectPairCount)
 	{
 		EAE6320_ASSERTF(false, "Mesh-effect data number exceeds memory budget limit: (%u)", s_memoryBudget);
 		Logging::OutputError("Mesh-effect data number exceeds memory budget limit: (%u)", s_memoryBudget);
@@ -144,7 +146,7 @@ eae6320::cResult eae6320::Graphics::SubmitMeshEffectData(
 		auto& constantData_meshEffectPair = s_dataBeingSubmittedByApplicationThread_frame->constantData_meshEffectPair;
 		auto& constantData_drawCall = s_dataBeingSubmittedByApplicationThread_frame->constantData_drawCall;
 
-		for (int i = 0; i < i_dataNumber; i++)
+		for (uint32_t i = 0; i < i_meshEffectPairCount; i++)
 		{
 			constantData_meshEffectPair[i].Initialize(i_meshEffectPairArray[i].mesh, i_meshEffectPairArray[i].effect);
 			std::swap(constantData_drawCall[i].g_transform_localToWorld, i_transformMatrix[i]);
@@ -153,6 +155,37 @@ eae6320::cResult eae6320::Graphics::SubmitMeshEffectData(
 		return Results::Success;
 	}
 }
+
+
+eae6320::cResult eae6320::Graphics::SubmitDebugData(
+	ConstantBufferFormats::sDebug i_debugDataArray[],
+	uint32_t i_debugDataCount = s_memoryBudget)
+{
+	if (i_debugDataCount < 0 || s_memoryBudget < i_debugDataCount)
+	{
+		EAE6320_ASSERTF(false, "Mesh-effect data number exceeds memory budget limit: (%u)", s_memoryBudget);
+		Logging::OutputError("Mesh-effect data number exceeds memory budget limit: (%u)", s_memoryBudget);
+		UserOutput::Print("Mesh-effect data number exceeds memory budget limit: (%u)", s_memoryBudget);
+
+		return Results::Failure;
+	}
+	else
+	{
+		EAE6320_ASSERT(s_dataBeingSubmittedByApplicationThread_frame);
+		auto& constantData_debug = s_dataBeingSubmittedByApplicationThread_frame->constantData_debug;
+
+		for (uint32_t i = 0; i < i_debugDataCount; i++)
+		{
+			if (i_debugDataArray[i].IsValid())
+			{
+				constantData_debug[i].Initialize(i_debugDataArray[i].line, i_debugDataArray[i].transform);
+			}
+		}
+
+		return Results::Success;
+	}
+}
+
 
 
 eae6320::cResult eae6320::Graphics::WaitUntilDataForANewFrameCanBeSubmitted(const unsigned int i_timeToWait_inMilliseconds)
@@ -204,6 +237,7 @@ void eae6320::Graphics::RenderFrame()
 	auto& constantData_frame = s_dataBeingRenderedByRenderThread_frame->constantData_frame;
 	auto& constantData_drawCall = s_dataBeingRenderedByRenderThread_frame->constantData_drawCall;
 	auto& constantData_meshEffectPair = s_dataBeingRenderedByRenderThread_frame->constantData_meshEffectPair;
+	auto& constantData_debug = s_dataBeingRenderedByRenderThread_frame->constantData_debug;
 
 	// Clear back buffer
 	{
@@ -229,6 +263,25 @@ void eae6320::Graphics::RenderFrame()
 		}
 	}
 
+
+	// TODO: temporary code for drawing debug lines of colliders
+	{
+		Math::cMatrix_transformation transform = Math::cMatrix_transformation();
+
+		for (int i = 0; i < s_memoryBudget; i++)
+		{
+			if (constantData_debug[i].IsValid())
+			{
+				//s_constantBuffer_drawCall.Update(&transform);
+				s_constantBuffer_drawCall.Update(&constantData_debug[i].transform);
+
+				constantData_debug[i].line->Draw();
+			}
+		}
+	}
+
+
+
 	// Swap buffer
 	{
 		s_view.SwapBuffer();
@@ -245,7 +298,10 @@ void eae6320::Graphics::RenderFrame()
 		for (int i = 0; i < s_memoryBudget; i++)
 		{
 			constantData_meshEffectPair[i].CleanUp();
+			constantData_debug[i].CleanUp();
 		}
+
+
 	}
 }
 
@@ -332,20 +388,24 @@ eae6320::cResult eae6320::Graphics::CleanUp()
 		{
 			EAE6320_ASSERT(s_dataBeingSubmittedByApplicationThread_frame);
 			auto& submitted_meshEffectPair = s_dataBeingSubmittedByApplicationThread_frame->constantData_meshEffectPair;
+			auto& submitted_debug = s_dataBeingSubmittedByApplicationThread_frame->constantData_debug;
 
 			for (int i = 0; i < s_memoryBudget; i++)
 			{
 				submitted_meshEffectPair[i].CleanUp();
+				submitted_debug[i].CleanUp();
 			}
 		}
 		//	Render data clean up 
 		{
 			EAE6320_ASSERT(s_dataBeingRenderedByRenderThread_frame);
 			auto& renderData_meshEffectPair = s_dataBeingRenderedByRenderThread_frame->constantData_meshEffectPair;
+			auto& renderData_debug = s_dataBeingRenderedByRenderThread_frame->constantData_debug;
 
 			for (int i = 0; i < s_memoryBudget; i++)
 			{
 				renderData_meshEffectPair[i].CleanUp();
+				renderData_debug[i].CleanUp();
 			}
 		}
 

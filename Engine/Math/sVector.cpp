@@ -59,3 +59,11 @@ eae6320::Math::sVector eae6320::Math::sVector::GetNormalized() const
 	EAE6320_ASSERTF( length > s_epsilon, "Can't divide by zero" );
 	return sVector( x / length, y / length, z / length );
 }
+
+
+
+
+float eae6320::Math::SqDistance(const sVector& i_lhs, const sVector& i_rhs)
+{
+	return powf(i_lhs.x - i_rhs.x, 2) + powf(i_lhs.y - i_rhs.y, 2) + powf(i_lhs.z - i_rhs.z, 2);
+}

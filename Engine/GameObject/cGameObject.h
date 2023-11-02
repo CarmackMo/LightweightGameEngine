@@ -13,6 +13,14 @@
 #include <string>
 
 
+// TODO: Tempory code for collider
+#include <Engine/Graphics/cLine.h>
+#include <Engine/Physics/cAABBCollider.h>
+#include <Engine/Physics/cColliderBase.h>
+
+
+
+
 namespace eae6320
 {
 
@@ -24,6 +32,9 @@ namespace eae6320
 
 	public:
 		
+		// Initialization / Clean Up
+		//--------------------------
+
 		void InitializeMesh(
 			Graphics::VertexFormats::sVertex_mesh* i_vertexData,
 			const uint32_t i_vertexCount,
@@ -39,8 +50,10 @@ namespace eae6320
 			const std::string& i_vertexShaderPath,
 			const std::string& i_fragmentShaderPath);
 
-
 		virtual void CleanUp();
+
+		// Property Getters
+		//--------------------------
 
 		Physics::sRigidBodyState& GetRigidBody();
 
@@ -52,9 +65,33 @@ namespace eae6320
 
 		Math::cMatrix_transformation GetPredictedTransform(const float i_secondCountToExtrapolate) const;
 		
+		// Update
+		//--------------------------
+
 		virtual void UpdateBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate);
 
 		virtual void UpdateBasedOnInput();
+
+
+
+
+		// TODO: Tempory code for rendering collider box and debug collider
+		void InitializeAABB(
+			float x1, float y1, float z1,
+			float x2, float y2, float z2);
+
+		void InitializeAABBLine();
+
+		void InitializeCollider(const Physics::sColliderSetting& i_builder);
+
+		Graphics::cLine* GetAABBLine() const;
+
+		Physics::cAABBCollider& GetAABBCollider();
+
+		Physics::cCollider* GetCollider() const;
+
+
+
 
 
 		// Data
@@ -67,6 +104,12 @@ namespace eae6320
 		Graphics::cMesh* m_mesh = nullptr;
 		Graphics::cEffect* m_effect = nullptr;
 
+
+		// TODO: Temporary code for collider
+		Physics::cAABBCollider m_AABB;
+		Graphics::cLine* m_AABBLine = nullptr;
+
+		Physics::cCollider* m_collider = nullptr;
 	};
 
 }

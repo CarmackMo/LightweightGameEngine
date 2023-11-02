@@ -54,7 +54,12 @@ namespace Graphics
 	eae6320::cResult SubmitMeshEffectData(
 		ConstantBufferFormats::sMeshEffectPair i_meshEffectPairArray[], 
 		Math::cMatrix_transformation i_transformMatrix[],
-		uint16_t i_meshEffectPairCount);
+		uint32_t i_meshEffectPairCount);
+
+
+	eae6320::cResult SubmitDebugData(
+		ConstantBufferFormats::sDebug i_debugDataArray[],
+		uint32_t i_debugDataCount);
 
 
 	// When the application is ready to submit data for a new frame

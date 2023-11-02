@@ -1,3 +1,6 @@
+// Includes
+//=========
+
 #include <Engine/Asserts/Asserts.h>
 #include <Engine/Logging/Logging.h>
 #include "../cMesh.h"
@@ -91,7 +94,7 @@ eae6320::cResult eae6320::Graphics::cMesh::Initialize(
 			{
 				result = eae6320::Results::Failure;
 				EAE6320_ASSERTF(false, reinterpret_cast<const char*>(gluErrorString(errorCode)));
-				eae6320::Logging::OutputError("OpenGL failed to bind a new vertex buffer: %s",
+				eae6320::Logging::OutputError("OpenGL failed to bind a new index buffer: %s",
 					reinterpret_cast<const char*>(gluErrorString(errorCode)));
 				return result;
 			}
@@ -100,7 +103,7 @@ eae6320::cResult eae6320::Graphics::cMesh::Initialize(
 		{
 			result = eae6320::Results::Failure;
 			EAE6320_ASSERTF(false, reinterpret_cast<const char*>(gluErrorString(errorCode)));
-			eae6320::Logging::OutputError("OpenGL failed to get an unused vertex buffer ID: %s",
+			eae6320::Logging::OutputError("OpenGL failed to get an unused index buffer ID: %s",
 				reinterpret_cast<const char*>(gluErrorString(errorCode)));
 			return result;
 		}
@@ -138,7 +141,7 @@ eae6320::cResult eae6320::Graphics::cMesh::Initialize(
 		{
 			result = eae6320::Results::Failure;
 			EAE6320_ASSERTF(false, reinterpret_cast<const char*>(gluErrorString(errorCode)));
-			eae6320::Logging::OutputError("OpenGL failed to allocate the vertex buffer: %s",
+			eae6320::Logging::OutputError("OpenGL failed to allocate the index buffer: %s",
 				reinterpret_cast<const char*>(gluErrorString(errorCode)));
 			return result;
 		}
@@ -149,12 +152,12 @@ eae6320::cResult eae6320::Graphics::cMesh::Initialize(
 		// The "stride" defines how large a single vertex is in the stream of data
 		// (or, said another way, how far apart each position element is)
 		constexpr auto stride = static_cast<GLsizei>(sizeof(eae6320::Graphics::VertexFormats::sVertex_mesh));
+		constexpr GLboolean notNormalized = GL_FALSE;	// The given floats should be used as-is
 
 		// Position (0): 3 floats == 12 bytes, Offset = 0
 		{
 			constexpr GLuint vertexElementLocation = 0;
 			constexpr GLint elementCount = 3;
-			constexpr GLboolean notNormalized = GL_FALSE;	// The given floats should be used as-is
 			glVertexAttribPointer(vertexElementLocation, elementCount, GL_FLOAT, notNormalized, stride,
 				reinterpret_cast<GLvoid*>(offsetof(eae6320::Graphics::VertexFormats::sVertex_mesh, x)));
 			const auto errorCode = glGetError();
@@ -184,7 +187,6 @@ eae6320::cResult eae6320::Graphics::cMesh::Initialize(
 		{
 			constexpr GLuint vertexElementLocation = 1;
 			constexpr GLint elementCount = 4;
-			constexpr GLboolean notNormalized = GL_FALSE;	// The given floats should be used as-is
 			glVertexAttribPointer(vertexElementLocation, elementCount, GL_FLOAT, notNormalized, stride,
 				reinterpret_cast<GLvoid*>(offsetof(eae6320::Graphics::VertexFormats::sVertex_mesh, r)));
 			const auto errorCode = glGetError();
@@ -196,7 +198,7 @@ eae6320::cResult eae6320::Graphics::cMesh::Initialize(
 				{
 					result = eae6320::Results::Failure;
 					EAE6320_ASSERTF(false, reinterpret_cast<const char*>(gluErrorString(errorCode)));
-					eae6320::Logging::OutputError("OpenGL failed to enable the POSITION vertex attribute at location %u: %s",
+					eae6320::Logging::OutputError("OpenGL failed to enable the COLOR vertex attribute at location %u: %s",
 						vertexElementLocation, reinterpret_cast<const char*>(gluErrorString(errorCode)));
 					return result;
 				}
@@ -205,7 +207,7 @@ eae6320::cResult eae6320::Graphics::cMesh::Initialize(
 			{
 				result = eae6320::Results::Failure;
 				EAE6320_ASSERTF(false, reinterpret_cast<const char*>(gluErrorString(errorCode)));
-				eae6320::Logging::OutputError("OpenGL failed to set the POSITION vertex attribute at location %u: %s",
+				eae6320::Logging::OutputError("OpenGL failed to set the COLOR vertex attribute at location %u: %s",
 					vertexElementLocation, reinterpret_cast<const char*>(gluErrorString(errorCode)));
 				return result;
 			}

@@ -10,85 +10,94 @@
 
 namespace eae6320
 {
-	namespace Math
+namespace Math
+{
+	struct sVector
 	{
-		struct sVector
-		{
-			// Data
-			//=====
+		// Data
+		//=====
 
-			float x = 0.0f, y = 0.0f, z = 0.0f;
+		float x = 0.0f, y = 0.0f, z = 0.0f;
 
-			// Interface
-			//==========
+		// Interface
+		//==========
 
-			// Addition
-			//---------
+		// Addition
+		//---------
 
-			constexpr sVector operator +( const sVector& i_rhs ) const;
-			constexpr sVector& operator +=( const sVector& i_rhs );
+		constexpr sVector operator +( const sVector& i_rhs ) const;
+		constexpr sVector& operator +=( const sVector& i_rhs );
 
-			constexpr sVector operator +( const float i_rhs ) const;
-			constexpr sVector& operator +=( const float i_rhs );
-			friend constexpr sVector operator +( const float i_lhs, const sVector& i_rhs );
+		constexpr sVector operator +( const float i_rhs ) const;
+		constexpr sVector& operator +=( const float i_rhs );
+		friend constexpr sVector operator +( const float i_lhs, const sVector& i_rhs );
 
 
-			// Subtraction / Negation
-			//-----------------------
+		// Subtraction / Negation
+		//-----------------------
 
-			constexpr sVector operator -( const sVector& i_rhs ) const;
-			constexpr sVector& operator -=( const sVector& i_rhs );
-			constexpr sVector operator -() const;
+		constexpr sVector operator -( const sVector& i_rhs ) const;
+		constexpr sVector& operator -=( const sVector& i_rhs );
+		constexpr sVector operator -() const;
 
-			constexpr sVector operator -( const float i_rhs ) const;
-			constexpr sVector& operator -=( const float i_rhs );
-			friend constexpr sVector operator -( const float i_lhs, const sVector& i_rhs );
+		constexpr sVector operator -( const float i_rhs ) const;
+		constexpr sVector& operator -=( const float i_rhs );
+		friend constexpr sVector operator -( const float i_lhs, const sVector& i_rhs );
 
-			// Products
-			//---------
+		// Products
+		//---------
 
-			constexpr sVector operator *( const float i_rhs ) const;
-			constexpr sVector& operator *=( const float i_rhs );
-			friend constexpr sVector operator *( const float i_lhs, const sVector& i_rhs );
+		constexpr sVector operator *( const float i_rhs ) const;
+		constexpr sVector& operator *=( const float i_rhs );
+		friend constexpr sVector operator *( const float i_lhs, const sVector& i_rhs );
 
-			friend constexpr float Dot( const sVector& i_lhs, const sVector& i_rhs );
-			friend constexpr sVector Cross( const sVector& i_lhs, const sVector& i_rhs );
+		friend constexpr float Dot( const sVector& i_lhs, const sVector& i_rhs );
+		friend constexpr sVector Cross( const sVector& i_lhs, const sVector& i_rhs );
 
-			// Division
-			//---------
+		// Division
+		//---------
 
-			sVector operator /( const float i_rhs ) const;
-			sVector& operator /=( const float i_rhs );
+		sVector operator /( const float i_rhs ) const;
+		sVector& operator /=( const float i_rhs );
 
-			// Length / Normalization
-			//-----------------------
+		// Length / Normalization
+		//-----------------------
 
-			float GetLength() const;
-			float Normalize();
-			sVector GetNormalized() const;
+		float GetLength() const;
+		float Normalize();
+		sVector GetNormalized() const;
 
-			// Comparison
-			//-----------
+		// Comparison
+		//-----------
 
-			constexpr bool operator ==( const sVector& i_rhs ) const;
-			constexpr bool operator !=( const sVector& i_rhs ) const;
+		constexpr bool operator ==( const sVector& i_rhs ) const;
+		constexpr bool operator !=( const sVector& i_rhs ) const;
 
-			// Initialization / Clean Up
-			//--------------------------
+		// Initialization / Clean Up
+		//--------------------------
 
-			constexpr sVector() = default;
-			constexpr sVector( const float i_x, const float i_y, const float i_z );
-		};
+		constexpr sVector() = default;
+		constexpr sVector( const float i_x, const float i_y, const float i_z );
+	};
 
-		// Friends
-		//========
+	// Friends
+	//========
 
-		constexpr sVector operator +( const float i_lhs, const sVector& i_rhs );
-		constexpr sVector operator -( const float i_lhs, const sVector& i_rhs );
-		constexpr sVector operator *( const float i_lhs, const sVector& i_rhs );
-		constexpr float Dot( const sVector& i_lhs, const sVector& i_rhs );
-		constexpr sVector Cross( const sVector& i_lhs, const sVector& i_rhs );
-	}
+	constexpr sVector operator +( const float i_lhs, const sVector& i_rhs );
+	constexpr sVector operator -( const float i_lhs, const sVector& i_rhs );
+	constexpr sVector operator *( const float i_lhs, const sVector& i_rhs );
+	constexpr float Dot( const sVector& i_lhs, const sVector& i_rhs );
+	constexpr sVector Cross( const sVector& i_lhs, const sVector& i_rhs );
+
+	// Return the maximum of each of the components
+	constexpr sVector Max(const sVector& i_lhs, const sVector& i_rhs);
+	// Return the minimum value of each of the components
+	constexpr sVector Min(const sVector& i_lhs, const sVector& i_rhs);
+
+
+	float SqDistance(const sVector& i_lhs, const sVector& i_rhs);
+
+}
 }
 
 #include "sVector.inl"

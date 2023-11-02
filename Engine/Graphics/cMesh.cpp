@@ -73,7 +73,7 @@ eae6320::cResult eae6320::Graphics::cMesh::Create(
 		{
 			result = eae6320::Results::OutOfMemory;
 			EAE6320_ASSERTF(false, "Couldn't allocate memory for the mesh");
-			Logging::OutputError("Failed to allocate memory for the shader");
+			Logging::OutputError("Failed to allocate memory for the mesh");
 			return result;
 		}
 	}

@@ -12,6 +12,7 @@
 //=========
 
 #include "cEffect.h"
+#include "cLine.h"
 #include "cMesh.h"
 #include "Configuration.h"
 
@@ -30,11 +31,32 @@ namespace Graphics
 {
 namespace ConstantBufferFormats
 {
+
+	// Data that is constant for every frame
+	struct sFrame
+	{
+		Math::cMatrix_transformation g_transform_worldToCamera;
+		Math::cMatrix_transformation g_transform_cameraToProjected;
+
+		float g_elapsedSecondCount_systemTime = 0.0f;
+		float g_elapsedSecondCount_simulationTime = 0.0f;
+		// For float4 alignment // TODO: What is this for ??
+		float padding[2] = { 0.0f, 0.0f };
+	};
+
+
+	// Data that is constant for a single draw call
+	struct sDrawCall
+	{
+		Math::cMatrix_transformation g_transform_localToWorld;
+	};
+
+
+	// Data for rendering an object 
 	struct sMeshEffectPair
 	{
 		cMesh* mesh = nullptr;
 		cEffect* effect = nullptr;
-
 
 		// Initialize / Clean Up
 		//----------------------
@@ -80,7 +102,6 @@ namespace ConstantBufferFormats
 			}
 		}
 
-
 		// Implementation 
 		//----------------------
 
@@ -90,23 +111,57 @@ namespace ConstantBufferFormats
 		}
 	};
 
-	// Data that is constant for every frame
-	struct sFrame
-	{
-		Math::cMatrix_transformation g_transform_worldToCamera;
-		Math::cMatrix_transformation g_transform_cameraToProjected;
 
-		float g_elapsedSecondCount_systemTime = 0.0f;
-		float g_elapsedSecondCount_simulationTime = 0.0f;
-		// For float4 alignment // TODO: What is this for ??
-		float padding[2] = { 0.0f, 0.0f };
+	// Data for rendering debug information
+	struct sDebug
+	{
+		cLine* line = nullptr;
+		Math::cMatrix_transformation transform;
+
+		// Initialize / Clean Up
+		//----------------------
+
+		sDebug() = default;
+		~sDebug() = default;
+
+		sDebug& operator= (sDebug& other)
+		{
+			line = other.line;
+			line->IncrementReferenceCount();
+			transform = other.transform;
+			return *this;
+		}
+
+		sDebug(cLine* i_line, Math::cMatrix_transformation i_transformMatrix) : line(i_line), transform(i_transformMatrix)
+		{
+			line->IncrementReferenceCount();
+		}
+
+		void Initialize(cLine* i_line, Math::cMatrix_transformation i_transformMatrix)
+		{
+			line = i_line;
+			line->IncrementReferenceCount();
+			transform = i_transformMatrix;
+		}
+
+		void CleanUp()
+		{
+			if (line != nullptr)
+			{
+				line->DecrementReferenceCount();
+				line = nullptr;
+			}
+		}
+
+		// Implementation 
+		//----------------------
+
+		bool IsValid()
+		{
+			return line != nullptr;
+		}
 	};
 
-	// Data that is constant for a single draw call
-	struct sDrawCall
-	{
-		Math::cMatrix_transformation g_transform_localToWorld;
-	};
 
 }// Namespace ConstantBufferFormats
 }// Namespace Graphics

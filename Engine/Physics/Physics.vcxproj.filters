@@ -2,8 +2,14 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="sRigidBodyState.cpp" />
+    <ClCompile Include="cAABBCollider.cpp" />
+    <ClCompile Include="cColliderBase.cpp" />
+    <ClCompile Include="cSphereCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sRigidBodyState.h" />
+    <ClInclude Include="cAABBCollider.h" />
+    <ClInclude Include="cColliderBase.h" />
+    <ClInclude Include="cSphereCollider.h" />
   </ItemGroup>
 </Project>

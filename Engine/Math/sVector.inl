@@ -4,6 +4,8 @@
 // Includes
 //=========
 
+#include <algorithm>
+#include <cmath>
 #include "sVector.h"
 
 // Interface
@@ -116,6 +118,27 @@ constexpr eae6320::Math::sVector eae6320::Math::Cross( const sVector& i_lhs, con
 		( i_lhs.x * i_rhs.y ) - ( i_lhs.y * i_rhs.x )
 	);
 }
+
+
+constexpr eae6320::Math::sVector eae6320::Math::Max(const sVector& i_lhs, const sVector& i_rhs)
+{
+	const float max_x = std::max(i_lhs.x, i_rhs.x);
+	const float max_y = std::max(i_lhs.y, i_rhs.y);
+	const float max_z = std::max(i_lhs.z, i_rhs.z);
+	return sVector(max_x, max_y, max_z);
+}
+
+
+constexpr eae6320::Math::sVector eae6320::Math::Min(const sVector& i_lhs, const sVector& i_rhs)
+{
+	const float min_x = std::min(i_lhs.x, i_rhs.x);
+	const float min_y = std::min(i_lhs.y, i_rhs.y);
+	const float min_z = std::min(i_lhs.z, i_rhs.z);
+	return sVector(min_x, min_y, min_z);
+}
+
+
+
 
 // Comparison
 //-----------

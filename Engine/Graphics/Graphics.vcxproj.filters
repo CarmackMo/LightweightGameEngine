@@ -68,6 +68,13 @@
     </ClCompile>
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="cMesh.cpp" />
+    <ClCompile Include="cLine.cpp" />
+    <ClCompile Include="OpenGL\cLine.gl.cpp">
+      <Filter>OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="Direct3D\cLine.d3d.cpp">
+      <Filter>Direct3D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Direct3D\Includes.h">
@@ -91,6 +98,7 @@
     <ClInclude Include="cMesh.h" />
     <ClInclude Include="cEffect.h" />
     <ClInclude Include="cView.h" />
+    <ClInclude Include="cLine.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cRenderState.inl" />

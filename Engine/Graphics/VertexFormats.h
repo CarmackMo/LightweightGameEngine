@@ -37,18 +37,33 @@ namespace VertexFormats
 	struct sVertex_mesh
 	{
 		// POSITION
-		// 3 floats == 12 bytes
-		// Offset = 0
-		float x, y, z;
+		float x = 0, y = 0, z = 0;
+		// COLOR
+		float r = 1, g = 1, b = 1, a = 1;
 
-		// Color
-		// 4 float == 16 bytes
-		// Offset = 0
-		float r, g, b, a;
+		sVertex_mesh() = default;
+		sVertex_mesh(float i_x, float i_y, float i_z) : x(i_x), y(i_y), z(i_z) {}
+		sVertex_mesh(float i_x, float i_y, float i_z, float i_r, float i_g, float i_b, float i_a) : 
+			x(i_x), y(i_y), z(i_z), r(i_r), g(i_g), b(i_b), a(i_a) {}
 	};
 
-}
-}
-}
+
+	struct sVertex_line
+	{
+		// POSITION
+		float x = 0, y = 0, z = 0;
+		// COLOR
+		float r = 0, g = 1, b = 0, a = 1;
+
+		sVertex_line() = default;
+		sVertex_line(float i_x, float i_y, float i_z) : x(i_x), y(i_y), z(i_z) {}
+		sVertex_line(float i_x, float i_y, float i_z, float i_r, float i_g, float i_b, float i_a) : 
+			x(i_x), y(i_y), z(i_z), r(i_r), g(i_g), b(i_b), a(i_a) {}
+	};
+
+
+}// Namespace VertexFormats
+}// Namespace Graphics
+}// Namespace eae6320
 
 #endif	// EAE6320_GRAPHICS_VERTEXBUFFERFORMATS_H
