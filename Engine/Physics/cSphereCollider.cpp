@@ -11,6 +11,18 @@ void eae6320::Physics::cSphereCollider::Update(const sRigidBodyState& i_rigidBod
 }
 
 
+eae6320::Math::sVector eae6320::Physics::cSphereCollider::GetMinExtent_world() const
+{
+	return (m_center + m_pos) - m_radius;
+}
+
+
+eae6320::Math::sVector eae6320::Physics::cSphereCollider::GetMaxEntent_world() const
+{
+	return (m_center + m_pos) + m_radius;
+}
+
+
 eae6320::Math::sVector eae6320::Physics::cSphereCollider::GetCenter_world() const
 {
 	return m_center + m_pos;

@@ -33,6 +33,10 @@ namespace Physics
 		// Property Getters
 		//--------------------------
 
+		Math::sVector GetMinExtent_world() const;
+
+		Math::sVector GetMaxEntent_world() const;
+
 		Math::sVector GetCenter_world() const;
 
 		float GetRadius() const;
