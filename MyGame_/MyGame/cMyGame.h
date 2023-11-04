@@ -144,21 +144,6 @@ namespace eae6320
 		cGameObject m_gameobject_Ganyu;
 
 
-
-
-		// TODO: temporary colldier object
-		cGameObject m_AABBObject1;
-		cGameObject m_AABBObject2;
-		Physics::cSphereCollider m_sphereObject1;
-		Physics::cSphereCollider m_sphereObject2;
-		Physics::cSphereCollider m_sphereObject3;
-
-		cGameObject m_colliderObject_AABB1;
-		cGameObject m_colliderObject_sphere1;
-
-
-
-
 		bool isKeyPressed = false;
 		void InitializeMeshData();
 
@@ -167,6 +152,23 @@ namespace eae6320
 		void InitializeGameObject();
 
 		void CleanUpGameObject();
+
+
+
+
+
+		// TODO: temporary colldier object
+
+		Physics::cSphereCollider m_sphereObject1;
+		Physics::cSphereCollider m_sphereObject2;
+		Physics::cSphereCollider m_sphereObject3;
+
+		cGameObject m_colliderObject_AABB1;
+		cGameObject m_colliderObject_AABB2;
+		cGameObject m_colliderObject_sphere1;
+
+		void InitializeCollisionSystem();
+
 	};
 }
 

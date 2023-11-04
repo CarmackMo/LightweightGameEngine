@@ -75,10 +75,8 @@ namespace eae6320
 
 
 
+
 		// TODO: Tempory code for rendering collider box and debug collider
-		void InitializeAABB(
-			float x1, float y1, float z1,
-			float x2, float y2, float z2);
 
 		void InitializeAABBLine();
 
@@ -86,10 +84,7 @@ namespace eae6320
 
 		Graphics::cLine* GetAABBLine() const;
 
-		Physics::cAABBCollider& GetAABBCollider();
-
 		Physics::cCollider* GetCollider() const;
-
 
 
 
@@ -105,8 +100,9 @@ namespace eae6320
 		Graphics::cEffect* m_effect = nullptr;
 
 
+
 		// TODO: Temporary code for collider
-		Physics::cAABBCollider m_AABB;
+
 		Graphics::cLine* m_AABBLine = nullptr;
 
 		Physics::cCollider* m_collider = nullptr;

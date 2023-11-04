@@ -18,6 +18,7 @@
 // TODO: Tempory code for collider testing
 #include <Engine/UserOutput/UserOutput.h>
 #include <Engine/Physics/cAABBCollider.h>
+#include <Engine/Physics/Collision.h>
 #include <iostream>
 
 
@@ -46,8 +47,6 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput()
 
 	m_gameobject_triangle.UpdateBasedOnInput();
 
-	m_AABBObject1.UpdateBasedOnInput();
-
 
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Enter))
 	{
@@ -57,6 +56,10 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput()
 	{
 		isKeyPressed = false;
 	}
+
+
+	// TODO: Temporary code for collider debug
+	m_colliderObject_AABB1.UpdateBasedOnInput();
 }
 
 
@@ -68,27 +71,18 @@ void eae6320::cMyGame::UpdateSimulationBasedOnTime(const float i_elapsedSecondCo
 	m_gameobject_Ganyu.UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
 	m_gameobject_Keqing.UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
 
-	m_AABBObject1.UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
-	m_AABBObject2.UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
-
 
 
 	// TODO: Temporary code for collider debug
+	m_colliderObject_AABB1.UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
+	m_colliderObject_AABB2.UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
+
 
 	Physics::cCollider* temp_0 = m_colliderObject_AABB1.GetCollider();
-	if (temp_0->GetType() == Physics::eColliderType::AABB)
-	{
-		Physics::cAABBCollider* temp_1 = dynamic_cast<Physics::cAABBCollider*> (temp_0);
-		auto temp2 = temp_1->GetMaxEntent_world();
-	}
+	auto temp2 = temp_0->GetMaxEntent_world();
 
-	Physics::cCollider* temp_2 = m_colliderObject_sphere1.GetCollider();
-	if (temp_2->GetType() == Physics::eColliderType::Sphere)
-	{
-		Physics::cSphereCollider* temp_3 = dynamic_cast<Physics::cSphereCollider*> (temp_2);
-		auto temp4 = temp_3->GetCenter_world();
-	}
-
+	Physics::cCollider* temp_3 = m_colliderObject_sphere1.GetCollider();
+	auto temp_4 = temp_3->GetCenter_world();;
 
 }
 
@@ -157,8 +151,8 @@ void eae6320::cMyGame::SubmitDataToBeRendered(
 		constexpr uint32_t arraySize = 2;
 		Graphics::ConstantBufferFormats::sDebug debugDataArray[arraySize];
 
-		debugDataArray[0].Initialize(m_AABBObject1.GetAABBLine(), m_AABBObject1.GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
-		debugDataArray[1].Initialize(m_AABBObject2.GetAABBLine(), m_AABBObject2.GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
+		debugDataArray[0].Initialize(m_colliderObject_AABB1.GetAABBLine(), m_colliderObject_AABB1.GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
+		debugDataArray[1].Initialize(m_colliderObject_AABB2.GetAABBLine(), m_colliderObject_AABB2.GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
 
 		Graphics::SubmitDebugData(debugDataArray, arraySize);
 
@@ -309,11 +303,11 @@ void eae6320::cMyGame::InitializeGameObject()
 
 	// TODO: temporary code for initialize colldier object
 	{
-		m_AABBObject1.InitializeAABB(-0.5, -0.5, -0.5, 0.5, 0.5, 0.5);
-		m_AABBObject1.InitializeAABBLine();
+		//m_AABBObject1.InitializeAABB(-0.5, -0.5, -0.5, 0.5, 0.5, 0.5);
+		//m_AABBObject1.InitializeAABBLine();
 
-		m_AABBObject2.InitializeAABB(-1, -1, -1, 1, 1, 1);
-		m_AABBObject2.InitializeAABBLine();
+		//m_AABBObject2.InitializeAABB(-1, -1, -1, 1, 1, 1);
+		//m_AABBObject2.InitializeAABBLine();
 
 		m_sphereObject1 = Physics::cSphereCollider(0, 0, 0, 0.4f);
 		m_sphereObject2 = Physics::cSphereCollider(2.1f, 0, 0, 1);
@@ -323,8 +317,13 @@ void eae6320::cMyGame::InitializeGameObject()
 
 		Physics::sColliderSetting setting_AABB1;
 		setting_AABB1.type = Physics::eColliderType::AABB;
-		setting_AABB1.AABB_max = Math::sVector(2, 3, 4);
-		setting_AABB1.AABB_min = Math::sVector(-5, -6, -7);
+		setting_AABB1.AABB_max = Math::sVector(0.5, 0.5, 0.5);
+		setting_AABB1.AABB_min = Math::sVector(-0.5, -0.5, -0.5);
+
+		Physics::sColliderSetting setting_AABB2;
+		setting_AABB2.type = Physics::eColliderType::AABB;
+		setting_AABB2.AABB_max = Math::sVector(1, 1, 1);
+		setting_AABB2.AABB_min = Math::sVector(-1, -1, -1);
 
 		Physics::sColliderSetting setting_sphere1;
 		setting_sphere1.type = Physics::eColliderType::Sphere;
@@ -332,6 +331,10 @@ void eae6320::cMyGame::InitializeGameObject()
 		setting_sphere1.sphere_radius = 2.3f;
 
 		m_colliderObject_AABB1.InitializeCollider(setting_AABB1);
+		m_colliderObject_AABB1.InitializeAABBLine();
+		m_colliderObject_AABB2.InitializeCollider(setting_AABB2);
+		m_colliderObject_AABB2.InitializeAABBLine();
+		
 		m_colliderObject_sphere1.InitializeCollider(setting_sphere1);
 	}
 
@@ -357,11 +360,19 @@ void eae6320::cMyGame::CleanUpGameObject()
 
 
 	// TODO: temporary code for clean up colldier object
-	m_AABBObject1.CleanUp();
-	m_AABBObject2.CleanUp();
+	//m_AABBObject1.CleanUp();
+	//m_AABBObject2.CleanUp();
 
 	m_colliderObject_AABB1.CleanUp();
+	m_colliderObject_AABB2.CleanUp();
 	m_colliderObject_sphere1.CleanUp();
+}
+
+
+
+void eae6320::cMyGame::InitializeCollisionSystem()
+{
+
 }
 
 

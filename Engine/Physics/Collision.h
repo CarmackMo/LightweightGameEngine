@@ -23,7 +23,7 @@ namespace Physics
 
 
 
-	void Initialize_SweepAndPrune(const std::vector<eae6320::Physics::cCollider*>& i_allColliderList);
+	void Initialize_sweepAndPrune(const std::vector<eae6320::Physics::cCollider*>& i_allColliderList);
 
 
 

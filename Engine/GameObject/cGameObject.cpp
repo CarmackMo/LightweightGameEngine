@@ -60,7 +60,9 @@ void eae6320::cGameObject::CleanUp()
 	if (m_mesh != nullptr) { m_mesh->DecrementReferenceCount(); }
 	if (m_effect != nullptr) { m_effect->DecrementReferenceCount(); }
 
-	// TODO: Temporary code for collider
+
+	// TODO: Temporary code for collider debug
+
 	if (m_AABBLine != nullptr) { m_AABBLine->DecrementReferenceCount(); }
 	if (m_collider != nullptr) { delete m_collider; }
 }
@@ -100,7 +102,14 @@ void eae6320::cGameObject::UpdateBasedOnTime(const float i_elapsedSecondCount_si
 {
 	// Update rigid body 
 	m_rigidBody.Update(i_elapsedSecondCount_sinceLastUpdate);
-	m_AABB.Update(m_rigidBody);
+
+
+	// TODO: temporary code for collider debug
+
+	if (m_collider != nullptr)
+	{
+		m_collider->Update(m_rigidBody);
+	}
 }
 
 
@@ -130,13 +139,6 @@ void eae6320::cGameObject::UpdateBasedOnInput()
 
 #include <Engine/Math/sVector.h>
 
-void eae6320::cGameObject::InitializeAABB(
-	float x1, float y1, float z1,
-	float x2, float y2, float z2)
-{
-	m_AABB = Physics::cAABBCollider(Math::sVector(x1, y1, z1), Math::sVector(x2, y2, z2));
-}
-
 
 void eae6320::cGameObject::InitializeAABBLine()
 {
@@ -146,6 +148,11 @@ void eae6320::cGameObject::InitializeAABBLine()
 		m_AABBLine = nullptr;
 	}
 
+	if (m_collider->GetType() != Physics::eColliderType::AABB)
+		return;
+
+	Physics::cAABBCollider* AABB = dynamic_cast<Physics::cAABBCollider*>(m_collider);
+
 	// vertex data
 	constexpr uint32_t vertexCount = 24;
 	Graphics::VertexFormats::sVertex_line vertexData[vertexCount];
@@ -153,41 +160,41 @@ void eae6320::cGameObject::InitializeAABBLine()
 		Math::sVector modelPos = m_rigidBody.position;
 
 		// 0-1
-		vertexData[0] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_min.x, modelPos.y + m_AABB.m_min.y, modelPos.z + m_AABB.m_min.z);
-		vertexData[1] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_min.x, modelPos.y + m_AABB.m_max.y, modelPos.z + m_AABB.m_min.z);
+		vertexData[0] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_min.x, modelPos.y + AABB->m_min.y, modelPos.z + AABB->m_min.z);
+		vertexData[1] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_min.x, modelPos.y + AABB->m_max.y, modelPos.z + AABB->m_min.z);
 		// 1-2
-		vertexData[2] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_min.x, modelPos.y + m_AABB.m_max.y, modelPos.z + m_AABB.m_min.z);
-		vertexData[3] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_min.x, modelPos.y + m_AABB.m_max.y, modelPos.z + m_AABB.m_max.z);
+		vertexData[2] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_min.x, modelPos.y + AABB->m_max.y, modelPos.z + AABB->m_min.z);
+		vertexData[3] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_min.x, modelPos.y + AABB->m_max.y, modelPos.z + AABB->m_max.z);
 		// 2-3
-		vertexData[4] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_min.x, modelPos.y + m_AABB.m_max.y, modelPos.z + m_AABB.m_max.z);
-		vertexData[5] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_min.x, modelPos.y + m_AABB.m_min.y, modelPos.z + m_AABB.m_max.z);
+		vertexData[4] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_min.x, modelPos.y + AABB->m_max.y, modelPos.z + AABB->m_max.z);
+		vertexData[5] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_min.x, modelPos.y + AABB->m_min.y, modelPos.z + AABB->m_max.z);
 		// 3-0
-		vertexData[6] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_min.x, modelPos.y + m_AABB.m_min.y, modelPos.z + m_AABB.m_max.z);
-		vertexData[7] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_min.x, modelPos.y + m_AABB.m_min.y, modelPos.z + m_AABB.m_min.z);
+		vertexData[6] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_min.x, modelPos.y + AABB->m_min.y, modelPos.z + AABB->m_max.z);
+		vertexData[7] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_min.x, modelPos.y + AABB->m_min.y, modelPos.z + AABB->m_min.z);
 		// 4-5
-		vertexData[8] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_max.x, modelPos.y + m_AABB.m_min.y, modelPos.z + m_AABB.m_min.z);
-		vertexData[9] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_max.x, modelPos.y + m_AABB.m_max.y, modelPos.z + m_AABB.m_min.z);
+		vertexData[8] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_max.x, modelPos.y + AABB->m_min.y, modelPos.z + AABB->m_min.z);
+		vertexData[9] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_max.x, modelPos.y + AABB->m_max.y, modelPos.z + AABB->m_min.z);
 		// 5-6
-		vertexData[10] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_max.x, modelPos.y + m_AABB.m_max.y, modelPos.z + m_AABB.m_min.z);
-		vertexData[11] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_max.x, modelPos.y + m_AABB.m_max.y, modelPos.z + m_AABB.m_max.z);
+		vertexData[10] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_max.x, modelPos.y + AABB->m_max.y, modelPos.z + AABB->m_min.z);
+		vertexData[11] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_max.x, modelPos.y + AABB->m_max.y, modelPos.z + AABB->m_max.z);
 		// 6-7
-		vertexData[12] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_max.x, modelPos.y + m_AABB.m_max.y, modelPos.z + m_AABB.m_max.z);
-		vertexData[13] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_max.x, modelPos.y + m_AABB.m_min.y, modelPos.z + m_AABB.m_max.z);
+		vertexData[12] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_max.x, modelPos.y + AABB->m_max.y, modelPos.z + AABB->m_max.z);
+		vertexData[13] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_max.x, modelPos.y + AABB->m_min.y, modelPos.z + AABB->m_max.z);
 		// 7-4
-		vertexData[14] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_max.x, modelPos.y + m_AABB.m_min.y, modelPos.z + m_AABB.m_max.z);
-		vertexData[15] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_max.x, modelPos.y + m_AABB.m_min.y, modelPos.z + m_AABB.m_min.z);
+		vertexData[14] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_max.x, modelPos.y + AABB->m_min.y, modelPos.z + AABB->m_max.z);
+		vertexData[15] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_max.x, modelPos.y + AABB->m_min.y, modelPos.z + AABB->m_min.z);
 		// 1-5
-		vertexData[16] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_min.x, modelPos.y + m_AABB.m_max.y, modelPos.z + m_AABB.m_min.z);
-		vertexData[17] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_max.x, modelPos.y + m_AABB.m_max.y, modelPos.z + m_AABB.m_min.z);
+		vertexData[16] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_min.x, modelPos.y + AABB->m_max.y, modelPos.z + AABB->m_min.z);
+		vertexData[17] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_max.x, modelPos.y + AABB->m_max.y, modelPos.z + AABB->m_min.z);
 		// 2-6
-		vertexData[18] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_min.x, modelPos.y + m_AABB.m_max.y, modelPos.z + m_AABB.m_max.z);
-		vertexData[19] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_max.x, modelPos.y + m_AABB.m_max.y, modelPos.z + m_AABB.m_max.z);
+		vertexData[18] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_min.x, modelPos.y + AABB->m_max.y, modelPos.z + AABB->m_max.z);
+		vertexData[19] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_max.x, modelPos.y + AABB->m_max.y, modelPos.z + AABB->m_max.z);
 		// 0-4
-		vertexData[20] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_min.x, modelPos.y + m_AABB.m_min.y, modelPos.z + m_AABB.m_min.z);
-		vertexData[21] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_max.x, modelPos.y + m_AABB.m_min.y, modelPos.z + m_AABB.m_min.z);
+		vertexData[20] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_min.x, modelPos.y + AABB->m_min.y, modelPos.z + AABB->m_min.z);
+		vertexData[21] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_max.x, modelPos.y + AABB->m_min.y, modelPos.z + AABB->m_min.z);
 		// 3-7
-		vertexData[22] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_min.x, modelPos.y + m_AABB.m_min.y, modelPos.z + m_AABB.m_max.z);
-		vertexData[23] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_max.x, modelPos.y + m_AABB.m_min.y, modelPos.z + m_AABB.m_max.z);
+		vertexData[22] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_min.x, modelPos.y + AABB->m_min.y, modelPos.z + AABB->m_max.z);
+		vertexData[23] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_max.x, modelPos.y + AABB->m_min.y, modelPos.z + AABB->m_max.z);
 	}
 
 	// index data
@@ -216,12 +223,6 @@ void eae6320::cGameObject::InitializeCollider(const Physics::sColliderSetting& i
 eae6320::Graphics::cLine* eae6320::cGameObject::GetAABBLine() const
 {
 	return m_AABBLine;
-}
-
-
-eae6320::Physics::cAABBCollider& eae6320::cGameObject::GetAABBCollider()
-{
-	return m_AABB;
 }
 
 

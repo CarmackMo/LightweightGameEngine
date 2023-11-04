@@ -115,9 +115,9 @@ void eae6320::Physics::Initialize_sweepAndPrune(const std::vector<cCollider*>& i
 
 	// Sweep and prune the X axis
 	{
-		for (int i = 0; i < s_orderedColliderList_xAxis.size() - 1; i++)
+		for (size_t i = 0; i < s_orderedColliderList_xAxis.size() - 1; i++)
 		{
-			for (int j = i + 1; j < s_orderedColliderList_xAxis.size(); j++)
+			for (size_t j = i + 1; j < s_orderedColliderList_xAxis.size(); j++)
 			{
 				cCollider* collider_i = s_orderedColliderList_xAxis[i];
 				cCollider* collider_j = s_orderedColliderList_xAxis[j];
@@ -141,9 +141,9 @@ void eae6320::Physics::Initialize_sweepAndPrune(const std::vector<cCollider*>& i
 	}
 	// Sweep and prune the Y axis
 	{
-		for (int i = 0; i < s_orderedColliderList_yAxis.size() - 1; i++)
+		for (size_t i = 0; i < s_orderedColliderList_yAxis.size() - 1; i++)
 		{
-			for (int j = i + 1; j < s_orderedColliderList_yAxis.size(); j++)
+			for (size_t j = i + 1; j < s_orderedColliderList_yAxis.size(); j++)
 			{
 				cCollider* collider_i = s_orderedColliderList_yAxis[i];
 				cCollider* collider_j = s_orderedColliderList_yAxis[j];
@@ -172,9 +172,9 @@ void eae6320::Physics::Initialize_sweepAndPrune(const std::vector<cCollider*>& i
 	}
 	// Sweep and prune the Z axis
 	{
-		for (int i = 0; i < s_orderedColliderList_zAxis.size() - 1; i++)
+		for (size_t i = 0; i < s_orderedColliderList_zAxis.size() - 1; i++)
 		{
-			for (int j = i + 1; j < s_orderedColliderList_zAxis.size(); j++)
+			for (size_t j = i + 1; j < s_orderedColliderList_zAxis.size(); j++)
 			{
 				cCollider* collider_i = s_orderedColliderList_zAxis[i];
 				cCollider* collider_j = s_orderedColliderList_zAxis[j];
@@ -200,6 +200,5 @@ void eae6320::Physics::Initialize_sweepAndPrune(const std::vector<cCollider*>& i
 				s_collisionPair[collider_i].swap(targetCollider);
 			}
 		}
-
 	}
 }
