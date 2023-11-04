@@ -303,32 +303,19 @@ void eae6320::cMyGame::InitializeGameObject()
 
 	// TODO: temporary code for initialize colldier object
 	{
-		//m_AABBObject1.InitializeAABB(-0.5, -0.5, -0.5, 0.5, 0.5, 0.5);
-		//m_AABBObject1.InitializeAABBLine();
-
-		//m_AABBObject2.InitializeAABB(-1, -1, -1, 1, 1, 1);
-		//m_AABBObject2.InitializeAABBLine();
-
-		m_sphereObject1 = Physics::cSphereCollider(0, 0, 0, 0.4f);
-		m_sphereObject2 = Physics::cSphereCollider(2.1f, 0, 0, 1);
-		m_sphereObject3 = Physics::cSphereCollider(4, 0, 0, 1);
-
-	
-
 		Physics::sColliderSetting setting_AABB1;
-		setting_AABB1.type = Physics::eColliderType::AABB;
-		setting_AABB1.AABB_max = Math::sVector(0.5, 0.5, 0.5);
-		setting_AABB1.AABB_min = Math::sVector(-0.5, -0.5, -0.5);
+		setting_AABB1.SettingForAABB(Math::sVector(-0.5, -0.5, -0.5), Math::sVector(0.5, 0.5, 0.5));
 
 		Physics::sColliderSetting setting_AABB2;
-		setting_AABB2.type = Physics::eColliderType::AABB;
-		setting_AABB2.AABB_max = Math::sVector(1, 1, 1);
-		setting_AABB2.AABB_min = Math::sVector(-1, -1, -1);
+		setting_AABB2.SettingForAABB(Math::sVector(-1, -1, -1), Math::sVector(1, 1, 1));
+
+		Physics::sColliderSetting setting_AABB3;
+		setting_AABB3.SettingForAABB(Math::sVector(-1, -1, -1), Math::sVector(1, 1, 1));
 
 		Physics::sColliderSetting setting_sphere1;
-		setting_sphere1.type = Physics::eColliderType::Sphere;
-		setting_sphere1.sphere_center = Math::sVector(0, 1, 2);
-		setting_sphere1.sphere_radius = 2.3f;
+		setting_sphere1.SettingForSphere(Math::sVector(0, 0, 0), 0.5f);
+
+
 
 		m_colliderObject_AABB1.InitializeCollider(setting_AABB1);
 		m_colliderObject_AABB1.InitializeAABBLine();
@@ -360,8 +347,6 @@ void eae6320::cMyGame::CleanUpGameObject()
 
 
 	// TODO: temporary code for clean up colldier object
-	//m_AABBObject1.CleanUp();
-	//m_AABBObject2.CleanUp();
 
 	m_colliderObject_AABB1.CleanUp();
 	m_colliderObject_AABB2.CleanUp();

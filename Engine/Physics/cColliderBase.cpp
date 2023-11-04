@@ -8,6 +8,28 @@
 #include <Engine/ScopeGuard/cScopeGuard.h>
 
 
+// Collider Builder
+//=============
+
+void eae6320::Physics::sColliderSetting::SettingForSphere(Math::sVector i_center, float i_radius)
+{
+	type = eColliderType::Sphere;
+	sphere_center = i_center;
+	sphere_radius = i_radius;
+}
+
+
+void eae6320::Physics::sColliderSetting::SettingForAABB(Math::sVector i_min, Math::sVector i_max)
+{
+	type = eColliderType::AABB;
+	AABB_min = i_min;
+	AABB_max = i_max;
+}
+
+
+// cCollider Implementation
+//==================
+
 eae6320::cResult eae6320::Physics::cCollider::Create(cCollider*& o_collider, const sColliderSetting& i_setting)
 {
 
@@ -45,7 +67,9 @@ eae6320::cResult eae6320::Physics::cCollider::Create(cCollider*& o_collider, con
 	return result;
 }
 
+
 eae6320::Physics::eColliderType eae6320::Physics::cCollider::GetType() const
 {
 	return m_type;
 }
+

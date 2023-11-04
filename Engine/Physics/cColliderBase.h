@@ -59,6 +59,10 @@ namespace Physics
 		// Data for AABB collider
 		Math::sVector AABB_min;
 		Math::sVector AABB_max;
+
+
+		void SettingForAABB(Math::sVector i_min, Math::sVector i_max);
+		void SettingForSphere(Math::sVector i_center, float i_radius);
 	};
 }
 }

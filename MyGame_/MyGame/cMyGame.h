@@ -159,12 +159,10 @@ namespace eae6320
 
 		// TODO: temporary colldier object
 
-		Physics::cSphereCollider m_sphereObject1;
-		Physics::cSphereCollider m_sphereObject2;
-		Physics::cSphereCollider m_sphereObject3;
-
 		cGameObject m_colliderObject_AABB1;
 		cGameObject m_colliderObject_AABB2;
+		cGameObject m_colliderObject_AABB3;
+
 		cGameObject m_colliderObject_sphere1;
 
 		void InitializeCollisionSystem();
