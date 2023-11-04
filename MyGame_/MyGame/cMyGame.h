@@ -179,7 +179,7 @@ namespace eae6320
 namespace Results
 {
 namespace Application
-{
+{  
 	// You can add specific results for your game here:
 	//	* The System should always be Application
 	//	* The __LINE__ macro is used to make sure that every result has a unique ID.
