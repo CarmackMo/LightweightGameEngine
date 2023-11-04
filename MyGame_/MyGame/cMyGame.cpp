@@ -19,7 +19,7 @@
 #include <Engine/UserOutput/UserOutput.h>
 #include <Engine/Physics/cAABBCollider.h>
 #include <Engine/Physics/Collision.h>
-#include <iostream>
+#include <vector>
 
 
 
@@ -79,7 +79,7 @@ void eae6320::cMyGame::UpdateSimulationBasedOnTime(const float i_elapsedSecondCo
 
 
 	Physics::cCollider* temp_0 = m_colliderObject_AABB1.GetCollider();
-	auto temp2 = temp_0->GetMaxEntent_world();
+	auto temp2 = temp_0->GetMaxExtent_world();
 
 	Physics::cCollider* temp_3 = m_colliderObject_sphere1.GetCollider();
 	auto temp_4 = temp_3->GetCenter_world();;
@@ -199,6 +199,10 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 
 	InitializeGameObject();
 
+	// TODO: temporary code for initialize collision system
+	InitializeCollisionSystem();
+
+
 	return Results::Success;
 }
 
@@ -307,21 +311,33 @@ void eae6320::cMyGame::InitializeGameObject()
 		setting_AABB1.SettingForAABB(Math::sVector(-0.5, -0.5, -0.5), Math::sVector(0.5, 0.5, 0.5));
 
 		Physics::sColliderSetting setting_AABB2;
-		setting_AABB2.SettingForAABB(Math::sVector(-1, -1, -1), Math::sVector(1, 1, 1));
+		setting_AABB2.SettingForAABB(Math::sVector(-0.5, -0.5, -0.5), Math::sVector(0.5, 0.5, 0.5));
 
 		Physics::sColliderSetting setting_AABB3;
-		setting_AABB3.SettingForAABB(Math::sVector(-1, -1, -1), Math::sVector(1, 1, 1));
+		setting_AABB3.SettingForAABB(Math::sVector(-0.5, -0.5, -0.5), Math::sVector(0.5, 0.5, 0.5));
 
 		Physics::sColliderSetting setting_sphere1;
 		setting_sphere1.SettingForSphere(Math::sVector(0, 0, 0), 0.5f);
 
 
 
+		m_colliderObject_AABB1.GetRigidBody().position = Math::sVector(0.0f, 0.0f, 0.5f);
 		m_colliderObject_AABB1.InitializeCollider(setting_AABB1);
 		m_colliderObject_AABB1.InitializeAABBLine();
+		m_colliderObject_AABB1.GetCollider()->m_name = "AABB_1";
+
+		m_colliderObject_AABB2.GetRigidBody().position = Math::sVector(1.5f, -0.5f, 0.0f);
 		m_colliderObject_AABB2.InitializeCollider(setting_AABB2);
 		m_colliderObject_AABB2.InitializeAABBLine();
+		m_colliderObject_AABB2.GetCollider()->m_name = "AABB_2";
+
+		m_colliderObject_AABB3.GetRigidBody().position = Math::sVector(3.0f, -1.0f, 1.0f);
+		m_colliderObject_AABB3.InitializeCollider(setting_AABB3);
+		m_colliderObject_AABB3.InitializeAABBLine();
+		m_colliderObject_AABB3.GetCollider()->m_name = "AABB_3";
 		
+
+		m_colliderObject_sphere1.GetRigidBody().position = Math::sVector(0.0f, 0.0f, 0.0f);
 		m_colliderObject_sphere1.InitializeCollider(setting_sphere1);
 	}
 
@@ -350,6 +366,7 @@ void eae6320::cMyGame::CleanUpGameObject()
 
 	m_colliderObject_AABB1.CleanUp();
 	m_colliderObject_AABB2.CleanUp();
+	m_colliderObject_AABB3.CleanUp();
 	m_colliderObject_sphere1.CleanUp();
 }
 
@@ -357,6 +374,13 @@ void eae6320::cMyGame::CleanUpGameObject()
 
 void eae6320::cMyGame::InitializeCollisionSystem()
 {
+	std::vector<Physics::cCollider*> colliderList;
+	colliderList.push_back(m_colliderObject_AABB1.GetCollider());
+	colliderList.push_back(m_colliderObject_AABB2.GetCollider());
+	colliderList.push_back(m_colliderObject_AABB3.GetCollider());
+
+	Physics::Initialize_sweepAndPrune(colliderList);
+
 
 }
 

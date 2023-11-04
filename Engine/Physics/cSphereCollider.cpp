@@ -17,7 +17,7 @@ eae6320::Math::sVector eae6320::Physics::cSphereCollider::GetMinExtent_world() c
 }
 
 
-eae6320::Math::sVector eae6320::Physics::cSphereCollider::GetMaxEntent_world() const
+eae6320::Math::sVector eae6320::Physics::cSphereCollider::GetMaxExtent_world() const
 {
 	return (m_center + m_pos) + m_radius;
 }

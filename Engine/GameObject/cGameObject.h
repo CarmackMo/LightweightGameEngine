@@ -106,6 +106,7 @@ namespace eae6320
 		Graphics::cLine* m_AABBLine = nullptr;
 
 		Physics::cCollider* m_collider = nullptr;
+
 	};
 
 }

@@ -6,7 +6,10 @@
 #include <Engine/Math/sVector.h>
 #include <Engine/Physics/sRigidBodyState.h>
 #include <Engine/Results/Results.h>
+
 #include <cstdint>
+// TODO: temporary code for initialize colldier object
+#include <string>
 
 
 // Forward Declarations
@@ -85,7 +88,7 @@ namespace Physics
 		// Initialization / Clean Up
 		//--------------------------
 
-		static cResult Create(cCollider*& o_collider, const sColliderSetting& i_setting);
+		static cResult Create(cCollider*& o_collider, const sColliderSetting& i_setting, const sRigidBodyState& i_rigidBody);
 
 
 		// Property Getters
@@ -95,7 +98,7 @@ namespace Physics
 
 		virtual Math::sVector GetMinExtent_world() const = 0;
 
-		virtual Math::sVector GetMaxEntent_world() const = 0;
+		virtual Math::sVector GetMaxExtent_world() const = 0;
 
 		virtual Math::sVector GetCenter_world() const = 0;
 
@@ -117,6 +120,11 @@ namespace Physics
 	private:
 
 		eColliderType m_type = eColliderType::None;
+
+
+		// TODO: temporary code for initialize colldier object
+	public:
+		std::string m_name = "";
 
 	};
 

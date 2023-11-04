@@ -6,6 +6,7 @@
 #include <Engine/Math/sVector.h>
 #include <Engine/Physics/cAABBCollider.h>
 #include <Engine/Physics/cColliderBase.h>
+#include <Engine/Physics/sRigidBodyState.h>
 
 namespace eae6320
 {
@@ -23,8 +24,10 @@ namespace Physics
 		//--------------------------
 
 		cSphereCollider() = default;
-		cSphereCollider(Math::sVector center, float radius) : cCollider(eColliderType::Sphere), m_center(center), m_radius(radius) { }
-		cSphereCollider(float x, float y, float z, float radius) : cCollider(eColliderType::Sphere), m_center(Math::sVector(x,y,z)), m_radius(radius) { }
+		cSphereCollider(const Math::sVector& i_center, float i_radius, const sRigidBodyState& i_rigidBody) 
+			: cCollider(eColliderType::Sphere), m_center(i_center), m_radius(i_radius), m_pos(i_rigidBody.position) { }
+		cSphereCollider(float i_x, float i_y, float i_z, float i_radius, const sRigidBodyState& i_rigidBody) 
+			: cCollider(eColliderType::Sphere), m_center(Math::sVector(i_x,i_y,i_z)), m_radius(i_radius), m_pos(i_rigidBody.position) { }
 
 		~cSphereCollider() = default;
 
@@ -35,7 +38,7 @@ namespace Physics
 
 		Math::sVector GetMinExtent_world() const final;
 
-		Math::sVector GetMaxEntent_world() const final;
+		Math::sVector GetMaxExtent_world() const final;
 
 		Math::sVector GetCenter_world() const final;
 

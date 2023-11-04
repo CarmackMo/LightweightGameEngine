@@ -24,7 +24,8 @@ namespace Physics
 		//--------------------------
 
 		cAABBCollider() = default;
-		cAABBCollider(Math::sVector min, Math::sVector max) : cCollider(eColliderType::AABB), m_min(min), m_max(max) { }
+		cAABBCollider(const Math::sVector& i_min, const Math::sVector& i_max, const sRigidBodyState& i_rigidBody) 
+			: cCollider(eColliderType::AABB), m_min(i_min), m_max(i_max), m_pos(i_rigidBody.position) { }
 
 		~cAABBCollider() = default;
 
@@ -35,7 +36,7 @@ namespace Physics
 
 		Math::sVector GetMinExtent_world() const final;
 
-		Math::sVector GetMaxEntent_world() const final;
+		Math::sVector GetMaxExtent_world() const final;
 
 		Math::sVector GetCenter_world() const final;
 

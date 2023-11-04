@@ -16,7 +16,7 @@ eae6320::Math::sVector eae6320::Physics::cAABBCollider::GetMinExtent_world() con
 }
 
 
-eae6320::Math::sVector eae6320::Physics::cAABBCollider::GetMaxEntent_world() const
+eae6320::Math::sVector eae6320::Physics::cAABBCollider::GetMaxExtent_world() const
 {
 	return m_max + m_pos;
 }
@@ -38,15 +38,15 @@ float eae6320::Physics::cAABBCollider::GetSqDistanceTo(Math::sVector i_point) co
 
 eae6320::Math::sVector eae6320::Physics::cAABBCollider::GetClosestPoint(Math::sVector i_point) const
 {
-	return  Math::Min(Math::Max(i_point, GetMinExtent_world()), GetMaxEntent_world());
+	return  Math::Min(Math::Max(i_point, GetMinExtent_world()), GetMaxExtent_world());
 }
 
 
 bool eae6320::Physics::cAABBCollider::IsOverlaps(const cAABBCollider& i_other)
 {
 	// Two AABB are impossible to overlap if there exist any gap in any axis
-	Math::sVector distance_inner = GetMinExtent_world() - i_other.GetMaxEntent_world();
-	Math::sVector distance_outer = i_other.GetMinExtent_world() - GetMaxEntent_world();
+	Math::sVector distance_inner = GetMinExtent_world() - i_other.GetMaxExtent_world();
+	Math::sVector distance_outer = i_other.GetMinExtent_world() - GetMaxExtent_world();
 	
 	Math::sVector distance = Math::Max(distance_inner, distance_outer);
 

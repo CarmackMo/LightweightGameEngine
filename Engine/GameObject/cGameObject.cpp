@@ -216,7 +216,7 @@ void eae6320::cGameObject::InitializeAABBLine()
 
 void eae6320::cGameObject::InitializeCollider(const Physics::sColliderSetting& i_builder)
 {
-	Physics::cCollider::Create(m_collider, i_builder);
+	Physics::cCollider::Create(m_collider, i_builder, m_rigidBody);
 }
 
 

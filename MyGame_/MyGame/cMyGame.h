@@ -145,6 +145,7 @@ namespace eae6320
 
 
 		bool isKeyPressed = false;
+
 		void InitializeMeshData();
 
 		void InitializeCamera();

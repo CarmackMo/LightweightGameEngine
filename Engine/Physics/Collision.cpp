@@ -123,7 +123,7 @@ void eae6320::Physics::Initialize_sweepAndPrune(const std::vector<cCollider*>& i
 				cCollider* collider_j = s_orderedColliderList_xAxis[j];
 
 				// Possible to have collision
-				if (collider_i->GetMaxEntent_world().x >= collider_j->GetMinExtent_world().x)
+				if (collider_i->GetMaxExtent_world().x >= collider_j->GetMinExtent_world().x)
 				{
 					if (s_collisionPair.find(collider_i) == s_collisionPair.end())
 						s_collisionPair[collider_i] = std::vector<eae6320::Physics::cCollider*>(0);
@@ -151,7 +151,7 @@ void eae6320::Physics::Initialize_sweepAndPrune(const std::vector<cCollider*>& i
 				std::vector<cCollider*> targetCollider;
 
 				// Possible to have collision
-				if (collider_i->GetMaxEntent_world().y >= collider_j->GetMinExtent_world().y &&
+				if (collider_i->GetMaxExtent_world().y >= collider_j->GetMinExtent_world().y &&
 					s_collisionPair.find(collider_i) != s_collisionPair.end() &&
 					std::find(s_collisionPair[collider_i].begin(), s_collisionPair[collider_i].end(), collider_j) != s_collisionPair[collider_i].end())
 				{
@@ -182,7 +182,7 @@ void eae6320::Physics::Initialize_sweepAndPrune(const std::vector<cCollider*>& i
 				std::vector<cCollider*> targetCollider;
 
 				// Possible to have collision
-				if (collider_i->GetMaxEntent_world().z >= collider_j->GetMinExtent_world().z &&
+				if (collider_i->GetMaxExtent_world().z >= collider_j->GetMinExtent_world().z &&
 					s_collisionPair.find(collider_i) != s_collisionPair.end() &&
 					std::find(s_collisionPair[collider_i].begin(), s_collisionPair[collider_i].end(), collider_j) != s_collisionPair[collider_i].end())
 				{
