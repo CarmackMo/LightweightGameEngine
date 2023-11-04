@@ -89,6 +89,12 @@ namespace Physics
 
 		eColliderType GetType() const;
 
+		virtual Math::sVector GetMinExtent_world() const = 0;
+
+		virtual Math::sVector GetMaxEntent_world() const = 0;
+
+		virtual Math::sVector GetCenter_world() const = 0;
+
 		// Update
 		//--------------------------
 

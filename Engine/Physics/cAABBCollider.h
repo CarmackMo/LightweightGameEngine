@@ -33,9 +33,11 @@ namespace Physics
 		// Property Getters
 		//--------------------------
 
-		Math::sVector GetMinExtent_world() const;
+		Math::sVector GetMinExtent_world() const final;
 
-		Math::sVector GetMaxEntent_world() const;
+		Math::sVector GetMaxEntent_world() const final;
+
+		Math::sVector GetCenter_world() const final;
 
 		// Get the squared distance between i_point and this box (will be 0 if point is inside the box)
 		float GetSqDistanceTo(Math::sVector i_point) const;

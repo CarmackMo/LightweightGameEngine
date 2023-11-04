@@ -22,6 +22,12 @@ eae6320::Math::sVector eae6320::Physics::cAABBCollider::GetMaxEntent_world() con
 }
 
 
+eae6320::Math::sVector eae6320::Physics::cAABBCollider::GetCenter_world() const
+{
+	return 0.5f * (m_min + m_max) + m_pos;
+}
+
+
 float eae6320::Physics::cAABBCollider::GetSqDistanceTo(Math::sVector i_point) const
 {
 	Math::sVector closestPoint = GetClosestPoint(i_point);

@@ -6,6 +6,7 @@
     <ClCompile Include="cColliderBase.cpp" />
     <ClCompile Include="cSphereCollider.cpp" />
     <ClCompile Include="Physics.cpp" />
+    <ClCompile Include="Collision.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sRigidBodyState.h" />
@@ -13,5 +14,6 @@
     <ClInclude Include="cColliderBase.h" />
     <ClInclude Include="cSphereCollider.h" />
     <ClInclude Include="Physics.h" />
+    <ClInclude Include="Collision.h" />
   </ItemGroup>
 </Project>
