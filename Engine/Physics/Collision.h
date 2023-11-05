@@ -7,8 +7,8 @@
 #include <Engine/Results/Results.h>
 
 
+#include <unordered_map>
 #include <vector>
-
 
 // Interface
 //==========
@@ -33,7 +33,10 @@ namespace Physics
 
 	cResult RemoveCollider_SweepAndPrune(cCollider* i_collider);
 
-	void DetectCollision_BroadPhase_SweepAndPrune();
+	void CollisionDetection_BroadPhase_SweepAndPrune();
+
+	void CollisionDetection_NarrowPhase_Overlap(std::unordered_map<cCollider*, std::vector<cCollider*>>& i_newCollisionMap);
+
 
 
 }// Namespace Physics
