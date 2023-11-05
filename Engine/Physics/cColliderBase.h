@@ -8,6 +8,8 @@
 #include <Engine/Results/Results.h>
 
 #include <cstdint>
+#include <functional>
+
 // TODO: temporary code for initialize colldier object
 #include <string>
 
@@ -121,14 +123,18 @@ namespace Physics
 
 		eColliderType m_type = eColliderType::None;
 
+	public:
+
+		std::function<void(const cCollider*)> OnCollisionEnter;
+		std::function<void(const cCollider*)> OnCollisionStay;
+		std::function<void(const cCollider*)> OnCollisionExit;
+
 
 		// TODO: temporary code for initialize colldier object
 	public:
 		std::string m_name = "";
 
 	};
-
-
 
 
 }// Namespace Physics
