@@ -305,8 +305,6 @@ void eae6320::cMyGame::InitializeGameObject()
 	}
 
 
-
-
 	// TODO: temporary code for initialize colldier object
 	{
 		Physics::sColliderSetting setting_AABB1;
@@ -363,7 +361,6 @@ void eae6320::cMyGame::CleanUpGameObject()
 	m_effect_standard->DecrementReferenceCount();
 
 
-
 	// TODO: temporary code for clean up colldier object
 
 	m_colliderObject_AABB1.CleanUp();
@@ -381,9 +378,8 @@ void eae6320::cMyGame::InitializeCollisionSystem()
 	colliderList.push_back(m_colliderObject_AABB2.GetCollider());
 	colliderList.push_back(m_colliderObject_AABB3.GetCollider());
 
+
 	Physics::Initialize_SweepAndPrune(colliderList);
-
-
 }
 
 

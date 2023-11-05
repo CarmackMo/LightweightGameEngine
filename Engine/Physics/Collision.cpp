@@ -1,6 +1,7 @@
 // Includes
 //=========
 
+#include <Engine/Logging/Logging.h>
 #include <Engine/Physics/Collision.h>
 #include <Engine/Physics/cAABBCollider.h>
 #include <Engine/Physics/cSphereCollider.h>
@@ -121,6 +122,65 @@ void eae6320::Physics::Initialize_SweepAndPrune(const std::vector<cCollider*>& i
 	{
 		DetectCollision_BroadPhase_SweepAndPrune();
 	}
+}
+
+
+void eae6320::Physics::AddCollider_SweepAndPrune(cCollider* i_collider)
+{
+	s_orderedColliderList_xAxis.push_back(i_collider);
+	s_orderedColliderList_yAxis.push_back(i_collider);
+	s_orderedColliderList_zAxis.push_back(i_collider);
+
+	s_collisionMap[i_collider] = std::vector<cCollider*>(0);
+
+	DetectCollision_BroadPhase_SweepAndPrune();
+}
+
+
+eae6320::cResult eae6320::Physics::RemoveCollider_SweepAndPrune(cCollider* i_collider)
+{
+	// Remove collider from axis order list
+	{
+		auto iter_xAxis = s_orderedColliderList_xAxis.begin();
+		auto iter_yAxis = s_orderedColliderList_yAxis.begin();
+		auto iter_zAxis = s_orderedColliderList_zAxis.begin();
+
+		if ((iter_xAxis = std::find(s_orderedColliderList_xAxis.begin(), s_orderedColliderList_xAxis.end(), i_collider)) != s_orderedColliderList_xAxis.end() &&
+			(iter_yAxis = std::find(s_orderedColliderList_yAxis.begin(), s_orderedColliderList_yAxis.end(), i_collider)) != s_orderedColliderList_yAxis.end() &&
+			(iter_zAxis = std::find(s_orderedColliderList_zAxis.begin(), s_orderedColliderList_zAxis.end(), i_collider)) != s_orderedColliderList_zAxis.end())
+		{
+			s_orderedColliderList_xAxis.erase(iter_xAxis);
+			s_orderedColliderList_yAxis.erase(iter_yAxis);
+			s_orderedColliderList_zAxis.erase(iter_zAxis);
+		}
+		else
+		{
+			Logging::OutputError("Physics::Collision: Trying to remove a non-existed collider");
+			return Results::Failure;
+		}
+	}
+
+	// Remove collider from collision map
+	{
+		auto iter = s_collisionMap.begin();
+
+		if ((iter = s_collisionMap.find(i_collider)) != s_collisionMap.end())
+		{
+			s_collisionMap.erase(i_collider);
+		}
+		else
+		{
+			Logging::OutputError("Physics::Collision: Trying to remove a non-existed collider");
+			return Results::Failure;
+		}
+	}
+
+	// Re-calculate collision map
+	{
+		DetectCollision_BroadPhase_SweepAndPrune();
+	}
+
+	return Results::Success;
 }
 
 void eae6320::Physics::DetectCollision_BroadPhase_SweepAndPrune()
