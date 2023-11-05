@@ -160,41 +160,41 @@ void eae6320::cGameObject::InitializeAABBLine()
 		Math::sVector modelPos = m_rigidBody.position;
 
 		// 0-1
-		vertexData[0] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_min.x, modelPos.y + AABB->m_min.y, modelPos.z + AABB->m_min.z);
-		vertexData[1] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_min.x, modelPos.y + AABB->m_max.y, modelPos.z + AABB->m_min.z);
+		vertexData[0] = Graphics::VertexFormats::sVertex_line(AABB->m_min.x, AABB->m_min.y, AABB->m_min.z);
+		vertexData[1] = Graphics::VertexFormats::sVertex_line(AABB->m_min.x, AABB->m_max.y, AABB->m_min.z);
 		// 1-2
-		vertexData[2] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_min.x, modelPos.y + AABB->m_max.y, modelPos.z + AABB->m_min.z);
-		vertexData[3] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_min.x, modelPos.y + AABB->m_max.y, modelPos.z + AABB->m_max.z);
+		vertexData[2] = Graphics::VertexFormats::sVertex_line(AABB->m_min.x, AABB->m_max.y, AABB->m_min.z);
+		vertexData[3] = Graphics::VertexFormats::sVertex_line(AABB->m_min.x, AABB->m_max.y, AABB->m_max.z);
 		// 2-3
-		vertexData[4] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_min.x, modelPos.y + AABB->m_max.y, modelPos.z + AABB->m_max.z);
-		vertexData[5] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_min.x, modelPos.y + AABB->m_min.y, modelPos.z + AABB->m_max.z);
+		vertexData[4] = Graphics::VertexFormats::sVertex_line(AABB->m_min.x, AABB->m_max.y, AABB->m_max.z);
+		vertexData[5] = Graphics::VertexFormats::sVertex_line(AABB->m_min.x, AABB->m_min.y, AABB->m_max.z);
 		// 3-0
-		vertexData[6] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_min.x, modelPos.y + AABB->m_min.y, modelPos.z + AABB->m_max.z);
-		vertexData[7] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_min.x, modelPos.y + AABB->m_min.y, modelPos.z + AABB->m_min.z);
+		vertexData[6] = Graphics::VertexFormats::sVertex_line(AABB->m_min.x, AABB->m_min.y, AABB->m_max.z);
+		vertexData[7] = Graphics::VertexFormats::sVertex_line(AABB->m_min.x, AABB->m_min.y, AABB->m_min.z);
 		// 4-5
-		vertexData[8] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_max.x, modelPos.y + AABB->m_min.y, modelPos.z + AABB->m_min.z);
-		vertexData[9] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_max.x, modelPos.y + AABB->m_max.y, modelPos.z + AABB->m_min.z);
+		vertexData[8] = Graphics::VertexFormats::sVertex_line(AABB->m_max.x, AABB->m_min.y, AABB->m_min.z);
+		vertexData[9] = Graphics::VertexFormats::sVertex_line(AABB->m_max.x, AABB->m_max.y, AABB->m_min.z);
 		// 5-6
-		vertexData[10] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_max.x, modelPos.y + AABB->m_max.y, modelPos.z + AABB->m_min.z);
-		vertexData[11] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_max.x, modelPos.y + AABB->m_max.y, modelPos.z + AABB->m_max.z);
+		vertexData[10] = Graphics::VertexFormats::sVertex_line(AABB->m_max.x, AABB->m_max.y, AABB->m_min.z);
+		vertexData[11] = Graphics::VertexFormats::sVertex_line(AABB->m_max.x, AABB->m_max.y, AABB->m_max.z);
 		// 6-7
-		vertexData[12] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_max.x, modelPos.y + AABB->m_max.y, modelPos.z + AABB->m_max.z);
-		vertexData[13] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_max.x, modelPos.y + AABB->m_min.y, modelPos.z + AABB->m_max.z);
+		vertexData[12] = Graphics::VertexFormats::sVertex_line(AABB->m_max.x, AABB->m_max.y, AABB->m_max.z);
+		vertexData[13] = Graphics::VertexFormats::sVertex_line(AABB->m_max.x, AABB->m_min.y, AABB->m_max.z);
 		// 7-4
-		vertexData[14] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_max.x, modelPos.y + AABB->m_min.y, modelPos.z + AABB->m_max.z);
-		vertexData[15] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_max.x, modelPos.y + AABB->m_min.y, modelPos.z + AABB->m_min.z);
+		vertexData[14] = Graphics::VertexFormats::sVertex_line(AABB->m_max.x, AABB->m_min.y, AABB->m_max.z);
+		vertexData[15] = Graphics::VertexFormats::sVertex_line(AABB->m_max.x, AABB->m_min.y, AABB->m_min.z);
 		// 1-5
-		vertexData[16] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_min.x, modelPos.y + AABB->m_max.y, modelPos.z + AABB->m_min.z);
-		vertexData[17] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_max.x, modelPos.y + AABB->m_max.y, modelPos.z + AABB->m_min.z);
+		vertexData[16] = Graphics::VertexFormats::sVertex_line(AABB->m_min.x, AABB->m_max.y, AABB->m_min.z);
+		vertexData[17] = Graphics::VertexFormats::sVertex_line(AABB->m_max.x, AABB->m_max.y, AABB->m_min.z);
 		// 2-6
-		vertexData[18] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_min.x, modelPos.y + AABB->m_max.y, modelPos.z + AABB->m_max.z);
-		vertexData[19] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_max.x, modelPos.y + AABB->m_max.y, modelPos.z + AABB->m_max.z);
+		vertexData[18] = Graphics::VertexFormats::sVertex_line(AABB->m_min.x, AABB->m_max.y, AABB->m_max.z);
+		vertexData[19] = Graphics::VertexFormats::sVertex_line(AABB->m_max.x, AABB->m_max.y, AABB->m_max.z);
 		// 0-4
-		vertexData[20] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_min.x, modelPos.y + AABB->m_min.y, modelPos.z + AABB->m_min.z);
-		vertexData[21] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_max.x, modelPos.y + AABB->m_min.y, modelPos.z + AABB->m_min.z);
+		vertexData[20] = Graphics::VertexFormats::sVertex_line(AABB->m_min.x, AABB->m_min.y, AABB->m_min.z);
+		vertexData[21] = Graphics::VertexFormats::sVertex_line(AABB->m_max.x, AABB->m_min.y, AABB->m_min.z);
 		// 3-7
-		vertexData[22] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_min.x, modelPos.y + AABB->m_min.y, modelPos.z + AABB->m_max.z);
-		vertexData[23] = Graphics::VertexFormats::sVertex_line(modelPos.x + AABB->m_max.x, modelPos.y + AABB->m_min.y, modelPos.z + AABB->m_max.z);
+		vertexData[22] = Graphics::VertexFormats::sVertex_line(AABB->m_min.x, AABB->m_min.y, AABB->m_max.z);
+		vertexData[23] = Graphics::VertexFormats::sVertex_line(AABB->m_max.x, AABB->m_min.y, AABB->m_max.z);
 	}
 
 	// index data

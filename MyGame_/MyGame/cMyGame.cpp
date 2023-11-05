@@ -323,7 +323,7 @@ void eae6320::cMyGame::InitializeGameObject()
 
 
 
-		m_colliderObject_AABB1.GetRigidBody().position = Math::sVector(0.5f, 0.0f, 0.0f);
+		m_colliderObject_AABB1.GetRigidBody().position = Math::sVector(0.5f, 0.0f, 0.5f);
 		m_colliderObject_AABB1.InitializeCollider(setting_AABB1);
 		m_colliderObject_AABB1.InitializeAABBLine();
 		m_colliderObject_AABB1.GetCollider()->m_name = "AABB_1";
