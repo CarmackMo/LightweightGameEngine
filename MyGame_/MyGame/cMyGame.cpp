@@ -148,11 +148,13 @@ void eae6320::cMyGame::SubmitDataToBeRendered(
 
 	// TODO: Submit debug for box collider
 	{
-		constexpr uint32_t arraySize = 2;
+		constexpr uint32_t arraySize = 3;
 		Graphics::ConstantBufferFormats::sDebug debugDataArray[arraySize];
 
 		debugDataArray[0].Initialize(m_colliderObject_AABB1.GetAABBLine(), m_colliderObject_AABB1.GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
 		debugDataArray[1].Initialize(m_colliderObject_AABB2.GetAABBLine(), m_colliderObject_AABB2.GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
+		debugDataArray[2].Initialize(m_colliderObject_AABB3.GetAABBLine(), m_colliderObject_AABB3.GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
+
 
 		Graphics::SubmitDebugData(debugDataArray, arraySize);
 
@@ -379,7 +381,7 @@ void eae6320::cMyGame::InitializeCollisionSystem()
 	colliderList.push_back(m_colliderObject_AABB2.GetCollider());
 	colliderList.push_back(m_colliderObject_AABB3.GetCollider());
 
-	Physics::Initialize_sweepAndPrune(colliderList);
+	Physics::Initialize_SweepAndPrune(colliderList);
 
 
 }

@@ -15,7 +15,7 @@ namespace
 {
 
 	std::unordered_map<eae6320::Physics::cCollider*, std::vector<eae6320::Physics::cCollider*>>
-		s_collisionPair;
+		s_collisionMap;
 
 	std::vector<eae6320::Physics::cCollider*> s_orderedColliderList_xAxis;
 	std::vector<eae6320::Physics::cCollider*> s_orderedColliderList_yAxis;
@@ -103,7 +103,7 @@ bool eae6320::Physics::IsOverlaps(cCollider* i_lhs, cCollider* i_rhs)
 }
 
 
-void eae6320::Physics::Initialize_sweepAndPrune(const std::vector<cCollider*>& i_allColliderList)
+void eae6320::Physics::Initialize_SweepAndPrune(const std::vector<cCollider*>& i_allColliderList)
 {
 	// Initialize buffers
 	{
@@ -113,14 +113,29 @@ void eae6320::Physics::Initialize_sweepAndPrune(const std::vector<cCollider*>& i
 
 		for (cCollider* collider : i_allColliderList)
 		{
-			s_collisionPair[collider] = std::vector<eae6320::Physics::cCollider*>(0);
+			s_collisionMap[collider] = std::vector<cCollider*>(0);
 		}
+	}
 
+	// Initialize collision map
+	{
+		DetectCollision_BroadPhase_SweepAndPrune();
+	}
+}
+
+void eae6320::Physics::DetectCollision_BroadPhase_SweepAndPrune()
+{
+	// Update data collider data
+	{
 		std::sort(s_orderedColliderList_xAxis.begin(), s_orderedColliderList_xAxis.end(), s_comparator_xAxis);
 		std::sort(s_orderedColliderList_yAxis.begin(), s_orderedColliderList_yAxis.end(), s_comparator_yAxis);
 		std::sort(s_orderedColliderList_zAxis.begin(), s_orderedColliderList_zAxis.end(), s_comparator_zAxis);
-	}
 
+		for (auto& item : s_collisionMap)
+		{
+			item.second = std::vector<cCollider*>(0);
+		}
+	}
 
 	// Sweep and prune the X axis
 	{
@@ -134,7 +149,7 @@ void eae6320::Physics::Initialize_sweepAndPrune(const std::vector<cCollider*>& i
 				// Possible to have collision
 				if (collider_i->GetMaxExtent_world().x >= collider_j->GetMinExtent_world().x)
 				{
-					s_collisionPair[collider_i].push_back(collider_j);
+					s_collisionMap[collider_i].push_back(collider_j);
 				}
 				// Impossbile to have collision
 				else
@@ -148,9 +163,9 @@ void eae6320::Physics::Initialize_sweepAndPrune(const std::vector<cCollider*>& i
 	// Sweep and prune the Y axis
 	{
 		std::unordered_map<cCollider*, std::vector<cCollider*>> collisionAtYAxis;
-		for (cCollider* collider : i_allColliderList)
+		for (const auto& item : s_collisionMap)
 		{
-			collisionAtYAxis[collider] = std::vector<cCollider*>(0);
+			collisionAtYAxis[item.first] = std::vector<cCollider*>(0);
 		}
 
 		for (size_t i = 0; i < s_orderedColliderList_yAxis.size() - 1; i++)
@@ -160,15 +175,11 @@ void eae6320::Physics::Initialize_sweepAndPrune(const std::vector<cCollider*>& i
 				cCollider* collider_i = s_orderedColliderList_yAxis[i];
 				cCollider* collider_j = s_orderedColliderList_yAxis[j];
 
-				//// TODO: Temp
-				//auto temp1 = collider_i->GetMaxExtent_world().y;
-				//auto temp2 = collider_j->GetMinExtent_world().y;
-
 				// Possible to have collision
 				if (collider_i->GetMaxExtent_world().y >= collider_j->GetMinExtent_world().y)
 				{
-					auto collisionList_i = s_collisionPair[collider_i];
-					auto collisionList_j = s_collisionPair[collider_j];
+					auto collisionList_i = s_collisionMap[collider_i];
+					auto collisionList_j = s_collisionMap[collider_j];
 
 					if (std::find(collisionList_i.begin(), collisionList_i.end(), collider_j) != collisionList_i.end())
 						collisionAtYAxis[collider_i].push_back(collider_j);
@@ -183,7 +194,7 @@ void eae6320::Physics::Initialize_sweepAndPrune(const std::vector<cCollider*>& i
 			}
 		}
 
-		for (auto& collisionPair : s_collisionPair)
+		for (auto& collisionPair : s_collisionMap)
 		{
 			collisionPair.second.swap(collisionAtYAxis[collisionPair.first]);
 		}
@@ -192,9 +203,9 @@ void eae6320::Physics::Initialize_sweepAndPrune(const std::vector<cCollider*>& i
 	// Sweep and prune the Z axis
 	{
 		std::unordered_map<cCollider*, std::vector<cCollider*>> collisionAtZAxis;
-		for (cCollider* collider : i_allColliderList)
+		for (const auto& item : s_collisionMap)
 		{
-			collisionAtZAxis[collider] = std::vector<cCollider*>(0);
+			collisionAtZAxis[item.first] = std::vector<cCollider*>(0);
 		}
 
 		for (size_t i = 0; i < s_orderedColliderList_zAxis.size() - 1; i++)
@@ -207,8 +218,8 @@ void eae6320::Physics::Initialize_sweepAndPrune(const std::vector<cCollider*>& i
 				// Possible to have collision
 				if (collider_i->GetMaxExtent_world().z >= collider_j->GetMinExtent_world().z)
 				{
-					auto collisionList_i = s_collisionPair[collider_i];
-					auto collisionList_j = s_collisionPair[collider_j];
+					auto collisionList_i = s_collisionMap[collider_i];
+					auto collisionList_j = s_collisionMap[collider_j];
 
 					if (std::find(collisionList_i.begin(), collisionList_i.end(), collider_j) != collisionList_i.end())
 						collisionAtZAxis[collider_i].push_back(collider_j);
@@ -223,11 +234,10 @@ void eae6320::Physics::Initialize_sweepAndPrune(const std::vector<cCollider*>& i
 			}
 		}
 
-		for (auto& collisionPair : s_collisionPair)
+		for (auto& collisionPair : s_collisionMap)
 		{
 			collisionPair.second.swap(collisionAtZAxis[collisionPair.first]);
 		}
 	}
-
 
 }
