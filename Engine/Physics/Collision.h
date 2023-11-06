@@ -27,6 +27,9 @@ namespace Physics
 
 
 
+
+
+
 	void Initialize_SweepAndPrune(const std::vector<eae6320::Physics::cCollider*>& i_allColliderList);
 
 	void AddCollider_SweepAndPrune(cCollider* i_collider);
@@ -37,6 +40,7 @@ namespace Physics
 
 	void CollisionDetection_NarrowPhase_Overlap(std::unordered_map<cCollider*, std::vector<cCollider*>>& i_newCollisionMap);
 
+	void InvokeCollisionCallback(std::unordered_map<cCollider*, std::vector<cCollider*>>& i_newCollisionMap);
 
 
 }// Namespace Physics

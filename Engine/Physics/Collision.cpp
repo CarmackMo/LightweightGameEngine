@@ -118,7 +118,7 @@ void eae6320::Physics::Initialize_SweepAndPrune(const std::vector<cCollider*>& i
 		}
 	}
 
-	// Initialize collision map
+	// Initial collision detection
 	{
 		CollisionDetection_BroadPhase_SweepAndPrune();
 	}
@@ -191,15 +191,18 @@ void eae6320::Physics::CollisionDetection_BroadPhase_SweepAndPrune()
 		std::sort(s_orderedColliderList_xAxis.begin(), s_orderedColliderList_xAxis.end(), s_comparator_xAxis);
 		std::sort(s_orderedColliderList_yAxis.begin(), s_orderedColliderList_yAxis.end(), s_comparator_yAxis);
 		std::sort(s_orderedColliderList_zAxis.begin(), s_orderedColliderList_zAxis.end(), s_comparator_zAxis);
-
-		for (auto& item : s_collisionMap)
-		{
-			item.second = std::vector<cCollider*>(0);
-		}
 	}
+
+	std::unordered_map<cCollider*, std::vector<cCollider*>> collisionMap_broadPhase;
+	for (const auto& item : s_collisionMap)
+	{
+		collisionMap_broadPhase[item.first] = std::vector<cCollider*>(0);
+	}
+
 
 	// Sweep and prune the X axis
 	{
+		// Iterate X axis, find all potential collision along X axis
 		for (size_t i = 0; i < s_orderedColliderList_xAxis.size() - 1; i++)
 		{
 			for (size_t j = i + 1; j < s_orderedColliderList_xAxis.size(); j++)
@@ -210,7 +213,7 @@ void eae6320::Physics::CollisionDetection_BroadPhase_SweepAndPrune()
 				// Possible to have collision
 				if (collider_i->GetMaxExtent_world().x >= collider_j->GetMinExtent_world().x)
 				{
-					s_collisionMap[collider_i].push_back(collider_j);
+					collisionMap_broadPhase[collider_i].push_back(collider_j);
 				}
 				// Impossbile to have collision
 				else
@@ -223,12 +226,14 @@ void eae6320::Physics::CollisionDetection_BroadPhase_SweepAndPrune()
 
 	// Sweep and prune the Y axis
 	{
+		// Create buffer
 		std::unordered_map<cCollider*, std::vector<cCollider*>> collisionAtYAxis;
-		for (const auto& item : s_collisionMap)
+		for (const auto& item : collisionMap_broadPhase)
 		{
 			collisionAtYAxis[item.first] = std::vector<cCollider*>(0);
 		}
 
+		// Iterate Y axis, find all potential collision along Y axis, select those who already have potential collision in X axis 
 		for (size_t i = 0; i < s_orderedColliderList_yAxis.size() - 1; i++)
 		{
 			for (size_t j = i + 1; j < s_orderedColliderList_yAxis.size(); j++)
@@ -239,8 +244,8 @@ void eae6320::Physics::CollisionDetection_BroadPhase_SweepAndPrune()
 				// Possible to have collision
 				if (collider_i->GetMaxExtent_world().y >= collider_j->GetMinExtent_world().y)
 				{
-					auto collisionList_i = s_collisionMap[collider_i];
-					auto collisionList_j = s_collisionMap[collider_j];
+					const auto& collisionList_i = collisionMap_broadPhase[collider_i];
+					const auto& collisionList_j = collisionMap_broadPhase[collider_j];
 
 					if (std::find(collisionList_i.begin(), collisionList_i.end(), collider_j) != collisionList_i.end())
 						collisionAtYAxis[collider_i].push_back(collider_j);
@@ -255,20 +260,22 @@ void eae6320::Physics::CollisionDetection_BroadPhase_SweepAndPrune()
 			}
 		}
 
-		for (auto& collisionPair : s_collisionMap)
+		for (auto& collision : collisionMap_broadPhase)
 		{
-			collisionPair.second.swap(collisionAtYAxis[collisionPair.first]);
+			collision.second.swap(collisionAtYAxis[collision.first]);
 		}
 	}
 
 	// Sweep and prune the Z axis
 	{
+		// Create buffer
 		std::unordered_map<cCollider*, std::vector<cCollider*>> collisionAtZAxis;
-		for (const auto& item : s_collisionMap)
+		for (const auto& item : collisionMap_broadPhase)
 		{
 			collisionAtZAxis[item.first] = std::vector<cCollider*>(0);
 		}
 
+		// Iterate Z axis, find all potential collision along Z axis, select those who already have potential collision in X and Y axis 
 		for (size_t i = 0; i < s_orderedColliderList_zAxis.size() - 1; i++)
 		{
 			for (size_t j = i + 1; j < s_orderedColliderList_zAxis.size(); j++)
@@ -279,8 +286,8 @@ void eae6320::Physics::CollisionDetection_BroadPhase_SweepAndPrune()
 				// Possible to have collision
 				if (collider_i->GetMaxExtent_world().z >= collider_j->GetMinExtent_world().z)
 				{
-					auto collisionList_i = s_collisionMap[collider_i];
-					auto collisionList_j = s_collisionMap[collider_j];
+					const auto& collisionList_i = collisionMap_broadPhase[collider_i];
+					const auto& collisionList_j = collisionMap_broadPhase[collider_j];
 
 					if (std::find(collisionList_i.begin(), collisionList_i.end(), collider_j) != collisionList_i.end())
 						collisionAtZAxis[collider_i].push_back(collider_j);
@@ -295,9 +302,9 @@ void eae6320::Physics::CollisionDetection_BroadPhase_SweepAndPrune()
 			}
 		}
 
-		for (auto& collisionPair : s_collisionMap)
+		for (auto& collision : collisionMap_broadPhase)
 		{
-			collisionPair.second.swap(collisionAtZAxis[collisionPair.first]);
+			collision.second.swap(collisionAtZAxis[collision.first]);
 		}
 	}
 
@@ -331,6 +338,51 @@ void eae6320::Physics::CollisionDetection_NarrowPhase_Overlap(std::unordered_map
 		}
 	}
 
+	//// Invoke OnCollisionExit for colliders that on longer overlap in current frame 
+	//{
+	//	for (const auto& collision : s_collisionMap)
+	//	{
+	//		cCollider* collider_lhs = collision.first;
+
+	//		for (const cCollider* collider_rhs : collision.second)
+	//		{
+	//			if (i_newCollisionMap.find(collider_lhs) == i_newCollisionMap.end() ||
+	//				std::find(i_newCollisionMap[collider_lhs].begin(), i_newCollisionMap[collider_lhs].end(), collider_rhs) == i_newCollisionMap[collider_lhs].end())
+	//			{
+	//				collider_lhs->OnCollisionExit(collider_rhs);
+	//				collider_rhs->OnCollisionExit(collider_lhs);
+	//			}
+	//		}
+	//	}
+	//}
+
+	//// Invoke OnCollisionEnter and OnCollisionStay for colliders that having overlap in current frame 
+	//{
+	//	for (const auto& collision : i_newCollisionMap)
+	//	{
+	//		cCollider* collider_lhs = collision.first;
+
+	//		for (const cCollider* collider_rhs : collision.second)
+	//		{
+	//			if (s_collisionMap.find(collider_lhs) == s_collisionMap.end() ||
+	//				std::find(s_collisionMap[collider_lhs].begin(), s_collisionMap[collider_lhs].end(), collider_rhs) == s_collisionMap[collider_lhs].end())
+	//			{
+	//				collider_lhs->OnCollisionEnter(collider_rhs);
+	//				collider_rhs->OnCollisionEnter(collider_lhs);
+	//			}
+	//			else
+	//			{
+	//				collider_lhs->OnCollisionStay(collider_rhs);
+	//				collider_rhs->OnCollisionStay(collider_lhs);
+	//			}
+	//		}
+	//	}
+	//}
+
+}
+
+void eae6320::Physics::InvokeCollisionCallback(std::unordered_map<cCollider*, std::vector<cCollider*>>& i_newCollisionMap)
+{
 	// Invoke OnCollisionExit for colliders that on longer overlap in current frame 
 	{
 		for (const auto& collision : s_collisionMap)
@@ -373,4 +425,6 @@ void eae6320::Physics::CollisionDetection_NarrowPhase_Overlap(std::unordered_map
 	}
 
 }
+
+
 
