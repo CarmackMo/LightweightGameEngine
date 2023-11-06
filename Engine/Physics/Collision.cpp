@@ -199,7 +199,6 @@ void eae6320::Physics::CollisionDetection_BroadPhase_SweepAndPrune()
 		collisionMap_broadPhase[item.first] = std::vector<cCollider*>(0);
 	}
 
-
 	// Sweep and prune the X axis
 	{
 		// Iterate X axis, find all potential collision along X axis
@@ -308,16 +307,19 @@ void eae6320::Physics::CollisionDetection_BroadPhase_SweepAndPrune()
 		}
 	}
 
-
+	// Proceed to narrow phase collision detection
+	{
+		CollisionDetection_NarrowPhase_Overlap(collisionMap_broadPhase);
+	}
 	
 }
 
 // TODO: need to connect with the broad phase collison detection 
-void eae6320::Physics::CollisionDetection_NarrowPhase_Overlap(std::unordered_map<cCollider*, std::vector<cCollider*>>& i_newCollisionMap)
+void eae6320::Physics::CollisionDetection_NarrowPhase_Overlap(std::unordered_map<cCollider*, std::vector<cCollider*>>& i_CollisionMap_broadPhase)
 {
 	// Perform narrow phase collision detection for the data from broad phase
 	{
-		for (auto& collision : i_newCollisionMap)
+		for (auto& collision : i_CollisionMap_broadPhase)
 		{
 			cCollider* collider_lhs = collision.first;
 
@@ -337,6 +339,9 @@ void eae6320::Physics::CollisionDetection_NarrowPhase_Overlap(std::unordered_map
 			collision.second.shrink_to_fit();
 		}
 	}
+
+
+
 
 	//// Invoke OnCollisionExit for colliders that on longer overlap in current frame 
 	//{

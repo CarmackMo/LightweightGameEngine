@@ -337,8 +337,9 @@ void eae6320::cMyGame::InitializeGameObject()
 		m_colliderObject_AABB3.GetCollider()->m_name = "AABB_3";
 		
 
-		m_colliderObject_sphere1.GetRigidBody().position = Math::sVector(0.0f, 0.0f, 0.0f);
+		m_colliderObject_sphere1.GetRigidBody().position = Math::sVector(2.0f, -1.0f, 3.0f);
 		m_colliderObject_sphere1.InitializeCollider(setting_sphere1);
+		m_colliderObject_sphere1.GetCollider()->m_name = "Sphere_1";
 	}
 
 }
@@ -377,6 +378,7 @@ void eae6320::cMyGame::InitializeCollisionSystem()
 	colliderList.push_back(m_colliderObject_AABB1.GetCollider());
 	colliderList.push_back(m_colliderObject_AABB2.GetCollider());
 	colliderList.push_back(m_colliderObject_AABB3.GetCollider());
+	colliderList.push_back(m_colliderObject_sphere1.GetCollider());
 
 
 	Physics::Initialize_SweepAndPrune(colliderList);
