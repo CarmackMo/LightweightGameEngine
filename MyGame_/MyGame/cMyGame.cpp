@@ -325,11 +325,13 @@ void eae6320::cMyGame::InitializeGameObject()
 		m_colliderObject_AABB1.InitializeCollider(setting_AABB1);
 		m_colliderObject_AABB1.InitializeAABBLine();
 		m_colliderObject_AABB1.GetCollider()->m_name = "AABB_1";
+		m_colliderObject_AABB1.GetCollider()->OnCollisionEnter = [](const Physics::cCollider* other) -> void { UserOutput::Print( "Other: %s", other->m_name.c_str()); return; };
 
 		m_colliderObject_AABB2.GetRigidBody().position = Math::sVector(0.0f, -0.5f, 1.5f);
 		m_colliderObject_AABB2.InitializeCollider(setting_AABB2);
 		m_colliderObject_AABB2.InitializeAABBLine();
 		m_colliderObject_AABB2.GetCollider()->m_name = "AABB_2";
+		m_colliderObject_AABB2.GetCollider()->OnCollisionEnter = [](const Physics::cCollider* other) -> void { UserOutput::Print("Other: %s", other->m_name.c_str()); return; };
 
 		m_colliderObject_AABB3.GetRigidBody().position = Math::sVector(1.0f, -2.0f, 3.0f);
 		m_colliderObject_AABB3.InitializeCollider(setting_AABB3);

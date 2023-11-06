@@ -314,7 +314,7 @@ void eae6320::Physics::CollisionDetection_BroadPhase_SweepAndPrune()
 	
 }
 
-// TODO: need to connect with the broad phase collison detection 
+
 void eae6320::Physics::CollisionDetection_NarrowPhase_Overlap(std::unordered_map<cCollider*, std::vector<cCollider*>>& i_CollisionMap_broadPhase)
 {
 	// Perform narrow phase collision detection for the data from broad phase
@@ -340,53 +340,13 @@ void eae6320::Physics::CollisionDetection_NarrowPhase_Overlap(std::unordered_map
 		}
 	}
 
+	InvokeCollisionCallback(i_CollisionMap_broadPhase);
 
-
-
-	//// Invoke OnCollisionExit for colliders that on longer overlap in current frame 
-	//{
-	//	for (const auto& collision : s_collisionMap)
-	//	{
-	//		cCollider* collider_lhs = collision.first;
-
-	//		for (const cCollider* collider_rhs : collision.second)
-	//		{
-	//			if (i_newCollisionMap.find(collider_lhs) == i_newCollisionMap.end() ||
-	//				std::find(i_newCollisionMap[collider_lhs].begin(), i_newCollisionMap[collider_lhs].end(), collider_rhs) == i_newCollisionMap[collider_lhs].end())
-	//			{
-	//				collider_lhs->OnCollisionExit(collider_rhs);
-	//				collider_rhs->OnCollisionExit(collider_lhs);
-	//			}
-	//		}
-	//	}
-	//}
-
-	//// Invoke OnCollisionEnter and OnCollisionStay for colliders that having overlap in current frame 
-	//{
-	//	for (const auto& collision : i_newCollisionMap)
-	//	{
-	//		cCollider* collider_lhs = collision.first;
-
-	//		for (const cCollider* collider_rhs : collision.second)
-	//		{
-	//			if (s_collisionMap.find(collider_lhs) == s_collisionMap.end() ||
-	//				std::find(s_collisionMap[collider_lhs].begin(), s_collisionMap[collider_lhs].end(), collider_rhs) == s_collisionMap[collider_lhs].end())
-	//			{
-	//				collider_lhs->OnCollisionEnter(collider_rhs);
-	//				collider_rhs->OnCollisionEnter(collider_lhs);
-	//			}
-	//			else
-	//			{
-	//				collider_lhs->OnCollisionStay(collider_rhs);
-	//				collider_rhs->OnCollisionStay(collider_lhs);
-	//			}
-	//		}
-	//	}
-	//}
-
+	s_collisionMap.swap(i_CollisionMap_broadPhase);
 }
 
-void eae6320::Physics::InvokeCollisionCallback(std::unordered_map<cCollider*, std::vector<cCollider*>>& i_newCollisionMap)
+
+void eae6320::Physics::InvokeCollisionCallback(std::unordered_map<cCollider*, std::vector<cCollider*>>& i_collisionMap_narrowPhase)
 {
 	// Invoke OnCollisionExit for colliders that on longer overlap in current frame 
 	{
@@ -396,11 +356,13 @@ void eae6320::Physics::InvokeCollisionCallback(std::unordered_map<cCollider*, st
 
 			for (const cCollider* collider_rhs : collision.second)
 			{
-				if (i_newCollisionMap.find(collider_lhs) == i_newCollisionMap.end() ||
-					std::find(i_newCollisionMap[collider_lhs].begin(), i_newCollisionMap[collider_lhs].end(), collider_rhs) == i_newCollisionMap[collider_lhs].end())
+				if (i_collisionMap_narrowPhase.find(collider_lhs) == i_collisionMap_narrowPhase.end() ||
+					std::find(i_collisionMap_narrowPhase[collider_lhs].begin(), i_collisionMap_narrowPhase[collider_lhs].end(), collider_rhs) == i_collisionMap_narrowPhase[collider_lhs].end())
 				{
-					collider_lhs->OnCollisionExit(collider_rhs);
-					collider_rhs->OnCollisionExit(collider_lhs);
+					if (collider_lhs->OnCollisionExit != nullptr)
+						collider_lhs->OnCollisionExit(collider_rhs);
+					if (collider_rhs->OnCollisionExit != nullptr)
+						collider_rhs->OnCollisionExit(collider_lhs);
 				}
 			}
 		}
@@ -408,7 +370,7 @@ void eae6320::Physics::InvokeCollisionCallback(std::unordered_map<cCollider*, st
 
 	// Invoke OnCollisionEnter and OnCollisionStay for colliders that having overlap in current frame 
 	{
-		for (const auto& collision : i_newCollisionMap)
+		for (const auto& collision : i_collisionMap_narrowPhase)
 		{
 			cCollider* collider_lhs = collision.first;
 
@@ -417,13 +379,17 @@ void eae6320::Physics::InvokeCollisionCallback(std::unordered_map<cCollider*, st
 				if (s_collisionMap.find(collider_lhs) == s_collisionMap.end() ||
 					std::find(s_collisionMap[collider_lhs].begin(), s_collisionMap[collider_lhs].end(), collider_rhs) == s_collisionMap[collider_lhs].end())
 				{
-					collider_lhs->OnCollisionEnter(collider_rhs);
-					collider_rhs->OnCollisionEnter(collider_lhs);
+					if (collider_lhs->OnCollisionEnter != nullptr)
+						collider_lhs->OnCollisionEnter(collider_rhs);
+					if (collider_rhs->OnCollisionEnter != nullptr)
+						collider_rhs->OnCollisionEnter(collider_lhs);
 				}
 				else
 				{
-					collider_lhs->OnCollisionStay(collider_rhs);
-					collider_rhs->OnCollisionStay(collider_lhs);
+					if (collider_lhs->OnCollisionStay != nullptr)
+						collider_lhs->OnCollisionStay(collider_rhs);
+					if (collider_rhs->OnCollisionStay != nullptr)
+						collider_rhs->OnCollisionStay(collider_lhs);
 				}
 			}
 		}

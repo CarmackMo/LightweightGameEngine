@@ -125,9 +125,9 @@ namespace Physics
 
 	public:
 
-		std::function<void(const cCollider*)> OnCollisionEnter;
-		std::function<void(const cCollider*)> OnCollisionStay;
-		std::function<void(const cCollider*)> OnCollisionExit;
+		std::function<void(const cCollider*)> OnCollisionEnter = nullptr;
+		std::function<void(const cCollider*)> OnCollisionStay = nullptr;
+		std::function<void(const cCollider*)> OnCollisionExit = nullptr;
 
 
 		// TODO: temporary code for initialize colldier object
