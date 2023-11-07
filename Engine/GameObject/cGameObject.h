@@ -17,6 +17,7 @@
 #include <Engine/Graphics/cLine.h>
 #include <Engine/Physics/cAABBCollider.h>
 #include <Engine/Physics/cColliderBase.h>
+#include <Engine/Physics/cSphereCollider.h>
 
 
 
@@ -78,13 +79,18 @@ namespace eae6320
 
 		// TODO: Tempory code for rendering collider box and debug collider
 
+		void InitializeColliderLine();
+
 		void InitializeAABBLine();
+
+		void InitializeSphereLine();
 
 		void InitializeCollider(const Physics::sColliderSetting& i_builder);
 
-		Graphics::cLine* GetAABBLine() const;
+		Graphics::cLine* GetColliderLine() const;
 
 		Physics::cCollider* GetCollider() const;
+
 
 
 
@@ -103,7 +109,7 @@ namespace eae6320
 
 		// TODO: Temporary code for collider
 
-		Graphics::cLine* m_AABBLine = nullptr;
+		Graphics::cLine* m_colliderLine = nullptr;
 
 		Physics::cCollider* m_collider = nullptr;
 

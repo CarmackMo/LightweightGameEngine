@@ -42,6 +42,8 @@ namespace Physics
 
 		Math::sVector GetCenter_world() const final;
 
+		Math::sVector GetCenter_local() const;
+
 		float GetRadius() const;
 
 		// Overlap Detection

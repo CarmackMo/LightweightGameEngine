@@ -29,6 +29,12 @@ eae6320::Math::sVector eae6320::Physics::cSphereCollider::GetCenter_world() cons
 }
 
 
+eae6320::Math::sVector eae6320::Physics::cSphereCollider::GetCenter_local() const
+{
+	return m_center;
+}
+
+
 float eae6320::Physics::cSphereCollider::GetRadius() const
 {
 	return m_radius;

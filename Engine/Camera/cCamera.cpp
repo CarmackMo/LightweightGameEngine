@@ -55,9 +55,9 @@ void eae6320::Camera::cCamera::UpdateBasedOnInput()
 
 
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Home))
-		m_rigidBody.velocity.z = 4.0f;
-	else if (UserInput::IsKeyPressed(UserInput::KeyCodes::End))
 		m_rigidBody.velocity.z = -4.0f;
+	else if (UserInput::IsKeyPressed(UserInput::KeyCodes::End))
+		m_rigidBody.velocity.z = 4.0f;
 	else
 		m_rigidBody.velocity.z = 0.0f;
 }

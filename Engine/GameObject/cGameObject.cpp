@@ -63,7 +63,7 @@ void eae6320::cGameObject::CleanUp()
 
 	// TODO: Temporary code for collider debug
 
-	if (m_AABBLine != nullptr) { m_AABBLine->DecrementReferenceCount(); }
+	if (m_colliderLine != nullptr) { m_colliderLine->DecrementReferenceCount(); }
 	if (m_collider != nullptr) { delete m_collider; }
 }
 
@@ -140,12 +140,24 @@ void eae6320::cGameObject::UpdateBasedOnInput()
 #include <Engine/Math/sVector.h>
 
 
+void eae6320::cGameObject::InitializeColliderLine()
+{
+	switch (m_collider->GetType())
+	{
+	case Physics::eColliderType::AABB: { InitializeAABBLine(); break; }
+	case Physics::eColliderType::Sphere: { InitializeSphereLine(); break; }
+	default:
+		break;
+	}
+}
+
+
 void eae6320::cGameObject::InitializeAABBLine()
 {
-	if (m_AABBLine != nullptr)
+	if (m_colliderLine != nullptr)
 	{
-		m_AABBLine->DecrementReferenceCount();
-		m_AABBLine = nullptr;
+		m_colliderLine->DecrementReferenceCount();
+		m_colliderLine = nullptr;
 	}
 
 	if (m_collider->GetType() != Physics::eColliderType::AABB)
@@ -208,7 +220,84 @@ void eae6320::cGameObject::InitializeAABBLine()
 	}
 
 	Graphics::cLine::Create(
-		m_AABBLine,
+		m_colliderLine,
+		vertexData, vertexCount,
+		indexData, indexCount);
+}
+
+
+void eae6320::cGameObject::InitializeSphereLine()
+{
+	if (m_colliderLine != nullptr)
+	{
+		m_colliderLine->DecrementReferenceCount();
+		m_colliderLine = nullptr;
+	}
+
+	if (m_collider->GetType() != Physics::eColliderType::Sphere)
+		return;
+
+	Physics::cSphereCollider* sphere = dynamic_cast<Physics::cSphereCollider*>(m_collider);
+
+	// vertex data. Edges at x axis are 1 - 2, edges at y axis are 3 - 4, edges at z axis are 5 - 6
+	constexpr uint32_t vertexCount = 24;
+	Graphics::VertexFormats::sVertex_line vertexData[vertexCount];
+	{
+		Math::sVector center = sphere->GetCenter_local();
+		float radius = sphere->GetRadius();
+
+		// Top vertex to side vertices
+		vertexData[0] = Graphics::VertexFormats::sVertex_line(center.x, center.y + radius, center.z);	// 3 - 1
+		vertexData[1] = Graphics::VertexFormats::sVertex_line(center.x - radius, center.y, center.z);	
+
+		vertexData[2] = Graphics::VertexFormats::sVertex_line(center.x, center.y + radius, center.z);	// 3 - 5
+		vertexData[3] = Graphics::VertexFormats::sVertex_line(center.x, center.y, center.z - radius);	
+
+		vertexData[4] = Graphics::VertexFormats::sVertex_line(center.x, center.y + radius, center.z);	// 3 - 2
+		vertexData[5] = Graphics::VertexFormats::sVertex_line(center.x + radius , center.y, center.z);	
+
+		vertexData[6] = Graphics::VertexFormats::sVertex_line(center.x, center.y + radius, center.z);	// 3 - 6
+		vertexData[7] = Graphics::VertexFormats::sVertex_line(center.x, center.y, center.z + radius);	
+		
+		// Side vertices
+		vertexData[8] = Graphics::VertexFormats::sVertex_line(center.x - radius, center.y, center.z);	// 1 - 5
+		vertexData[9] = Graphics::VertexFormats::sVertex_line(center.x, center.y, center.z - radius);	
+
+		vertexData[10] = Graphics::VertexFormats::sVertex_line(center.x, center.y, center.z - radius);	// 5 - 2
+		vertexData[11] = Graphics::VertexFormats::sVertex_line(center.x + radius, center.y, center.z);	
+
+		vertexData[12] = Graphics::VertexFormats::sVertex_line(center.x + radius, center.y, center.z);	// 2 - 6
+		vertexData[13] = Graphics::VertexFormats::sVertex_line(center.x, center.y, center.z + radius);	
+
+		vertexData[14] = Graphics::VertexFormats::sVertex_line(center.x, center.y, center.z + radius);	// 6 - 1
+		vertexData[15] = Graphics::VertexFormats::sVertex_line(center.x - radius, center.y, center.z);	
+
+		// Buttom vertex to side vertices
+		vertexData[16] = Graphics::VertexFormats::sVertex_line(center.x, center.y - radius, center.z);	// 4 - 1
+		vertexData[17] = Graphics::VertexFormats::sVertex_line(center.x - radius, center.y, center.z);
+
+		vertexData[18] = Graphics::VertexFormats::sVertex_line(center.x, center.y - radius, center.z);	// 4 - 5
+		vertexData[19] = Graphics::VertexFormats::sVertex_line(center.x, center.y, center.z - radius);
+
+		vertexData[20] = Graphics::VertexFormats::sVertex_line(center.x, center.y - radius, center.z);	// 4 - 2
+		vertexData[21] = Graphics::VertexFormats::sVertex_line(center.x + radius, center.y, center.z);
+
+		vertexData[22] = Graphics::VertexFormats::sVertex_line(center.x, center.y - radius, center.z);	// 4 - 6
+		vertexData[23] = Graphics::VertexFormats::sVertex_line(center.x, center.y, center.z + radius);
+	}
+
+	// index data
+	constexpr uint32_t indexCount = vertexCount;
+	uint16_t indexData[indexCount];
+	{
+		for (uint32_t i = 0; i < indexCount; i++)
+		{
+			indexData[i] = i;
+		}
+	}
+
+	Graphics::cLine::Create(
+		m_colliderLine,
 		vertexData, vertexCount,
 		indexData, indexCount);
 }
@@ -220,9 +309,9 @@ void eae6320::cGameObject::InitializeCollider(const Physics::sColliderSetting& i
 }
 
 
-eae6320::Graphics::cLine* eae6320::cGameObject::GetAABBLine() const
+eae6320::Graphics::cLine* eae6320::cGameObject::GetColliderLine() const
 {
-	return m_AABBLine;
+	return m_colliderLine;
 }
 
 
