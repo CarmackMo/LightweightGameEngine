@@ -20,6 +20,7 @@
 #include <Engine/Physics/cAABBCollider.h>
 #include <Engine/Physics/Collision.h>
 #include <vector>
+#include <iostream>
 
 
 
@@ -78,11 +79,7 @@ void eae6320::cMyGame::UpdateSimulationBasedOnTime(const float i_elapsedSecondCo
 	m_colliderObject_AABB2.UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
 
 
-	Physics::cCollider* temp_0 = m_colliderObject_AABB1.GetCollider();
-	auto temp2 = temp_0->GetMaxExtent_world();
-
-	Physics::cCollider* temp_3 = m_colliderObject_sphere1.GetCollider();
-	auto temp_4 = temp_3->GetCenter_world();;
+	Physics::UpdateCollision();
 
 }
 
@@ -326,13 +323,15 @@ void eae6320::cMyGame::InitializeGameObject()
 		m_colliderObject_AABB1.InitializeCollider(setting_AABB1);
 		m_colliderObject_AABB1.InitializeColliderLine();
 		m_colliderObject_AABB1.GetCollider()->m_name = "AABB_1";
-		m_colliderObject_AABB1.GetCollider()->OnCollisionEnter = [](const Physics::cCollider* other) -> void { UserOutput::Print( "Other: %s", other->m_name.c_str()); return; };
+		m_colliderObject_AABB1.GetCollider()->OnCollisionEnter = [](const Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Enter collision, other: ", other->m_name.c_str()); return; };
+		m_colliderObject_AABB1.GetCollider()->OnCollisionExit = [](const Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Exit collision, other: ", other->m_name.c_str()); return; };
 
 		m_colliderObject_AABB2.GetRigidBody().position = Math::sVector(0.0f, -0.5f, 1.5f);
 		m_colliderObject_AABB2.InitializeCollider(setting_AABB2);
 		m_colliderObject_AABB2.InitializeColliderLine();
 		m_colliderObject_AABB2.GetCollider()->m_name = "AABB_2";
-		m_colliderObject_AABB2.GetCollider()->OnCollisionEnter = [](const Physics::cCollider* other) -> void { UserOutput::Print("Other: %s", other->m_name.c_str()); return; };
+		m_colliderObject_AABB2.GetCollider()->OnCollisionEnter = [](const Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Enter collision, other: ", other->m_name.c_str()); return; }; 
+		m_colliderObject_AABB2.GetCollider()->OnCollisionExit = [](const Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Exit collision, other: ", other->m_name.c_str()); return; };
 
 		m_colliderObject_AABB3.GetRigidBody().position = Math::sVector(1.0f, -2.0f, 3.0f);
 		m_colliderObject_AABB3.InitializeCollider(setting_AABB3);

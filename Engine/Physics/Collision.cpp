@@ -104,6 +104,12 @@ bool eae6320::Physics::IsOverlaps(cCollider* i_lhs, cCollider* i_rhs)
 }
 
 
+void eae6320::Physics::UpdateCollision()
+{
+	CollisionDetection_BroadPhase_SweepAndPrune();
+}
+
+
 void eae6320::Physics::Initialize_SweepAndPrune(const std::vector<cCollider*>& i_allColliderList)
 {
 	// Initialize buffers
@@ -346,7 +352,7 @@ void eae6320::Physics::CollisionDetection_NarrowPhase_Overlap(std::unordered_map
 }
 
 
-void eae6320::Physics::InvokeCollisionCallback(std::unordered_map<cCollider*, std::vector<cCollider*>>& i_collisionMap_narrowPhase)
+void eae6320::Physics::InvokeCollisionCallback(std::unordered_map<cCollider*, std::vector<cCollider*>>& i_newCollisionMap)
 {
 	// Invoke OnCollisionExit for colliders that on longer overlap in current frame 
 	{
@@ -354,10 +360,12 @@ void eae6320::Physics::InvokeCollisionCallback(std::unordered_map<cCollider*, st
 		{
 			cCollider* collider_lhs = collision.first;
 
-			for (const cCollider* collider_rhs : collision.second)
+			for (cCollider* collider_rhs : collision.second)
 			{
-				if (i_collisionMap_narrowPhase.find(collider_lhs) == i_collisionMap_narrowPhase.end() ||
-					std::find(i_collisionMap_narrowPhase[collider_lhs].begin(), i_collisionMap_narrowPhase[collider_lhs].end(), collider_rhs) == i_collisionMap_narrowPhase[collider_lhs].end())
+				if ((i_newCollisionMap.find(collider_lhs) == i_newCollisionMap.end() ||
+						std::find(i_newCollisionMap[collider_lhs].begin(), i_newCollisionMap[collider_lhs].end(), collider_rhs) == i_newCollisionMap[collider_lhs].end()) &&
+					(i_newCollisionMap.find(collider_rhs) == i_newCollisionMap.end() || 
+						std::find(i_newCollisionMap[collider_rhs].begin(), i_newCollisionMap[collider_rhs].end(), collider_lhs) == i_newCollisionMap[collider_rhs].end()))
 				{
 					if (collider_lhs->OnCollisionExit != nullptr)
 						collider_lhs->OnCollisionExit(collider_rhs);
@@ -370,14 +378,16 @@ void eae6320::Physics::InvokeCollisionCallback(std::unordered_map<cCollider*, st
 
 	// Invoke OnCollisionEnter and OnCollisionStay for colliders that having overlap in current frame 
 	{
-		for (const auto& collision : i_collisionMap_narrowPhase)
+		for (const auto& collision : i_newCollisionMap)
 		{
 			cCollider* collider_lhs = collision.first;
 
-			for (const cCollider* collider_rhs : collision.second)
+			for (cCollider* collider_rhs : collision.second)
 			{
-				if (s_collisionMap.find(collider_lhs) == s_collisionMap.end() ||
-					std::find(s_collisionMap[collider_lhs].begin(), s_collisionMap[collider_lhs].end(), collider_rhs) == s_collisionMap[collider_lhs].end())
+				if ((s_collisionMap.find(collider_lhs) == s_collisionMap.end() ||
+						std::find(s_collisionMap[collider_lhs].begin(), s_collisionMap[collider_lhs].end(), collider_rhs) == s_collisionMap[collider_lhs].end()) &&
+					(s_collisionMap.find(collider_rhs) == s_collisionMap.end() || 
+						std::find(s_collisionMap[collider_rhs].begin(), s_collisionMap[collider_rhs].end(), collider_lhs) == s_collisionMap[collider_rhs].end()))
 				{
 					if (collider_lhs->OnCollisionEnter != nullptr)
 						collider_lhs->OnCollisionEnter(collider_rhs);
