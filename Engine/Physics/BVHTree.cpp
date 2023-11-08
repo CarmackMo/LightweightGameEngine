@@ -127,10 +127,9 @@ void eae6320::Physics::cBVHTree::Add(cAABBCollider* i_AABB)
 
 void eae6320::Physics::cBVHTree::Remove(cAABBCollider* i_AABB)
 {
-	//sBVHNode* node = 
-
-
-
+	sBVHNode* node = Search(i_AABB);
+	node->data = nullptr;
+	RemoveNode(node);
 }
 
 
@@ -208,6 +207,43 @@ void eae6320::Physics::cBVHTree::InsertNode(sBVHNode* i_node, sBVHNode** i_paren
 
 	// update parent AABB (propagates back up the recursion stack)
 	(*i_parent)->UpdateAABB(m_margin);
+}
+
+
+void eae6320::Physics::cBVHTree::RemoveNode(sBVHNode* i_node)
+{
+	// replace parent with sibling, remove parent node
+	sBVHNode* parent = i_node->parent;
+
+	// if current node is not root
+	if (parent != nullptr)
+	{
+		sBVHNode* sibling = i_node->GetSibling();
+
+		// if there is a grandparent, update sibling with the grandparent
+		if (parent->parent != nullptr)
+		{
+			sibling->parent = parent->parent;
+			(parent == parent->parent->children[0] ?
+				parent->parent->children[0] :
+				parent->parent->children[1]) = sibling;
+		}
+		// if there is no grandparent, make sibling root
+		else
+		{
+			m_root = sibling;
+			sibling->parent = nullptr;
+		}
+
+		delete i_node;
+		delete parent;
+	}
+	// if current node is root
+	else
+	{
+		m_root = nullptr;
+		delete parent;
+	}
 }
 
 
