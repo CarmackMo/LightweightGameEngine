@@ -40,11 +40,15 @@ namespace Physics
 
 		Math::sVector GetCenter_world() const final;
 
-		// Get the squared distance between i_point and this box (will be 0 if point is inside the box)
+		/* Get volume of bounding box */
+		float GetVolume() const;
+
+		/* Get the squared distance between i_point and this box (will be 0 if point is inside the box) */ 
 		float GetSqDistanceTo(Math::sVector i_point) const;
 
-		// Get the closest point on or in this box to i_point
+		/* Get the closest point on or in this box to i_point */ 
 		Math::sVector GetClosestPoint(Math::sVector i_point) const;
+
 
 		// Operation
 		//--------------------------
@@ -53,7 +57,7 @@ namespace Physics
 
 		bool IsContains(const cAABBCollider& i_other) const;
 
-		cAABBCollider Union(const cAABBCollider& i_other);
+		cAABBCollider Union(const cAABBCollider& i_other) const;
 
 
 		// Data

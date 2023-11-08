@@ -36,10 +36,10 @@ void eae6320::Physics::sBVHNode::SetBranch(sBVHNode* i_node0, sBVHNode* i_node1)
 }
 
 
-void eae6320::Physics::sBVHNode::SetLeaf(cAABBCollider* data)
+void eae6320::Physics::sBVHNode::SetLeaf(cAABBCollider* i_data)
 {
 	// create two-way link
-	this->data = data;
+	this->data = i_data;
 	//data->userData = this;
 
 	children[0] = nullptr;
@@ -47,12 +47,12 @@ void eae6320::Physics::sBVHNode::SetLeaf(cAABBCollider* data)
 }
 
 
-void eae6320::Physics::sBVHNode::UpdateAABB(float margin)
+void eae6320::Physics::sBVHNode::UpdateAABB(float i_margin)
 {
 	if (IsLeaf())
 	{
 		// make fat AABB
-		const Math::sVector marginVec(margin, margin, margin);
+		const Math::sVector marginVec(i_margin, i_margin, i_margin);
 		aabb.m_min = data->m_min - marginVec;
 		aabb.m_max = data->m_max + marginVec;
 	}
@@ -75,9 +75,29 @@ eae6320::Physics::sBVHNode* eae6320::Physics::sBVHNode::GetSibling() const
 // cBVHTree Implementation
 //==================
 
+void eae6320::Physics::cBVHTree::Add(cAABBCollider* i_AABB)
+{
+	if (m_root != nullptr)
+	{
+		// if this is not the first node of the tree, insert node to tree
+		sBVHNode* node = new sBVHNode();
+		node->SetLeaf(i_AABB);
+		node->UpdateAABB(m_margin);
+		InsertNode(node, &m_root);
+	}
+	else
+	{
+		// if this is the first node, make it root
+		m_root = new sBVHNode();
+		m_root->SetLeaf(i_AABB);
+		m_root->UpdateAABB(m_margin);
+	}
+}
+
+
 void eae6320::Physics::cBVHTree::Update()
 {
-	if (m_root)
+	if (m_root != nullptr)
 	{
 		if (m_root->IsLeaf())
 		{
@@ -116,6 +136,39 @@ void eae6320::Physics::cBVHTree::Update()
 			m_invalidNodes.clear();
 		}
 	}
+}
+
+
+void eae6320::Physics::cBVHTree::InsertNode(sBVHNode* i_node, sBVHNode** i_parent)
+{
+	sBVHNode* p = *i_parent;
+
+	// If parent is leaf node, simply split
+	if (p->IsLeaf())
+	{
+		sBVHNode* newParent = new sBVHNode();
+		newParent->parent = p->parent;
+		newParent->SetBranch(i_node, p);
+		*i_parent = newParent;
+	}
+	// If parent is branch node, compute volume differences between pre-insert and post-insert
+	else
+	{
+		const cAABBCollider& aabb0 = p->children[0]->aabb;
+		const cAABBCollider& aabb1 = p->children[1]->aabb;
+
+		float volumeDiff0 = aabb0.Union(i_node->aabb).GetVolume() - aabb0.GetVolume();
+		float volumeDiff1 = aabb1.Union(i_node->aabb).GetVolume() - aabb1.GetVolume();
+
+		// insert to the child that gives less volume increase
+		if (volumeDiff0 < volumeDiff1)
+			InsertNode(i_node, &p->children[0]);
+		else
+			InsertNode(i_node, &p->children[1]);
+	}
+
+	// update parent AABB (propagates back up the recursion stack)
+	(*i_parent)->UpdateAABB(m_margin);
 }
 
 

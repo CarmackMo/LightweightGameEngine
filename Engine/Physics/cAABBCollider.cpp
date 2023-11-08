@@ -28,6 +28,13 @@ eae6320::Math::sVector eae6320::Physics::cAABBCollider::GetCenter_world() const
 }
 
 
+float eae6320::Physics::cAABBCollider::GetVolume() const
+{
+	Math::sVector size = m_max - m_min;
+	return size.x * size.y * size.z;
+}
+
+
 float eae6320::Physics::cAABBCollider::GetSqDistanceTo(Math::sVector i_point) const
 {
 	Math::sVector closestPoint = GetClosestPoint(i_point);
@@ -66,7 +73,7 @@ bool eae6320::Physics::cAABBCollider::IsContains(const cAABBCollider& i_other) c
 }
 
 
-eae6320::Physics::cAABBCollider eae6320::Physics::cAABBCollider::Union(const cAABBCollider& i_other)
+eae6320::Physics::cAABBCollider eae6320::Physics::cAABBCollider::Union(const cAABBCollider& i_other) const
 {
 	Math::sVector minExtent = Math::Min(GetMinExtent_world(), i_other.GetMinExtent_world());
 	Math::sVector maxExtent = Math::Max(GetMaxExtent_world(), i_other.GetMaxExtent_world());
