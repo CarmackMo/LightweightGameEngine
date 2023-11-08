@@ -16,6 +16,8 @@
 typedef std::list<std::pair<eae6320::Physics::cCollider*, eae6320::Physics::cCollider*>> ColliderPairList;
 
 
+// BVH Tree Node
+//=============
 
 namespace eae6320
 {
@@ -40,73 +42,32 @@ namespace Physics
 		// Interface
 		//=========================
 
-		sBVHNode() :
-			parent(nullptr), data(nullptr), childrenCrossed(false)
-		{
-			children[0] = nullptr;
-			children[1] = nullptr;
-		}
+		sBVHNode();
 
-		bool IsLeaf() const
-		{
-			return children[0] == nullptr;
-		}
+		bool IsLeaf() const;
 
-		/* Make this ndoe a branch node */ 
-		void SetBranch(sBVHNode* i_node0, sBVHNode* i_node1)
-		{
-			i_node0->parent = this;
-			i_node1->parent = this;
+		/* Make this ndoe a branch node */
+		void SetBranch(sBVHNode* i_node0, sBVHNode* i_node1);
 
-			children[0] = i_node0;
-			children[1] = i_node1;
-		}
+		/* Make this node a leaf */
+		void SetLeaf(cAABBCollider* data);
 
-		/* Make this node a leaf */ 
-		void SetLeaf(cAABBCollider* data)
-		{
-			// create two-way link
-			this->data = data;
-			//data->userData = this;
+		void UpdateAABB(float margin);
 
-			children[0] = nullptr;
-			children[1] = nullptr;
-		}
-
-		void UpdateAABB(float margin)
-		{
-			if (IsLeaf())
-			{
-				// make fat AABB
-				const Math::sVector marginVec(margin, margin, margin);
-				aabb.m_min = data->m_min - marginVec;
-				aabb.m_max = data->m_max + marginVec;
-			}
-			else
-			{
-				// make union of child nodes' AABB
-				aabb = children[0]->aabb.Union(children[1]->aabb);
-			}
-
-
-
-			//if (IsLeaf())
-			//{
-			//	// make fat AABB
-			//	const Vec3 marginVec(margin, margin, margin);
-			//	aabb.minPoint = data->minPoint - marginVec;
-			//	aabb.maxPoint = data->maxPoint + marginVec;
-			//}
-			//else
-			//	// make union of child AABBs of child nodes
-			//	aabb =
-			//	children[0]->aabb.Union(children[1]->aabb);
-		}
-
-
+		sBVHNode* GetSibling() const;
 	};
 
+}// Namespace Physics
+}// Namespace eae6320
 
+
+// BVH Tree Class Declaration
+//=============
+
+namespace eae6320
+{
+namespace Physics
+{
 
 	class cBVHTree
 	{
@@ -136,14 +97,13 @@ namespace Physics
 
 	private:
 
-		void UpdateNodeHelper(sBVHNode* i_node, std::vector<sBVHNode*>& i_invalidNodes);
 		void InsertNode(sBVHNode* i_node, sBVHNode** i_parent);
 		void RemoveNode(sBVHNode* i_node);
 
+		void UpdateNodeHelper(sBVHNode* i_node, std::vector<sBVHNode*>& i_invalidNodes);
 		void ComputePairsHelper(sBVHNode* i_n0, sBVHNode* i_n1);
 		void ClearChildrenCrossFlagHelper(sBVHNode* i_node);
 		void CrossChildren(sBVHNode* i_node);
-
 
 
 		// Data
@@ -157,8 +117,6 @@ namespace Physics
 		std::vector<sBVHNode*> m_invalidNodes;
 
 	};
-
-
 
 }// Namespace Physics
 }// Namespace eae6320

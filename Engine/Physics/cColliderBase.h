@@ -46,7 +46,7 @@ namespace Physics
 }
 
 
-// Collider Types
+// Collider Builder
 //=============
 
 namespace eae6320
@@ -75,6 +75,7 @@ namespace Physics
 
 // Class Declaration
 //==================
+
 namespace eae6320
 {
 namespace Physics
