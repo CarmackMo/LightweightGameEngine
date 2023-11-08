@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BVHTree.cpp" />
+    <ClCompile Include="cBVHTree.cpp" />
     <ClCompile Include="cAABBCollider.cpp" />
     <ClCompile Include="cColliderBase.cpp" />
     <ClCompile Include="Collision.cpp" />
@@ -28,7 +28,7 @@
     <ClCompile Include="sRigidBodyState.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BVHTree.h" />
+    <ClInclude Include="cBVHTree.h" />
     <ClInclude Include="cAABBCollider.h" />
     <ClInclude Include="cColliderBase.h" />
     <ClInclude Include="Collision.h" />

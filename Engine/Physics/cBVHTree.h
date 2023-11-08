@@ -11,9 +11,7 @@
 #include <vector>
 
 
-
-
-typedef std::list<std::pair<eae6320::Physics::cCollider*, eae6320::Physics::cCollider*>> ColliderPairList;
+#define DEFAULT_BVH_MARGIN 0.2f
 
 
 // BVH Tree Node
@@ -75,17 +73,15 @@ namespace Physics
 		//=========================
 
 	public:
-
-		cBVHTree() :
-			m_root(nullptr), m_margin(0.2f)
-		{ }
+		cBVHTree() : m_root(nullptr), m_margin(DEFAULT_BVH_MARGIN) {}
+		cBVHTree(float i_margin) : m_root(nullptr), m_margin(i_margin) { }
 
 		virtual sBVHNode* Search(cCollider* i_collider);
 		virtual void Add(cCollider* i_collider);
 		virtual void Remove(cCollider* i_collider);
 		virtual void Update();
 
-		virtual ColliderPairList& ComputePairs();
+		virtual std::list<std::pair<cCollider*, cCollider*>>& ComputePairs();
 		virtual std::vector<cCollider*> Query(cCollider* i_collider) const;
 		// TODO
 		//virtual cCollider* Pick(const Math::sVector& i_point) const;
@@ -114,7 +110,7 @@ namespace Physics
 
 		float m_margin;
 		sBVHNode* m_root;
-		ColliderPairList m_pairs;
+		std::list<std::pair<cCollider*, cCollider*>> m_pairs;
 		std::vector<sBVHNode*> m_invalidNodes;
 
 	};

@@ -1,8 +1,8 @@
 // Includes
 //=========
 
-#include <Engine/Physics/BVHTree.h>
 #include <Engine/Asserts/Asserts.h>
+#include <Engine/Physics/cBVHTree.h>
 #include <Engine/Physics/Collision.h>
 
 // TODO: Temporary code
@@ -178,7 +178,7 @@ void eae6320::Physics::cBVHTree::Update()
 }
 
 
-ColliderPairList& eae6320::Physics::cBVHTree::ComputePairs()
+std::list<std::pair<eae6320::Physics::cCollider*, eae6320::Physics::cCollider*>>& eae6320::Physics::cBVHTree::ComputePairs()
 {
 	m_pairs.clear();
 

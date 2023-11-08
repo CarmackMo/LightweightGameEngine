@@ -6,8 +6,11 @@
 #include <Engine/Physics/cAABBCollider.h>
 #include <Engine/Physics/cSphereCollider.h>
 
+
 #include <unordered_map>
 #include <algorithm>
+
+
 
 // Static Data
 //============
@@ -20,6 +23,19 @@ namespace
 	std::vector<eae6320::Physics::cCollider*> s_orderedColliderList_xAxis;
 	std::vector<eae6320::Physics::cCollider*> s_orderedColliderList_yAxis;
 	std::vector<eae6320::Physics::cCollider*> s_orderedColliderList_zAxis;
+
+	
+
+	eae6320::Physics::cBVHTree s_BVHTree;
+
+}
+
+
+// Helper Funcitons
+//============
+
+namespace
+{
 
 	auto s_comparator_xAxis = [](eae6320::Physics::cCollider* i_lhs, eae6320::Physics::cCollider* i_rhs) -> bool
 	{
@@ -35,7 +51,10 @@ namespace
 	{
 		return i_lhs->GetMinExtent_world().z < i_rhs->GetMinExtent_world().z;
 	};
+
 }
+
+
 
 
 
@@ -112,7 +131,8 @@ void eae6320::Physics::Collision::UpdateCollision()
 }
 
 
-
+// Broad Phase: Sweep and Prune
+//============
 
 void eae6320::Physics::Collision::Initialize_SweepAndPrune(const std::vector<cCollider*>& i_allColliderList)
 {
@@ -196,7 +216,7 @@ eae6320::cResult eae6320::Physics::Collision::RemoveCollider_SweepAndPrune(cColl
 
 void eae6320::Physics::Collision::CollisionDetection_BroadPhase_SweepAndPrune()
 {
-	// Update data collider data
+	// Update collider data
 	{
 		std::sort(s_orderedColliderList_xAxis.begin(), s_orderedColliderList_xAxis.end(), s_comparator_xAxis);
 		std::sort(s_orderedColliderList_yAxis.begin(), s_orderedColliderList_yAxis.end(), s_comparator_yAxis);
@@ -325,6 +345,87 @@ void eae6320::Physics::Collision::CollisionDetection_BroadPhase_SweepAndPrune()
 }
 
 
+// Broad Phase: BVH Tree
+//============
+
+void eae6320::Physics::Collision::Initialize_BVH(const std::vector<cCollider*>& i_allColliderList)
+{
+	// Initial collision detection
+	for (cCollider* collider : i_allColliderList)
+	{
+		s_BVHTree.Add(collider);
+	}
+
+	// Initial collision detection
+	CollisionDetection_BroadPhase_BVH();
+}
+
+
+void eae6320::Physics::Collision::AddCollider_BVH(cCollider* i_collider)
+{
+	s_BVHTree.Add(i_collider);
+	s_collisionMap[i_collider] = std::vector<cCollider*>(0);
+
+	CollisionDetection_BroadPhase_BVH();
+}
+
+
+eae6320::cResult eae6320::Physics::Collision::RemoveCollider_BVH(cCollider* i_collider)
+{
+	// Remove collider from BVH tree
+	s_BVHTree.Remove(i_collider);
+
+	// Remove collider from collision map
+	{
+		auto iter = s_collisionMap.begin();
+
+		if ((iter = s_collisionMap.find(i_collider)) != s_collisionMap.end())
+		{
+			s_collisionMap.erase(i_collider);
+		}
+		else
+		{
+			Logging::OutputError("Physics::Collision: Trying to remove a non-existed collider");
+			return Results::Failure;
+		}
+	}
+
+	// Re-calculate collision map
+	CollisionDetection_BroadPhase_BVH();
+
+	return Results::Success;
+}
+
+
+void eae6320::Physics::Collision::CollisionDetection_BroadPhase_BVH()
+{
+	// Update collider data
+	s_BVHTree.Update();
+
+	// Collision detection for each colliders
+	std::unordered_map<cCollider*, std::vector<cCollider*>> collisionMap_broadPhase;
+	for (const auto& item : s_collisionMap)
+	{
+		collisionMap_broadPhase[item.first] = std::vector<cCollider*>(0);
+
+		std::vector<cCollider*> collisionList = s_BVHTree.Query(item.first);
+
+		// Ignore duplicate collision
+		for (cCollider* collider : collisionList)
+		{
+			if (collisionMap_broadPhase.find(collider) == collisionMap_broadPhase.end())
+				collisionMap_broadPhase[item.first].push_back(collider);
+		}
+	}
+
+	// Proceed to narrow phase collision detection
+	CollisionDetection_NarrowPhase_Overlap(collisionMap_broadPhase);
+}
+
+
+// Narrow Phase
+//============
+
 void eae6320::Physics::Collision::CollisionDetection_NarrowPhase_Overlap(std::unordered_map<cCollider*, std::vector<cCollider*>>& i_CollisionMap_broadPhase)
 {
 	// Perform narrow phase collision detection for the data from broad phase
@@ -410,8 +511,6 @@ void eae6320::Physics::Collision::InvokeCollisionCallback(std::unordered_map<cCo
 	}
 
 }
-
-
 
 
 

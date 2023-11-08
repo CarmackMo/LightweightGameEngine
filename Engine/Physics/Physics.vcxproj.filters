@@ -7,7 +7,7 @@
     <ClCompile Include="cSphereCollider.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="Collision.cpp" />
-    <ClCompile Include="BVHTree.cpp" />
+    <ClCompile Include="cBVHTree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sRigidBodyState.h" />
@@ -16,6 +16,6 @@
     <ClInclude Include="cSphereCollider.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="Collision.h" />
-    <ClInclude Include="BVHTree.h" />
+    <ClInclude Include="cBVHTree.h" />
   </ItemGroup>
 </Project>
