@@ -194,6 +194,37 @@ ColliderPairList& eae6320::Physics::cBVHTree::ComputePairs()
 	return m_pairs;
 }
 
+std::vector<eae6320::Physics::cCollider*> eae6320::Physics::cBVHTree::Query(cCollider* i_collider) const
+{
+	std::vector<cCollider*> result = std::vector<cCollider*>(0);
+	std::queue<sBVHNode*> container;
+
+	if (m_root == nullptr)
+		return result;
+
+	container.push(m_root);
+	while (container.empty() == false)
+	{
+		sBVHNode* current = container.front();
+		container.pop();
+
+		if (current->IsLeaf())
+		{
+			if (Physics::IsOverlaps(i_collider, current->data))
+				result.push_back(current->data);
+		}
+		else
+		{
+			if (Physics::IsOverlaps(i_collider, dynamic_cast<cCollider*>(&current->children[0]->aabb)))
+				container.push(current->children[0]);
+			if (Physics::IsOverlaps(i_collider, dynamic_cast<cCollider*>(&current->children[1]->aabb)))
+				container.push(current->children[1]);
+		}
+	}
+
+	return result;
+}
+
 
 void eae6320::Physics::cBVHTree::InsertNode(sBVHNode* i_node, sBVHNode** i_parent)
 {
