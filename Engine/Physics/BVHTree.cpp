@@ -3,6 +3,7 @@
 
 #include <Engine/Physics/BVHTree.h>
 #include <Engine/Asserts/Asserts.h>
+#include <Engine/Physics/Collision.h>
 
 // TODO: Temporary code
 #include <queue>
@@ -36,7 +37,7 @@ void eae6320::Physics::sBVHNode::SetBranch(sBVHNode* i_node0, sBVHNode* i_node1)
 }
 
 
-void eae6320::Physics::sBVHNode::SetLeaf(cAABBCollider* i_data)
+void eae6320::Physics::sBVHNode::SetLeaf(cCollider* i_data)
 {
 	// create two-way link
 	this->data = i_data;
@@ -53,8 +54,8 @@ void eae6320::Physics::sBVHNode::UpdateAABB(float i_margin)
 	{
 		// make fat AABB
 		const Math::sVector marginVec(i_margin, i_margin, i_margin);
-		aabb.m_min = data->m_min - marginVec;
-		aabb.m_max = data->m_max + marginVec;
+		aabb.m_min = data->GetMinExtent_world() - marginVec;
+		aabb.m_max = data->GetMaxExtent_world() + marginVec;
 	}
 	else
 	{
@@ -66,7 +67,7 @@ void eae6320::Physics::sBVHNode::UpdateAABB(float i_margin)
 
 eae6320::Physics::sBVHNode* eae6320::Physics::sBVHNode::GetSibling() const
 {
-	return this == parent->children[0] ?
+	return (this == parent->children[0]) ?
 		parent->children[1] :
 		parent->children[0];
 }
@@ -75,7 +76,7 @@ eae6320::Physics::sBVHNode* eae6320::Physics::sBVHNode::GetSibling() const
 // cBVHTree Implementation
 //==================
 
-eae6320::Physics::sBVHNode* eae6320::Physics::cBVHTree::Search(cAABBCollider* i_AABB)
+eae6320::Physics::sBVHNode* eae6320::Physics::cBVHTree::Search(cCollider* i_collider)
 {
 	if (m_root == nullptr)
 		return nullptr;
@@ -88,15 +89,15 @@ eae6320::Physics::sBVHNode* eae6320::Physics::cBVHTree::Search(cAABBCollider* i_
 		sBVHNode* current = container.front();
 		container.pop();
 
-		if (current->data == i_AABB)
+		if (current->data == i_collider)
 		{
 			return current;
 		}
 		else if (current->IsLeaf() == false)
 		{
-			if (current->children[0]->aabb.IsContains(*i_AABB))
+			if (current->children[0]->aabb.IsContains(*i_collider))
 				container.push(current->children[0]);
-			else if (current->children[1]->aabb.IsContains(*i_AABB))
+			else if (current->children[1]->aabb.IsContains(*i_collider))
 				container.push(current->children[1]);
 		}
 	}
@@ -105,13 +106,13 @@ eae6320::Physics::sBVHNode* eae6320::Physics::cBVHTree::Search(cAABBCollider* i_
 }
 
 
-void eae6320::Physics::cBVHTree::Add(cAABBCollider* i_AABB)
+void eae6320::Physics::cBVHTree::Add(cCollider* i_collider)
 {
 	if (m_root != nullptr)
 	{
 		// if this is not the first node of the tree, insert node to tree
 		sBVHNode* node = new sBVHNode();
-		node->SetLeaf(i_AABB);
+		node->SetLeaf(i_collider);
 		node->UpdateAABB(m_margin);
 		InsertNode(node, &m_root);
 	}
@@ -119,15 +120,15 @@ void eae6320::Physics::cBVHTree::Add(cAABBCollider* i_AABB)
 	{
 		// if this is the first node, make it root
 		m_root = new sBVHNode();
-		m_root->SetLeaf(i_AABB);
+		m_root->SetLeaf(i_collider);
 		m_root->UpdateAABB(m_margin);
 	}
 }
 
 
-void eae6320::Physics::cBVHTree::Remove(cAABBCollider* i_AABB)
+void eae6320::Physics::cBVHTree::Remove(cCollider* i_collider)
 {
-	sBVHNode* node = Search(i_AABB);
+	sBVHNode* node = Search(i_collider);
 	node->data = nullptr;
 	RemoveNode(node);
 }
@@ -174,6 +175,23 @@ void eae6320::Physics::cBVHTree::Update()
 			m_invalidNodes.clear();
 		}
 	}
+}
+
+
+ColliderPairList& eae6320::Physics::cBVHTree::ComputePairs()
+{
+	m_pairs.clear();
+
+	if (m_root == nullptr || m_root->IsLeaf())
+		return m_pairs;
+
+	// clear Node::childrenCrossed flags
+	ClearChildrenCrossFlagHelper(m_root);
+
+	// base recursive call
+	ComputePairsHelper(m_root->children[0], m_root->children[1]);
+
+	return m_pairs;
 }
 
 
@@ -264,7 +282,7 @@ void eae6320::Physics::cBVHTree::UpdateNodeHelper(sBVHNode* i_node, std::vector<
 		}
 	}
 
-	//// Iteration approach, using Breadth First Search
+	//// Iterative approach, using Breadth First Search
 	//{
 	//	std::queue<sBVHNode*> container;
 	//	container.push(i_node);
@@ -287,4 +305,42 @@ void eae6320::Physics::cBVHTree::UpdateNodeHelper(sBVHNode* i_node, std::vector<
 	//		}
 	//	}
 	//}
+}
+
+
+void eae6320::Physics::cBVHTree::ComputePairsHelper(sBVHNode* i_n0, sBVHNode* i_n1)
+{
+	/*
+	* 2 Leaf Nodes ¨C We¡¯ve reached the end of the tree, simply check the AABBs of the corresponding 
+	*	colliders and possibly add them to the pair list
+	* 
+	* 1 Leaf Node plus 1 Branch Node ¨C Cross check the child nodes of the branch node (make a recursive 
+	*	call with the child nodes), and make recursive calls with the leaf node against each child nodes 
+	*	of the branch node.
+	* 
+	* 2 Branch Nodes ¨C Make a recursive call on every combination of 2 nodes out of the 4 child nodes.
+	*/
+
+	if (i_n0->IsLeaf())
+	{
+		// 2 leaves, check proxies instead of fat AABBs
+		if (i_n1->IsLeaf())
+		{
+			if (Physics::IsOverlaps(i_n0->data, i_n1->data))
+			{
+				m_pairs.push_back(std::pair<cCollider*, cCollider*>(i_n0->data, i_n1->data));
+			}
+		}
+	}
+}
+
+
+void eae6320::Physics::cBVHTree::ClearChildrenCrossFlagHelper(sBVHNode* i_node)
+{
+	i_node->childrenCrossed = false;
+	if (i_node->IsLeaf() == false)
+	{
+		ClearChildrenCrossFlagHelper(i_node->children[0]);
+		ClearChildrenCrossFlagHelper(i_node->children[1]);
+	}
 }

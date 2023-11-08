@@ -55,7 +55,7 @@ namespace Physics
 
 		bool IsOverlaps(const cAABBCollider& i_other) const;
 
-		bool IsContains(const cAABBCollider& i_other) const;
+		bool IsContains(const cCollider& i_other) const;
 
 		cAABBCollider Union(const cAABBCollider& i_other) const;
 

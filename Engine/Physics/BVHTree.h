@@ -33,10 +33,10 @@ namespace Physics
 		sBVHNode* parent;
 		sBVHNode* children[2];
 
-		// these will be explained later
-		bool childrenCrossed;
 		cAABBCollider aabb;
-		cAABBCollider* data;
+		cCollider* data;
+		// TODO: need to optmize this
+		bool childrenCrossed;
 
 
 		// Interface
@@ -50,7 +50,7 @@ namespace Physics
 		void SetBranch(sBVHNode* i_node0, sBVHNode* i_node1);
 
 		/* Make this node a leaf */
-		void SetLeaf(cAABBCollider* i_data);
+		void SetLeaf(cCollider* i_data);
 
 		void UpdateAABB(float i_margin);
 
@@ -80,14 +80,14 @@ namespace Physics
 			m_root(nullptr), m_margin(0.2f)
 		{ }
 
-		virtual sBVHNode* Search(cAABBCollider* i_AABB);
-		virtual void Add(cAABBCollider* i_AABB);
-		virtual void Remove(cAABBCollider* i_AABB);
+		virtual sBVHNode* Search(cCollider* i_collider);
+		virtual void Add(cCollider* i_collider);
+		virtual void Remove(cCollider* i_collider);
 		virtual void Update();
 
 		virtual ColliderPairList& ComputePairs();
 		virtual cCollider* Pick(const Math::sVector& i_point) const;
-		virtual void Query(const cAABBCollider& i_AABB, std::vector<cCollider*>& out) const;
+		virtual void Query(const cCollider& i_collider, std::vector<cCollider*>& out) const;
 		// TODO
 		//virtual RayCastResult RayCast(const Ray3& ray) const;
 
@@ -102,7 +102,7 @@ namespace Physics
 		void RemoveNode(sBVHNode* i_node);
 
 		void UpdateNodeHelper(sBVHNode* i_node, std::vector<sBVHNode*>& i_invalidNodes);
-		void ComputePairsHelper(sBVHNode* i_n0, sBVHNode* i_n1);
+		void ComputePairsHelper(sBVHNode* i_node0, sBVHNode* i_node1);
 		void ClearChildrenCrossFlagHelper(sBVHNode* i_node);
 		void CrossChildren(sBVHNode* i_node);
 

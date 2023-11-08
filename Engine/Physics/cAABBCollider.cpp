@@ -61,7 +61,7 @@ bool eae6320::Physics::cAABBCollider::IsOverlaps(const cAABBCollider& i_other) c
 }
 
 
-bool eae6320::Physics::cAABBCollider::IsContains(const cAABBCollider& i_other) const
+bool eae6320::Physics::cAABBCollider::IsContains(const cCollider& i_other) const
 {
 	Math::sVector selfMinExtent = GetMinExtent_world();
 	Math::sVector selfMaxExtent = GetMaxExtent_world();
