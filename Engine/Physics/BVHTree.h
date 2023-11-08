@@ -33,8 +33,8 @@ namespace Physics
 		sBVHNode* parent;
 		sBVHNode* children[2];
 
-		cAABBCollider aabb;
-		cCollider* data;
+		cAABBCollider fatAABB;
+		cCollider* collider;
 		// TODO: need to optmize this
 		bool childrenCrossed;
 
@@ -50,7 +50,7 @@ namespace Physics
 		void SetBranch(sBVHNode* i_node0, sBVHNode* i_node1);
 
 		/* Make this node a leaf */
-		void SetLeaf(cCollider* i_data);
+		void SetLeaf(cCollider* i_collider);
 
 		void UpdateAABB(float i_margin);
 

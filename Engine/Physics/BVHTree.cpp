@@ -14,7 +14,7 @@
 //==================
 
 eae6320::Physics::sBVHNode::sBVHNode() :
-	parent(nullptr), data(nullptr), childrenCrossed(false)
+	parent(nullptr), collider(nullptr), childrenCrossed(false)
 {
 	children[0] = nullptr;
 	children[1] = nullptr;
@@ -37,10 +37,10 @@ void eae6320::Physics::sBVHNode::SetBranch(sBVHNode* i_node0, sBVHNode* i_node1)
 }
 
 
-void eae6320::Physics::sBVHNode::SetLeaf(cCollider* i_data)
+void eae6320::Physics::sBVHNode::SetLeaf(cCollider* i_collider)
 {
 	// create two-way link
-	this->data = i_data;
+	this->collider = i_collider;
 	//data->userData = this;
 
 	children[0] = nullptr;
@@ -54,13 +54,13 @@ void eae6320::Physics::sBVHNode::UpdateAABB(float i_margin)
 	{
 		// make fat AABB
 		const Math::sVector marginVec(i_margin, i_margin, i_margin);
-		aabb.m_min = data->GetMinExtent_world() - marginVec;
-		aabb.m_max = data->GetMaxExtent_world() + marginVec;
+		fatAABB.m_min = collider->GetMinExtent_world() - marginVec;
+		fatAABB.m_max = collider->GetMaxExtent_world() + marginVec;
 	}
 	else
 	{
 		// make union of child nodes' AABB
-		aabb = children[0]->aabb.Union(children[1]->aabb);
+		fatAABB = children[0]->fatAABB.Union(children[1]->fatAABB);
 	}
 }
 
@@ -89,15 +89,15 @@ eae6320::Physics::sBVHNode* eae6320::Physics::cBVHTree::Search(cCollider* i_coll
 		sBVHNode* current = container.front();
 		container.pop();
 
-		if (current->data == i_collider)
+		if (current->collider == i_collider)
 		{
 			return current;
 		}
 		else if (current->IsLeaf() == false)
 		{
-			if (current->children[0]->aabb.IsContains(*i_collider))
+			if (current->children[0]->fatAABB.IsContains(*i_collider))
 				container.push(current->children[0]);
-			else if (current->children[1]->aabb.IsContains(*i_collider))
+			else if (current->children[1]->fatAABB.IsContains(*i_collider))
 				container.push(current->children[1]);
 		}
 	}
@@ -129,7 +129,7 @@ void eae6320::Physics::cBVHTree::Add(cCollider* i_collider)
 void eae6320::Physics::cBVHTree::Remove(cCollider* i_collider)
 {
 	sBVHNode* node = Search(i_collider);
-	node->data = nullptr;
+	node->collider = nullptr;
 	RemoveNode(node);
 }
 
@@ -211,14 +211,14 @@ std::vector<eae6320::Physics::cCollider*> eae6320::Physics::cBVHTree::Query(cCol
 
 		if (current->IsLeaf())
 		{
-			if (Physics::IsOverlaps(i_collider, current->data))
-				result.push_back(current->data);
+			if (Physics::IsOverlaps(i_collider, current->collider))
+				result.push_back(current->collider);
 		}
 		else
 		{
-			if (Physics::IsOverlaps(i_collider, dynamic_cast<cCollider*>(&current->children[0]->aabb)))
+			if (Physics::IsOverlaps(i_collider, dynamic_cast<cCollider*>(&current->children[0]->fatAABB)))
 				container.push(current->children[0]);
-			if (Physics::IsOverlaps(i_collider, dynamic_cast<cCollider*>(&current->children[1]->aabb)))
+			if (Physics::IsOverlaps(i_collider, dynamic_cast<cCollider*>(&current->children[1]->fatAABB)))
 				container.push(current->children[1]);
 		}
 	}
@@ -242,11 +242,11 @@ void eae6320::Physics::cBVHTree::InsertNode(sBVHNode* i_node, sBVHNode** i_paren
 	// If parent is branch node, compute volume differences between pre-insert and post-insert
 	else
 	{
-		const cAABBCollider& aabb0 = p->children[0]->aabb;
-		const cAABBCollider& aabb1 = p->children[1]->aabb;
+		const cAABBCollider& aabb0 = p->children[0]->fatAABB;
+		const cAABBCollider& aabb1 = p->children[1]->fatAABB;
 
-		float volumeDiff0 = aabb0.Union(i_node->aabb).GetVolume() - aabb0.GetVolume();
-		float volumeDiff1 = aabb1.Union(i_node->aabb).GetVolume() - aabb1.GetVolume();
+		float volumeDiff0 = aabb0.Union(i_node->fatAABB).GetVolume() - aabb0.GetVolume();
+		float volumeDiff1 = aabb1.Union(i_node->fatAABB).GetVolume() - aabb1.GetVolume();
 
 		// insert to the child that gives less volume increase
 		if (volumeDiff0 < volumeDiff1)
@@ -304,7 +304,7 @@ void eae6320::Physics::cBVHTree::UpdateNodeHelper(sBVHNode* i_node, std::vector<
 		if (i_node->IsLeaf())
 		{
 			// check if fat AABB doesn't contain the collider's AABB anymore
-			if (i_node->aabb.IsContains(*i_node->data) == false)
+			if (i_node->fatAABB.IsContains(*i_node->collider) == false)
 				i_invalidNodes.push_back(i_node);
 		}
 		else
@@ -340,7 +340,7 @@ void eae6320::Physics::cBVHTree::UpdateNodeHelper(sBVHNode* i_node, std::vector<
 }
 
 
-void eae6320::Physics::cBVHTree::ComputePairsHelper(sBVHNode* i_n0, sBVHNode* i_n1)
+void eae6320::Physics::cBVHTree::ComputePairsHelper(sBVHNode* i_node0, sBVHNode* i_node1)
 {
 	/*
 	* 2 Leaf Nodes ¨C We¡¯ve reached the end of the tree, simply check the AABBs of the corresponding 
@@ -353,42 +353,42 @@ void eae6320::Physics::cBVHTree::ComputePairsHelper(sBVHNode* i_n0, sBVHNode* i_
 	* 2 Branch Nodes ¨C Make a recursive call on every combination of 2 nodes out of the 4 child nodes.
 	*/
 
-	if (i_n0->IsLeaf())
+	if (i_node0->IsLeaf())
 	{
 		// 2 leaves, check proxies instead of fat AABBs
-		if (i_n1->IsLeaf())
+		if (i_node1->IsLeaf())
 		{
-			if (Physics::IsOverlaps(i_n0->data, i_n1->data))
+			if (Physics::IsOverlaps(i_node0->collider, i_node1->collider))
 			{
-				m_pairs.push_back(std::pair<cCollider*, cCollider*>(i_n0->data, i_n1->data));
+				m_pairs.push_back(std::pair<cCollider*, cCollider*>(i_node0->collider, i_node1->collider));
 			}
 		}
 		// 1 branch / 1 leaf, 2 cross checks
 		else
 		{
-			CrossChildren(i_n1);
-			ComputePairsHelper(i_n0, i_n1->children[0]);
-			ComputePairsHelper(i_n0, i_n1->children[1]);
+			CrossChildren(i_node1);
+			ComputePairsHelper(i_node0, i_node1->children[0]);
+			ComputePairsHelper(i_node0, i_node1->children[1]);
 		}
 	}
 	else
 	{
 		// 1 branch / 1 leaf, 2 cross checks
-		if (i_n1->IsLeaf())
+		if (i_node1->IsLeaf())
 		{
-			CrossChildren(i_n0);
-			ComputePairsHelper(i_n0->children[0], i_n1);
-			ComputePairsHelper(i_n0->children[1], i_n1);
+			CrossChildren(i_node0);
+			ComputePairsHelper(i_node0->children[0], i_node1);
+			ComputePairsHelper(i_node0->children[1], i_node1);
 		}
 		// 2 branches, 4 cross checks
 		else
 		{
-			CrossChildren(i_n0);
-			CrossChildren(i_n1);
-			ComputePairsHelper(i_n0->children[0], i_n1->children[0]);
-			ComputePairsHelper(i_n0->children[0], i_n1->children[1]);
-			ComputePairsHelper(i_n0->children[1], i_n1->children[0]);
-			ComputePairsHelper(i_n0->children[1], i_n1->children[1]);
+			CrossChildren(i_node0);
+			CrossChildren(i_node1);
+			ComputePairsHelper(i_node0->children[0], i_node1->children[0]);
+			ComputePairsHelper(i_node0->children[0], i_node1->children[1]);
+			ComputePairsHelper(i_node0->children[1], i_node1->children[0]);
+			ComputePairsHelper(i_node0->children[1], i_node1->children[1]);
 		}
 	}
 }
