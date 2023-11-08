@@ -14,16 +14,12 @@
 
 namespace
 {
-
 	std::unordered_map<eae6320::Physics::cCollider*, std::vector<eae6320::Physics::cCollider*>>
 		s_collisionMap;
 
 	std::vector<eae6320::Physics::cCollider*> s_orderedColliderList_xAxis;
 	std::vector<eae6320::Physics::cCollider*> s_orderedColliderList_yAxis;
 	std::vector<eae6320::Physics::cCollider*> s_orderedColliderList_zAxis;
-
-
-
 
 	auto s_comparator_xAxis = [](eae6320::Physics::cCollider* i_lhs, eae6320::Physics::cCollider* i_rhs) -> bool
 	{
@@ -43,11 +39,11 @@ namespace
 
 
 
-
 // Interface
-//==========
+//============
 
-bool eae6320::Physics::IsOverlaps(cCollider* i_lhs, cCollider* i_rhs)
+
+bool eae6320::Physics::Collision::IsOverlaps(cCollider* i_lhs, cCollider* i_rhs)
 {
 	switch (i_lhs->GetType())
 	{
@@ -104,13 +100,21 @@ bool eae6320::Physics::IsOverlaps(cCollider* i_lhs, cCollider* i_rhs)
 }
 
 
-void eae6320::Physics::UpdateCollision()
+void eae6320::Physics::Collision::Initialize(const std::vector<cCollider*>& i_allColliderList)
+{
+	Initialize_SweepAndPrune(i_allColliderList);
+}
+
+
+void eae6320::Physics::Collision::UpdateCollision()
 {
 	CollisionDetection_BroadPhase_SweepAndPrune();
 }
 
 
-void eae6320::Physics::Initialize_SweepAndPrune(const std::vector<cCollider*>& i_allColliderList)
+
+
+void eae6320::Physics::Collision::Initialize_SweepAndPrune(const std::vector<cCollider*>& i_allColliderList)
 {
 	// Initialize buffers
 	{
@@ -131,7 +135,7 @@ void eae6320::Physics::Initialize_SweepAndPrune(const std::vector<cCollider*>& i
 }
 
 
-void eae6320::Physics::AddCollider_SweepAndPrune(cCollider* i_collider)
+void eae6320::Physics::Collision::AddCollider_SweepAndPrune(cCollider* i_collider)
 {
 	s_orderedColliderList_xAxis.push_back(i_collider);
 	s_orderedColliderList_yAxis.push_back(i_collider);
@@ -143,7 +147,7 @@ void eae6320::Physics::AddCollider_SweepAndPrune(cCollider* i_collider)
 }
 
 
-eae6320::cResult eae6320::Physics::RemoveCollider_SweepAndPrune(cCollider* i_collider)
+eae6320::cResult eae6320::Physics::Collision::RemoveCollider_SweepAndPrune(cCollider* i_collider)
 {
 	// Remove collider from axis order list
 	{
@@ -190,7 +194,7 @@ eae6320::cResult eae6320::Physics::RemoveCollider_SweepAndPrune(cCollider* i_col
 }
 
 
-void eae6320::Physics::CollisionDetection_BroadPhase_SweepAndPrune()
+void eae6320::Physics::Collision::CollisionDetection_BroadPhase_SweepAndPrune()
 {
 	// Update data collider data
 	{
@@ -321,7 +325,7 @@ void eae6320::Physics::CollisionDetection_BroadPhase_SweepAndPrune()
 }
 
 
-void eae6320::Physics::CollisionDetection_NarrowPhase_Overlap(std::unordered_map<cCollider*, std::vector<cCollider*>>& i_CollisionMap_broadPhase)
+void eae6320::Physics::Collision::CollisionDetection_NarrowPhase_Overlap(std::unordered_map<cCollider*, std::vector<cCollider*>>& i_CollisionMap_broadPhase)
 {
 	// Perform narrow phase collision detection for the data from broad phase
 	{
@@ -352,7 +356,7 @@ void eae6320::Physics::CollisionDetection_NarrowPhase_Overlap(std::unordered_map
 }
 
 
-void eae6320::Physics::InvokeCollisionCallback(std::unordered_map<cCollider*, std::vector<cCollider*>>& i_newCollisionMap)
+void eae6320::Physics::Collision::InvokeCollisionCallback(std::unordered_map<cCollider*, std::vector<cCollider*>>& i_newCollisionMap)
 {
 	// Invoke OnCollisionExit for colliders that on longer overlap in current frame 
 	{
@@ -406,6 +410,10 @@ void eae6320::Physics::InvokeCollisionCallback(std::unordered_map<cCollider*, st
 	}
 
 }
+
+
+
+
 
 
 

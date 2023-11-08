@@ -17,10 +17,12 @@ namespace eae6320
 {
 namespace Physics
 {
+namespace Collision
+{
 
 	bool IsOverlaps(cCollider* i_lhs, cCollider* i_rhs);
 
-
+	void Initialize(const std::vector<cCollider*>& i_allColliderList);
 
 	void UpdateCollision();
 
@@ -42,6 +44,6 @@ namespace Physics
 
 	void InvokeCollisionCallback(std::unordered_map<cCollider*, std::vector<cCollider*>>& i_newCollisionMap);
 
-
+}// Namespace Collision
 }// Namespace Physics
 }// Namespace eae6320

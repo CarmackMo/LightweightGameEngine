@@ -211,14 +211,14 @@ std::vector<eae6320::Physics::cCollider*> eae6320::Physics::cBVHTree::Query(cCol
 
 		if (current->IsLeaf())
 		{
-			if (Physics::IsOverlaps(i_collider, current->collider))
+			if (Collision::IsOverlaps(i_collider, current->collider))
 				result.push_back(current->collider);
 		}
 		else
 		{
-			if (Physics::IsOverlaps(i_collider, dynamic_cast<cCollider*>(&current->children[0]->fatAABB)))
+			if (Collision::IsOverlaps(i_collider, dynamic_cast<cCollider*>(&current->children[0]->fatAABB)))
 				container.push(current->children[0]);
-			if (Physics::IsOverlaps(i_collider, dynamic_cast<cCollider*>(&current->children[1]->fatAABB)))
+			if (Collision::IsOverlaps(i_collider, dynamic_cast<cCollider*>(&current->children[1]->fatAABB)))
 				container.push(current->children[1]);
 		}
 	}
@@ -358,7 +358,7 @@ void eae6320::Physics::cBVHTree::ComputePairsHelper(sBVHNode* i_node0, sBVHNode*
 		// 2 leaves, check proxies instead of fat AABBs
 		if (i_node1->IsLeaf())
 		{
-			if (Physics::IsOverlaps(i_node0->collider, i_node1->collider))
+			if (Collision::IsOverlaps(i_node0->collider, i_node1->collider))
 			{
 				m_pairs.push_back(std::pair<cCollider*, cCollider*>(i_node0->collider, i_node1->collider));
 			}
