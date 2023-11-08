@@ -331,6 +331,33 @@ void eae6320::Physics::cBVHTree::ComputePairsHelper(sBVHNode* i_n0, sBVHNode* i_
 				m_pairs.push_back(std::pair<cCollider*, cCollider*>(i_n0->data, i_n1->data));
 			}
 		}
+		// 1 branch / 1 leaf, 2 cross checks
+		else
+		{
+			CrossChildren(i_n1);
+			ComputePairsHelper(i_n0, i_n1->children[0]);
+			ComputePairsHelper(i_n0, i_n1->children[1]);
+		}
+	}
+	else
+	{
+		// 1 branch / 1 leaf, 2 cross checks
+		if (i_n1->IsLeaf())
+		{
+			CrossChildren(i_n0);
+			ComputePairsHelper(i_n0->children[0], i_n1);
+			ComputePairsHelper(i_n0->children[1], i_n1);
+		}
+		// 2 branches, 4 cross checks
+		else
+		{
+			CrossChildren(i_n0);
+			CrossChildren(i_n1);
+			ComputePairsHelper(i_n0->children[0], i_n1->children[0]);
+			ComputePairsHelper(i_n0->children[0], i_n1->children[1]);
+			ComputePairsHelper(i_n0->children[1], i_n1->children[0]);
+			ComputePairsHelper(i_n0->children[1], i_n1->children[1]);
+		}
 	}
 }
 
@@ -342,5 +369,15 @@ void eae6320::Physics::cBVHTree::ClearChildrenCrossFlagHelper(sBVHNode* i_node)
 	{
 		ClearChildrenCrossFlagHelper(i_node->children[0]);
 		ClearChildrenCrossFlagHelper(i_node->children[1]);
+	}
+}
+
+
+void eae6320::Physics::cBVHTree::CrossChildren(sBVHNode* i_node)
+{
+	if (i_node->childrenCrossed == false)
+	{
+		ComputePairsHelper(i_node->children[0], i_node->children[1]);
+		i_node->childrenCrossed = true;
 	}
 }
