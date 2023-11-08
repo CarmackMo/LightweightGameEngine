@@ -50,9 +50,9 @@ namespace Physics
 		void SetBranch(sBVHNode* i_node0, sBVHNode* i_node1);
 
 		/* Make this node a leaf */
-		void SetLeaf(cAABBCollider* data);
+		void SetLeaf(cAABBCollider* i_data);
 
-		void UpdateAABB(float margin);
+		void UpdateAABB(float i_margin);
 
 		sBVHNode* GetSibling() const;
 	};
@@ -80,6 +80,7 @@ namespace Physics
 			m_root(nullptr), m_margin(0.2f)
 		{ }
 
+		virtual sBVHNode* Search(cAABBCollider* i_AABB);
 		virtual void Add(cAABBCollider* i_AABB);
 		virtual void Remove(cAABBCollider* i_AABB);
 		virtual void Update();

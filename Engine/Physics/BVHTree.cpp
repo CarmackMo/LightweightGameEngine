@@ -75,6 +75,36 @@ eae6320::Physics::sBVHNode* eae6320::Physics::sBVHNode::GetSibling() const
 // cBVHTree Implementation
 //==================
 
+eae6320::Physics::sBVHNode* eae6320::Physics::cBVHTree::Search(cAABBCollider* i_AABB)
+{
+	if (m_root == nullptr)
+		return nullptr;
+
+	std::queue<sBVHNode*> container;
+	container.push(m_root);
+
+	while (container.empty() == false)
+	{
+		sBVHNode* current = container.front();
+		container.pop();
+
+		if (current->data == i_AABB)
+		{
+			return current;
+		}
+		else if (current->IsLeaf() == false)
+		{
+			if (current->children[0]->aabb.IsContains(*i_AABB))
+				container.push(current->children[0]);
+			else if (current->children[1]->aabb.IsContains(*i_AABB))
+				container.push(current->children[1]);
+		}
+	}
+
+	return nullptr;
+}
+
+
 void eae6320::Physics::cBVHTree::Add(cAABBCollider* i_AABB)
 {
 	if (m_root != nullptr)
@@ -92,6 +122,15 @@ void eae6320::Physics::cBVHTree::Add(cAABBCollider* i_AABB)
 		m_root->SetLeaf(i_AABB);
 		m_root->UpdateAABB(m_margin);
 	}
+}
+
+
+void eae6320::Physics::cBVHTree::Remove(cAABBCollider* i_AABB)
+{
+	//sBVHNode* node = 
+
+
+
 }
 
 
