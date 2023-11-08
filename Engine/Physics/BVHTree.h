@@ -86,7 +86,7 @@ namespace Physics
 		virtual void Update();
 
 		virtual ColliderPairList& ComputePairs();
-		virtual std::vector<cCollider*> Query(const cCollider* i_collider) const;
+		virtual std::vector<cCollider*> Query(cCollider* i_collider) const;
 		// TODO
 		//virtual cCollider* Pick(const Math::sVector& i_point) const;
 		//virtual RayCastResult RayCast(const Ray3& ray) const;
