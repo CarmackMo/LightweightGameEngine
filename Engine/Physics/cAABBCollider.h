@@ -24,8 +24,8 @@ namespace Physics
 		//--------------------------
 
 		cAABBCollider() = default;
-		cAABBCollider(const Math::sVector& i_min, const Math::sVector& i_max, const sRigidBodyState& i_rigidBody) 
-			: cCollider(eColliderType::AABB), m_min(i_min), m_max(i_max), m_pos(i_rigidBody.position) { }
+		cAABBCollider(const Math::sVector& i_min, const Math::sVector& i_max, const Math::sVector& i_worldPos)
+			: cCollider(eColliderType::AABB), m_min(i_min), m_max(i_max), m_pos(i_worldPos) { }
 
 		~cAABBCollider() = default;
 
@@ -46,10 +46,14 @@ namespace Physics
 		// Get the closest point on or in this box to i_point
 		Math::sVector GetClosestPoint(Math::sVector i_point) const;
 
-		// Overlap Detection
+		// Operation
 		//--------------------------
 
-		bool IsOverlaps(const cAABBCollider& i_other);
+		bool IsOverlaps(const cAABBCollider& i_other) const;
+
+		bool IsContains(const cAABBCollider& i_other) const;
+
+		cAABBCollider Union(const cAABBCollider& i_other);
 
 
 		// Data
@@ -57,7 +61,7 @@ namespace Physics
 
 	public:
 
-		// Model space cooridnate corresponding to object's position
+		// Model space cooridnate corresponding to owner object's position
 		Math::sVector m_min;
 		Math::sVector m_max;
 		

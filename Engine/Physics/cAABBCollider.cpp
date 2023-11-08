@@ -42,7 +42,7 @@ eae6320::Math::sVector eae6320::Physics::cAABBCollider::GetClosestPoint(Math::sV
 }
 
 
-bool eae6320::Physics::cAABBCollider::IsOverlaps(const cAABBCollider& i_other)
+bool eae6320::Physics::cAABBCollider::IsOverlaps(const cAABBCollider& i_other) const
 {
 	// Two AABB are impossible to overlap if there exist any gap in any axis
 	Math::sVector distance_inner = GetMinExtent_world() - i_other.GetMaxExtent_world();
@@ -51,4 +51,26 @@ bool eae6320::Physics::cAABBCollider::IsOverlaps(const cAABBCollider& i_other)
 	Math::sVector distance = Math::Max(distance_inner, distance_outer);
 
 	return distance.x <= 0 && distance.y <= 0 && distance.z <= 0;
+}
+
+
+bool eae6320::Physics::cAABBCollider::IsContains(const cAABBCollider& i_other) const
+{
+	Math::sVector selfMinExtent = GetMinExtent_world();
+	Math::sVector selfMaxExtent = GetMaxExtent_world();
+	Math::sVector otherMinExtent = i_other.GetMinExtent_world();
+	Math::sVector otherMaxExtent = i_other.GetMaxExtent_world();
+
+	return (selfMinExtent.x <= otherMinExtent.x && selfMinExtent.y <= otherMinExtent.y && selfMinExtent.z <= otherMinExtent.z) &&
+		   (selfMaxExtent.x <= otherMaxExtent.x && selfMaxExtent.y <= otherMaxExtent.y && selfMaxExtent.z <= otherMaxExtent.z);
+}
+
+
+eae6320::Physics::cAABBCollider eae6320::Physics::cAABBCollider::Union(const cAABBCollider& i_other)
+{
+	Math::sVector minExtent = Math::Min(GetMinExtent_world(), i_other.GetMinExtent_world());
+	Math::sVector maxExtent = Math::Max(GetMaxExtent_world(), i_other.GetMaxExtent_world());
+	Math::sVector center = 0.5f * (minExtent + maxExtent);
+
+	return cAABBCollider(minExtent, maxExtent, center);
 }

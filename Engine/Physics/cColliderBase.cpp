@@ -41,13 +41,13 @@ eae6320::cResult eae6320::Physics::cCollider::Create(cCollider*& o_collider, con
 		case eColliderType::Sphere:
 		{
 			// TODO
-			newCollider = dynamic_cast<cCollider*>(new cSphereCollider(i_setting.sphere_center, i_setting.sphere_radius, i_rigidBody));
+			newCollider = dynamic_cast<cCollider*>(new cSphereCollider(i_setting.sphere_center, i_setting.sphere_radius, i_rigidBody.position));
 			break;
 		}
 		case eColliderType::AABB:
 		{
 			// TODO
-			newCollider = dynamic_cast<cCollider*>(new cAABBCollider(i_setting.AABB_min, i_setting.AABB_max, i_rigidBody));
+			newCollider = dynamic_cast<cCollider*>(new cAABBCollider(i_setting.AABB_min, i_setting.AABB_max, i_rigidBody.position));
 			break;
 		}
 		case eColliderType::Plane:
