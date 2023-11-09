@@ -551,8 +551,8 @@ void eae6320::Physics::Collision::CollisionResolution_Sphere(cSphereCollider* i_
 	float raidusDistance = i_lhs->GetRadius() + i_rhs->GetRadius();
 	float collisionDepth = raidusDistance - sqrtf(centroidSqDistance);
 
-	i_lhs->m_objectRigidBody->Translate(collisionNormal * collisionDepth * -1.0f);
-	i_rhs->m_objectRigidBody->Translate(collisionNormal * collisionDepth);
+	i_lhs->m_objectRigidBody->Translate(0.5f * collisionNormal * collisionDepth * -1.0f);
+	i_rhs->m_objectRigidBody->Translate(0.5f * collisionNormal * collisionDepth);
 }
 
 

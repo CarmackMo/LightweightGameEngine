@@ -409,7 +409,7 @@ void eae6320::cMyGame::InitializeGameObject()
 		m_colliderObject_sphere2.GetCollider()->OnCollisionEnter =
 			[this](const Physics::cCollider* self, const Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Enter collision, other: ", other->m_name.c_str()); m_colliderObject_sphere2.SetIsCollide(true); };
 		m_colliderObject_sphere2.GetCollider()->OnCollisionStay =
-			[this](const Physics::cCollider* self, const Physics::cCollider* other) -> void { if (other->GetType() == Physics::eColliderType::Sphere) { Physics::Collision::CollisionResolution_Sphere((Physics::cSphereCollider*)self, (Physics::cSphereCollider*)other); } };
+			[this](const Physics::cCollider* self, const Physics::cCollider* other) -> void {   };
 		m_colliderObject_sphere2.GetCollider()->OnCollisionExit =
 			[this](const Physics::cCollider* self, const Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Exit collision, other: ", other->m_name.c_str()); m_colliderObject_sphere2.SetIsCollide(false); };
 
