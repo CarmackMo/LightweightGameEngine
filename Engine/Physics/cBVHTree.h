@@ -3,6 +3,7 @@
 // Includes
 //=========
 
+#include <Engine/Graphics/cLine.h>
 #include <Engine/Math/sVector.h>
 #include <Engine/Physics/cAABBCollider.h>
 #include <Engine/Physics/cColliderBase.h>
@@ -41,11 +42,15 @@ namespace Physics
 		// TODO: need to optmize this
 		bool childrenCrossed;
 
+		Graphics::cLine* AABBLine;
+
+
 
 		// Interface
 		//=========================
 
 		sBVHNode();
+		~sBVHNode();
 
 		bool IsLeaf() const;
 
@@ -55,7 +60,11 @@ namespace Physics
 		/* Make this node a leaf */
 		void SetLeaf(cCollider* i_collider);
 
+		/* Update the fat AABB */
 		void UpdateAABB(float i_margin);
+
+		/* Update rendering data of fat AABB */
+		void UpdateAABBLine();
 
 		sBVHNode* GetSibling() const;
 	};

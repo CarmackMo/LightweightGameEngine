@@ -140,7 +140,6 @@ void eae6320::cGameObject::UpdateBasedOnInput()
 // TODO: Tempory code for rendering collider box and debug collider
 
 #include <Engine/Math/sVector.h>
-#include <Engine/UserOutput/UserOutput.h>
 
 
 void eae6320::cGameObject::InitializeColliderLine()

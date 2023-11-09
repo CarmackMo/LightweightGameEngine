@@ -14,10 +14,20 @@
 //==================
 
 eae6320::Physics::sBVHNode::sBVHNode() :
-	parent(nullptr), collider(nullptr), childrenCrossed(false)
+	parent(nullptr), collider(nullptr), AABBLine(nullptr), childrenCrossed(false)
 {
 	children[0] = nullptr;
 	children[1] = nullptr;
+}
+
+
+eae6320::Physics::sBVHNode::~sBVHNode()
+{
+	if (AABBLine != nullptr)
+	{
+		AABBLine->DecrementReferenceCount();
+		AABBLine = nullptr;
+	}
 }
 
 
@@ -63,6 +73,35 @@ void eae6320::Physics::sBVHNode::UpdateAABB(float i_margin)
 		// make union of child nodes' AABB
 		fatAABB = children[0]->fatAABB.Union(children[1]->fatAABB);
 	}
+}
+
+
+void eae6320::Physics::sBVHNode::UpdateAABBLine()
+{
+	if (AABBLine != nullptr)
+	{
+		AABBLine->DecrementReferenceCount();
+		AABBLine = nullptr;
+	}
+
+	uint32_t vertexCount = 0;
+	auto vertexVec = std::vector<Math::sVector>();
+	uint32_t indexCount = 0;
+	auto indexVec = std::vector<uint16_t>();
+	fatAABB.GenerateRenderData(vertexCount, vertexVec, indexCount, indexVec);
+
+	Graphics::VertexFormats::sVertex_line* vertexData = new Graphics::VertexFormats::sVertex_line[vertexCount];
+	for (uint32_t i = 0; i < vertexCount; i++)
+	{
+		vertexData[i] = Graphics::VertexFormats::sVertex_line(vertexVec[i].x, vertexVec[i].y, vertexVec[i].z);
+	}
+	uint16_t* indexData = new uint16_t[indexCount];
+	for (uint32_t i = 0; i < indexCount; i++)
+	{
+		indexData[i] = indexVec[i];
+	}
+
+	Graphics::cLine::Create(AABBLine, vertexData, vertexCount, indexData, indexCount);
 }
 
 
