@@ -81,9 +81,9 @@ namespace eae6320
 
 		void InitializeColliderLine();
 
-		void InitializeAABBLine();
+		//void InitializeAABBLine();
 
-		void InitializeSphereLine();
+		//void InitializeSphereLine();
 
 		void InitializeCollider(const Physics::sColliderSetting& i_builder);
 

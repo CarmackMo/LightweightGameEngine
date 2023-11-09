@@ -107,3 +107,61 @@ eae6320::Physics::cAABBCollider eae6320::Physics::cAABBCollider::Union(const cAA
 
 	return cAABBCollider(minExtent, maxExtent, center);
 }
+
+
+void eae6320::Physics::cAABBCollider::GenerateRenderData(
+	uint32_t& o_vertexCount, std::vector<Math::sVector>& o_vertexData, 
+	uint32_t& o_indexCount, std::vector<uint16_t>& o_indexData)
+{
+	// Vertex data
+	o_vertexCount = 24;
+	o_vertexData = std::vector<Math::sVector>(o_vertexCount);
+	{
+		// 0-1
+		o_vertexData[0] = Math::sVector(m_min.x, m_min.y, m_min.z);
+		o_vertexData[1] = Math::sVector(m_min.x, m_max.y, m_min.z);
+		// 1-2
+		o_vertexData[2] = Math::sVector(m_min.x, m_max.y, m_min.z);
+		o_vertexData[3] = Math::sVector(m_min.x, m_max.y, m_max.z);
+		// 2-3
+		o_vertexData[4] = Math::sVector(m_min.x, m_max.y, m_max.z);
+		o_vertexData[5] = Math::sVector(m_min.x, m_min.y, m_max.z);
+		// 3-0
+		o_vertexData[6] = Math::sVector(m_min.x, m_min.y, m_max.z);
+		o_vertexData[7] = Math::sVector(m_min.x, m_min.y, m_min.z);
+		// 4-5
+		o_vertexData[8] = Math::sVector(m_max.x, m_min.y, m_min.z);
+		o_vertexData[9] = Math::sVector(m_max.x, m_max.y, m_min.z);
+		// 5-6
+		o_vertexData[10] = Math::sVector(m_max.x, m_max.y, m_min.z);
+		o_vertexData[11] = Math::sVector(m_max.x, m_max.y, m_max.z);
+		// 6-7
+		o_vertexData[12] = Math::sVector(m_max.x, m_max.y, m_max.z);
+		o_vertexData[13] = Math::sVector(m_max.x, m_min.y, m_max.z);
+		// 7-4
+		o_vertexData[14] = Math::sVector(m_max.x, m_min.y, m_max.z);
+		o_vertexData[15] = Math::sVector(m_max.x, m_min.y, m_min.z);
+		// 1-5
+		o_vertexData[16] = Math::sVector(m_min.x, m_max.y, m_min.z);
+		o_vertexData[17] = Math::sVector(m_max.x, m_max.y, m_min.z);
+		// 2-6
+		o_vertexData[18] = Math::sVector(m_min.x, m_max.y, m_max.z);
+		o_vertexData[19] = Math::sVector(m_max.x, m_max.y, m_max.z);
+		// 0-4
+		o_vertexData[20] = Math::sVector(m_min.x, m_min.y, m_min.z);
+		o_vertexData[21] = Math::sVector(m_max.x, m_min.y, m_min.z);
+		// 3-7
+		o_vertexData[22] = Math::sVector(m_min.x, m_min.y, m_max.z);
+		o_vertexData[23] = Math::sVector(m_max.x, m_min.y, m_max.z);
+	}
+
+	// Index data
+	o_indexCount = o_vertexCount;
+	o_indexData = std::vector<uint16_t>(o_indexCount);
+	for (uint32_t i = 0; i < o_indexCount; i++)
+	{
+		o_indexData[i] = i;
+	}
+}
+
+

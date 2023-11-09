@@ -1,7 +1,9 @@
 // Includes
 //=========
 
-#include "cGameObject.h"
+#include <Engine/GameObject/cGameObject.h>
+
+#include <vector>
 
 
 void eae6320::cGameObject::InitializeMesh(
@@ -138,168 +140,41 @@ void eae6320::cGameObject::UpdateBasedOnInput()
 // TODO: Tempory code for rendering collider box and debug collider
 
 #include <Engine/Math/sVector.h>
+#include <Engine/UserOutput/UserOutput.h>
 
 
 void eae6320::cGameObject::InitializeColliderLine()
 {
-	switch (m_collider->GetType())
-	{
-	case Physics::eColliderType::AABB: { InitializeAABBLine(); break; }
-	case Physics::eColliderType::Sphere: { InitializeSphereLine(); break; }
-	default:
-		break;
-	}
-}
-
-
-void eae6320::cGameObject::InitializeAABBLine()
-{
 	if (m_colliderLine != nullptr)
 	{
 		m_colliderLine->DecrementReferenceCount();
 		m_colliderLine = nullptr;
 	}
 
-	if (m_collider->GetType() != Physics::eColliderType::AABB)
-		return;
+	uint32_t vertexCount = 0;
+	auto vertexVec = std::vector<Math::sVector>();
+	uint32_t indexCount = 0;
+	auto indexVec = std::vector<uint16_t>();
+	m_collider->GenerateRenderData(vertexCount, vertexVec, indexCount, indexVec);
 
-	Physics::cAABBCollider* AABB = dynamic_cast<Physics::cAABBCollider*>(m_collider);
-
-	// vertex data
-	constexpr uint32_t vertexCount = 24;
-	Graphics::VertexFormats::sVertex_line vertexData[vertexCount];
+	Graphics::VertexFormats::sVertex_line* vertexData = new Graphics::VertexFormats::sVertex_line[vertexCount];
+	for (uint32_t i = 0; i < vertexCount; i++)
 	{
-		Math::sVector modelPos = m_rigidBody.position;
-
-		// 0-1
-		vertexData[0] = Graphics::VertexFormats::sVertex_line(AABB->m_min.x, AABB->m_min.y, AABB->m_min.z);
-		vertexData[1] = Graphics::VertexFormats::sVertex_line(AABB->m_min.x, AABB->m_max.y, AABB->m_min.z);
-		// 1-2
-		vertexData[2] = Graphics::VertexFormats::sVertex_line(AABB->m_min.x, AABB->m_max.y, AABB->m_min.z);
-		vertexData[3] = Graphics::VertexFormats::sVertex_line(AABB->m_min.x, AABB->m_max.y, AABB->m_max.z);
-		// 2-3
-		vertexData[4] = Graphics::VertexFormats::sVertex_line(AABB->m_min.x, AABB->m_max.y, AABB->m_max.z);
-		vertexData[5] = Graphics::VertexFormats::sVertex_line(AABB->m_min.x, AABB->m_min.y, AABB->m_max.z);
-		// 3-0
-		vertexData[6] = Graphics::VertexFormats::sVertex_line(AABB->m_min.x, AABB->m_min.y, AABB->m_max.z);
-		vertexData[7] = Graphics::VertexFormats::sVertex_line(AABB->m_min.x, AABB->m_min.y, AABB->m_min.z);
-		// 4-5
-		vertexData[8] = Graphics::VertexFormats::sVertex_line(AABB->m_max.x, AABB->m_min.y, AABB->m_min.z);
-		vertexData[9] = Graphics::VertexFormats::sVertex_line(AABB->m_max.x, AABB->m_max.y, AABB->m_min.z);
-		// 5-6
-		vertexData[10] = Graphics::VertexFormats::sVertex_line(AABB->m_max.x, AABB->m_max.y, AABB->m_min.z);
-		vertexData[11] = Graphics::VertexFormats::sVertex_line(AABB->m_max.x, AABB->m_max.y, AABB->m_max.z);
-		// 6-7
-		vertexData[12] = Graphics::VertexFormats::sVertex_line(AABB->m_max.x, AABB->m_max.y, AABB->m_max.z);
-		vertexData[13] = Graphics::VertexFormats::sVertex_line(AABB->m_max.x, AABB->m_min.y, AABB->m_max.z);
-		// 7-4
-		vertexData[14] = Graphics::VertexFormats::sVertex_line(AABB->m_max.x, AABB->m_min.y, AABB->m_max.z);
-		vertexData[15] = Graphics::VertexFormats::sVertex_line(AABB->m_max.x, AABB->m_min.y, AABB->m_min.z);
-		// 1-5
-		vertexData[16] = Graphics::VertexFormats::sVertex_line(AABB->m_min.x, AABB->m_max.y, AABB->m_min.z);
-		vertexData[17] = Graphics::VertexFormats::sVertex_line(AABB->m_max.x, AABB->m_max.y, AABB->m_min.z);
-		// 2-6
-		vertexData[18] = Graphics::VertexFormats::sVertex_line(AABB->m_min.x, AABB->m_max.y, AABB->m_max.z);
-		vertexData[19] = Graphics::VertexFormats::sVertex_line(AABB->m_max.x, AABB->m_max.y, AABB->m_max.z);
-		// 0-4
-		vertexData[20] = Graphics::VertexFormats::sVertex_line(AABB->m_min.x, AABB->m_min.y, AABB->m_min.z);
-		vertexData[21] = Graphics::VertexFormats::sVertex_line(AABB->m_max.x, AABB->m_min.y, AABB->m_min.z);
-		// 3-7
-		vertexData[22] = Graphics::VertexFormats::sVertex_line(AABB->m_min.x, AABB->m_min.y, AABB->m_max.z);
-		vertexData[23] = Graphics::VertexFormats::sVertex_line(AABB->m_max.x, AABB->m_min.y, AABB->m_max.z);
+		vertexData[i] = Graphics::VertexFormats::sVertex_line(vertexVec[i].x, vertexVec[i].y, vertexVec[i].z);
 	}
-
-	// index data
-	constexpr uint32_t indexCount = vertexCount;
-	uint16_t indexData[indexCount];
+	uint16_t* indexData = new uint16_t[indexCount];
+	for (uint32_t i = 0; i < indexCount; i++)
 	{
-		for (uint32_t i = 0; i < indexCount; i++)
-		{
-			indexData[i] = i;
-		}
+		indexData[i] = indexVec[i];
 	}
 
 	Graphics::cLine::Create(
 		m_colliderLine,
 		vertexData, vertexCount,
 		indexData, indexCount);
-}
 
-
-void eae6320::cGameObject::InitializeSphereLine()
-{
-	if (m_colliderLine != nullptr)
-	{
-		m_colliderLine->DecrementReferenceCount();
-		m_colliderLine = nullptr;
-	}
-
-	if (m_collider->GetType() != Physics::eColliderType::Sphere)
-		return;
-
-	Physics::cSphereCollider* sphere = dynamic_cast<Physics::cSphereCollider*>(m_collider);
-
-	// vertex data. Edges at x axis are 1 - 2, edges at y axis are 3 - 4, edges at z axis are 5 - 6
-	constexpr uint32_t vertexCount = 24;
-	Graphics::VertexFormats::sVertex_line vertexData[vertexCount];
-	{
-		Math::sVector center = sphere->GetCentroid_local();
-		float radius = sphere->GetRadius();
-
-		// Top vertex to side vertices
-		vertexData[0] = Graphics::VertexFormats::sVertex_line(center.x, center.y + radius, center.z);	// 3 - 1
-		vertexData[1] = Graphics::VertexFormats::sVertex_line(center.x - radius, center.y, center.z);	
-
-		vertexData[2] = Graphics::VertexFormats::sVertex_line(center.x, center.y + radius, center.z);	// 3 - 5
-		vertexData[3] = Graphics::VertexFormats::sVertex_line(center.x, center.y, center.z - radius);	
-
-		vertexData[4] = Graphics::VertexFormats::sVertex_line(center.x, center.y + radius, center.z);	// 3 - 2
-		vertexData[5] = Graphics::VertexFormats::sVertex_line(center.x + radius , center.y, center.z);	
-
-		vertexData[6] = Graphics::VertexFormats::sVertex_line(center.x, center.y + radius, center.z);	// 3 - 6
-		vertexData[7] = Graphics::VertexFormats::sVertex_line(center.x, center.y, center.z + radius);	
-		
-		// Side vertices
-		vertexData[8] = Graphics::VertexFormats::sVertex_line(center.x - radius, center.y, center.z);	// 1 - 5
-		vertexData[9] = Graphics::VertexFormats::sVertex_line(center.x, center.y, center.z - radius);	
-
-		vertexData[10] = Graphics::VertexFormats::sVertex_line(center.x, center.y, center.z - radius);	// 5 - 2
-		vertexData[11] = Graphics::VertexFormats::sVertex_line(center.x + radius, center.y, center.z);	
-
-		vertexData[12] = Graphics::VertexFormats::sVertex_line(center.x + radius, center.y, center.z);	// 2 - 6
-		vertexData[13] = Graphics::VertexFormats::sVertex_line(center.x, center.y, center.z + radius);	
-
-		vertexData[14] = Graphics::VertexFormats::sVertex_line(center.x, center.y, center.z + radius);	// 6 - 1
-		vertexData[15] = Graphics::VertexFormats::sVertex_line(center.x - radius, center.y, center.z);	
-
-		// Buttom vertex to side vertices
-		vertexData[16] = Graphics::VertexFormats::sVertex_line(center.x, center.y - radius, center.z);	// 4 - 1
-		vertexData[17] = Graphics::VertexFormats::sVertex_line(center.x - radius, center.y, center.z);
-
-		vertexData[18] = Graphics::VertexFormats::sVertex_line(center.x, center.y - radius, center.z);	// 4 - 5
-		vertexData[19] = Graphics::VertexFormats::sVertex_line(center.x, center.y, center.z - radius);
-
-		vertexData[20] = Graphics::VertexFormats::sVertex_line(center.x, center.y - radius, center.z);	// 4 - 2
-		vertexData[21] = Graphics::VertexFormats::sVertex_line(center.x + radius, center.y, center.z);
-
-		vertexData[22] = Graphics::VertexFormats::sVertex_line(center.x, center.y - radius, center.z);	// 4 - 6
-		vertexData[23] = Graphics::VertexFormats::sVertex_line(center.x, center.y, center.z + radius);
-	}
-
-	// index data
-	constexpr uint32_t indexCount = vertexCount;
-	uint16_t indexData[indexCount];
-	{
-		for (uint32_t i = 0; i < indexCount; i++)
-		{
-			indexData[i] = i;
-		}
-	}
-
-	Graphics::cLine::Create(
-		m_colliderLine,
-		vertexData, vertexCount,
-		indexData, indexCount);
+	delete[] vertexData;
+	delete[] indexData;
 }
 
 

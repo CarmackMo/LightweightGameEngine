@@ -9,9 +9,11 @@
 
 #include <cstdint>
 #include <functional>
+#include <vector>
 
 // TODO: temporary code for initialize colldier object
 #include <string>
+#include <memory>
 
 
 // Forward Declarations
@@ -93,7 +95,6 @@ namespace Physics
 
 		static cResult Create(cCollider*& o_collider, const sColliderSetting& i_setting, const sRigidBodyState& i_rigidBody);
 
-
 		// Property Getters
 		//--------------------------
 
@@ -117,6 +118,13 @@ namespace Physics
 		//--------------------------
 
 		virtual void Update(const sRigidBodyState& i_rigidBody) = 0;
+
+		// Render / Debug
+		//--------------------------
+
+		virtual void GenerateRenderData(
+			uint32_t& o_vertexCount, std::vector<Math::sVector>& o_vertexData,
+			uint32_t& o_indexCount, std::vector<uint16_t>& o_indexData) = 0;
 
 
 	protected:

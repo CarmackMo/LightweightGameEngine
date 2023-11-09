@@ -7,6 +7,8 @@
 #include <Engine/Physics/cColliderBase.h>
 #include <Engine/Physics/sRigidBodyState.h>
 
+#include <vector>
+
 
 namespace eae6320
 {
@@ -57,7 +59,6 @@ namespace Physics
 		/* Get the closest point on or in this box to i_point */ 
 		Math::sVector GetClosestPoint(Math::sVector i_point) const;
 
-
 		// Operation
 		//--------------------------
 
@@ -67,6 +68,13 @@ namespace Physics
 
 		/* Return a AABB whose min/max extent is large enough to contain the world extent of self and i_other */
 		cAABBCollider Union(const cAABBCollider& i_other) const;
+
+		// Render / Debug
+		//--------------------------
+
+		void GenerateRenderData(
+			uint32_t& o_vertexCount, std::vector<Math::sVector>& o_vertexData,
+			uint32_t& o_indexCount, std::vector<uint16_t>& o_indexData) final;
 
 
 		// Data

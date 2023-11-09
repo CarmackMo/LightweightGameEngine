@@ -8,6 +8,8 @@
 #include <Engine/Physics/cColliderBase.h>
 #include <Engine/Physics/sRigidBodyState.h>
 
+#include <vector>
+
 namespace eae6320
 {
 namespace Physics
@@ -58,6 +60,13 @@ namespace Physics
 		bool IsOverlaps(const cSphereCollider& i_other);
 
 		bool IsOverlaps(const cAABBCollider& i_other);
+
+		// Render / Debug
+		//--------------------------
+
+		void GenerateRenderData(
+			uint32_t& o_vertexCount, std::vector<Math::sVector>& o_vertexData,
+			uint32_t& o_indexCount, std::vector<uint16_t>& o_indexData) final;
 
 
 		// Data
