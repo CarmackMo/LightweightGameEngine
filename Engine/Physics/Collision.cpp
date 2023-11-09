@@ -121,13 +121,17 @@ bool eae6320::Physics::Collision::IsOverlaps(cCollider* i_lhs, cCollider* i_rhs)
 
 void eae6320::Physics::Collision::Initialize(const std::vector<cCollider*>& i_allColliderList)
 {
-	Initialize_SweepAndPrune(i_allColliderList);
+	//Initialize_SweepAndPrune(i_allColliderList);
+
+	Initialize_BVH(i_allColliderList);
 }
 
 
 void eae6320::Physics::Collision::UpdateCollision()
 {
-	CollisionDetection_BroadPhase_SweepAndPrune();
+	//CollisionDetection_BroadPhase_SweepAndPrune();
+
+	CollisionDetection_BroadPhase_BVH();
 }
 
 

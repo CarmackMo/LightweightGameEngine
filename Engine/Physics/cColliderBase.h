@@ -103,7 +103,15 @@ namespace Physics
 
 		virtual Math::sVector GetMaxExtent_world() const = 0;
 
-		virtual Math::sVector GetCenter_world() const = 0;
+		virtual Math::sVector GetMinExtent_local() const = 0;
+
+		virtual Math::sVector GetMaxExtent_local() const = 0;
+
+		virtual Math::sVector GetCentroid_world() const = 0;
+
+		virtual Math::sVector GetCentroid_local() const = 0;
+
+		virtual Math::sVector GetWorldPosition() const = 0;
 
 		// Update
 		//--------------------------

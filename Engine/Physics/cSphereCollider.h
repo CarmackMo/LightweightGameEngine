@@ -40,9 +40,15 @@ namespace Physics
 
 		Math::sVector GetMaxExtent_world() const final;
 
-		Math::sVector GetCenter_world() const final;
+		Math::sVector GetMinExtent_local() const final;
 
-		Math::sVector GetCenter_local() const;
+		Math::sVector GetMaxExtent_local() const final;
+
+		Math::sVector GetCentroid_world() const final;
+
+		Math::sVector GetCentroid_local() const final;
+
+		Math::sVector GetWorldPosition() const final;
 
 		float GetRadius() const;
 

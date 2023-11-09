@@ -22,9 +22,33 @@ eae6320::Math::sVector eae6320::Physics::cAABBCollider::GetMaxExtent_world() con
 }
 
 
-eae6320::Math::sVector eae6320::Physics::cAABBCollider::GetCenter_world() const
+eae6320::Math::sVector eae6320::Physics::cAABBCollider::GetMinExtent_local() const
 {
-	return 0.5f * (m_min + m_max) + m_pos;
+	return m_min;
+}
+
+
+eae6320::Math::sVector eae6320::Physics::cAABBCollider::GetMaxExtent_local() const
+{
+	return m_max;
+}
+
+
+eae6320::Math::sVector eae6320::Physics::cAABBCollider::GetCentroid_world() const
+{
+	return 0.5f * (GetMinExtent_world() + GetMaxExtent_world());
+}
+
+
+eae6320::Math::sVector eae6320::Physics::cAABBCollider::GetCentroid_local() const
+{
+	return 0.5f * (m_min + m_max);
+}
+
+
+eae6320::Math::sVector eae6320::Physics::cAABBCollider::GetWorldPosition() const
+{
+	return m_pos;
 }
 
 
@@ -77,7 +101,9 @@ eae6320::Physics::cAABBCollider eae6320::Physics::cAABBCollider::Union(const cAA
 {
 	Math::sVector minExtent = Math::Min(GetMinExtent_world(), i_other.GetMinExtent_world());
 	Math::sVector maxExtent = Math::Max(GetMaxExtent_world(), i_other.GetMaxExtent_world());
-	Math::sVector center = 0.5f * (minExtent + maxExtent);
+	
+	//Math::sVector center = 0.5f * (minExtent + maxExtent);
+	Math::sVector center = Math::sVector();
 
 	return cAABBCollider(minExtent, maxExtent, center);
 }

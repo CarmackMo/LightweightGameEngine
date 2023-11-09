@@ -38,7 +38,15 @@ namespace Physics
 
 		Math::sVector GetMaxExtent_world() const final;
 
-		Math::sVector GetCenter_world() const final;
+		Math::sVector GetMinExtent_local() const final;
+
+		Math::sVector GetMaxExtent_local() const final;
+
+		Math::sVector GetCentroid_world() const final;
+
+		Math::sVector GetCentroid_local() const final;
+
+		Math::sVector GetWorldPosition() const final;
 
 		/* Get volume of bounding box */
 		float GetVolume() const;
@@ -57,6 +65,7 @@ namespace Physics
 
 		bool IsContains(const cCollider& i_other) const;
 
+		/* Return a AABB whose min/max extent is large enough to contain the world extent of self and i_other */
 		cAABBCollider Union(const cAABBCollider& i_other) const;
 
 

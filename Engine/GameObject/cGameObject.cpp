@@ -243,7 +243,7 @@ void eae6320::cGameObject::InitializeSphereLine()
 	constexpr uint32_t vertexCount = 24;
 	Graphics::VertexFormats::sVertex_line vertexData[vertexCount];
 	{
-		Math::sVector center = sphere->GetCenter_local();
+		Math::sVector center = sphere->GetCentroid_local();
 		float radius = sphere->GetRadius();
 
 		// Top vertex to side vertices

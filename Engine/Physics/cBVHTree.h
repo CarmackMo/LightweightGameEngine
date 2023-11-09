@@ -11,7 +11,7 @@
 #include <vector>
 
 
-#define DEFAULT_BVH_MARGIN 0.2f
+#define DEFAULT_BVH_MARGIN 0.0f
 
 
 // BVH Tree Node
@@ -31,8 +31,13 @@ namespace Physics
 		sBVHNode* parent;
 		sBVHNode* children[2];
 
+		// fatAABB whose min/max extent contains the world extents of all children of this node
+		// min/max extent uses world coordinate directly. World position should be ZERO
 		cAABBCollider fatAABB;
+
+		// link to the actual gameobject's collider
 		cCollider* collider;
+
 		// TODO: need to optmize this
 		bool childrenCrossed;
 
