@@ -87,6 +87,11 @@ namespace eae6320
 
 		Physics::cCollider* GetCollider() const;
 
+		void SetIsCollide(bool isCollide)
+		{
+			m_isCollide = isCollide;
+		}
+
 
 
 
@@ -105,7 +110,11 @@ namespace eae6320
 
 		// TODO: Temporary code for collider
 
+		bool m_isCollide = false;
+
 		Graphics::cLine* m_colliderLine = nullptr;
+
+		Graphics::cLine* m_collisionLine = nullptr;
 
 		Physics::cCollider* m_collider = nullptr;
 

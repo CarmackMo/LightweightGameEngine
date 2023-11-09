@@ -131,6 +131,13 @@ void eae6320::cGameObject::UpdateBasedOnInput()
 		m_rigidBody.velocity.y = 3.0f;
 	else
 		m_rigidBody.velocity.y = 0.0f;
+
+	if (UserInput::IsKeyPressed('R'))
+		m_rigidBody.velocity.z = -3.0f;
+	else if (UserInput::IsKeyPressed('F'))
+		m_rigidBody.velocity.z = 3.0f;
+	else
+		m_rigidBody.velocity.z = 0.0f;
 }
 
 
@@ -156,24 +163,49 @@ void eae6320::cGameObject::InitializeColliderLine()
 	auto indexVec = std::vector<uint16_t>();
 	m_collider->GenerateRenderData(vertexCount, vertexVec, indexCount, indexVec);
 
-	Graphics::VertexFormats::sVertex_line* vertexData = new Graphics::VertexFormats::sVertex_line[vertexCount];
-	for (uint32_t i = 0; i < vertexCount; i++)
+	// Initialize collider outline
 	{
-		vertexData[i] = Graphics::VertexFormats::sVertex_line(vertexVec[i].x, vertexVec[i].y, vertexVec[i].z);
-	}
-	uint16_t* indexData = new uint16_t[indexCount];
-	for (uint32_t i = 0; i < indexCount; i++)
-	{
-		indexData[i] = indexVec[i];
+		Graphics::VertexFormats::sVertex_line* vertexData = new Graphics::VertexFormats::sVertex_line[vertexCount];
+		for (uint32_t i = 0; i < vertexCount; i++)
+		{
+			vertexData[i] = Graphics::VertexFormats::sVertex_line(vertexVec[i].x, vertexVec[i].y, vertexVec[i].z);
+		}
+		uint16_t* indexData = new uint16_t[indexCount];
+		for (uint32_t i = 0; i < indexCount; i++)
+		{
+			indexData[i] = indexVec[i];
+		}
+
+		Graphics::cLine::Create(
+			m_colliderLine,
+			vertexData, vertexCount,
+			indexData, indexCount);
+
+		delete[] vertexData;
+		delete[] indexData;
 	}
 
-	Graphics::cLine::Create(
-		m_colliderLine,
-		vertexData, vertexCount,
-		indexData, indexCount);
+	// Initialize collision outline
+	{
+		Graphics::VertexFormats::sVertex_line* vertexData = new Graphics::VertexFormats::sVertex_line[vertexCount];
+		for (uint32_t i = 0; i < vertexCount; i++)
+		{
+			vertexData[i] = Graphics::VertexFormats::sVertex_line(vertexVec[i].x, vertexVec[i].y, vertexVec[i].z, 1, 0, 0, 1);
+		}
+		uint16_t* indexData = new uint16_t[indexCount];
+		for (uint32_t i = 0; i < indexCount; i++)
+		{
+			indexData[i] = indexVec[i];
+		}
 
-	delete[] vertexData;
-	delete[] indexData;
+		Graphics::cLine::Create(
+			m_collisionLine,
+			vertexData, vertexCount,
+			indexData, indexCount);
+
+		delete[] vertexData;
+		delete[] indexData;
+	}
 }
 
 
@@ -185,7 +217,10 @@ void eae6320::cGameObject::InitializeCollider(const Physics::sColliderSetting& i
 
 eae6320::Graphics::cLine* eae6320::cGameObject::GetColliderLine() const
 {
-	return m_colliderLine;
+	if (m_isCollide)
+		return m_collisionLine;
+	else
+		return m_colliderLine;
 }
 
 
