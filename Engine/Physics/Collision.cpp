@@ -368,6 +368,8 @@ void eae6320::Physics::Collision::Initialize_BVH(const std::vector<cCollider*>& 
 
 	// Initial collision detection
 	CollisionDetection_BroadPhase_BVH();
+
+	UpdateRenderData();
 }
 
 

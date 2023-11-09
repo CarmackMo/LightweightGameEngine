@@ -12,7 +12,7 @@
 #include <vector>
 
 
-#define DEFAULT_BVH_MARGIN 0.0f
+#define DEFAULT_BVH_MARGIN 0.05f
 
 
 // BVH Tree Node

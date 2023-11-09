@@ -61,15 +61,18 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput()
 
 	// TODO: Temporary code for collider debug
 	m_colliderObject_AABB1.UpdateBasedOnInput();
-	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Enter))
-	{
-		isENTERKeyActive = !isENTERKeyActive;
 
-		if (isENTERKeyActive)
-		{
-			Physics::Collision::UpdateRenderData();
-		}
-	}
+	//if (UserInput::IsKeyPressed(UserInput::KeyCodes::Enter))
+	//{
+	//	isENTERKeyActive = !isENTERKeyActive;
+	//	UserOutput::ConsolePrint("Current key state: ", isENTERKeyActive ? "TRUE" : "FALSE");
+
+
+	//	if (isENTERKeyActive)
+	//	{
+	//		Physics::Collision::UpdateRenderData();
+	//	}
+	//}
 
 }
 
@@ -367,6 +370,28 @@ void eae6320::cMyGame::InitializeGameObject()
 		m_colliderObject_AABB1.GetCollider()->m_name = "AABB_1";
 		m_colliderObject_AABB1.GetCollider()->OnCollisionEnter = [](const Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Enter collision, other: ", other->m_name.c_str()); return; };
 		m_colliderObject_AABB1.GetCollider()->OnCollisionExit = [](const Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Exit collision, other: ", other->m_name.c_str()); return; };
+
+		// TODO: Trying to allocte OpenGL buffer during runtime
+		//m_colliderObject_AABB1.GetCollider()->OnCollisionEnter = 
+		//	[](const Physics::cCollider* other) -> void 
+		//	{ 
+		//		UserOutput::ConsolePrint(" Enter collision, other: ", other->m_name.c_str()); 
+
+		//		Graphics::VertexFormats::sVertex_line vertexData[1];
+		//		uint16_t indexData[1];
+		//		Graphics::cLine* temp;
+		//		Graphics::cLine::Create(temp, vertexData, 1, indexData, 1);
+
+		//		temp->DecrementReferenceCount();
+		//		return; 
+		//	};
+		//m_colliderObject_AABB1.GetCollider()->OnCollisionExit = 
+		//	[](const Physics::cCollider* other) -> void 
+		//	{ 
+		//		UserOutput::ConsolePrint(" Exit collision, other: ", other->m_name.c_str()); 
+		//		return; 
+		//	};
+
 
 		m_colliderObject_AABB2.GetRigidBody().position = Math::sVector(0.0f, -0.5f, 1.5f);
 		m_colliderObject_AABB2.InitializeCollider(setting_AABB2);
