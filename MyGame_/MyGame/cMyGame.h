@@ -168,6 +168,8 @@ namespace eae6320
 
 		void InitializeCollisionSystem();
 
+		bool isENTERKeyActive = false;
+
 	};
 }
 

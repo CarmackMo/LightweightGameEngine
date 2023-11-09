@@ -61,6 +61,16 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput()
 
 	// TODO: Temporary code for collider debug
 	m_colliderObject_AABB1.UpdateBasedOnInput();
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Enter))
+	{
+		isENTERKeyActive = !isENTERKeyActive;
+
+		if (isENTERKeyActive)
+		{
+			Physics::Collision::UpdateRenderData();
+		}
+	}
+
 }
 
 
@@ -77,7 +87,6 @@ void eae6320::cMyGame::UpdateSimulationBasedOnTime(const float i_elapsedSecondCo
 	// TODO: Temporary code for collider debug
 	m_colliderObject_AABB1.UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
 	m_colliderObject_AABB2.UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
-
 
 	Physics::Collision::UpdateCollision();
 
@@ -145,22 +154,55 @@ void eae6320::cMyGame::SubmitDataToBeRendered(
 
 	// TODO: Submit debug for box collider
 	{
-		constexpr uint32_t arraySize = 4;
-		Graphics::ConstantBufferFormats::sDebug debugDataArray[arraySize];
-
-		debugDataArray[0].Initialize(m_colliderObject_AABB1.GetColliderLine(), m_colliderObject_AABB1.GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
-		debugDataArray[1].Initialize(m_colliderObject_AABB2.GetColliderLine(), m_colliderObject_AABB2.GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
-		debugDataArray[2].Initialize(m_colliderObject_AABB3.GetColliderLine(), m_colliderObject_AABB3.GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
-		debugDataArray[3].Initialize(m_colliderObject_sphere1.GetColliderLine(), m_colliderObject_sphere1.GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
-
-
-		Graphics::SubmitDebugData(debugDataArray, arraySize);
-
-
-		for (uint32_t i = 0; i < arraySize; i++)
+		// New: support BVH rendering
 		{
-			debugDataArray[i].CleanUp();
+			auto BVHRenderData = Physics::Collision::GetRenderData();
+			uint32_t arraySize = BVHRenderData.size() + 4;
+
+			Graphics::ConstantBufferFormats::sDebug* debugDataArray = new Graphics::ConstantBufferFormats::sDebug[arraySize];
+
+			debugDataArray[0].Initialize(m_colliderObject_AABB1.GetColliderLine(), m_colliderObject_AABB1.GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
+			debugDataArray[1].Initialize(m_colliderObject_AABB2.GetColliderLine(), m_colliderObject_AABB2.GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
+			debugDataArray[2].Initialize(m_colliderObject_AABB3.GetColliderLine(), m_colliderObject_AABB3.GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
+			debugDataArray[3].Initialize(m_colliderObject_sphere1.GetColliderLine(), m_colliderObject_sphere1.GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
+
+			for (uint32_t i = 4; i < arraySize; i++)
+			{
+				debugDataArray[i].Initialize(BVHRenderData[i - 4], Math::cMatrix_transformation());
+			}
+
+			Graphics::SubmitDebugData(debugDataArray, arraySize);
+
+			for (uint32_t i = 0; i < arraySize; i++)
+			{
+				debugDataArray[i].CleanUp();
+			}
+
+			delete[] debugDataArray;
 		}
+
+
+		// Old: support collider rendering only
+		{
+			//constexpr uint32_t arraySize = 4;
+			//Graphics::ConstantBufferFormats::sDebug debugDataArray[arraySize];
+
+			//debugDataArray[0].Initialize(m_colliderObject_AABB1.GetColliderLine(), m_colliderObject_AABB1.GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
+			//debugDataArray[1].Initialize(m_colliderObject_AABB2.GetColliderLine(), m_colliderObject_AABB2.GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
+			//debugDataArray[2].Initialize(m_colliderObject_AABB3.GetColliderLine(), m_colliderObject_AABB3.GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
+			//debugDataArray[3].Initialize(m_colliderObject_sphere1.GetColliderLine(), m_colliderObject_sphere1.GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
+
+
+			//Graphics::SubmitDebugData(debugDataArray, arraySize);
+
+
+			//for (uint32_t i = 0; i < arraySize; i++)
+			//{
+			//	debugDataArray[i].CleanUp();
+			//}
+		}
+
+
 	}
 }
 

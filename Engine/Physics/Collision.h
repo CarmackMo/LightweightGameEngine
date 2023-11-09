@@ -11,6 +11,10 @@
 #include <unordered_map>
 #include <vector>
 
+// TODO: Rendering support for BVH tree
+#include <Engine/Graphics/cLine.h>
+
+
 // Interface
 //==========
 
@@ -52,6 +56,13 @@ namespace Collision
 	cResult RemoveCollider_BVH(cCollider* i_collider);
 
 	void CollisionDetection_BroadPhase_BVH();
+
+
+	// TODO: rendering debug
+	void UpdateRenderData();
+
+	std::vector<Graphics::cLine*>& GetRenderData();
+
 
 
 	// Narrow Phase

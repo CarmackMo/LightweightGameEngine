@@ -93,7 +93,7 @@ void eae6320::Physics::sBVHNode::UpdateAABBLine()
 	Graphics::VertexFormats::sVertex_line* vertexData = new Graphics::VertexFormats::sVertex_line[vertexCount];
 	for (uint32_t i = 0; i < vertexCount; i++)
 	{
-		vertexData[i] = Graphics::VertexFormats::sVertex_line(vertexVec[i].x, vertexVec[i].y, vertexVec[i].z);
+		vertexData[i] = Graphics::VertexFormats::sVertex_line(vertexVec[i].x, vertexVec[i].y, vertexVec[i].z, 0, 1, 1, 1);
 	}
 	uint16_t* indexData = new uint16_t[indexCount];
 	for (uint32_t i = 0; i < indexCount; i++)
@@ -458,4 +458,38 @@ void eae6320::Physics::cBVHTree::CrossChildren(sBVHNode* i_node)
 		ComputePairsHelper(i_node->children[0], i_node->children[1]);
 		i_node->childrenCrossed = true;
 	}
+}
+
+
+
+void eae6320::Physics::cBVHTree::UpdatetRenderData()
+{
+	m_renderData.clear();
+
+	if (m_root == nullptr)
+		return;
+
+	std::queue<sBVHNode*> container;
+	container.push(m_root);
+
+	while (container.empty() == false)
+	{
+		sBVHNode* current = container.front();
+		container.pop();
+
+		current->UpdateAABBLine();
+		m_renderData.push_back(current->AABBLine);
+
+		if (current->IsLeaf() == false)
+		{
+			container.push(current->children[0]);
+			container.push(current->children[1]);
+		}
+	}
+}
+
+
+std::vector<eae6320::Graphics::cLine*>& eae6320::Physics::cBVHTree::GetRenderData()
+{
+	return m_renderData;
 }

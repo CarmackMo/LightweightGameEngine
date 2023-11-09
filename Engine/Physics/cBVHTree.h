@@ -90,13 +90,17 @@ namespace Physics
 		cBVHTree() : m_root(nullptr), m_margin(DEFAULT_BVH_MARGIN) {}
 		cBVHTree(float i_margin) : m_root(nullptr), m_margin(i_margin) { }
 
-		virtual sBVHNode* Search(cCollider* i_collider);
-		virtual void Add(cCollider* i_collider);
-		virtual void Remove(cCollider* i_collider);
-		virtual void Update();
+		sBVHNode* Search(cCollider* i_collider);
+		void Add(cCollider* i_collider);
+		void Remove(cCollider* i_collider);
+		void Update();
 
-		virtual std::list<std::pair<cCollider*, cCollider*>>& ComputePairs();
-		virtual std::vector<cCollider*> Query(cCollider* i_collider) const;
+		std::list<std::pair<cCollider*, cCollider*>>& ComputePairs();
+		std::vector<cCollider*> Query(cCollider* i_collider) const;
+
+		void UpdatetRenderData();
+		std::vector<Graphics::cLine*>& GetRenderData();
+
 		// TODO
 		//virtual cCollider* Pick(const Math::sVector& i_point) const;
 		//virtual RayCastResult RayCast(const Ray3& ray) const;
@@ -127,6 +131,7 @@ namespace Physics
 		std::list<std::pair<cCollider*, cCollider*>> m_pairs;
 		std::vector<sBVHNode*> m_invalidNodes;
 
+		std::vector<Graphics::cLine*> m_renderData;
 	};
 
 }// Namespace Physics

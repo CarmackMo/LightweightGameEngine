@@ -433,6 +433,21 @@ void eae6320::Physics::Collision::CollisionDetection_BroadPhase_BVH()
 }
 
 
+void eae6320::Physics::Collision::UpdateRenderData()
+{
+	s_BVHTree.UpdatetRenderData();
+}
+
+
+std::vector<eae6320::Graphics::cLine*>& eae6320::Physics::Collision::GetRenderData()
+{
+	return s_BVHTree.GetRenderData();
+}
+
+
+
+
+
 // Narrow Phase
 //============
 
