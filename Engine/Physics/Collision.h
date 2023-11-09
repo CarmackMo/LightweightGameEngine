@@ -25,6 +25,8 @@ namespace Physics
 namespace Collision
 {
 
+	Math::sVector GetSphereCollisionNormal(cSphereCollider* i_lhs, cSphereCollider* i_rhs);
+
 	bool IsOverlaps(cCollider* i_lhs, cCollider* i_rhs);
 
 	void Initialize(const std::vector<cCollider*>& i_allColliderList);
@@ -57,7 +59,6 @@ namespace Collision
 
 	void CollisionDetection_BroadPhase_BVH();
 
-
 	// TODO: rendering debug
 	void UpdateRenderData();
 
@@ -71,6 +72,15 @@ namespace Collision
 	void CollisionDetection_NarrowPhase_Overlap(std::unordered_map<cCollider*, std::vector<cCollider*>>& i_CollisionMap_broadPhase);
 
 	void InvokeCollisionCallback(std::unordered_map<cCollider*, std::vector<cCollider*>>& i_newCollisionMap);
+
+
+	// Collision Resolution
+	//----------------------
+
+	void CollisionResolution();
+
+
+
 
 }// Namespace Collision
 }// Namespace Physics

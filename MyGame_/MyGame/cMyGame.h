@@ -11,7 +11,7 @@
 #include <Engine/Application/iApplication.h>
 #include <Engine/Camera/cCamera.h>
 #include <Engine/GameObject/cGameObject.h>
-#include <Engine/Physics/sRigidBodyState.h>
+#include <Engine/Physics/cRigidBody.h>
 #include <Engine/Results/Results.h>
 
 

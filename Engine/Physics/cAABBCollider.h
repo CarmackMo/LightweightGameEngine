@@ -5,7 +5,7 @@
 
 #include <Engine/Math/sVector.h>
 #include <Engine/Physics/cColliderBase.h>
-#include <Engine/Physics/sRigidBodyState.h>
+#include <Engine/Physics/cRigidBody.h>
 
 #include <vector>
 

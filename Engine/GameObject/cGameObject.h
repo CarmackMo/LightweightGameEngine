@@ -7,7 +7,7 @@
 #include <Engine/Graphics/cMesh.h>
 #include <Engine/Graphics/VertexFormats.h>
 #include <Engine/Math/cMatrix_transformation.h>
-#include <Engine/Physics/sRigidBodyState.h>
+#include <Engine/Physics/cRigidBody.h>
 #include <Engine/UserInput/UserInput.h>
 
 #include <string>

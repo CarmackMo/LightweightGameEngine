@@ -4,7 +4,7 @@
 //=========
 
 #include <Engine/Math/sVector.h>
-#include <Engine/Physics/sRigidBodyState.h>
+#include <Engine/Physics/cRigidBody.h>
 #include <Engine/Results/Results.h>
 
 #include <cstdint>

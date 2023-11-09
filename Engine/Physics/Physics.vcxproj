@@ -25,7 +25,7 @@
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="cSphereCollider.cpp" />
     <ClCompile Include="Physics.cpp" />
-    <ClCompile Include="sRigidBodyState.cpp" />
+    <ClCompile Include="cRigidBody.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cBVHTree.h" />
@@ -34,7 +34,7 @@
     <ClInclude Include="Collision.h" />
     <ClInclude Include="cSphereCollider.h" />
     <ClInclude Include="Physics.h" />
-    <ClInclude Include="sRigidBodyState.h" />
+    <ClInclude Include="cRigidBody.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Math\Math.vcxproj">

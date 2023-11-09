@@ -6,7 +6,7 @@
 #include <Engine/GameObject/cGameObject.h>
 #include <Engine/Math/cMatrix_transformation.h>
 #include <Engine/Math/sVector.h>
-#include <Engine/Physics/sRigidBodyState.h>
+#include <Engine/Physics/cRigidBody.h>
 #include <Engine/Results/Results.h>
 
 

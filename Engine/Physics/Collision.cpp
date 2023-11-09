@@ -62,6 +62,12 @@ namespace
 //============
 
 
+eae6320::Math::sVector eae6320::Physics::Collision::GetSphereCollisionNormal(cSphereCollider* i_lhs, cSphereCollider* i_rhs)
+{
+	return (i_lhs->GetCentroid_world() - i_rhs->GetCentroid_world()).GetNormalized();
+}
+
+
 bool eae6320::Physics::Collision::IsOverlaps(cCollider* i_lhs, cCollider* i_rhs)
 {
 	switch (i_lhs->GetType())
@@ -448,8 +454,6 @@ std::vector<eae6320::Graphics::cLine*>& eae6320::Physics::Collision::GetRenderDa
 
 
 
-
-
 // Narrow Phase
 //============
 
@@ -541,5 +545,12 @@ void eae6320::Physics::Collision::InvokeCollisionCallback(std::unordered_map<cCo
 
 
 
+// Collision Resolution
+//============
+
+void eae6320::Physics::Collision::CollisionResolution()
+{
+
+}
 
 

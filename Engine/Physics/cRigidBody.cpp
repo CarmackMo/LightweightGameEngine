@@ -1,9 +1,9 @@
 // Includes
 //=========
 
-#include "sRigidBodyState.h"
-
 #include <Engine/Math/cMatrix_transformation.h>
+#include <Engine/Physics/cRigidBody.h>
+
 
 // Interface
 //==========
@@ -26,10 +26,12 @@ void eae6320::Physics::sRigidBodyState::Update( const float i_secondCountToInteg
 	}
 }
 
+
 eae6320::Math::sVector eae6320::Physics::sRigidBodyState::PredictFuturePosition( const float i_secondCountToExtrapolate ) const
 {
 	return position + ( velocity * i_secondCountToExtrapolate );
 }
+
 
 eae6320::Math::cQuaternion eae6320::Physics::sRigidBodyState::PredictFutureOrientation( const float i_secondCountToExtrapolate ) const
 {
@@ -37,7 +39,14 @@ eae6320::Math::cQuaternion eae6320::Physics::sRigidBodyState::PredictFutureOrien
 	return Math::cQuaternion( orientation * rotation ).GetNormalized();
 }
 
+
 eae6320::Math::cMatrix_transformation eae6320::Physics::sRigidBodyState::PredictFutureTransform( const float i_secondCountToExtrapolate ) const
 {
 	return Math::cMatrix_transformation( PredictFutureOrientation( i_secondCountToExtrapolate ), PredictFuturePosition( i_secondCountToExtrapolate ) );
+}
+
+
+void eae6320::Physics::sRigidBodyState::Translate(Math::sVector& i_translation)
+{
+	position += i_translation;
 }
