@@ -23,7 +23,7 @@ namespace Physics
 		// Initialization / Clean Up
 		//--------------------------
 
-		cAABBCollider() = default;
+		cAABBCollider() : cCollider(eColliderType::AABB) { };
 		cAABBCollider(const Math::sVector& i_min, const Math::sVector& i_max, const Math::sVector& i_worldPos)
 			: cCollider(eColliderType::AABB), m_min(i_min), m_max(i_max), m_pos(i_worldPos) { }
 

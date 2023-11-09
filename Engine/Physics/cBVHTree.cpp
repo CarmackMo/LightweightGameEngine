@@ -212,11 +212,17 @@ std::vector<eae6320::Physics::cCollider*> eae6320::Physics::cBVHTree::Query(cCol
 
 		if (current->IsLeaf())
 		{
-			if (Collision::IsOverlaps(i_collider, current->collider))
+			if (Collision::IsOverlaps(i_collider, current->collider) && i_collider != current->collider)
 				result.push_back(current->collider);
 		}
 		else
 		{
+			auto temp1 = Collision::IsOverlaps(i_collider, dynamic_cast<cCollider*>(&current->children[0]->fatAABB));
+			auto temp2 = Collision::IsOverlaps(i_collider, dynamic_cast<cCollider*>(&current->children[1]->fatAABB));
+			auto temp3 = current->children[0]->fatAABB;
+			auto temp4 = current->children[1]->fatAABB;
+
+
 			if (Collision::IsOverlaps(i_collider, dynamic_cast<cCollider*>(&current->children[0]->fatAABB)))
 				container.push(current->children[0]);
 			if (Collision::IsOverlaps(i_collider, dynamic_cast<cCollider*>(&current->children[1]->fatAABB)))

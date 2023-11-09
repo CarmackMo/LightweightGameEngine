@@ -354,7 +354,13 @@ void eae6320::Physics::Collision::CollisionDetection_BroadPhase_SweepAndPrune()
 
 void eae6320::Physics::Collision::Initialize_BVH(const std::vector<cCollider*>& i_allColliderList)
 {
-	// Initial collision detection
+	// Initialize buffer
+	for (cCollider* collider : i_allColliderList)
+	{
+		s_collisionMap[collider] = std::vector<cCollider*>(0);
+	}
+
+	// Initialize collision detection
 	for (cCollider* collider : i_allColliderList)
 	{
 		s_BVHTree.Add(collider);

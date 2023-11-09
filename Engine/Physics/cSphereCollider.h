@@ -23,7 +23,7 @@ namespace Physics
 		// Initialization / Clean Up
 		//--------------------------
 
-		cSphereCollider() = default;
+		cSphereCollider() : cCollider(eColliderType::Sphere) { };
 		cSphereCollider(const Math::sVector& i_center, float i_radius, const Math::sVector& i_worldPos)
 			: cCollider(eColliderType::Sphere), m_center(i_center), m_radius(i_radius), m_pos(i_worldPos) { }
 		cSphereCollider(float i_x, float i_y, float i_z, float i_radius, const Math::sVector& i_worldPos)
