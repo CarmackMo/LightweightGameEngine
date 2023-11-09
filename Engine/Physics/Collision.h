@@ -75,11 +75,11 @@ namespace Collision
 	// Collision Resolution
 	//----------------------
 
-	void CollisionResolution_Sphere(cSphereCollider* i_lhs, cSphereCollider* i_rhs);
+	void CollisionResolution(cCollider* i_lhs, cCollider* i_rhs);
 
+	void CollisionResolution(cSphereCollider* i_lhs, cSphereCollider* i_rhs);
 
-	Math::sVector GetSphereCollisionNormal(cSphereCollider* i_lhs, cSphereCollider* i_rhs);
-
+	void CollisionResolution(cAABBCollider* i_lhs, cSphereCollider* i_rhs);
 
 }// Namespace Collision
 }// Namespace Physics

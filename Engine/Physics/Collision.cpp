@@ -542,7 +542,14 @@ void eae6320::Physics::Collision::InvokeCollisionCallback(std::unordered_map<cCo
 // Collision Resolution
 //============
 
-void eae6320::Physics::Collision::CollisionResolution_Sphere(cSphereCollider* i_lhs, cSphereCollider* i_rhs)
+
+void eae6320::Physics::Collision::CollisionResolution(cCollider* i_lhs, cCollider* i_rhs)
+{
+	//TODO
+
+}
+
+void eae6320::Physics::Collision::CollisionResolution(cSphereCollider* i_lhs, cSphereCollider* i_rhs)
 {
 	// normal start from the centroid of lhs, points to rhs
 	Math::sVector collisionNormal = (i_rhs->GetCentroid_world() - i_lhs->GetCentroid_world()).GetNormalized();
@@ -551,13 +558,29 @@ void eae6320::Physics::Collision::CollisionResolution_Sphere(cSphereCollider* i_
 	float raidusDistance = i_lhs->GetRadius() + i_rhs->GetRadius();
 	float collisionDepth = raidusDistance - sqrtf(centroidSqDistance);
 
+	// resolve collision
 	i_lhs->m_objectRigidBody->Translate(0.5f * collisionNormal * collisionDepth * -1.0f);
 	i_rhs->m_objectRigidBody->Translate(0.5f * collisionNormal * collisionDepth);
 }
 
 
-
-eae6320::Math::sVector eae6320::Physics::Collision::GetSphereCollisionNormal(cSphereCollider* i_lhs, cSphereCollider* i_rhs)
+void eae6320::Physics::Collision::CollisionResolution(cAABBCollider* i_lhs, cSphereCollider* i_rhs)
 {
-	return (i_lhs->GetCentroid_world() - i_rhs->GetCentroid_world()).GetNormalized();
+	// Closest point on or inside the AABB to the centroid of sphere
+	Math::sVector closestPoint = i_lhs->GetClosestPoint(i_rhs->GetCentroid_world());
+
+	// Collision normal is calculated based on the princile that AABB and sphere want to 
+	// get away from each other by escaping minimum distance. Thus, the collision normal 
+	// is the normalized vector from closest point to centroid;
+	Math::sVector AABBNormal = (closestPoint - i_lhs->GetCentroid_world()).GetNormalized();
+	Math::sVector sphereNormal = -1.0f * (closestPoint - i_rhs->GetCentroid_world()).GetNormalized();
+
+
+	float collisionDepth = i_rhs->GetRadius() - sqrtf(Math::SqDistance(closestPoint, i_rhs->GetCentroid_world()));
+
+	// resolve collision
+	i_lhs->m_objectRigidBody->Translate(0.5f * AABBNormal * collisionDepth);
+	i_rhs->m_objectRigidBody->Translate(0.5f * sphereNormal * collisionDepth);
 }
+
+
