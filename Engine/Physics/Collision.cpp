@@ -62,12 +62,6 @@ namespace
 //============
 
 
-eae6320::Math::sVector eae6320::Physics::Collision::GetSphereCollisionNormal(cSphereCollider* i_lhs, cSphereCollider* i_rhs)
-{
-	return (i_lhs->GetCentroid_world() - i_rhs->GetCentroid_world()).GetNormalized();
-}
-
-
 bool eae6320::Physics::Collision::IsOverlaps(cCollider* i_lhs, cCollider* i_rhs)
 {
 	switch (i_lhs->GetType())
@@ -504,9 +498,9 @@ void eae6320::Physics::Collision::InvokeCollisionCallback(std::unordered_map<cCo
 						std::find(i_newCollisionMap[collider_rhs].begin(), i_newCollisionMap[collider_rhs].end(), collider_lhs) == i_newCollisionMap[collider_rhs].end()))
 				{
 					if (collider_lhs->OnCollisionExit != nullptr)
-						collider_lhs->OnCollisionExit(collider_rhs);
+						collider_lhs->OnCollisionExit(collider_lhs, collider_rhs);
 					if (collider_rhs->OnCollisionExit != nullptr)
-						collider_rhs->OnCollisionExit(collider_lhs);
+						collider_rhs->OnCollisionExit(collider_rhs, collider_lhs);
 				}
 			}
 		}
@@ -526,16 +520,16 @@ void eae6320::Physics::Collision::InvokeCollisionCallback(std::unordered_map<cCo
 						std::find(s_collisionMap[collider_rhs].begin(), s_collisionMap[collider_rhs].end(), collider_lhs) == s_collisionMap[collider_rhs].end()))
 				{
 					if (collider_lhs->OnCollisionEnter != nullptr)
-						collider_lhs->OnCollisionEnter(collider_rhs);
+						collider_lhs->OnCollisionEnter(collider_lhs, collider_rhs);
 					if (collider_rhs->OnCollisionEnter != nullptr)
-						collider_rhs->OnCollisionEnter(collider_lhs);
+						collider_rhs->OnCollisionEnter(collider_rhs, collider_lhs);
 				}
 				else
 				{
 					if (collider_lhs->OnCollisionStay != nullptr)
-						collider_lhs->OnCollisionStay(collider_rhs);
+						collider_lhs->OnCollisionStay(collider_lhs, collider_rhs);
 					if (collider_rhs->OnCollisionStay != nullptr)
-						collider_rhs->OnCollisionStay(collider_lhs);
+						collider_rhs->OnCollisionStay(collider_rhs, collider_lhs);
 				}
 			}
 		}
@@ -548,9 +542,22 @@ void eae6320::Physics::Collision::InvokeCollisionCallback(std::unordered_map<cCo
 // Collision Resolution
 //============
 
-void eae6320::Physics::Collision::CollisionResolution()
+void eae6320::Physics::Collision::CollisionResolution_Sphere(cSphereCollider* i_lhs, cSphereCollider* i_rhs)
 {
+	// normal start from the centroid of lhs, points to rhs
+	Math::sVector collisionNormal = (i_rhs->GetCentroid_world() - i_lhs->GetCentroid_world()).GetNormalized();
 
+	float centroidSqDistance = Math::SqDistance(i_lhs->GetCentroid_world(), i_rhs->GetCentroid_world());
+	float raidusDistance = i_lhs->GetRadius() + i_rhs->GetRadius();
+	float collisionDepth = raidusDistance - sqrtf(centroidSqDistance);
+
+	i_lhs->m_objectRigidBody->Translate(collisionNormal * collisionDepth * -1.0f);
+	i_rhs->m_objectRigidBody->Translate(collisionNormal * collisionDepth);
 }
 
 
+
+eae6320::Math::sVector eae6320::Physics::Collision::GetSphereCollisionNormal(cSphereCollider* i_lhs, cSphereCollider* i_rhs)
+{
+	return (i_lhs->GetCentroid_world() - i_rhs->GetCentroid_world()).GetNormalized();
+}

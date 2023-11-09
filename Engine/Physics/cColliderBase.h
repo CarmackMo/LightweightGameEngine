@@ -141,13 +141,15 @@ namespace Physics
 	protected:
 
 		eColliderType m_type = eColliderType::None;
-		sRigidBodyState* m_objectRigidBody = nullptr;
+
 
 	public:
 
-		std::function<void(const cCollider*)> OnCollisionEnter = nullptr;
-		std::function<void(const cCollider*)> OnCollisionStay = nullptr;
-		std::function<void(const cCollider*)> OnCollisionExit = nullptr;
+		sRigidBodyState* m_objectRigidBody = nullptr;
+
+		std::function<void(const cCollider*, const cCollider*)> OnCollisionEnter = nullptr;
+		std::function<void(const cCollider*, const cCollider*)> OnCollisionStay = nullptr;
+		std::function<void(const cCollider*, const cCollider*)> OnCollisionExit = nullptr;
 
 
 		// TODO: temporary code for initialize colldier object

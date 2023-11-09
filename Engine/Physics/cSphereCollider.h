@@ -76,8 +76,6 @@ namespace Physics
 
 		float m_radius = 0.0f;
 		Math::sVector m_center;
-		
-		//Math::sVector m_pos;
 	};
 
 

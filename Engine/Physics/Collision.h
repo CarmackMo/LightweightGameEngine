@@ -25,8 +25,6 @@ namespace Physics
 namespace Collision
 {
 
-	Math::sVector GetSphereCollisionNormal(cSphereCollider* i_lhs, cSphereCollider* i_rhs);
-
 	bool IsOverlaps(cCollider* i_lhs, cCollider* i_rhs);
 
 	void Initialize(const std::vector<cCollider*>& i_allColliderList);
@@ -77,9 +75,10 @@ namespace Collision
 	// Collision Resolution
 	//----------------------
 
-	void CollisionResolution();
+	void CollisionResolution_Sphere(cSphereCollider* i_lhs, cSphereCollider* i_rhs);
 
 
+	Math::sVector GetSphereCollisionNormal(cSphereCollider* i_lhs, cSphereCollider* i_rhs);
 
 
 }// Namespace Collision

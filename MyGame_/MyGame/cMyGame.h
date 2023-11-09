@@ -165,6 +165,7 @@ namespace eae6320
 		cGameObject m_colliderObject_AABB3;
 
 		cGameObject m_colliderObject_sphere1;
+		cGameObject m_colliderObject_sphere2;
 
 		void InitializeCollisionSystem();
 
