@@ -7,19 +7,19 @@
 
 void eae6320::Physics::cSphereCollider::Update(const sRigidBodyState& i_rigidBody)
 {
-	m_pos = i_rigidBody.position;
+	//m_pos = i_rigidBody.position;
 }
 
 
 eae6320::Math::sVector eae6320::Physics::cSphereCollider::GetMinExtent_world() const
 {
-	return (m_center + m_pos) - m_radius;
+	return (m_center + m_objectRigidBody->position) - m_radius;
 }
 
 
 eae6320::Math::sVector eae6320::Physics::cSphereCollider::GetMaxExtent_world() const
 {
-	return (m_center + m_pos) + m_radius;
+	return (m_center + m_objectRigidBody->position) + m_radius;
 }
 
 
@@ -37,7 +37,7 @@ eae6320::Math::sVector eae6320::Physics::cSphereCollider::GetMaxExtent_local() c
 
 eae6320::Math::sVector eae6320::Physics::cSphereCollider::GetCentroid_world() const
 {
-	return m_center + m_pos;
+	return m_center + m_objectRigidBody->position;
 }
 
 
@@ -49,7 +49,7 @@ eae6320::Math::sVector eae6320::Physics::cSphereCollider::GetCentroid_local() co
 
 eae6320::Math::sVector eae6320::Physics::cSphereCollider::GetWorldPosition() const
 {
-	return m_pos;
+	return m_objectRigidBody->position;
 }
 
 

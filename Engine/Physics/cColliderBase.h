@@ -95,6 +95,8 @@ namespace Physics
 
 		static cResult Create(cCollider*& o_collider, const sColliderSetting& i_setting, const sRigidBodyState& i_rigidBody);
 
+		static cResult Create(cCollider*& o_collider, const sColliderSetting& i_setting, sRigidBodyState* i_rigidBody);
+
 		// Property Getters
 		//--------------------------
 
@@ -136,9 +138,10 @@ namespace Physics
 		// Data
 		//=====================
 
-	private:
+	protected:
 
 		eColliderType m_type = eColliderType::None;
+		sRigidBodyState* m_objectRigidBody = nullptr;
 
 	public:
 

@@ -86,6 +86,7 @@ namespace Physics
 		Math::sVector m_min;
 		Math::sVector m_max;
 		
+		// World position of the AABB, demanded by BVH tree branch node (it doesn't has rigidBody)
 		Math::sVector m_pos;
 	};
 

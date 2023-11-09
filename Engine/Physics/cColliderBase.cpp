@@ -67,6 +67,45 @@ eae6320::cResult eae6320::Physics::cCollider::Create(cCollider*& o_collider, con
 }
 
 
+eae6320::cResult eae6320::Physics::cCollider::Create(cCollider*& o_collider, const sColliderSetting& i_setting, sRigidBodyState* i_rigidBody)
+{
+	auto result = Results::Success;
+
+	cCollider* newCollider = nullptr;
+
+	switch (i_setting.type)
+	{
+	case eColliderType::Sphere:
+	{
+		// TODO
+		newCollider = dynamic_cast<cCollider*>(new cSphereCollider(i_setting.sphere_center, i_setting.sphere_radius, i_rigidBody->position));
+		newCollider->m_objectRigidBody = i_rigidBody;
+		break;
+	}
+	case eColliderType::AABB:
+	{
+		// TODO
+		newCollider = dynamic_cast<cCollider*>(new cAABBCollider(i_setting.AABB_min, i_setting.AABB_max, i_rigidBody->position));
+		newCollider->m_objectRigidBody = i_rigidBody;
+		break;
+	}
+	case eColliderType::Plane:
+	{
+		// TODO
+		break;
+	}
+	case eColliderType::None:
+	{
+		break;
+	}
+	}
+
+	o_collider = newCollider;
+
+	return result;
+}
+
+
 eae6320::Physics::eColliderType eae6320::Physics::cCollider::GetType() const
 {
 	return m_type;
