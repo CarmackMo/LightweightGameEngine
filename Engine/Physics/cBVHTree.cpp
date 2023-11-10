@@ -1,11 +1,9 @@
 // Includes
 //=========
 
-#include <Engine/Asserts/Asserts.h>
 #include <Engine/Physics/cBVHTree.h>
 #include <Engine/Physics/Collision.h>
 
-// TODO: Temporary code
 #include <queue>
 
 
@@ -49,9 +47,7 @@ void eae6320::Physics::sBVHNode::SetBranch(sBVHNode* i_node0, sBVHNode* i_node1)
 
 void eae6320::Physics::sBVHNode::SetLeaf(cCollider* i_collider)
 {
-	// create two-way link
 	this->collider = i_collider;
-	//data->userData = this;
 
 	children[0] = nullptr;
 	children[1] = nullptr;
@@ -256,12 +252,6 @@ std::vector<eae6320::Physics::cCollider*> eae6320::Physics::cBVHTree::Query(cCol
 		}
 		else
 		{
-			auto temp1 = Collision::IsOverlaps(i_collider, dynamic_cast<cCollider*>(&current->children[0]->fatAABB));
-			auto temp2 = Collision::IsOverlaps(i_collider, dynamic_cast<cCollider*>(&current->children[1]->fatAABB));
-			auto temp3 = current->children[0]->fatAABB;
-			auto temp4 = current->children[1]->fatAABB;
-
-
 			if (Collision::IsOverlaps(i_collider, dynamic_cast<cCollider*>(&current->children[0]->fatAABB)))
 				container.push(current->children[0]);
 			if (Collision::IsOverlaps(i_collider, dynamic_cast<cCollider*>(&current->children[1]->fatAABB)))
@@ -345,44 +335,26 @@ void eae6320::Physics::cBVHTree::RemoveNode(sBVHNode* i_node)
 
 void eae6320::Physics::cBVHTree::UpdateNodeHelper(sBVHNode* i_node, std::vector<sBVHNode*>& i_invalidNodes)
 {
-	// Recursive apporach
+	std::queue<sBVHNode*> container;
+	container.push(i_node);
+
+	while (container.empty() == false)
 	{
-		if (i_node->IsLeaf())
+		sBVHNode* current = container.front();
+		container.pop();
+
+		// check if fat AABB doesn't contain the collider's AABB anymore
+		if (current->IsLeaf())
 		{
-			// check if fat AABB doesn't contain the collider's AABB anymore
-			if (i_node->fatAABB.IsContains(*i_node->collider) == false)
-				i_invalidNodes.push_back(i_node);
+			if (current->fatAABB.IsContains(*current->collider) == false)
+				i_invalidNodes.push_back(current);
 		}
 		else
 		{
-			UpdateNodeHelper(i_node->children[0], i_invalidNodes);
-			UpdateNodeHelper(i_node->children[1], i_invalidNodes);
+			container.push(current->children[0]);
+			container.push(current->children[1]);
 		}
 	}
-
-	//// Iterative approach, using Breadth First Search
-	//{
-	//	std::queue<sBVHNode*> container;
-	//	container.push(i_node);
-
-	//	while (container.empty() == false)
-	//	{
-	//		sBVHNode* current = container.front();
-	//		container.pop();
-
-	//		// check if fat AABB doesn't contain the collider's AABB anymore
-	//		if (current->IsLeaf())
-	//		{
-	//			if (current->aabb.IsContains(*current->data) == false)
-	//				i_invalidNodes.push_back(current);
-	//		}
-	//		else
-	//		{
-	//			container.push(current->children[0]);
-	//			container.push(current->children[1]);
-	//		}
-	//	}
-	//}
 }
 
 
@@ -459,7 +431,6 @@ void eae6320::Physics::cBVHTree::CrossChildren(sBVHNode* i_node)
 		i_node->childrenCrossed = true;
 	}
 }
-
 
 
 void eae6320::Physics::cBVHTree::UpdatetRenderData()

@@ -5,7 +5,6 @@
 
 #include <Engine/Math/sVector.h>
 #include <Engine/Physics/cColliderBase.h>
-#include <Engine/Physics/cRigidBody.h>
 
 #include <vector>
 
@@ -26,12 +25,11 @@ namespace Physics
 		//--------------------------
 
 		cAABBCollider() : cCollider(eColliderType::AABB) { };
-		cAABBCollider(const Math::sVector& i_min, const Math::sVector& i_max, const Math::sVector& i_worldPos)
-			: cCollider(eColliderType::AABB), m_min(i_min), m_max(i_max), m_pos(i_worldPos) { }
+		cAABBCollider(const Math::sVector& i_min, const Math::sVector& i_max)
+			: cCollider(eColliderType::AABB), m_min(i_min), m_max(i_max) { }
 
 		~cAABBCollider() = default;
 
-		void Update(const sRigidBodyState& i_rigidBody) final;
 
 		// Property Getters
 		//--------------------------

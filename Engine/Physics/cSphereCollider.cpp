@@ -5,11 +5,6 @@
 #include "cSphereCollider.h"
 
 
-void eae6320::Physics::cSphereCollider::Update(const sRigidBodyState& i_rigidBody)
-{
-	//m_pos = i_rigidBody.position;
-}
-
 
 eae6320::Math::sVector eae6320::Physics::cSphereCollider::GetMinExtent_world() const
 {

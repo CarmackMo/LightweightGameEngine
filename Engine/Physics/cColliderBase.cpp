@@ -29,43 +29,6 @@ void eae6320::Physics::sColliderSetting::SettingForAABB(Math::sVector i_min, Mat
 // cCollider Implementation
 //==================
 
-eae6320::cResult eae6320::Physics::cCollider::Create(cCollider*& o_collider, const sColliderSetting& i_setting, const sRigidBodyState& i_rigidBody)
-{
-
-	auto result = Results::Success;
-
-	cCollider* newCollider = nullptr;
-
-	switch (i_setting.type)
-	{
-		case eColliderType::Sphere:
-		{
-			// TODO
-			newCollider = dynamic_cast<cCollider*>(new cSphereCollider(i_setting.sphere_center, i_setting.sphere_radius, i_rigidBody.position));
-			break;
-		}
-		case eColliderType::AABB:
-		{
-			// TODO
-			newCollider = dynamic_cast<cCollider*>(new cAABBCollider(i_setting.AABB_min, i_setting.AABB_max, i_rigidBody.position));
-			break;
-		}
-		case eColliderType::Plane:
-		{
-			// TODO
-			break;
-		}
-		case eColliderType::None:
-		{
-			break;
-		}
-	}
-
-	o_collider = newCollider;
-
-	return result;
-}
-
 
 eae6320::cResult eae6320::Physics::cCollider::Create(cCollider*& o_collider, const sColliderSetting& i_setting, sRigidBodyState* i_rigidBody)
 {
@@ -78,14 +41,14 @@ eae6320::cResult eae6320::Physics::cCollider::Create(cCollider*& o_collider, con
 	case eColliderType::Sphere:
 	{
 		// TODO
-		newCollider = dynamic_cast<cCollider*>(new cSphereCollider(i_setting.sphere_center, i_setting.sphere_radius, i_rigidBody->position));
+		newCollider = dynamic_cast<cCollider*>(new cSphereCollider(i_setting.sphere_center, i_setting.sphere_radius));
 		newCollider->m_objectRigidBody = i_rigidBody;
 		break;
 	}
 	case eColliderType::AABB:
 	{
 		// TODO
-		newCollider = dynamic_cast<cCollider*>(new cAABBCollider(i_setting.AABB_min, i_setting.AABB_max, i_rigidBody->position));
+		newCollider = dynamic_cast<cCollider*>(new cAABBCollider(i_setting.AABB_min, i_setting.AABB_max));
 		newCollider->m_objectRigidBody = i_rigidBody;
 		break;
 	}

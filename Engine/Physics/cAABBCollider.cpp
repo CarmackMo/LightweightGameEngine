@@ -4,11 +4,6 @@
 #include "cAABBCollider.h"
 
 
-void eae6320::Physics::cAABBCollider::Update(const sRigidBodyState& i_rigidBody)
-{
-	m_pos = i_rigidBody.position;
-}
-
 
 eae6320::Math::sVector eae6320::Physics::cAABBCollider::GetMinExtent_world() const
 {
@@ -110,11 +105,8 @@ eae6320::Physics::cAABBCollider eae6320::Physics::cAABBCollider::Union(const cAA
 {
 	Math::sVector minExtent = Math::Min(GetMinExtent_world(), i_other.GetMinExtent_world());
 	Math::sVector maxExtent = Math::Max(GetMaxExtent_world(), i_other.GetMaxExtent_world());
-	
-	//Math::sVector center = 0.5f * (minExtent + maxExtent);
-	Math::sVector center = Math::sVector();
 
-	return cAABBCollider(minExtent, maxExtent, center);
+	return cAABBCollider(minExtent, maxExtent);
 }
 
 

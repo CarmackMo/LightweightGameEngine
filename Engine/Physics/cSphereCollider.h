@@ -6,7 +6,6 @@
 #include <Engine/Math/sVector.h>
 #include <Engine/Physics/cAABBCollider.h>
 #include <Engine/Physics/cColliderBase.h>
-#include <Engine/Physics/cRigidBody.h>
 
 #include <vector>
 
@@ -26,14 +25,13 @@ namespace Physics
 		//--------------------------
 
 		cSphereCollider() : cCollider(eColliderType::Sphere) { };
-		cSphereCollider(const Math::sVector& i_center, float i_radius, const Math::sVector& i_worldPos)
+		cSphereCollider(const Math::sVector& i_center, float i_radius)
 			: cCollider(eColliderType::Sphere), m_center(i_center), m_radius(i_radius) { }
-		cSphereCollider(float i_x, float i_y, float i_z, float i_radius, const Math::sVector& i_worldPos)
+		cSphereCollider(float i_x, float i_y, float i_z, float i_radius)
 			: cCollider(eColliderType::Sphere), m_center(Math::sVector(i_x, i_y, i_z)), m_radius(i_radius) { }
 
 		~cSphereCollider() = default;
 
-		void Update(const sRigidBodyState& i_rigidBody) final;
 
 		// Property Getters
 		//--------------------------

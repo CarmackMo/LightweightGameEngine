@@ -13,7 +13,6 @@
 
 // TODO: temporary code for initialize colldier object
 #include <string>
-#include <memory>
 
 
 // Forward Declarations
@@ -93,8 +92,6 @@ namespace Physics
 		// Initialization / Clean Up
 		//--------------------------
 
-		static cResult Create(cCollider*& o_collider, const sColliderSetting& i_setting, const sRigidBodyState& i_rigidBody);
-
 		static cResult Create(cCollider*& o_collider, const sColliderSetting& i_setting, sRigidBodyState* i_rigidBody);
 
 		// Property Getters
@@ -119,7 +116,6 @@ namespace Physics
 		// Update
 		//--------------------------
 
-		virtual void Update(const sRigidBodyState& i_rigidBody) = 0;
 
 		// Render / Debug
 		//--------------------------

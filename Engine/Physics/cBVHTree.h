@@ -130,7 +130,6 @@ namespace Physics
 		sBVHNode* m_root;
 		std::list<std::pair<cCollider*, cCollider*>> m_pairs;
 		std::vector<sBVHNode*> m_invalidNodes;
-
 		std::vector<Graphics::cLine*> m_renderData;
 	};
 
