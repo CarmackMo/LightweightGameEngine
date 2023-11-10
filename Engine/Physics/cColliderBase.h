@@ -41,7 +41,6 @@ namespace Physics
 		None	= 0,
 		Sphere	= 1,
 		AABB	= 2,
-		Plane	= 3,
 	};
 }
 }

@@ -132,11 +132,6 @@ bool eae6320::Physics::Collision::IsOverlaps(cCollider* i_lhs, cCollider* i_rhs)
 		{
 			return dynamic_cast<cSphereCollider*>(i_lhs)->IsOverlaps(*dynamic_cast<cAABBCollider*>(i_rhs));
 		}
-		else if (i_rhs->GetType() == eColliderType::Plane)
-		{
-			//TODO
-			return false;
-		}
 		else
 			return false;
 	}
@@ -151,19 +146,8 @@ bool eae6320::Physics::Collision::IsOverlaps(cCollider* i_lhs, cCollider* i_rhs)
 		{
 			return dynamic_cast<cAABBCollider*>(i_lhs)->IsOverlaps(*dynamic_cast<cAABBCollider*>(i_rhs));
 		}
-		else if (i_rhs->GetType() == eColliderType::Plane)
-		{
-			// TODO
-			return false;
-		}
 		else
 			return false;
-	}
-
-	case eColliderType::Plane:
-	{
-		// TODO
-		return false;
 	}
 
 	default:
@@ -672,11 +656,6 @@ void eae6320::Physics::Collision::CollisionResolution(cCollider* i_lhs, cCollide
 			CollisionResolution(dynamic_cast<cAABBCollider*>(i_lhs), dynamic_cast<cSphereCollider*>(i_rhs));
 		else if (i_rhs->GetType() == eColliderType::AABB) 
 			CollisionResolution(dynamic_cast<cAABBCollider*>(i_lhs), dynamic_cast<cAABBCollider*>(i_rhs));
-		break;
-	}
-	case eColliderType::Plane:
-	{
-		// TODO
 		break;
 	}
 	default:

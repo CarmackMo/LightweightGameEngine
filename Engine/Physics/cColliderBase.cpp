@@ -52,11 +52,6 @@ eae6320::cResult eae6320::Physics::cCollider::Create(cCollider*& o_collider, con
 		newCollider->m_objectRigidBody = i_rigidBody;
 		break;
 	}
-	case eColliderType::Plane:
-	{
-		// TODO
-		break;
-	}
 	case eColliderType::None:
 	{
 		break;
