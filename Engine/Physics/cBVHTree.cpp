@@ -88,7 +88,7 @@ void eae6320::Physics::sBVHNode::UpdateAABBLine()
 	Graphics::VertexFormats::sVertex_line* vertexData = new Graphics::VertexFormats::sVertex_line[vertexCount];
 	for (uint32_t i = 0; i < vertexCount; i++)
 	{
-		vertexData[i] = Graphics::VertexFormats::sVertex_line(vertexVec[i].x, vertexVec[i].y, vertexVec[i].z, 0, 1, 1, 1);
+		vertexData[i] = Graphics::VertexFormats::sVertex_line(vertexVec[i].x, vertexVec[i].y, vertexVec[i].z, 0, 0, 1, 1);
 	}
 	uint16_t* indexData = new uint16_t[indexCount];
 	for (uint32_t i = 0; i < indexCount; i++)

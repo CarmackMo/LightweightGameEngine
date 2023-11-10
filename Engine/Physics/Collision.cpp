@@ -483,7 +483,7 @@ void eae6320::Physics::Collision::Initialize_BVH(const std::vector<cCollider*>& 
 	CollisionDetection_BroadPhase_BVH();
 
 	// TODO temporary code for rendering BVH Tree
-	//UpdateRenderData();
+	UpdateRenderData();
 }
 
 

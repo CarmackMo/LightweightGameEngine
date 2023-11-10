@@ -168,7 +168,10 @@ void eae6320::cGameObject::InitializeColliderLine()
 		Graphics::VertexFormats::sVertex_line* vertexData = new Graphics::VertexFormats::sVertex_line[vertexCount];
 		for (uint32_t i = 0; i < vertexCount; i++)
 		{
-			vertexData[i] = Graphics::VertexFormats::sVertex_line(vertexVec[i].x, vertexVec[i].y, vertexVec[i].z);
+			if (m_rigidBody.isStatic == true)
+				vertexData[i] = Graphics::VertexFormats::sVertex_line(vertexVec[i].x, vertexVec[i].y, vertexVec[i].z, 1.0f, 0.8f, 0.0f, 1.0f);
+			else
+				vertexData[i] = Graphics::VertexFormats::sVertex_line(vertexVec[i].x, vertexVec[i].y, vertexVec[i].z, 0.0f, 1.0f, 0.0f, 1.0f);
 		}
 		uint16_t* indexData = new uint16_t[indexCount];
 		for (uint32_t i = 0; i < indexCount; i++)
