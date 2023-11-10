@@ -93,9 +93,9 @@ void eae6320::cMyGame::UpdateSimulationBasedOnTime(const float i_elapsedSecondCo
 	m_colliderObject_AABB2.UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
 	m_colliderObject_sphere2.UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
 
-	Physics::Collision::UpdateCollision();
+	Physics::Collision::Update_CollisionDetection();
 
-	Physics::Collision::UpdateCollisionResolution();
+	Physics::Collision::Update_CollisionResolution();
 
 }
 
@@ -466,7 +466,7 @@ void eae6320::cMyGame::InitializeCollisionSystem()
 	colliderList.push_back(m_colliderObject_sphere2.GetCollider());
 
 
-	Physics::Collision::Initialize(colliderList);
+	Physics::Collision::Initialize(colliderList, Physics::Collision::BroadPhase_BVH | Physics::Collision::NarrowPhase_Overlaps);
 }
 
 
