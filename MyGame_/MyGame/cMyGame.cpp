@@ -95,6 +95,8 @@ void eae6320::cMyGame::UpdateSimulationBasedOnTime(const float i_elapsedSecondCo
 
 	Physics::Collision::UpdateCollision();
 
+	Physics::Collision::UpdateCollisionResolution();
+
 }
 
 
@@ -347,7 +349,7 @@ void eae6320::cMyGame::InitializeGameObject()
 		m_colliderObject_AABB1.GetCollider()->OnCollisionEnter = 
 			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Enter collision, other: ", other->m_name.c_str()); m_colliderObject_AABB1.SetIsCollide(true); };
 		m_colliderObject_AABB1.GetCollider()->OnCollisionStay = 
-			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(std::string("Stay collision, " + self->m_name + " : " ).c_str(), other->m_name.c_str()); Physics::Collision::CollisionResolution(self, other); };
+			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(std::string("Stay collision, " + self->m_name + " : " ).c_str(), other->m_name.c_str()); };
 		m_colliderObject_AABB1.GetCollider()->OnCollisionExit = 
 			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Exit collision, other: ", other->m_name.c_str()); m_colliderObject_AABB1.SetIsCollide(false); };
 

@@ -135,6 +135,21 @@ void eae6320::Physics::Collision::UpdateCollision()
 }
 
 
+void eae6320::Physics::Collision::UpdateCollisionResolution()
+{
+	for (auto item : s_collisionMap)
+	{
+		cCollider* collider_lhs = item.first;
+		for (auto collider_rhs : item.second)
+		{
+			if (collider_lhs->m_objectRigidBody->isStatic == false &&
+				collider_rhs->m_objectRigidBody->isStatic == false)
+				CollisionResolution(collider_lhs, collider_rhs);
+		}
+	}
+}
+
+
 // Broad Phase: Sweep and Prune
 //============
 

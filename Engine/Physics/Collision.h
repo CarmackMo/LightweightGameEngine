@@ -31,7 +31,7 @@ namespace Collision
 
 	void UpdateCollision();
 
-
+	void UpdateCollisionResolution();
 
 
 	// Broad Phase: Sweep and Prune

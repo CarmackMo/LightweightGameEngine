@@ -44,6 +44,8 @@ namespace Physics
 		Math::sVector angularVelocity_axis_local = Math::sVector( 0.0f, 0.0f, 0.0f );	// In local space (not world space)
 		float angularSpeed = 0.0f;	// Radians per second (positive values rotate right-handed, negative rotate left-handed)
 
+		bool isStatic = false;
+
 		// Interface
 		//==========
 

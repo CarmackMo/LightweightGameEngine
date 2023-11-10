@@ -12,13 +12,19 @@ void eae6320::Physics::cAABBCollider::Update(const sRigidBodyState& i_rigidBody)
 
 eae6320::Math::sVector eae6320::Physics::cAABBCollider::GetMinExtent_world() const
 {
-	return m_min + m_pos;
+	if (m_objectRigidBody != nullptr)
+		return m_min + m_objectRigidBody->position;
+	else
+		return m_min + m_pos;
 }
 
 
 eae6320::Math::sVector eae6320::Physics::cAABBCollider::GetMaxExtent_world() const
 {
-	return m_max + m_pos;
+	if (m_objectRigidBody != nullptr)
+		return m_max + m_objectRigidBody->position;
+	else
+		return m_max + m_pos;
 }
 
 
@@ -48,7 +54,10 @@ eae6320::Math::sVector eae6320::Physics::cAABBCollider::GetCentroid_local() cons
 
 eae6320::Math::sVector eae6320::Physics::cAABBCollider::GetWorldPosition() const
 {
-	return m_pos;
+	if (m_objectRigidBody != nullptr)
+		return m_objectRigidBody->position;
+	else
+		return m_pos;
 }
 
 

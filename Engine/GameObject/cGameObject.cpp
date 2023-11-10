@@ -108,10 +108,10 @@ void eae6320::cGameObject::UpdateBasedOnTime(const float i_elapsedSecondCount_si
 
 	// TODO: temporary code for collider debug
 
-	if (m_collider != nullptr)
-	{
-		m_collider->Update(m_rigidBody);
-	}
+	//if (m_collider != nullptr)
+	//{
+	//	m_collider->Update(m_rigidBody);
+	//}
 }
 
 
