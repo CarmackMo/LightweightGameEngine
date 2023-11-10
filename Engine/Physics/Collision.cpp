@@ -546,8 +546,36 @@ void eae6320::Physics::Collision::InvokeCollisionCallback(std::unordered_map<cCo
 void eae6320::Physics::Collision::CollisionResolution(cCollider* i_lhs, cCollider* i_rhs)
 {
 	//TODO
-
+	switch (i_lhs->GetType())
+	{
+	case eColliderType::Sphere:
+	{
+		if (i_rhs->GetType() == eColliderType::Sphere)
+			CollisionResolution(dynamic_cast<cSphereCollider*>(i_lhs), dynamic_cast<cSphereCollider*>(i_rhs));
+		else if (i_rhs->GetType() == eColliderType::AABB)
+			CollisionResolution(dynamic_cast<cAABBCollider*>(i_rhs), dynamic_cast<cSphereCollider*>(i_lhs));
+		break;
+	}
+	case eColliderType::AABB:
+	{
+		if (i_rhs->GetType() == eColliderType::Sphere)
+			CollisionResolution(dynamic_cast<cAABBCollider*>(i_lhs), dynamic_cast<cSphereCollider*>(i_rhs));
+		else if (i_rhs->GetType() == eColliderType::AABB)
+		{ 
+			//TODO 
+		}
+		break;
+	}
+	case eColliderType::Plane:
+	{
+		// TODO
+		break;
+	}
+	default:
+		break;
+	}
 }
+
 
 void eae6320::Physics::Collision::CollisionResolution(cSphereCollider* i_lhs, cSphereCollider* i_rhs)
 {
@@ -572,8 +600,8 @@ void eae6320::Physics::Collision::CollisionResolution(cAABBCollider* i_lhs, cSph
 	// Collision normal is calculated based on the princile that AABB and sphere want to 
 	// get away from each other by escaping minimum distance. Thus, the collision normal 
 	// is the normalized vector from closest point to centroid;
-	Math::sVector AABBNormal = (closestPoint - i_lhs->GetCentroid_world()).GetNormalized();
-	Math::sVector sphereNormal = -1.0f * (closestPoint - i_rhs->GetCentroid_world()).GetNormalized();
+	Math::sVector AABBNormal = (i_lhs->GetCentroid_world() - closestPoint).GetNormalized();
+	Math::sVector sphereNormal = (i_rhs->GetCentroid_world()- closestPoint).GetNormalized();
 
 
 	float collisionDepth = i_rhs->GetRadius() - sqrtf(Math::SqDistance(closestPoint, i_rhs->GetCentroid_world()));

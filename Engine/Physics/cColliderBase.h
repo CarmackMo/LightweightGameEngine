@@ -147,9 +147,9 @@ namespace Physics
 
 		sRigidBodyState* m_objectRigidBody = nullptr;
 
-		std::function<void(const cCollider*, const cCollider*)> OnCollisionEnter = nullptr;
-		std::function<void(const cCollider*, const cCollider*)> OnCollisionStay = nullptr;
-		std::function<void(const cCollider*, const cCollider*)> OnCollisionExit = nullptr;
+		std::function<void(cCollider*, cCollider*)> OnCollisionEnter = nullptr;
+		std::function<void(cCollider*, cCollider*)> OnCollisionStay = nullptr;
+		std::function<void(cCollider*, cCollider*)> OnCollisionExit = nullptr;
 
 
 		// TODO: temporary code for initialize colldier object
