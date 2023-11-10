@@ -161,7 +161,7 @@ void eae6320::cMyGame::SubmitDataToBeRendered(
 
 	// TODO: Submit debug for box collider
 	{
-		auto BVHRenderData = Physics::Collision::GetRenderData();
+		auto BVHRenderData = Physics::Collision::GetBVHRenderData();
 		uint32_t staticSize = 5;
 		uint32_t arraySize = BVHRenderData.size() + staticSize;
 
@@ -420,6 +420,7 @@ void eae6320::cMyGame::InitializeGameObject()
 			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(std::string("Stay collision, " + self->m_name + " : ").c_str(), other->m_name.c_str()); };
 		m_colliderObject_sphere2.GetCollider()->OnCollisionExit =
 			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Exit collision, other: ", other->m_name.c_str()); m_colliderObject_sphere2.SetIsCollide(false); };
+
 
 	}
 

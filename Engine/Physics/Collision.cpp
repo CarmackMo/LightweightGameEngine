@@ -24,18 +24,22 @@ namespace
 	std::vector<eae6320::Physics::cCollider*> s_orderedColliderList_yAxis;
 	std::vector<eae6320::Physics::cCollider*> s_orderedColliderList_zAxis;
 
-	
-
 	eae6320::Physics::cBVHTree s_BVHTree;
-
 }
 
 
-// Helper Funcitons
+// Helper Funcitons Forward Declaraction
 //============
 
-namespace
+namespace eae6320
 {
+namespace Physics
+{
+namespace Collision
+{
+
+	// Comparators
+	//----------------------
 
 	auto s_comparator_xAxis = [](eae6320::Physics::cCollider* i_lhs, eae6320::Physics::cCollider* i_rhs) -> bool
 	{
@@ -52,15 +56,62 @@ namespace
 		return i_lhs->GetMinExtent_world().z < i_rhs->GetMinExtent_world().z;
 	};
 
-}
+
+	// Broad Phase: Sweep and Prune
+	//----------------------
+
+	void Initialize_SweepAndPrune(const std::vector<eae6320::Physics::cCollider*>& i_allColliderList);
+
+	void AddCollider_SweepAndPrune(eae6320::Physics::cCollider* i_collider);
+
+	eae6320::cResult RemoveCollider_SweepAndPrune(eae6320::Physics::cCollider* i_collider);
+
+	void CollisionDetection_BroadPhase_SweepAndPrune();
+
+
+	// Broad Phase: BVH Tree
+	//----------------------
+
+	void Initialize_BVH(const std::vector<cCollider*>& i_allColliderList);
+
+	void AddCollider_BVH(cCollider* i_collider);
+
+	cResult RemoveCollider_BVH(cCollider* i_collider);
+
+	void CollisionDetection_BroadPhase_BVH();
+
+	// TODO: rendering debug
+	void UpdateRenderData();
+
+
+	// Narrow Phase
+	//----------------------
+
+	void CollisionDetection_NarrowPhase_Overlap(std::unordered_map<cCollider*, std::vector<cCollider*>>& i_CollisionMap_broadPhase);
+
+	void InvokeCollisionCallback(std::unordered_map<cCollider*, std::vector<cCollider*>>& i_newCollisionMap);
+
+
+	// Collision Resolution
+	//----------------------
+
+	void CollisionResolution(cCollider* i_lhs, cCollider* i_rhs);
+
+	void CollisionResolution(cSphereCollider* i_lhs, cSphereCollider* i_rhs);
+
+	void CollisionResolution(cAABBCollider* i_lhs, cSphereCollider* i_rhs);
+
+	void CollisionResolution(cAABBCollider* i_lhs, cAABBCollider* i_rhs);
+
+
+}// Namespace Collision
+}// Namespace Physics
+}// Namespace eae6320
 
 
 
-
-
-// Interface
+// Interface Implementation
 //============
-
 
 bool eae6320::Physics::Collision::IsOverlaps(cCollider* i_lhs, cCollider* i_rhs)
 {
@@ -149,6 +200,16 @@ void eae6320::Physics::Collision::UpdateCollisionResolution()
 	}
 }
 
+
+std::vector<eae6320::Graphics::cLine*>& eae6320::Physics::Collision::GetBVHRenderData()
+{
+	return s_BVHTree.GetRenderData();
+}
+
+
+
+// Helper Funcitons Implementation
+//==================================
 
 // Broad Phase: Sweep and Prune
 //============
@@ -457,13 +518,6 @@ void eae6320::Physics::Collision::UpdateRenderData()
 }
 
 
-std::vector<eae6320::Graphics::cLine*>& eae6320::Physics::Collision::GetRenderData()
-{
-	return s_BVHTree.GetRenderData();
-}
-
-
-
 // Narrow Phase
 //============
 
@@ -558,10 +612,8 @@ void eae6320::Physics::Collision::InvokeCollisionCallback(std::unordered_map<cCo
 // Collision Resolution
 //============
 
-
 void eae6320::Physics::Collision::CollisionResolution(cCollider* i_lhs, cCollider* i_rhs)
 {
-	//TODO
 	switch (i_lhs->GetType())
 	{
 	case eColliderType::Sphere:

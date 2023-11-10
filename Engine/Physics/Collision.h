@@ -33,55 +33,7 @@ namespace Collision
 
 	void UpdateCollisionResolution();
 
-
-	// Broad Phase: Sweep and Prune
-	//----------------------
-
-	void Initialize_SweepAndPrune(const std::vector<cCollider*>& i_allColliderList);
-
-	void AddCollider_SweepAndPrune(cCollider* i_collider);
-
-	cResult RemoveCollider_SweepAndPrune(cCollider* i_collider);
-
-	void CollisionDetection_BroadPhase_SweepAndPrune();
-
-
-	// Broad Phase: BVH Tree
-	//----------------------
-	
-	void Initialize_BVH(const std::vector<cCollider*>& i_allColliderList);
-
-	void AddCollider_BVH(cCollider* i_collider);
-
-	cResult RemoveCollider_BVH(cCollider* i_collider);
-
-	void CollisionDetection_BroadPhase_BVH();
-
-	// TODO: rendering debug
-	void UpdateRenderData();
-
-	std::vector<Graphics::cLine*>& GetRenderData();
-
-
-
-	// Narrow Phase
-	//----------------------
-
-	void CollisionDetection_NarrowPhase_Overlap(std::unordered_map<cCollider*, std::vector<cCollider*>>& i_CollisionMap_broadPhase);
-
-	void InvokeCollisionCallback(std::unordered_map<cCollider*, std::vector<cCollider*>>& i_newCollisionMap);
-
-
-	// Collision Resolution
-	//----------------------
-
-	void CollisionResolution(cCollider* i_lhs, cCollider* i_rhs);
-
-	void CollisionResolution(cSphereCollider* i_lhs, cSphereCollider* i_rhs);
-
-	void CollisionResolution(cAABBCollider* i_lhs, cSphereCollider* i_rhs);
-
-	void CollisionResolution(cAABBCollider* i_lhs, cAABBCollider* i_rhs);
+	std::vector<Graphics::cLine*>& GetBVHRenderData();
 
 }// Namespace Collision
 }// Namespace Physics
