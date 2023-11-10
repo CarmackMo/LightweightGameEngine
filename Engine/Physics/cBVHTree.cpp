@@ -61,8 +61,7 @@ void eae6320::Physics::sBVHNode::UpdateAABB(float i_margin)
 		// make fat AABB, the min/max extent directly represents the world cooridnate of 
 		// the associated collider. Thus the fat AABB should have ZERO world position
 		const Math::sVector marginVec(i_margin, i_margin, i_margin);
-		fatAABB.m_min = collider->GetMinExtent_world() - marginVec;
-		fatAABB.m_max = collider->GetMaxExtent_world() + marginVec;
+		fatAABB.UpdateExtents(collider->GetMinExtent_world() - marginVec, collider->GetMaxExtent_world() + marginVec);
 	}
 	else
 	{

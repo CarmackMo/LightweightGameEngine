@@ -67,6 +67,8 @@ namespace Physics
 		/* Return a AABB whose min/max extent is large enough to contain the world extent of self and i_other */
 		cAABBCollider Union(const cAABBCollider& i_other) const;
 
+		void UpdateExtents(const Math::sVector& i_min, const Math::sVector& i_max);
+
 		// Render / Debug
 		//--------------------------
 
@@ -78,7 +80,7 @@ namespace Physics
 		// Data
 		//=====================
 
-	public:
+	private:
 
 		// Model space cooridnate corresponding to owner object's position
 		Math::sVector m_min;

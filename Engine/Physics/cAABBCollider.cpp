@@ -110,6 +110,13 @@ eae6320::Physics::cAABBCollider eae6320::Physics::cAABBCollider::Union(const cAA
 }
 
 
+void eae6320::Physics::cAABBCollider::UpdateExtents(const Math::sVector& i_min, const Math::sVector& i_max)
+{
+	m_min = i_min;
+	m_max = i_max;
+}
+
+
 void eae6320::Physics::cAABBCollider::GenerateRenderData(
 	uint32_t& o_vertexCount, std::vector<Math::sVector>& o_vertexData, 
 	uint32_t& o_indexCount, std::vector<uint16_t>& o_indexData)
@@ -164,5 +171,3 @@ void eae6320::Physics::cAABBCollider::GenerateRenderData(
 		o_indexData[i] = i;
 	}
 }
-
-
