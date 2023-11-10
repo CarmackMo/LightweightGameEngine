@@ -81,6 +81,8 @@ namespace Collision
 
 	void CollisionResolution(cAABBCollider* i_lhs, cSphereCollider* i_rhs);
 
+	void CollisionResolution(cAABBCollider* i_lhs, cAABBCollider* i_rhs);
+
 }// Namespace Collision
 }// Namespace Physics
 }// Namespace eae6320

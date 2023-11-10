@@ -369,7 +369,8 @@ void eae6320::Physics::Collision::Initialize_BVH(const std::vector<cCollider*>& 
 	// Initial collision detection
 	CollisionDetection_BroadPhase_BVH();
 
-	UpdateRenderData();
+	// TODO temporary code for rendering BVH Tree
+	//UpdateRenderData();
 }
 
 
@@ -560,10 +561,8 @@ void eae6320::Physics::Collision::CollisionResolution(cCollider* i_lhs, cCollide
 	{
 		if (i_rhs->GetType() == eColliderType::Sphere)
 			CollisionResolution(dynamic_cast<cAABBCollider*>(i_lhs), dynamic_cast<cSphereCollider*>(i_rhs));
-		else if (i_rhs->GetType() == eColliderType::AABB)
-		{ 
-			//TODO 
-		}
+		else if (i_rhs->GetType() == eColliderType::AABB) 
+			CollisionResolution(dynamic_cast<cAABBCollider*>(i_lhs), dynamic_cast<cAABBCollider*>(i_rhs));
 		break;
 	}
 	case eColliderType::Plane:
@@ -598,7 +597,7 @@ void eae6320::Physics::Collision::CollisionResolution(cAABBCollider* i_lhs, cSph
 	Math::sVector closestPoint = i_lhs->GetClosestPoint(i_rhs->GetCentroid_world());
 
 	// Collision normal is calculated based on the princile that AABB and sphere want to 
-	// get away from each other by escaping minimum distance. Thus, the collision normal 
+	// get away from each other by traveling minimum distance. Thus, the collision normal 
 	// is the normalized vector from closest point to centroid;
 	Math::sVector AABBNormal = (i_lhs->GetCentroid_world() - closestPoint).GetNormalized();
 	Math::sVector sphereNormal = (i_rhs->GetCentroid_world()- closestPoint).GetNormalized();
@@ -611,4 +610,23 @@ void eae6320::Physics::Collision::CollisionResolution(cAABBCollider* i_lhs, cSph
 	i_rhs->m_objectRigidBody->Translate(0.5f * sphereNormal * collisionDepth);
 }
 
+
+void eae6320::Physics::Collision::CollisionResolution(cAABBCollider* i_lhs, cAABBCollider* i_rhs)
+{
+	// Closest point on or inside the AABB to the centroid of another AABB
+	Math::sVector closestPointLeftCentroidToRightAABB = i_rhs->GetClosestPoint(i_lhs->GetCentroid_world());
+	Math::sVector closestPointRightCentroidToLeftAABB = i_lhs->GetClosestPoint(i_rhs->GetCentroid_world());
+
+	// Collision normal is calculated based on the princile that both AABB want to 
+	// get away from each other by traveling minimum distance. Thus, the collision normal 
+	// is the normalized vector from closest point to centroid;
+	Math::sVector lhsNormal = (i_lhs->GetCentroid_world() - closestPointLeftCentroidToRightAABB);
+	Math::sVector rhsNormal = (i_rhs->GetCentroid_world() - closestPointRightCentroidToLeftAABB);
+
+	float collisionDepth = sqrtf(Math::SqDistance(closestPointLeftCentroidToRightAABB, closestPointRightCentroidToLeftAABB));
+
+	// resolve collision
+	i_lhs->m_objectRigidBody->Translate(0.5f * lhsNormal * collisionDepth);
+	i_rhs->m_objectRigidBody->Translate(0.5f * rhsNormal * collisionDepth);
+}
 
