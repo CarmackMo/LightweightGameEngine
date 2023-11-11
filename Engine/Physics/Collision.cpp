@@ -173,10 +173,7 @@ void eae6320::Physics::Collision::Update_CollisionDetection()
 	if ((s_collisionType & eCollisionType::BroadPhase_SweepAndPrune) != 0)
 		CollisionDetection_BroadPhase_SweepAndPrune();
 	else if ((s_collisionType & eCollisionType::BroadPhase_BVH) != 0)
-	{
 		CollisionDetection_BroadPhase_BVH();
-		s_BVHTree.UpdateRenderData();
-	}
 	else
 		CollisionDetection_BroadPhase_SweepAndPrune();
 }
@@ -464,11 +461,11 @@ void eae6320::Physics::Collision::Initialize_BVH(const std::vector<cCollider*>& 
 		s_BVHTree.Add(collider);
 	}
 
+	// Initialize BVH tree rendering data
+	s_BVHTree.InitialzieRenderData();
+
 	// Initial collision detection
 	CollisionDetection_BroadPhase_BVH();
-
-	// TODO temporary code for rendering BVH Tree
-	s_BVHTree.InitialzieRenderData();
 }
 
 

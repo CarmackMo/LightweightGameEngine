@@ -43,16 +43,11 @@ namespace Physics
 		// TODO: need to optmize this
 		bool childrenCrossed;
 
-		Graphics::cLine* AABBLine;
-
-		Math::cMatrix_transformation AABBLineTransform;
-
 
 		// Interface
 		//=========================
 
 		sBVHNode();
-		~sBVHNode();
 
 		bool IsLeaf() const;
 
@@ -64,13 +59,6 @@ namespace Physics
 
 		/* Update the fat AABB */
 		void UpdateFatAABB(float i_margin);
-
-		/* Update rendering data of fat AABB */
-		void UpdateRenderData();
-
-		void InitializeRenderData();
-
-
 
 		sBVHNode* GetSibling() const;
 	};
@@ -105,7 +93,7 @@ namespace Physics
 		std::vector<cCollider*> Query(cCollider* i_collider) const;
 
 		void InitialzieRenderData();
-		void UpdateRenderData();
+		
 		std::vector<std::pair<Graphics::cLine*, Math::cMatrix_transformation>>& GetRenderData();
 
 		// TODO
@@ -127,6 +115,7 @@ namespace Physics
 		void ClearChildrenCrossFlagHelper(sBVHNode* i_node);
 		void CrossChildren(sBVHNode* i_node);
 		void RenderInitializeHelper(Graphics::cLine*& io_AABBLine);
+		void RenderUpdateHelper();
 
 		// Data
 		//=========================
