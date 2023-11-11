@@ -7,7 +7,7 @@
 #include <Engine/Graphics/cMesh.h>
 #include <Engine/Graphics/VertexFormats.h>
 #include <Engine/Math/cMatrix_transformation.h>
-#include <Engine/Physics/sRigidBodyState.h>
+#include <Engine/Physics/cRigidBody.h>
 #include <Engine/UserInput/UserInput.h>
 
 #include <string>
@@ -17,6 +17,7 @@
 #include <Engine/Graphics/cLine.h>
 #include <Engine/Physics/cAABBCollider.h>
 #include <Engine/Physics/cColliderBase.h>
+#include <Engine/Physics/cSphereCollider.h>
 
 
 
@@ -75,20 +76,21 @@ namespace eae6320
 
 
 
-		// TODO: Tempory code for rendering collider box and debug collider
-		void InitializeAABB(
-			float x1, float y1, float z1,
-			float x2, float y2, float z2);
 
-		void InitializeAABBLine();
+		// TODO: Tempory code for rendering collider box and debug collider
+
+		void InitializeColliderLine();
 
 		void InitializeCollider(const Physics::sColliderSetting& i_builder);
 
-		Graphics::cLine* GetAABBLine() const;
-
-		Physics::cAABBCollider& GetAABBCollider();
+		Graphics::cLine* GetColliderLine() const;
 
 		Physics::cCollider* GetCollider() const;
+
+		void SetIsCollide(bool isCollide)
+		{
+			m_isCollide = isCollide;
+		}
 
 
 
@@ -105,11 +107,17 @@ namespace eae6320
 		Graphics::cEffect* m_effect = nullptr;
 
 
+
 		// TODO: Temporary code for collider
-		Physics::cAABBCollider m_AABB;
-		Graphics::cLine* m_AABBLine = nullptr;
+
+		bool m_isCollide = false;
+
+		Graphics::cLine* m_colliderLine = nullptr;
+
+		Graphics::cLine* m_collisionLine = nullptr;
 
 		Physics::cCollider* m_collider = nullptr;
+
 	};
 
 }

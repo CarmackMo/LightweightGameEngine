@@ -100,6 +100,7 @@ namespace eae6320
 
 			constexpr cMatrix_transformation() = default;	// The default constructor creates a a transform with no rotation and no translation
 			cMatrix_transformation( const cQuaternion& i_rotation, const sVector& i_translation );
+			cMatrix_transformation( const sVector& i_scale, const sVector& i_translation);
 
 			// Data
 			//=====

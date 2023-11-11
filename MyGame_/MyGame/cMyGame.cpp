@@ -18,6 +18,8 @@
 // TODO: Tempory code for collider testing
 #include <Engine/UserOutput/UserOutput.h>
 #include <Engine/Physics/cAABBCollider.h>
+#include <Engine/Physics/Collision.h>
+#include <vector>
 #include <iostream>
 
 
@@ -46,8 +48,6 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput()
 
 	m_gameobject_triangle.UpdateBasedOnInput();
 
-	m_AABBObject1.UpdateBasedOnInput();
-
 
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Enter))
 	{
@@ -57,6 +57,12 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput()
 	{
 		isKeyPressed = false;
 	}
+
+
+	// TODO: Temporary code for collider debug
+	m_colliderObject_AABB1.UpdateBasedOnInput();
+	//m_colliderObject_sphere2.UpdateBasedOnInput();
+
 }
 
 
@@ -68,27 +74,16 @@ void eae6320::cMyGame::UpdateSimulationBasedOnTime(const float i_elapsedSecondCo
 	m_gameobject_Ganyu.UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
 	m_gameobject_Keqing.UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
 
-	m_AABBObject1.UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
-	m_AABBObject2.UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
-
 
 
 	// TODO: Temporary code for collider debug
+	m_colliderObject_AABB1.UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
+	m_colliderObject_AABB2.UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
+	m_colliderObject_sphere2.UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
 
-	Physics::cCollider* temp_0 = m_colliderObject_AABB1.GetCollider();
-	if (temp_0->GetType() == Physics::eColliderType::AABB)
-	{
-		Physics::cAABBCollider* temp_1 = dynamic_cast<Physics::cAABBCollider*> (temp_0);
-		auto temp2 = temp_1->GetMaxEntent_world();
-	}
+	Physics::Collision::Update_CollisionDetection();
 
-	Physics::cCollider* temp_2 = m_colliderObject_sphere1.GetCollider();
-	if (temp_2->GetType() == Physics::eColliderType::Sphere)
-	{
-		Physics::cSphereCollider* temp_3 = dynamic_cast<Physics::cSphereCollider*> (temp_2);
-		auto temp4 = temp_3->GetCenter_world();
-	}
-
+	Physics::Collision::Update_CollisionResolution();
 
 }
 
@@ -154,19 +149,34 @@ void eae6320::cMyGame::SubmitDataToBeRendered(
 
 	// TODO: Submit debug for box collider
 	{
-		constexpr uint32_t arraySize = 2;
-		Graphics::ConstantBufferFormats::sDebug debugDataArray[arraySize];
+		auto BVHRenderData = Physics::Collision::GetBVHRenderData();
+		uint32_t staticSize = m_colliderObjectList.size();
+		uint32_t arraySize = BVHRenderData.size() + staticSize;
 
-		debugDataArray[0].Initialize(m_AABBObject1.GetAABBLine(), m_AABBObject1.GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
-		debugDataArray[1].Initialize(m_AABBObject2.GetAABBLine(), m_AABBObject2.GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
+		Graphics::ConstantBufferFormats::sDebug* debugDataArray = new Graphics::ConstantBufferFormats::sDebug[arraySize];
+
+		// Render data of hard-coded collider
+		for (size_t i = 0 ; i < m_colliderObjectList.size(); i++)
+		{
+			auto collider = m_colliderObjectList[i];
+			debugDataArray[i].Initialize(collider->GetColliderLine(), collider->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
+		}
+
+		// Render data of BVH tree
+		for (uint32_t i = staticSize; i < arraySize; i++)
+		{
+			debugDataArray[i].Initialize(BVHRenderData[i - staticSize].first, BVHRenderData[i - staticSize].second);
+		}
 
 		Graphics::SubmitDebugData(debugDataArray, arraySize);
 
-
+		// Clean up
 		for (uint32_t i = 0; i < arraySize; i++)
 		{
 			debugDataArray[i].CleanUp();
 		}
+
+		delete[] debugDataArray;
 	}
 }
 
@@ -204,6 +214,10 @@ eae6320::cResult eae6320::cMyGame::Initialize()
 	InitializeMeshData();
 
 	InitializeGameObject();
+
+	// TODO: temporary code for initialize collision system
+	InitializeCollisionSystem();
+
 
 	return Results::Success;
 }
@@ -305,41 +319,121 @@ void eae6320::cMyGame::InitializeGameObject()
 	}
 
 
-
-
 	// TODO: temporary code for initialize colldier object
 	{
-		m_AABBObject1.InitializeAABB(-0.5, -0.5, -0.5, 0.5, 0.5, 0.5);
-		m_AABBObject1.InitializeAABBLine();
-
-		m_AABBObject2.InitializeAABB(-1, -1, -1, 1, 1, 1);
-		m_AABBObject2.InitializeAABBLine();
-
-		m_sphereObject1 = Physics::cSphereCollider(0, 0, 0, 0.4f);
-		m_sphereObject2 = Physics::cSphereCollider(2.1f, 0, 0, 1);
-		m_sphereObject3 = Physics::cSphereCollider(4, 0, 0, 1);
-
-	
-
 		Physics::sColliderSetting setting_AABB1;
-		setting_AABB1.type = Physics::eColliderType::AABB;
-		setting_AABB1.AABB_max = Math::sVector(2, 3, 4);
-		setting_AABB1.AABB_min = Math::sVector(-5, -6, -7);
+		setting_AABB1.SettingForAABB(Math::sVector(-0.5, -0.5, -0.5), Math::sVector(0.5, 0.5, 0.5));
 
 		Physics::sColliderSetting setting_sphere1;
-		setting_sphere1.type = Physics::eColliderType::Sphere;
-		setting_sphere1.sphere_center = Math::sVector(0, 1, 2);
-		setting_sphere1.sphere_radius = 2.3f;
+		setting_sphere1.SettingForSphere(Math::sVector(0, 0, 0), 0.5f);
 
+
+
+
+		m_colliderObject_AABB1.GetRigidBody().position = Math::sVector(0.5f, 0.0f, 0.5f);
 		m_colliderObject_AABB1.InitializeCollider(setting_AABB1);
-		m_colliderObject_sphere1.InitializeCollider(setting_sphere1);
-	}
+		m_colliderObject_AABB1.InitializeColliderLine();
+		m_colliderObject_AABB1.GetCollider()->m_name = "AABB_1";
+		m_colliderObject_AABB1.GetCollider()->OnCollisionEnter = 
+			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Enter collision, other: ", other->m_name.c_str()); m_colliderObject_AABB1.SetIsCollide(true); };
+		m_colliderObject_AABB1.GetCollider()->OnCollisionStay = 
+			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(std::string("Stay collision, " + self->m_name + " : " ).c_str(), other->m_name.c_str()); };
+		m_colliderObject_AABB1.GetCollider()->OnCollisionExit = 
+			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Exit collision, other: ", other->m_name.c_str()); m_colliderObject_AABB1.SetIsCollide(false); };
 
+		// TODO: Trying to allocte OpenGL buffer during runtime
+		//m_colliderObject_AABB1.GetCollider()->OnCollisionEnter = 
+		//	[](const Physics::cCollider* other) -> void 
+		//	{ 
+		//		UserOutput::ConsolePrint(" Enter collision, other: ", other->m_name.c_str()); 
+
+		//		Graphics::VertexFormats::sVertex_line vertexData[1];
+		//		uint16_t indexData[1];
+		//		Graphics::cLine* temp;
+		//		Graphics::cLine::Create(temp, vertexData, 1, indexData, 1);
+
+		//		temp->DecrementReferenceCount();
+		//		return; 
+		//	};
+		//m_colliderObject_AABB1.GetCollider()->OnCollisionExit = 
+		//	[](const Physics::cCollider* other) -> void 
+		//	{ 
+		//		UserOutput::ConsolePrint(" Exit collision, other: ", other->m_name.c_str()); 
+		//		return; 
+		//	};
+
+
+		m_colliderObject_AABB2.GetRigidBody().position = Math::sVector(-1.0f, -0.5f, 1.5f);
+		m_colliderObject_AABB2.InitializeCollider(setting_AABB1);
+		m_colliderObject_AABB2.InitializeColliderLine();
+		m_colliderObject_AABB2.GetCollider()->m_name = "AABB_2";
+		m_colliderObject_AABB2.GetCollider()->OnCollisionEnter = 
+			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Enter collision, other: ", other->m_name.c_str()); m_colliderObject_AABB2.SetIsCollide(true); };
+		m_colliderObject_AABB2.GetCollider()->OnCollisionStay =
+			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(std::string("Stay collision, " + self->m_name + " : ").c_str(), other->m_name.c_str()); };
+		m_colliderObject_AABB2.GetCollider()->OnCollisionExit = 
+			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Exit collision, other: ", other->m_name.c_str()); m_colliderObject_AABB2.SetIsCollide(false); };
+
+		m_colliderObject_AABB3.GetRigidBody().position = Math::sVector(1.0f, -2.0f, 3.0f);
+		m_colliderObject_AABB3.InitializeCollider(setting_AABB1);
+		m_colliderObject_AABB3.InitializeColliderLine();
+		m_colliderObject_AABB3.GetCollider()->m_name = "AABB_3";
+		m_colliderObject_AABB3.GetCollider()->OnCollisionEnter = 
+			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Enter collision, other: ", other->m_name.c_str()); m_colliderObject_AABB3.SetIsCollide(true); };
+		m_colliderObject_AABB3.GetCollider()->OnCollisionStay =
+			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(std::string("Stay collision, " + self->m_name + " : ").c_str(), other->m_name.c_str()); };
+		m_colliderObject_AABB3.GetCollider()->OnCollisionExit = 
+			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Exit collision, other: ", other->m_name.c_str()); m_colliderObject_AABB3.SetIsCollide(false); };
+
+		m_colliderObject_AABB4.GetRigidBody().position = Math::sVector(-1.5f, -2.0f, 1.0f);
+		m_colliderObject_AABB4.GetRigidBody().isStatic = true;
+		m_colliderObject_AABB4.InitializeCollider(setting_AABB1);
+		m_colliderObject_AABB4.InitializeColliderLine();
+		m_colliderObject_AABB4.GetCollider()->m_name = "AABB_4";
+		m_colliderObject_AABB4.GetCollider()->OnCollisionEnter =
+			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Enter collision, other: ", other->m_name.c_str()); m_colliderObject_AABB4.SetIsCollide(true); };
+		m_colliderObject_AABB4.GetCollider()->OnCollisionStay =
+			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(std::string("Stay collision, " + self->m_name + " : ").c_str(), other->m_name.c_str()); };
+		m_colliderObject_AABB4.GetCollider()->OnCollisionExit =
+			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Exit collision, other: ", other->m_name.c_str()); m_colliderObject_AABB4.SetIsCollide(false); };
+
+
+		m_colliderObject_sphere1.GetRigidBody().position = Math::sVector(2.0f, -1.0f, 3.0f);
+		m_colliderObject_sphere1.InitializeCollider(setting_sphere1);
+		m_colliderObject_sphere1.InitializeColliderLine();
+		m_colliderObject_sphere1.GetCollider()->m_name = "Sphere_1";
+		m_colliderObject_sphere1.GetCollider()->OnCollisionEnter = 
+			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Enter collision, other: ", other->m_name.c_str()); m_colliderObject_sphere1.SetIsCollide(true); };
+		m_colliderObject_sphere1.GetCollider()->OnCollisionStay = 
+			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(std::string("Stay collision, " + self->m_name + " : ").c_str(), other->m_name.c_str()); };
+		m_colliderObject_sphere1.GetCollider()->OnCollisionExit = 
+			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Exit collision, other: ", other->m_name.c_str()); m_colliderObject_sphere1.SetIsCollide(false); };
+	
+		m_colliderObject_sphere2.GetRigidBody().position = Math::sVector(2.0f, 1.0f, 1.0f);
+		m_colliderObject_sphere2.InitializeCollider(setting_sphere1);
+		m_colliderObject_sphere2.InitializeColliderLine();
+		m_colliderObject_sphere2.GetCollider()->m_name = "Sphere_2";
+		m_colliderObject_sphere2.GetCollider()->OnCollisionEnter =
+			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Enter collision, other: ", other->m_name.c_str()); m_colliderObject_sphere2.SetIsCollide(true); };
+		m_colliderObject_sphere2.GetCollider()->OnCollisionStay =
+			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(std::string("Stay collision, " + self->m_name + " : ").c_str(), other->m_name.c_str()); };
+		m_colliderObject_sphere2.GetCollider()->OnCollisionExit =
+			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Exit collision, other: ", other->m_name.c_str()); m_colliderObject_sphere2.SetIsCollide(false); };
+
+		m_colliderObjectList.push_back(&m_colliderObject_AABB1);
+		m_colliderObjectList.push_back(&m_colliderObject_AABB2);
+		m_colliderObjectList.push_back(&m_colliderObject_AABB3);
+		m_colliderObjectList.push_back(&m_colliderObject_AABB4);
+		m_colliderObjectList.push_back(&m_colliderObject_sphere1);
+		m_colliderObjectList.push_back(&m_colliderObject_sphere2);
+	
+	}
 }
 
 
 void eae6320::cMyGame::CleanUpGameObject()
 {
+
 	m_gameobject_triangle.CleanUp();
 	m_gameobject_rectangle.CleanUp();
 	m_gameobject_plane.CleanUp();
@@ -355,13 +449,26 @@ void eae6320::cMyGame::CleanUpGameObject()
 	m_effect_standard->DecrementReferenceCount();
 
 
-
 	// TODO: temporary code for clean up colldier object
-	m_AABBObject1.CleanUp();
-	m_AABBObject2.CleanUp();
-
-	m_colliderObject_AABB1.CleanUp();
-	m_colliderObject_sphere1.CleanUp();
+	for (cGameObject* colliderObject : m_colliderObjectList)
+	{
+		colliderObject->CleanUp();
+	}
 }
 
 
+
+void eae6320::cMyGame::InitializeCollisionSystem()
+{
+	std::vector<Physics::cCollider*> colliderList;
+
+	for (cGameObject* colliderObject : m_colliderObjectList)
+	{
+		colliderList.push_back(colliderObject->GetCollider());
+	}
+
+	Physics::Collision::Initialize(colliderList, Physics::Collision::BroadPhase_BVH | Physics::Collision::NarrowPhase_Overlaps);
+}
+
+
+ 

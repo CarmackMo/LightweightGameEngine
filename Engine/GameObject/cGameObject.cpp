@@ -1,7 +1,9 @@
 // Includes
 //=========
 
-#include "cGameObject.h"
+#include <Engine/GameObject/cGameObject.h>
+
+#include <vector>
 
 
 void eae6320::cGameObject::InitializeMesh(
@@ -60,8 +62,10 @@ void eae6320::cGameObject::CleanUp()
 	if (m_mesh != nullptr) { m_mesh->DecrementReferenceCount(); }
 	if (m_effect != nullptr) { m_effect->DecrementReferenceCount(); }
 
-	// TODO: Temporary code for collider
-	if (m_AABBLine != nullptr) { m_AABBLine->DecrementReferenceCount(); }
+
+	// TODO: Temporary code for collider debug
+
+	if (m_colliderLine != nullptr) { m_colliderLine->DecrementReferenceCount(); }
 	if (m_collider != nullptr) { delete m_collider; }
 }
 
@@ -100,7 +104,14 @@ void eae6320::cGameObject::UpdateBasedOnTime(const float i_elapsedSecondCount_si
 {
 	// Update rigid body 
 	m_rigidBody.Update(i_elapsedSecondCount_sinceLastUpdate);
-	m_AABB.Update(m_rigidBody);
+
+
+	// TODO: temporary code for collider debug
+
+	//if (m_collider != nullptr)
+	//{
+	//	m_collider->Update(m_rigidBody);
+	//}
 }
 
 
@@ -120,6 +131,13 @@ void eae6320::cGameObject::UpdateBasedOnInput()
 		m_rigidBody.velocity.y = 3.0f;
 	else
 		m_rigidBody.velocity.y = 0.0f;
+
+	if (UserInput::IsKeyPressed('R'))
+		m_rigidBody.velocity.z = -3.0f;
+	else if (UserInput::IsKeyPressed('F'))
+		m_rigidBody.velocity.z = 3.0f;
+	else
+		m_rigidBody.velocity.z = 0.0f;
 }
 
 
@@ -130,98 +148,82 @@ void eae6320::cGameObject::UpdateBasedOnInput()
 
 #include <Engine/Math/sVector.h>
 
-void eae6320::cGameObject::InitializeAABB(
-	float x1, float y1, float z1,
-	float x2, float y2, float z2)
-{
-	m_AABB = Physics::cAABBCollider(Math::sVector(x1, y1, z1), Math::sVector(x2, y2, z2));
-}
 
-
-void eae6320::cGameObject::InitializeAABBLine()
+void eae6320::cGameObject::InitializeColliderLine()
 {
-	if (m_AABBLine != nullptr)
+	if (m_colliderLine != nullptr)
 	{
-		m_AABBLine->DecrementReferenceCount();
-		m_AABBLine = nullptr;
+		m_colliderLine->DecrementReferenceCount();
+		m_colliderLine = nullptr;
 	}
 
-	// vertex data
-	constexpr uint32_t vertexCount = 24;
-	Graphics::VertexFormats::sVertex_line vertexData[vertexCount];
-	{
-		Math::sVector modelPos = m_rigidBody.position;
+	uint32_t vertexCount = 0;
+	auto vertexVec = std::vector<Math::sVector>();
+	uint32_t indexCount = 0;
+	auto indexVec = std::vector<uint16_t>();
+	m_collider->GenerateRenderData(vertexCount, vertexVec, indexCount, indexVec);
 
-		// 0-1
-		vertexData[0] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_min.x, modelPos.y + m_AABB.m_min.y, modelPos.z + m_AABB.m_min.z);
-		vertexData[1] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_min.x, modelPos.y + m_AABB.m_max.y, modelPos.z + m_AABB.m_min.z);
-		// 1-2
-		vertexData[2] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_min.x, modelPos.y + m_AABB.m_max.y, modelPos.z + m_AABB.m_min.z);
-		vertexData[3] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_min.x, modelPos.y + m_AABB.m_max.y, modelPos.z + m_AABB.m_max.z);
-		// 2-3
-		vertexData[4] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_min.x, modelPos.y + m_AABB.m_max.y, modelPos.z + m_AABB.m_max.z);
-		vertexData[5] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_min.x, modelPos.y + m_AABB.m_min.y, modelPos.z + m_AABB.m_max.z);
-		// 3-0
-		vertexData[6] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_min.x, modelPos.y + m_AABB.m_min.y, modelPos.z + m_AABB.m_max.z);
-		vertexData[7] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_min.x, modelPos.y + m_AABB.m_min.y, modelPos.z + m_AABB.m_min.z);
-		// 4-5
-		vertexData[8] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_max.x, modelPos.y + m_AABB.m_min.y, modelPos.z + m_AABB.m_min.z);
-		vertexData[9] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_max.x, modelPos.y + m_AABB.m_max.y, modelPos.z + m_AABB.m_min.z);
-		// 5-6
-		vertexData[10] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_max.x, modelPos.y + m_AABB.m_max.y, modelPos.z + m_AABB.m_min.z);
-		vertexData[11] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_max.x, modelPos.y + m_AABB.m_max.y, modelPos.z + m_AABB.m_max.z);
-		// 6-7
-		vertexData[12] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_max.x, modelPos.y + m_AABB.m_max.y, modelPos.z + m_AABB.m_max.z);
-		vertexData[13] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_max.x, modelPos.y + m_AABB.m_min.y, modelPos.z + m_AABB.m_max.z);
-		// 7-4
-		vertexData[14] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_max.x, modelPos.y + m_AABB.m_min.y, modelPos.z + m_AABB.m_max.z);
-		vertexData[15] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_max.x, modelPos.y + m_AABB.m_min.y, modelPos.z + m_AABB.m_min.z);
-		// 1-5
-		vertexData[16] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_min.x, modelPos.y + m_AABB.m_max.y, modelPos.z + m_AABB.m_min.z);
-		vertexData[17] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_max.x, modelPos.y + m_AABB.m_max.y, modelPos.z + m_AABB.m_min.z);
-		// 2-6
-		vertexData[18] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_min.x, modelPos.y + m_AABB.m_max.y, modelPos.z + m_AABB.m_max.z);
-		vertexData[19] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_max.x, modelPos.y + m_AABB.m_max.y, modelPos.z + m_AABB.m_max.z);
-		// 0-4
-		vertexData[20] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_min.x, modelPos.y + m_AABB.m_min.y, modelPos.z + m_AABB.m_min.z);
-		vertexData[21] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_max.x, modelPos.y + m_AABB.m_min.y, modelPos.z + m_AABB.m_min.z);
-		// 3-7
-		vertexData[22] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_min.x, modelPos.y + m_AABB.m_min.y, modelPos.z + m_AABB.m_max.z);
-		vertexData[23] = Graphics::VertexFormats::sVertex_line(modelPos.x + m_AABB.m_max.x, modelPos.y + m_AABB.m_min.y, modelPos.z + m_AABB.m_max.z);
-	}
-
-	// index data
-	constexpr uint32_t indexCount = vertexCount;
-	uint16_t indexData[indexCount];
+	// Initialize collider outline
 	{
+		Graphics::VertexFormats::sVertex_line* vertexData = new Graphics::VertexFormats::sVertex_line[vertexCount];
+		for (uint32_t i = 0; i < vertexCount; i++)
+		{
+			if (m_rigidBody.isStatic == true)
+				vertexData[i] = Graphics::VertexFormats::sVertex_line(vertexVec[i].x, vertexVec[i].y, vertexVec[i].z, 1.0f, 0.8f, 0.0f, 1.0f);
+			else
+				vertexData[i] = Graphics::VertexFormats::sVertex_line(vertexVec[i].x, vertexVec[i].y, vertexVec[i].z, 0.0f, 1.0f, 0.0f, 1.0f);
+		}
+		uint16_t* indexData = new uint16_t[indexCount];
 		for (uint32_t i = 0; i < indexCount; i++)
 		{
-			indexData[i] = i;
+			indexData[i] = indexVec[i];
 		}
+
+		Graphics::cLine::Create(
+			m_colliderLine,
+			vertexData, vertexCount,
+			indexData, indexCount);
+
+		delete[] vertexData;
+		delete[] indexData;
 	}
 
-	Graphics::cLine::Create(
-		m_AABBLine,
-		vertexData, vertexCount,
-		indexData, indexCount);
+	// Initialize collision outline
+	{
+		Graphics::VertexFormats::sVertex_line* vertexData = new Graphics::VertexFormats::sVertex_line[vertexCount];
+		for (uint32_t i = 0; i < vertexCount; i++)
+		{
+			vertexData[i] = Graphics::VertexFormats::sVertex_line(vertexVec[i].x, vertexVec[i].y, vertexVec[i].z, 1, 0, 0, 1);
+		}
+		uint16_t* indexData = new uint16_t[indexCount];
+		for (uint32_t i = 0; i < indexCount; i++)
+		{
+			indexData[i] = indexVec[i];
+		}
+
+		Graphics::cLine::Create(
+			m_collisionLine,
+			vertexData, vertexCount,
+			indexData, indexCount);
+
+		delete[] vertexData;
+		delete[] indexData;
+	}
 }
 
 
 void eae6320::cGameObject::InitializeCollider(const Physics::sColliderSetting& i_builder)
 {
-	Physics::cCollider::Create(m_collider, i_builder);
+	Physics::cCollider::Create(m_collider, i_builder, &m_rigidBody);
 }
 
 
-eae6320::Graphics::cLine* eae6320::cGameObject::GetAABBLine() const
+eae6320::Graphics::cLine* eae6320::cGameObject::GetColliderLine() const
 {
-	return m_AABBLine;
-}
-
-
-eae6320::Physics::cAABBCollider& eae6320::cGameObject::GetAABBCollider()
-{
-	return m_AABB;
+	if (m_isCollide)
+		return m_collisionLine;
+	else
+		return m_colliderLine;
 }
 
 

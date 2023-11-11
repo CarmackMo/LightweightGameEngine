@@ -30,6 +30,8 @@ namespace eae6320
 
 		void Print( const char* const i_message, ... );
 
+		void ConsolePrint(const char* i_pFmt, const char* i_pFile = __FILE__, unsigned int i_Line = __LINE__, ...);
+
 		// Initialization / Clean Up
 		//--------------------------
 

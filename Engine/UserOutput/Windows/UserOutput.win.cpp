@@ -67,6 +67,35 @@ void eae6320::UserOutput::Print( const char* const i_message, ... )
 		Windows::ConvertUtf8ToUtf16( caption ).c_str(), MB_OK | MB_ICONINFORMATION );
 }
 
+
+void eae6320::UserOutput::ConsolePrint(const char* i_pFmt, const char* i_pFile, unsigned int i_Line, ...)
+{
+	const size_t		lenTemp = 2048;
+	char				strTemp[lenTemp] = " \n ENGINE DEBUG: ";
+
+	strcat_s(strTemp, i_pFmt);
+	strcat_s(strTemp, i_pFile);
+
+	const size_t		lenOutput = 2048;
+	char				strOutput[lenOutput];
+
+	// define a variable argument list variable 
+	va_list				args;
+
+	// initialize it. second parameter is variable immediately
+	// preceeding variable arguments
+	va_start(args, i_Line);
+
+	// (safely) print our formatted string to a char buffer
+	vsprintf_s(strOutput, lenOutput, strTemp, args);
+
+
+	va_end(args);
+
+	OutputDebugStringA(strOutput);
+}
+
+
 // Initialize / Clean Up
 //----------------------
 

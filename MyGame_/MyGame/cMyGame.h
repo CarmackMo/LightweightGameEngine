@@ -11,7 +11,7 @@
 #include <Engine/Application/iApplication.h>
 #include <Engine/Camera/cCamera.h>
 #include <Engine/GameObject/cGameObject.h>
-#include <Engine/Physics/sRigidBodyState.h>
+#include <Engine/Physics/cRigidBody.h>
 #include <Engine/Results/Results.h>
 
 
@@ -144,22 +144,8 @@ namespace eae6320
 		cGameObject m_gameobject_Ganyu;
 
 
-
-
-		// TODO: temporary colldier object
-		cGameObject m_AABBObject1;
-		cGameObject m_AABBObject2;
-		Physics::cSphereCollider m_sphereObject1;
-		Physics::cSphereCollider m_sphereObject2;
-		Physics::cSphereCollider m_sphereObject3;
-
-		cGameObject m_colliderObject_AABB1;
-		cGameObject m_colliderObject_sphere1;
-
-
-
-
 		bool isKeyPressed = false;
+
 		void InitializeMeshData();
 
 		void InitializeCamera();
@@ -167,6 +153,27 @@ namespace eae6320
 		void InitializeGameObject();
 
 		void CleanUpGameObject();
+
+
+
+
+
+		// TODO: temporary colldier object
+
+		cGameObject m_colliderObject_AABB1;
+		cGameObject m_colliderObject_AABB2;
+		cGameObject m_colliderObject_AABB3;
+		cGameObject m_colliderObject_AABB4;
+
+		cGameObject m_colliderObject_sphere1;
+		cGameObject m_colliderObject_sphere2;
+
+		std::vector<cGameObject*> m_colliderObjectList;
+
+		void InitializeCollisionSystem();
+
+
+
 	};
 }
 
@@ -178,7 +185,7 @@ namespace eae6320
 namespace Results
 {
 namespace Application
-{
+{  
 	// You can add specific results for your game here:
 	//	* The System should always be Application
 	//	* The __LINE__ macro is used to make sure that every result has a unique ID.

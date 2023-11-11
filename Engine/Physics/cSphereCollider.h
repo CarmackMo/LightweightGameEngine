@@ -7,6 +7,8 @@
 #include <Engine/Physics/cAABBCollider.h>
 #include <Engine/Physics/cColliderBase.h>
 
+#include <vector>
+
 namespace eae6320
 {
 namespace Physics
@@ -22,18 +24,31 @@ namespace Physics
 		// Initialization / Clean Up
 		//--------------------------
 
-		cSphereCollider() = default;
-		cSphereCollider(Math::sVector center, float radius) : m_center(center), m_radius(radius) { cCollider::Initialize(eColliderType::Sphere); }
-		cSphereCollider(float x, float y, float z, float radius) : m_center(Math::sVector(x,y,z)), m_radius(radius) { cCollider::Initialize(eColliderType::Sphere); }
+		cSphereCollider() : cCollider(eColliderType::Sphere) { };
+		cSphereCollider(const Math::sVector& i_center, float i_radius)
+			: cCollider(eColliderType::Sphere), m_center(i_center), m_radius(i_radius) { }
+		cSphereCollider(float i_x, float i_y, float i_z, float i_radius)
+			: cCollider(eColliderType::Sphere), m_center(Math::sVector(i_x, i_y, i_z)), m_radius(i_radius) { }
 
 		~cSphereCollider() = default;
 
-		void Update(const sRigidBodyState& i_rigidBody) final;
 
 		// Property Getters
 		//--------------------------
 
-		Math::sVector GetCenter_world() const;
+		Math::sVector GetMinExtent_world() const final;
+
+		Math::sVector GetMaxExtent_world() const final;
+
+		Math::sVector GetMinExtent_local() const final;
+
+		Math::sVector GetMaxExtent_local() const final;
+
+		Math::sVector GetCentroid_world() const final;
+
+		Math::sVector GetCentroid_local() const final;
+
+		Math::sVector GetWorldPosition() const final;
 
 		float GetRadius() const;
 
@@ -44,6 +59,13 @@ namespace Physics
 
 		bool IsOverlaps(const cAABBCollider& i_other);
 
+		// Render / Debug
+		//--------------------------
+
+		void GenerateRenderData(
+			uint32_t& o_vertexCount, std::vector<Math::sVector>& o_vertexData,
+			uint32_t& o_indexCount, std::vector<uint16_t>& o_indexData) final;
+
 
 		// Data
 		//=====================
@@ -52,7 +74,6 @@ namespace Physics
 
 		float m_radius = 0.0f;
 		Math::sVector m_center;
-		Math::sVector m_pos;
 	};
 
 
