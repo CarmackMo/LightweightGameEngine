@@ -150,8 +150,8 @@ void eae6320::cMyGame::SubmitDataToBeRendered(
 	// TODO: Submit debug for box collider
 	{
 		auto BVHRenderData = Physics::Collision::GetBVHRenderData();
-		uint32_t staticSize = m_colliderObjectList.size();
-		uint32_t arraySize = BVHRenderData.size() + staticSize;
+		size_t staticSize = m_colliderObjectList.size();
+		size_t arraySize = BVHRenderData.size() + staticSize;
 
 		Graphics::ConstantBufferFormats::sDebug* debugDataArray = new Graphics::ConstantBufferFormats::sDebug[arraySize];
 
@@ -163,15 +163,15 @@ void eae6320::cMyGame::SubmitDataToBeRendered(
 		}
 
 		// Render data of BVH tree
-		for (uint32_t i = staticSize; i < arraySize; i++)
+		for (size_t i = staticSize; i < arraySize; i++)
 		{
 			debugDataArray[i].Initialize(BVHRenderData[i - staticSize].first, BVHRenderData[i - staticSize].second);
 		}
 
-		Graphics::SubmitDebugData(debugDataArray, arraySize);
+		Graphics::SubmitDebugData(debugDataArray, static_cast<uint32_t>(arraySize));
 
 		// Clean up
-		for (uint32_t i = 0; i < arraySize; i++)
+		for (size_t i = 0; i < arraySize; i++)
 		{
 			debugDataArray[i].CleanUp();
 		}

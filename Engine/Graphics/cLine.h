@@ -5,7 +5,8 @@
 #include "VertexFormats.h"
 
 #if defined (EAE6320_PLATFORM_D3D)
-
+	#include "cVertexFormat.h"
+	#include "Direct3D/Includes.h"
 #elif defined (EAE6320_PLATFORM_GL)
 	#include "OpenGL/Includes.h"
 #endif
@@ -76,7 +77,9 @@ namespace Graphics
 		uint32_t m_indexCountToRender = 0;
 
 #if defined (EAE6320_PLATFORM_D3D)
-
+		cVertexFormat* m_vertexFormat = nullptr;
+		ID3D11Buffer* m_vertexBuffer = nullptr;
+		ID3D11Buffer* m_indexBuffer = nullptr;
 #elif defined (EAE6320_PLATFORM_GL)
 		GLuint m_vertexArrayId = 0;
 		GLuint m_vertexBufferId = 0;
