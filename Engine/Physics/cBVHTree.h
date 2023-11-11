@@ -136,9 +136,7 @@ namespace Physics
 		sBVHNode* m_root;
 		std::list<std::pair<cCollider*, cCollider*>> m_pairs;
 		std::vector<sBVHNode*> m_invalidNodes;
-		std::vector<Graphics::cLine*> m_renderData;
-
-		std::vector<std::pair<Graphics::cLine*, Math::cMatrix_transformation*>> m_renderData_temp;
+		std::vector<std::pair<Graphics::cLine*, Math::cMatrix_transformation*>> m_renderData;
 	};
 
 }// Namespace Physics

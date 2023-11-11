@@ -479,7 +479,7 @@ void eae6320::Physics::cBVHTree::CrossChildren(sBVHNode* i_node)
 
 void eae6320::Physics::cBVHTree::InitialzieRenderData()
 {
-	m_renderData_temp.clear();
+	m_renderData.clear();
 
 	if (m_root == nullptr)
 		return;
@@ -494,7 +494,7 @@ void eae6320::Physics::cBVHTree::InitialzieRenderData()
 		
 		current->InitializeRenderData();
 		current->UpdateRenderData();
-		m_renderData_temp.push_back(std::pair<Graphics::cLine*, Math::cMatrix_transformation*>(current->AABBLine, &current->AABBLineTransform));
+		m_renderData.push_back(std::pair<Graphics::cLine*, Math::cMatrix_transformation*>(current->AABBLine, &current->AABBLineTransform));
 
 		if (current->IsLeaf() == false)
 		{
@@ -507,5 +507,5 @@ void eae6320::Physics::cBVHTree::InitialzieRenderData()
 
 std::vector<std::pair<eae6320::Graphics::cLine*, eae6320::Math::cMatrix_transformation*>>& eae6320::Physics::cBVHTree::GetRenderData()
 {
-	return m_renderData_temp;
+	return m_renderData;
 }

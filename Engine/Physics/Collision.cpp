@@ -216,11 +216,6 @@ eae6320::cResult eae6320::Physics::Collision::DeregisterCollider(cCollider* i_co
 }
 
 
-//std::vector<eae6320::Graphics::cLine*>& eae6320::Physics::Collision::GetBVHRenderData()
-//{
-//	return s_BVHTree.GetRenderData();
-//}
-
 std::vector<std::pair<eae6320::Graphics::cLine*, eae6320::Math::cMatrix_transformation*>>& eae6320::Physics::Collision::GetBVHRenderData()
 {
 	return s_BVHTree.GetRenderData();

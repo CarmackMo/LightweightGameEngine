@@ -63,18 +63,6 @@ void eae6320::cMyGame::UpdateSimulationBasedOnInput()
 	m_colliderObject_AABB1.UpdateBasedOnInput();
 	//m_colliderObject_sphere2.UpdateBasedOnInput();
 
-	//if (UserInput::IsKeyPressed(UserInput::KeyCodes::Enter))
-	//{
-	//	isENTERKeyActive = !isENTERKeyActive;
-	//	UserOutput::ConsolePrint("Current key state: ", isENTERKeyActive ? "TRUE" : "FALSE");
-
-
-	//	if (isENTERKeyActive)
-	//	{
-	//		Physics::Collision::UpdateRenderData();
-	//	}
-	//}
-
 }
 
 
@@ -162,18 +150,17 @@ void eae6320::cMyGame::SubmitDataToBeRendered(
 	// TODO: Submit debug for box collider
 	{
 		auto BVHRenderData = Physics::Collision::GetBVHRenderData();
-		uint32_t staticSize = 6;
+		uint32_t staticSize = m_colliderObjectList.size();
 		uint32_t arraySize = BVHRenderData.size() + staticSize;
 
 		Graphics::ConstantBufferFormats::sDebug* debugDataArray = new Graphics::ConstantBufferFormats::sDebug[arraySize];
 
 		// Render data of hard-coded collider
-		debugDataArray[0].Initialize(m_colliderObject_AABB1.GetColliderLine(), m_colliderObject_AABB1.GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
-		debugDataArray[1].Initialize(m_colliderObject_AABB2.GetColliderLine(), m_colliderObject_AABB2.GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
-		debugDataArray[2].Initialize(m_colliderObject_AABB3.GetColliderLine(), m_colliderObject_AABB3.GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
-		debugDataArray[3].Initialize(m_colliderObject_AABB4.GetColliderLine(), m_colliderObject_AABB4.GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
-		debugDataArray[4].Initialize(m_colliderObject_sphere1.GetColliderLine(), m_colliderObject_sphere1.GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
-		debugDataArray[5].Initialize(m_colliderObject_sphere2.GetColliderLine(), m_colliderObject_sphere2.GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
+		for (size_t i = 0 ; i < m_colliderObjectList.size(); i++)
+		{
+			auto collider = m_colliderObjectList[i];
+			debugDataArray[i].Initialize(collider->GetColliderLine(), collider->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
+		}
 
 		// Render data of BVH tree
 		for (uint32_t i = staticSize; i < arraySize; i++)
@@ -433,9 +420,14 @@ void eae6320::cMyGame::InitializeGameObject()
 		m_colliderObject_sphere2.GetCollider()->OnCollisionExit =
 			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Exit collision, other: ", other->m_name.c_str()); m_colliderObject_sphere2.SetIsCollide(false); };
 
-
+		m_colliderObjectList.push_back(&m_colliderObject_AABB1);
+		m_colliderObjectList.push_back(&m_colliderObject_AABB2);
+		m_colliderObjectList.push_back(&m_colliderObject_AABB3);
+		//m_colliderObjectList.push_back(&m_colliderObject_AABB4);
+		//m_colliderObjectList.push_back(&m_colliderObject_sphere1);
+		//m_colliderObjectList.push_back(&m_colliderObject_sphere2);
+	
 	}
-
 }
 
 
@@ -458,13 +450,10 @@ void eae6320::cMyGame::CleanUpGameObject()
 
 
 	// TODO: temporary code for clean up colldier object
-
-	m_colliderObject_AABB1.CleanUp();
-	m_colliderObject_AABB2.CleanUp();
-	m_colliderObject_AABB3.CleanUp();
-	m_colliderObject_AABB4.CleanUp();
-	m_colliderObject_sphere1.CleanUp();
-	m_colliderObject_sphere2.CleanUp();
+	for (cGameObject* colliderObject : m_colliderObjectList)
+	{
+		colliderObject->CleanUp();
+	}
 }
 
 
@@ -472,13 +461,11 @@ void eae6320::cMyGame::CleanUpGameObject()
 void eae6320::cMyGame::InitializeCollisionSystem()
 {
 	std::vector<Physics::cCollider*> colliderList;
-	colliderList.push_back(m_colliderObject_AABB1.GetCollider());
-	colliderList.push_back(m_colliderObject_AABB2.GetCollider());
-	colliderList.push_back(m_colliderObject_AABB3.GetCollider());
-	colliderList.push_back(m_colliderObject_AABB4.GetCollider());
-	colliderList.push_back(m_colliderObject_sphere1.GetCollider());
-	colliderList.push_back(m_colliderObject_sphere2.GetCollider());
 
+	for (cGameObject* colliderObject : m_colliderObjectList)
+	{
+		colliderList.push_back(colliderObject->GetCollider());
+	}
 
 	Physics::Collision::Initialize(colliderList, Physics::Collision::BroadPhase_BVH | Physics::Collision::NarrowPhase_Overlaps);
 }

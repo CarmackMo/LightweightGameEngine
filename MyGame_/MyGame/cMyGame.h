@@ -168,9 +168,11 @@ namespace eae6320
 		cGameObject m_colliderObject_sphere1;
 		cGameObject m_colliderObject_sphere2;
 
+		std::vector<cGameObject*> m_colliderObjectList;
+
 		void InitializeCollisionSystem();
 
-		bool isENTERKeyActive = false;
+
 
 	};
 }
