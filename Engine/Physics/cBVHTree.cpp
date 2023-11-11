@@ -54,7 +54,7 @@ void eae6320::Physics::sBVHNode::SetLeaf(cCollider* i_collider)
 }
 
 
-void eae6320::Physics::sBVHNode::UpdateAABB(float i_margin)
+void eae6320::Physics::sBVHNode::UpdateFatAABB(float i_margin)
 {
 	if (IsLeaf())
 	{
@@ -68,45 +68,20 @@ void eae6320::Physics::sBVHNode::UpdateAABB(float i_margin)
 		// make union of child nodes' AABB
 		fatAABB = children[0]->fatAABB.Union(children[1]->fatAABB);
 	}
+
+	UpdateRenderData();
 }
 
 
-void eae6320::Physics::sBVHNode::UpdateAABBLine()
+void eae6320::Physics::sBVHNode::UpdateRenderData()
 {
-	//if (AABBLine != nullptr)
-	//{
-	//	AABBLine->DecrementReferenceCount();
-	//	AABBLine = nullptr;
-	//}
-
-	//uint32_t vertexCount = 0;
-	//auto vertexVec = std::vector<Math::sVector>();
-	//uint32_t indexCount = 0;
-	//auto indexVec = std::vector<uint16_t>();
-	//fatAABB.GenerateRenderData(vertexCount, vertexVec, indexCount, indexVec);
-
-	//Graphics::VertexFormats::sVertex_line* vertexData = new Graphics::VertexFormats::sVertex_line[vertexCount];
-	//for (uint32_t i = 0; i < vertexCount; i++)
-	//{
-	//	vertexData[i] = Graphics::VertexFormats::sVertex_line(vertexVec[i].x, vertexVec[i].y, vertexVec[i].z, 0, 1, 1, 1);
-	//}
-	//uint16_t* indexData = new uint16_t[indexCount];
-	//for (uint32_t i = 0; i < indexCount; i++)
-	//{
-	//	indexData[i] = indexVec[i];
-	//}
-
-	//Graphics::cLine::Create(AABBLine, vertexData, vertexCount, indexData, indexCount);
-
-
 	Math::sVector scale = fatAABB.GetMaxExtent_local() - fatAABB.GetMinExtent_local();
 	Math::sVector worldPos = fatAABB.GetCentroid_world();
 	AABBLineTransform = Math::cMatrix_transformation(scale, worldPos);
-
 }
 
 
-void eae6320::Physics::sBVHNode::InitializeAABBLine()
+void eae6320::Physics::sBVHNode::InitializeRenderData()
 {
 	if (AABBLine != nullptr)
 	{
@@ -218,7 +193,7 @@ void eae6320::Physics::cBVHTree::Add(cCollider* i_collider)
 		// if this is not the first node of the tree, insert node to tree
 		sBVHNode* node = new sBVHNode();
 		node->SetLeaf(i_collider);
-		node->UpdateAABB(m_margin);
+		node->UpdateFatAABB(m_margin);
 		InsertNode(node, &m_root);
 	}
 	else
@@ -226,7 +201,7 @@ void eae6320::Physics::cBVHTree::Add(cCollider* i_collider)
 		// if this is the first node, make it root
 		m_root = new sBVHNode();
 		m_root->SetLeaf(i_collider);
-		m_root->UpdateAABB(m_margin);
+		m_root->UpdateFatAABB(m_margin);
 	}
 }
 
@@ -245,7 +220,7 @@ void eae6320::Physics::cBVHTree::Update()
 	{
 		if (m_root->IsLeaf())
 		{
-			m_root->UpdateAABB(m_margin);
+			m_root->UpdateFatAABB(m_margin);
 		}
 		else
 		{
@@ -273,7 +248,7 @@ void eae6320::Physics::cBVHTree::Update()
 				delete parent;
 
 				// re-insert node
-				node->UpdateAABB(m_margin);
+				node->UpdateFatAABB(m_margin);
 				InsertNode(node, &m_root);
 			}
 
@@ -361,7 +336,7 @@ void eae6320::Physics::cBVHTree::InsertNode(sBVHNode* i_node, sBVHNode** i_paren
 	}
 
 	// update parent AABB (propagates back up the recursion stack)
-	(*i_parent)->UpdateAABB(m_margin);
+	(*i_parent)->UpdateFatAABB(m_margin);
 }
 
 
@@ -517,9 +492,9 @@ void eae6320::Physics::cBVHTree::InitialzieRenderData()
 		sBVHNode* current = container.front();
 		container.pop();
 		
-		current->InitializeAABBLine();
-		current->UpdateAABBLine();
-		m_renderData_temp.push_back(std::pair<Graphics::cLine*, const Math::cMatrix_transformation&>(current->AABBLine, current->AABBLineTransform));
+		current->InitializeRenderData();
+		current->UpdateRenderData();
+		m_renderData_temp.push_back(std::pair<Graphics::cLine*, Math::cMatrix_transformation*>(current->AABBLine, &current->AABBLineTransform));
 
 		if (current->IsLeaf() == false)
 		{
@@ -529,61 +504,8 @@ void eae6320::Physics::cBVHTree::InitialzieRenderData()
 	}
 }
 
-void eae6320::Physics::cBVHTree::UpdatetRenderData()
-{
-	//m_renderData.clear();
 
-	//if (m_root == nullptr)
-	//	return;
-
-	//std::queue<sBVHNode*> container;
-	//container.push(m_root);
-
-	//while (container.empty() == false)
-	//{
-	//	sBVHNode* current = container.front();
-	//	container.pop();
-
-	//	current->UpdateAABBLine();
-	//	m_renderData.push_back(current->AABBLine);
-
-	//	if (current->IsLeaf() == false)
-	//	{
-	//		container.push(current->children[0]);
-	//		container.push(current->children[1]);
-	//	}
-	//}
-
-
-
-	if (m_root == nullptr)
-		return;
-
-	std::queue<sBVHNode*> container;
-	container.push(m_root);
-
-	while (container.empty() == false)
-	{
-		sBVHNode* current = container.front();
-		container.pop();
-
-		current->UpdateAABBLine();
-
-		if (current->IsLeaf() == false)
-		{
-			container.push(current->children[0]);
-			container.push(current->children[1]);
-		}
-	}
-}
-
-std::vector<std::pair<eae6320::Graphics::cLine*, const eae6320::Math::cMatrix_transformation&>>& eae6320::Physics::cBVHTree::GetRenderData()
+std::vector<std::pair<eae6320::Graphics::cLine*, eae6320::Math::cMatrix_transformation*>>& eae6320::Physics::cBVHTree::GetRenderData()
 {
 	return m_renderData_temp;
 }
-
-
-//std::vector<eae6320::Graphics::cLine*>& eae6320::Physics::cBVHTree::GetRenderData()
-//{
-//	return m_renderData;
-//}

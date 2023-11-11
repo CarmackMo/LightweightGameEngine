@@ -64,7 +64,7 @@ namespace Collision
 
 	//std::vector<Graphics::cLine*>& GetBVHRenderData();
 
-	std::vector<std::pair<Graphics::cLine*, const Math::cMatrix_transformation&>>& GetBVHRenderData();
+	std::vector<std::pair<Graphics::cLine*, Math::cMatrix_transformation*>>& GetBVHRenderData();
 
 
 }// Namespace Collision

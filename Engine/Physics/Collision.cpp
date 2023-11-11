@@ -84,9 +84,6 @@ namespace Collision
 
 	void CollisionDetection_BroadPhase_BVH();
 
-	// TODO: rendering debug
-	void UpdateRenderData();
-
 
 	// Narrow Phase
 	//----------------------
@@ -224,7 +221,7 @@ eae6320::cResult eae6320::Physics::Collision::DeregisterCollider(cCollider* i_co
 //	return s_BVHTree.GetRenderData();
 //}
 
-std::vector<std::pair<eae6320::Graphics::cLine*, const eae6320::Math::cMatrix_transformation&>>& eae6320::Physics::Collision::GetBVHRenderData()
+std::vector<std::pair<eae6320::Graphics::cLine*, eae6320::Math::cMatrix_transformation*>>& eae6320::Physics::Collision::GetBVHRenderData()
 {
 	return s_BVHTree.GetRenderData();
 }
@@ -451,6 +448,7 @@ void eae6320::Physics::Collision::CollisionDetection_BroadPhase_SweepAndPrune()
 }
 
 
+
 // Broad Phase: BVH Tree
 //============
 
@@ -542,11 +540,6 @@ void eae6320::Physics::Collision::CollisionDetection_BroadPhase_BVH()
 	}
 }
 
-
-void eae6320::Physics::Collision::UpdateRenderData()
-{
-	s_BVHTree.UpdatetRenderData();
-}
 
 
 // Narrow Phase

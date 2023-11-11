@@ -63,12 +63,12 @@ namespace Physics
 		void SetLeaf(cCollider* i_collider);
 
 		/* Update the fat AABB */
-		void UpdateAABB(float i_margin);
+		void UpdateFatAABB(float i_margin);
 
 		/* Update rendering data of fat AABB */
-		void UpdateAABBLine();
+		void UpdateRenderData();
 
-		void InitializeAABBLine();
+		void InitializeRenderData();
 
 
 
@@ -105,9 +105,7 @@ namespace Physics
 		std::vector<cCollider*> Query(cCollider* i_collider) const;
 
 		void InitialzieRenderData();
-		void UpdatetRenderData();
-		//std::vector<Graphics::cLine*>& GetRenderData();
-		std::vector<std::pair<Graphics::cLine*, const Math::cMatrix_transformation&>>& GetRenderData();
+		std::vector<std::pair<Graphics::cLine*, Math::cMatrix_transformation*>>& GetRenderData();
 
 		// TODO
 		//virtual cCollider* Pick(const Math::sVector& i_point) const;
@@ -140,7 +138,7 @@ namespace Physics
 		std::vector<sBVHNode*> m_invalidNodes;
 		std::vector<Graphics::cLine*> m_renderData;
 
-		std::vector<std::pair<Graphics::cLine*, const Math::cMatrix_transformation&>> m_renderData_temp;
+		std::vector<std::pair<Graphics::cLine*, Math::cMatrix_transformation*>> m_renderData_temp;
 	};
 
 }// Namespace Physics
