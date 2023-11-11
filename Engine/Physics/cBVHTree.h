@@ -13,7 +13,18 @@
 #include <vector>
 
 
+// BVH Tree Default Setting
+//=============
+
+namespace eae6320
+{
+namespace Physics
+{
+
 #define DEFAULT_BVH_MARGIN 0.05f
+
+}// Namespace Physics
+}// Namespace eae6320
 
 
 // BVH Tree Node
@@ -110,7 +121,7 @@ namespace Physics
 		void InsertNode(sBVHNode* i_node, sBVHNode** i_parent);
 		void RemoveNode(sBVHNode* i_node);
 
-		void UpdateNodeHelper(sBVHNode* i_node, std::vector<sBVHNode*>& i_invalidNodes);
+		void UpdateInvalidNodeHelper(sBVHNode* i_node, std::vector<sBVHNode*>& i_invalidNodes);
 		void ComputePairsHelper(sBVHNode* i_node0, sBVHNode* i_node1);
 		void ClearChildrenCrossFlagHelper(sBVHNode* i_node);
 		void CrossChildren(sBVHNode* i_node);

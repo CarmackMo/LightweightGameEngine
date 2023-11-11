@@ -142,7 +142,7 @@ void eae6320::Physics::cBVHTree::Update()
 		{
 			// grab all invalid nodes
 			m_invalidNodes.clear();
-			UpdateNodeHelper(m_root, m_invalidNodes);
+			UpdateInvalidNodeHelper(m_root, m_invalidNodes);
 
 			// re-insert all invalid nodes
 			for (sBVHNode* node : m_invalidNodes)
@@ -332,7 +332,7 @@ void eae6320::Physics::cBVHTree::RemoveNode(sBVHNode* i_node)
 }
 
 
-void eae6320::Physics::cBVHTree::UpdateNodeHelper(sBVHNode* i_node, std::vector<sBVHNode*>& i_invalidNodes)
+void eae6320::Physics::cBVHTree::UpdateInvalidNodeHelper(sBVHNode* i_node, std::vector<sBVHNode*>& i_invalidNodes)
 {
 	std::queue<sBVHNode*> container;
 	container.push(i_node);
