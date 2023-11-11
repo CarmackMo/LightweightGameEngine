@@ -4,6 +4,7 @@
 //=========
 
 #include <Engine/Graphics/cLine.h>
+#include <Engine/Math/cMatrix_transformation.h>
 #include <Engine/Math/sVector.h>
 #include <Engine/Physics/cAABBCollider.h>
 #include <Engine/Physics/cColliderBase.h>
@@ -44,6 +45,7 @@ namespace Physics
 
 		Graphics::cLine* AABBLine;
 
+		Math::cMatrix_transformation AABBLineTransform;
 
 
 		// Interface
@@ -65,6 +67,10 @@ namespace Physics
 
 		/* Update rendering data of fat AABB */
 		void UpdateAABBLine();
+
+		void InitializeAABBLine();
+
+
 
 		sBVHNode* GetSibling() const;
 	};
@@ -98,8 +104,10 @@ namespace Physics
 		std::list<std::pair<cCollider*, cCollider*>>& ComputePairs();
 		std::vector<cCollider*> Query(cCollider* i_collider) const;
 
+		void InitialzieRenderData();
 		void UpdatetRenderData();
-		std::vector<Graphics::cLine*>& GetRenderData();
+		//std::vector<Graphics::cLine*>& GetRenderData();
+		std::vector<std::pair<Graphics::cLine*, const Math::cMatrix_transformation&>>& GetRenderData();
 
 		// TODO
 		//virtual cCollider* Pick(const Math::sVector& i_point) const;
@@ -131,6 +139,8 @@ namespace Physics
 		std::list<std::pair<cCollider*, cCollider*>> m_pairs;
 		std::vector<sBVHNode*> m_invalidNodes;
 		std::vector<Graphics::cLine*> m_renderData;
+
+		std::vector<std::pair<Graphics::cLine*, const Math::cMatrix_transformation&>> m_renderData_temp;
 	};
 
 }// Namespace Physics

@@ -62,7 +62,9 @@ namespace Collision
 
 	cResult DeregisterCollider(cCollider* i_collider);
 
-	std::vector<Graphics::cLine*>& GetBVHRenderData();
+	//std::vector<Graphics::cLine*>& GetBVHRenderData();
+
+	std::vector<std::pair<Graphics::cLine*, const Math::cMatrix_transformation&>>& GetBVHRenderData();
 
 
 }// Namespace Collision

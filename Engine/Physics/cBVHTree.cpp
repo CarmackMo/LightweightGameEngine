@@ -73,27 +73,97 @@ void eae6320::Physics::sBVHNode::UpdateAABB(float i_margin)
 
 void eae6320::Physics::sBVHNode::UpdateAABBLine()
 {
+	//if (AABBLine != nullptr)
+	//{
+	//	AABBLine->DecrementReferenceCount();
+	//	AABBLine = nullptr;
+	//}
+
+	//uint32_t vertexCount = 0;
+	//auto vertexVec = std::vector<Math::sVector>();
+	//uint32_t indexCount = 0;
+	//auto indexVec = std::vector<uint16_t>();
+	//fatAABB.GenerateRenderData(vertexCount, vertexVec, indexCount, indexVec);
+
+	//Graphics::VertexFormats::sVertex_line* vertexData = new Graphics::VertexFormats::sVertex_line[vertexCount];
+	//for (uint32_t i = 0; i < vertexCount; i++)
+	//{
+	//	vertexData[i] = Graphics::VertexFormats::sVertex_line(vertexVec[i].x, vertexVec[i].y, vertexVec[i].z, 0, 1, 1, 1);
+	//}
+	//uint16_t* indexData = new uint16_t[indexCount];
+	//for (uint32_t i = 0; i < indexCount; i++)
+	//{
+	//	indexData[i] = indexVec[i];
+	//}
+
+	//Graphics::cLine::Create(AABBLine, vertexData, vertexCount, indexData, indexCount);
+
+
+	Math::sVector scale = fatAABB.GetMaxExtent_local() - fatAABB.GetMinExtent_local();
+	Math::sVector worldPos = fatAABB.GetCentroid_world();
+	AABBLineTransform = Math::cMatrix_transformation(scale, worldPos);
+
+}
+
+
+void eae6320::Physics::sBVHNode::InitializeAABBLine()
+{
 	if (AABBLine != nullptr)
 	{
 		AABBLine->DecrementReferenceCount();
 		AABBLine = nullptr;
 	}
 
-	uint32_t vertexCount = 0;
-	auto vertexVec = std::vector<Math::sVector>();
-	uint32_t indexCount = 0;
-	auto indexVec = std::vector<uint16_t>();
-	fatAABB.GenerateRenderData(vertexCount, vertexVec, indexCount, indexVec);
-
-	Graphics::VertexFormats::sVertex_line* vertexData = new Graphics::VertexFormats::sVertex_line[vertexCount];
-	for (uint32_t i = 0; i < vertexCount; i++)
+	// Vertex data
+	constexpr uint32_t vertexCount = 24;
+	Graphics::VertexFormats::sVertex_line vertexData[vertexCount];
 	{
-		vertexData[i] = Graphics::VertexFormats::sVertex_line(vertexVec[i].x, vertexVec[i].y, vertexVec[i].z, 0, 0, 1, 1);
+		Math::sVector color = Math::sVector(0.0f, 1.0f, 1.0f);
+
+		// 0-1
+		vertexData[0] = Graphics::VertexFormats::sVertex_line(-0.5f, -0.5f, -0.5f, color.x, color.y, color.z, 1.0f);
+		vertexData[1] = Graphics::VertexFormats::sVertex_line(-0.5f, 0.5f, -0.5f, color.x, color.y, color.z, 1.0f);
+		// 1-2
+		vertexData[2] = Graphics::VertexFormats::sVertex_line(-0.5f, 0.5f, -0.5f, color.x, color.y, color.z, 1.0f);
+		vertexData[3] = Graphics::VertexFormats::sVertex_line(-0.5f, 0.5f, 0.5f, color.x, color.y, color.z, 1.0f);
+		// 2-3
+		vertexData[4] = Graphics::VertexFormats::sVertex_line(-0.5f, 0.5f, 0.5f, color.x, color.y, color.z, 1.0f);
+		vertexData[5] = Graphics::VertexFormats::sVertex_line(-0.5f, -0.5f, 0.5f, color.x, color.y, color.z, 1.0f);
+		// 3-0
+		vertexData[6] = Graphics::VertexFormats::sVertex_line(-0.5f, -0.5f, 0.5f, color.x, color.y, color.z, 1.0f);
+		vertexData[7] = Graphics::VertexFormats::sVertex_line(-0.5f, -0.5f, -0.5f, color.x, color.y, color.z, 1.0f);
+		// 4-5
+		vertexData[8] = Graphics::VertexFormats::sVertex_line(0.5f, -0.5f, -0.5f, color.x, color.y, color.z, 1.0f);
+		vertexData[9] = Graphics::VertexFormats::sVertex_line(0.5f, 0.5f, -0.5f, color.x, color.y, color.z, 1.0f);
+		// 5-6
+		vertexData[10] = Graphics::VertexFormats::sVertex_line(0.5f, 0.5f, -0.5f, color.x, color.y, color.z, 1.0f);
+		vertexData[11] = Graphics::VertexFormats::sVertex_line(0.5f, 0.5f, 0.5f, color.x, color.y, color.z, 1.0f);
+		// 6-7
+		vertexData[12] = Graphics::VertexFormats::sVertex_line(0.5f, 0.5f, 0.5f, color.x, color.y, color.z, 1.0f);
+		vertexData[13] = Graphics::VertexFormats::sVertex_line(0.5f, -0.5f, 0.5f, color.x, color.y, color.z, 1.0f);
+		// 7-4
+		vertexData[14] = Graphics::VertexFormats::sVertex_line(0.5f, -0.5f, 0.5f, color.x, color.y, color.z, 1.0f);
+		vertexData[15] = Graphics::VertexFormats::sVertex_line(0.5f, -0.5f, -0.5f, color.x, color.y, color.z, 1.0f);
+		// 1-5
+		vertexData[16] = Graphics::VertexFormats::sVertex_line(-0.5f, 0.5f, -0.5f, color.x, color.y, color.z, 1.0f);
+		vertexData[17] = Graphics::VertexFormats::sVertex_line(0.5f, 0.5f, -0.5f, color.x, color.y, color.z, 1.0f);
+		// 2-6
+		vertexData[18] = Graphics::VertexFormats::sVertex_line(-0.5f, 0.5f, 0.5f, color.x, color.y, color.z, 1.0f);
+		vertexData[19] = Graphics::VertexFormats::sVertex_line(0.5f, 0.5f, 0.5f, color.x, color.y, color.z, 1.0f);
+		// 0-4
+		vertexData[20] = Graphics::VertexFormats::sVertex_line(-0.5f, -0.5f, -0.5f, color.x, color.y, color.z, 1.0f);
+		vertexData[21] = Graphics::VertexFormats::sVertex_line(0.5f, -0.5f, -0.5f, color.x, color.y, color.z, 1.0f);
+		// 3-7
+		vertexData[22] = Graphics::VertexFormats::sVertex_line(-0.5f, -0.5f, 0.5f, color.x, color.y, color.z, 1.0f);
+		vertexData[23] = Graphics::VertexFormats::sVertex_line(0.5f, -0.5f, 0.5f, color.x, color.y, color.z, 1.0f);
 	}
-	uint16_t* indexData = new uint16_t[indexCount];
+
+	// Index data
+	constexpr uint32_t indexCount = vertexCount;
+	uint16_t indexData[indexCount];
 	for (uint32_t i = 0; i < indexCount; i++)
 	{
-		indexData[i] = indexVec[i];
+		indexData[i] = i;
 	}
 
 	Graphics::cLine::Create(AABBLine, vertexData, vertexCount, indexData, indexCount);
@@ -432,9 +502,59 @@ void eae6320::Physics::cBVHTree::CrossChildren(sBVHNode* i_node)
 }
 
 
+void eae6320::Physics::cBVHTree::InitialzieRenderData()
+{
+	m_renderData_temp.clear();
+
+	if (m_root == nullptr)
+		return;
+
+	std::queue<sBVHNode*> container;
+	container.push(m_root);
+
+	while (container.empty() == false)
+	{
+		sBVHNode* current = container.front();
+		container.pop();
+		
+		current->InitializeAABBLine();
+		current->UpdateAABBLine();
+		m_renderData_temp.push_back(std::pair<Graphics::cLine*, const Math::cMatrix_transformation&>(current->AABBLine, current->AABBLineTransform));
+
+		if (current->IsLeaf() == false)
+		{
+			container.push(current->children[0]);
+			container.push(current->children[1]);
+		}
+	}
+}
+
 void eae6320::Physics::cBVHTree::UpdatetRenderData()
 {
-	m_renderData.clear();
+	//m_renderData.clear();
+
+	//if (m_root == nullptr)
+	//	return;
+
+	//std::queue<sBVHNode*> container;
+	//container.push(m_root);
+
+	//while (container.empty() == false)
+	//{
+	//	sBVHNode* current = container.front();
+	//	container.pop();
+
+	//	current->UpdateAABBLine();
+	//	m_renderData.push_back(current->AABBLine);
+
+	//	if (current->IsLeaf() == false)
+	//	{
+	//		container.push(current->children[0]);
+	//		container.push(current->children[1]);
+	//	}
+	//}
+
+
 
 	if (m_root == nullptr)
 		return;
@@ -448,7 +568,6 @@ void eae6320::Physics::cBVHTree::UpdatetRenderData()
 		container.pop();
 
 		current->UpdateAABBLine();
-		m_renderData.push_back(current->AABBLine);
 
 		if (current->IsLeaf() == false)
 		{
@@ -458,8 +577,13 @@ void eae6320::Physics::cBVHTree::UpdatetRenderData()
 	}
 }
 
-
-std::vector<eae6320::Graphics::cLine*>& eae6320::Physics::cBVHTree::GetRenderData()
+std::vector<std::pair<eae6320::Graphics::cLine*, const eae6320::Math::cMatrix_transformation&>>& eae6320::Physics::cBVHTree::GetRenderData()
 {
-	return m_renderData;
+	return m_renderData_temp;
 }
+
+
+//std::vector<eae6320::Graphics::cLine*>& eae6320::Physics::cBVHTree::GetRenderData()
+//{
+//	return m_renderData;
+//}

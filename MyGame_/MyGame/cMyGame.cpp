@@ -178,7 +178,7 @@ void eae6320::cMyGame::SubmitDataToBeRendered(
 		// Render data of BVH tree
 		for (uint32_t i = staticSize; i < arraySize; i++)
 		{
-			debugDataArray[i].Initialize(BVHRenderData[i - staticSize], Math::cMatrix_transformation());
+			debugDataArray[i].Initialize(BVHRenderData[i - staticSize].first, BVHRenderData[i - staticSize].second);
 		}
 
 		Graphics::SubmitDebugData(debugDataArray, arraySize);

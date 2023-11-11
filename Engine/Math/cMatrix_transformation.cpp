@@ -95,3 +95,12 @@ eae6320::Math::cMatrix_transformation::cMatrix_transformation( const cQuaternion
 	m_21 = _2yz + _2xw;
 	m_22 = 1.0f - _2xx - _2yy;
 }
+
+
+eae6320::Math::cMatrix_transformation::cMatrix_transformation(const sVector& i_scale, const sVector& i_translation)
+{
+	m_00 = i_scale.x,	m_10 = 0.0f,		m_20 = 0.0f,		m_30 = 0.0f,
+	m_01 = 0.0f,		m_11 = i_scale.y,	m_21 = 0.0f,		m_31 = 0.0f,
+	m_02 = 0.0f,		m_12 = 0.0f,		m_22 = i_scale.z,	m_32 = 0.0f,
+	m_03 = i_translation.x, m_13 = i_translation.y, m_23 = i_translation.z, m_33 = 1.0f;
+}
