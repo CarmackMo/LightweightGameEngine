@@ -165,7 +165,7 @@ void eae6320::cMyGame::SubmitDataToBeRendered(
 		// Render data of BVH tree
 		for (uint32_t i = staticSize; i < arraySize; i++)
 		{
-			debugDataArray[i].Initialize(BVHRenderData[i - staticSize].first, *BVHRenderData[i - staticSize].second);
+			debugDataArray[i].Initialize(BVHRenderData[i - staticSize].first, BVHRenderData[i - staticSize].second);
 		}
 
 		Graphics::SubmitDebugData(debugDataArray, arraySize);
@@ -423,9 +423,9 @@ void eae6320::cMyGame::InitializeGameObject()
 		m_colliderObjectList.push_back(&m_colliderObject_AABB1);
 		m_colliderObjectList.push_back(&m_colliderObject_AABB2);
 		m_colliderObjectList.push_back(&m_colliderObject_AABB3);
-		//m_colliderObjectList.push_back(&m_colliderObject_AABB4);
-		//m_colliderObjectList.push_back(&m_colliderObject_sphere1);
-		//m_colliderObjectList.push_back(&m_colliderObject_sphere2);
+		m_colliderObjectList.push_back(&m_colliderObject_AABB4);
+		m_colliderObjectList.push_back(&m_colliderObject_sphere1);
+		m_colliderObjectList.push_back(&m_colliderObject_sphere2);
 	
 	}
 }

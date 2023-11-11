@@ -173,7 +173,10 @@ void eae6320::Physics::Collision::Update_CollisionDetection()
 	if ((s_collisionType & eCollisionType::BroadPhase_SweepAndPrune) != 0)
 		CollisionDetection_BroadPhase_SweepAndPrune();
 	else if ((s_collisionType & eCollisionType::BroadPhase_BVH) != 0)
+	{
 		CollisionDetection_BroadPhase_BVH();
+		s_BVHTree.UpdateRenderData();
+	}
 	else
 		CollisionDetection_BroadPhase_SweepAndPrune();
 }
@@ -216,7 +219,7 @@ eae6320::cResult eae6320::Physics::Collision::DeregisterCollider(cCollider* i_co
 }
 
 
-std::vector<std::pair<eae6320::Graphics::cLine*, eae6320::Math::cMatrix_transformation*>>& eae6320::Physics::Collision::GetBVHRenderData()
+std::vector<std::pair<eae6320::Graphics::cLine*, eae6320::Math::cMatrix_transformation>>& eae6320::Physics::Collision::GetBVHRenderData()
 {
 	return s_BVHTree.GetRenderData();
 }
