@@ -13,6 +13,10 @@ A lightweight game engine that is developed by C/C++ and targeted on the Windows
 
 ![Engine Demo](Documents/Images/Demo.gif)
 
+<img src="Documents/Images/Demo.gif" width="800px">
+
+
+
 
 Read this in other languages:
 [简体中文](README.zh-CN.md)
