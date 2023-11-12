@@ -23,7 +23,7 @@ Read this in other languages:
 
 ## Demos
 
-| <span style =" font-size: 20px"> **Rendering Pipeline Demo**  </span>|
+| <span style =" font-size: 50px"> **Rendering Pipeline Demo**  </span>|
 | :---:        |
 |  detail |
 |<img src="Documents/Images/Demo.gif" width="800px" height="400px">   |
