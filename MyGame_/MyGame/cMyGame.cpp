@@ -149,7 +149,9 @@ void eae6320::cMyGame::SubmitDataToBeRendered(
 
 	// TODO: Submit debug for box collider
 	{
-		auto BVHRenderData = Physics::Collision::GetBVHRenderData();
+		auto BVHRenderData = std::vector<std::pair<eae6320::Graphics::cLine*, eae6320::Math::cMatrix_transformation>>();
+		//BVHRenderData = Physics::Collision::GetBVHRenderData();
+
 		size_t staticSize = m_colliderObjectList.size();
 		size_t arraySize = BVHRenderData.size() + staticSize;
 
@@ -413,11 +415,11 @@ void eae6320::cMyGame::InitializeGameObject()
 
 		m_colliderObjectList.push_back(&m_colliderObject_AABB1);
 		m_colliderObjectList.push_back(&m_colliderObject_AABB2);
-		m_colliderObjectList.push_back(&m_colliderObject_AABB3);
-		m_colliderObjectList.push_back(&m_colliderObject_AABB4);
+		//m_colliderObjectList.push_back(&m_colliderObject_AABB3);
+		//m_colliderObjectList.push_back(&m_colliderObject_AABB4);
 		m_colliderObjectList.push_back(&m_colliderObject_sphere1);
-		m_colliderObjectList.push_back(&m_colliderObject_sphere2);
-		m_colliderObjectList.push_back(&m_colliderObject_sphere3);
+		//m_colliderObjectList.push_back(&m_colliderObject_sphere2);
+		//m_colliderObjectList.push_back(&m_colliderObject_sphere3);
 	
 	}
 }

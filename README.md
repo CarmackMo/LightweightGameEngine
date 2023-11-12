@@ -17,20 +17,16 @@ Read this in other languages:
 
 
 
-
-
-<img src="Documents/Images/Demo.gif" width="800px" height="400px">
-
 ## Demos
 
 | **Rendering Pipeline Demo** |
-| :---:        |
-|  detail |
-|<img src="Documents/Images/Demo.gif" width="800px" height="400px">   |
+|           :---              |
+| The two white-box character models are exported using the *"Maya Exporter"* plugin provided by this game engine and then loaded into the game scene through the asset pipeline (See [Asset Pipeline](#AssetPipeline) session for more detail). The development of lighting, shardowing and texturing is in progress. |
+|<img src="Documents/Gifs/RenderingPipelineDemo.gif" width="960px" height="540px">   |
 
 
-| Left-aligned |
-| :---:        |
+| **Physics System Demo** |
+|           :---:         | 
 | git status   |
 
 
