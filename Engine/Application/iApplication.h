@@ -128,7 +128,7 @@ namespace Application
 
 		virtual void GetDefaultInitialResolution( uint16_t& o_width, uint16_t& o_height ) const
 		{
-			o_width = 1300;
+			o_width = 1400;
 			o_height = 900;
 		}
 

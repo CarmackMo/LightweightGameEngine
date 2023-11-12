@@ -135,13 +135,15 @@ namespace eae6320
 
 		Camera::cCamera m_camera;
 
-		cGameObject m_gameobject_triangle;
-		cGameObject m_gameobject_rectangle;
-		cGameObject m_gameobject_plane;
-		cGameObject m_gameobject_cube;
-		cGameObject m_gameobject_Keqing;
-		cGameObject m_gameobject_Keqing_skin;
-		cGameObject m_gameobject_Ganyu;
+		cGameObject m_renderObject_triangle;
+		cGameObject m_renderObject_rectangle;
+		cGameObject m_renderObject_plane;
+		cGameObject m_renderObject_cube;
+		cGameObject m_renderObject_Keqing;
+		cGameObject m_renderObject_Keqing_skin;
+		cGameObject m_renderObject_Ganyu;
+
+		std::vector<cGameObject*> m_renderObjectList;
 
 
 		bool isKeyPressed = false;

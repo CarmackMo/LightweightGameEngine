@@ -21,8 +21,8 @@ Read this in other languages:
 
 | **Rendering Pipeline Demo** |
 |           :---              |
-| The two white-box character models are exported using the *"Maya Exporter"* plugin provided by this game engine and then loaded into the game scene through the asset pipeline (See [Asset Pipeline](#AssetPipeline) session for more detail). The development of lighting, shardowing and texturing is in progress. |
-|<img src="Documents/Gifs/RenderingPipelineDemo.gif" width="960px" height="540px">   |
+| The gif below demostrates the functionality of the renderind pipeline, such as mesh rendering, mesh transforms, vertex color, animate shaders. <br> The two white-box character models are exported using the *"Maya Exporter"* plugin provided by this game engine (See [Asset Pipeline](#AssetPipeline) session for more detail). <br> The development of lighting, shardowing and texturing is in progress. |
+| <img src="Documents/Gifs/RenderingPipelineDemo.gif" width="900px" height="510px"> |
 
 
 | **Physics System Demo** |
