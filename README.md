@@ -5,21 +5,33 @@
 A lightweight game engine that is developed by C/C++ and targeted on the Windows operating system. The systems and components of this game engine include:
 
 - **Rendering pipeline**
+- **Physics System**
 - **Asset pipeline**
 - **Job system**
-- **Utility components**
+- **Utility components (singleton, smart pointer, etc.)**
 - **Math library**
-
-
-![Engine Demo](Documents/Images/Demo.gif)
-
-<img src="Documents/Images/Demo.gif" width="800px">
-
-
 
 
 Read this in other languages:
 [简体中文](README.zh-CN.md)
+
+
+
+
+
+<img src="Documents/Images/Demo.gif" width="800px" height="400px">
+
+## Demos
+
+| <span style =" font-size: 20px"> **Rendering Pipeline Demo**  </span>|
+| :---:        |
+|  detail |
+|<img src="Documents/Images/Demo.gif" width="800px" height="400px">   |
+
+
+| Left-aligned |
+| :---:        |
+| git status   |
 
 
 
