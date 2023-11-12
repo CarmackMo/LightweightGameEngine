@@ -168,7 +168,9 @@ void eae6320::cGameObject::InitializeColliderLine()
 		Graphics::VertexFormats::sVertex_line* vertexData = new Graphics::VertexFormats::sVertex_line[vertexCount];
 		for (uint32_t i = 0; i < vertexCount; i++)
 		{
-			if (m_rigidBody.isStatic == true)
+			if (m_rigidBody.isTrigger == true)
+				vertexData[i] = Graphics::VertexFormats::sVertex_line(vertexVec[i].x, vertexVec[i].y, vertexVec[i].z, 1.0f, 0.75f, 0.796f, 1.0f);
+			else if (m_rigidBody.isStatic == true)
 				vertexData[i] = Graphics::VertexFormats::sVertex_line(vertexVec[i].x, vertexVec[i].y, vertexVec[i].z, 1.0f, 0.8f, 0.0f, 1.0f);
 			else
 				vertexData[i] = Graphics::VertexFormats::sVertex_line(vertexVec[i].x, vertexVec[i].y, vertexVec[i].z, 0.0f, 1.0f, 0.0f, 1.0f);

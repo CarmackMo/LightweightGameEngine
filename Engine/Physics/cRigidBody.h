@@ -45,6 +45,7 @@ namespace Physics
 		float angularSpeed = 0.0f;	// Radians per second (positive values rotate right-handed, negative rotate left-handed)
 
 		bool isStatic = false;
+		bool isTrigger = false;
 
 		// Interface
 		//==========

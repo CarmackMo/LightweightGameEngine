@@ -186,9 +186,7 @@ void eae6320::Physics::Collision::Update_CollisionResolution()
 		cCollider* collider_lhs = item.first;
 		for (auto collider_rhs : item.second)
 		{
-			if (collider_lhs->m_objectRigidBody->isStatic == false &&
-				collider_rhs->m_objectRigidBody->isStatic == false)
-				CollisionResolution(collider_lhs, collider_rhs);
+			CollisionResolution(collider_lhs, collider_rhs);
 		}
 	}
 }
@@ -667,8 +665,10 @@ void eae6320::Physics::Collision::CollisionResolution(cSphereCollider* i_lhs, cS
 	float collisionDepth = raidusDistance - sqrtf(centroidSqDistance);
 
 	// resolve collision
-	i_lhs->m_objectRigidBody->Translate(0.5f * collisionNormal * collisionDepth * -1.0f);
-	i_rhs->m_objectRigidBody->Translate(0.5f * collisionNormal * collisionDepth);
+	if (i_lhs->m_objectRigidBody->isStatic == false && i_lhs->m_objectRigidBody->isTrigger == false && i_rhs->m_objectRigidBody->isTrigger == false)
+		i_lhs->m_objectRigidBody->Translate(0.5f * collisionNormal * collisionDepth * -1.0f);
+	if (i_rhs->m_objectRigidBody->isStatic == false && i_lhs->m_objectRigidBody->isTrigger == false && i_rhs->m_objectRigidBody->isTrigger == false)
+		i_rhs->m_objectRigidBody->Translate(0.5f * collisionNormal * collisionDepth);
 }
 
 
@@ -687,8 +687,10 @@ void eae6320::Physics::Collision::CollisionResolution(cAABBCollider* i_lhs, cSph
 	float collisionDepth = i_rhs->GetRadius() - sqrtf(Math::SqDistance(closestPoint, i_rhs->GetCentroid_world()));
 
 	// resolve collision
-	i_lhs->m_objectRigidBody->Translate(0.5f * AABBNormal * collisionDepth);
-	i_rhs->m_objectRigidBody->Translate(0.5f * sphereNormal * collisionDepth);
+	if (i_lhs->m_objectRigidBody->isStatic == false && i_lhs->m_objectRigidBody->isTrigger == false && i_rhs->m_objectRigidBody->isTrigger == false)
+		i_lhs->m_objectRigidBody->Translate(0.5f * AABBNormal * collisionDepth);
+	if (i_rhs->m_objectRigidBody->isStatic == false && i_lhs->m_objectRigidBody->isTrigger == false && i_rhs->m_objectRigidBody->isTrigger == false)
+		i_rhs->m_objectRigidBody->Translate(0.5f * sphereNormal * collisionDepth);
 }
 
 
@@ -707,7 +709,9 @@ void eae6320::Physics::Collision::CollisionResolution(cAABBCollider* i_lhs, cAAB
 	float collisionDepth = sqrtf(Math::SqDistance(closestPointLeftCentroidToRightAABB, closestPointRightCentroidToLeftAABB));
 
 	// resolve collision
-	i_lhs->m_objectRigidBody->Translate(0.5f * lhsNormal * collisionDepth);
-	i_rhs->m_objectRigidBody->Translate(0.5f * rhsNormal * collisionDepth);
+	if (i_lhs->m_objectRigidBody->isStatic == false && i_lhs->m_objectRigidBody->isTrigger == false && i_rhs->m_objectRigidBody->isTrigger == false)
+		i_lhs->m_objectRigidBody->Translate(0.5f * lhsNormal * collisionDepth);
+	if (i_rhs->m_objectRigidBody->isStatic == false && i_lhs->m_objectRigidBody->isTrigger == false && i_rhs->m_objectRigidBody->isTrigger == false)
+		i_rhs->m_objectRigidBody->Translate(0.5f * rhsNormal * collisionDepth);
 }
 
