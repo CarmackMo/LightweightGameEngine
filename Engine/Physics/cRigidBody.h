@@ -50,6 +50,7 @@ namespace Physics
 		//==========
 
 		void Update( const float i_secondCountToIntegrate );
+		Math::sVector GetForwardDirection() const;
 		Math::sVector PredictFuturePosition( const float i_secondCountToExtrapolate ) const;
 		Math::cQuaternion PredictFutureOrientation( const float i_secondCountToExtrapolate ) const;
 		Math::cMatrix_transformation PredictFutureTransform( const float i_secondCountToExtrapolate ) const;

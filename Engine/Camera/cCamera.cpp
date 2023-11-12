@@ -21,20 +21,37 @@ void eae6320::Camera::cCamera::Initialize(
 
 void eae6320::Camera::cCamera::UpdateBasedOnInput()
 {
-	// TODO 
-	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Left))
-		m_rigidBody.velocity.x = -2.0f;
-	else if (UserInput::IsKeyPressed(UserInput::KeyCodes::Right))
-		m_rigidBody.velocity.x = 2.0f;
-	else
-		m_rigidBody.velocity.x = 0.0f;
+	// Strafe left and right
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Left) || 
+		UserInput::IsKeyPressed(UserInput::KeyCodes::Right))
+	{
+		Math::sVector strafeDirection = Math::Cross(m_rigidBody.GetForwardDirection(), Math::sVector(0, 1, 0));
 
-	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Down))
-		m_rigidBody.velocity.y = -2.0f;
-	else if (UserInput::IsKeyPressed(UserInput::KeyCodes::Up))
-		m_rigidBody.velocity.y = 2.0f;
+		if (UserInput::IsKeyPressed(UserInput::KeyCodes::Left))
+			m_rigidBody.velocity = strafeDirection * -2.0f;
+		else if (UserInput::IsKeyPressed(UserInput::KeyCodes::Right))
+			m_rigidBody.velocity = strafeDirection * 2.0f;
+	}
+	// Move up and down
+	else if (UserInput::IsKeyPressed(UserInput::KeyCodes::Down) ||
+			 UserInput::IsKeyPressed(UserInput::KeyCodes::Up))
+	{
+		if (UserInput::IsKeyPressed(UserInput::KeyCodes::Down))
+			m_rigidBody.velocity.y = -2.0f;
+		else if (UserInput::IsKeyPressed(UserInput::KeyCodes::Up))
+			m_rigidBody.velocity.y = 2.0f;
+	}
+	// Move forward and backward
+	else if (UserInput::IsKeyPressed(UserInput::KeyCodes::Home) ||
+			 UserInput::IsKeyPressed(UserInput::KeyCodes::End))
+	{
+		if (UserInput::IsKeyPressed(UserInput::KeyCodes::Home))
+			m_rigidBody.velocity = m_rigidBody.GetForwardDirection() * 4.0f;
+		else if (UserInput::IsKeyPressed(UserInput::KeyCodes::End))
+			m_rigidBody.velocity = m_rigidBody.GetForwardDirection() * -4.0f;
+	}
 	else
-		m_rigidBody.velocity.y = 0.0f;
+		m_rigidBody.velocity = Math::sVector();
 
 
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Delete))
@@ -52,14 +69,6 @@ void eae6320::Camera::cCamera::UpdateBasedOnInput()
 		m_rigidBody.angularVelocity_axis_local = Math::sVector(0.0f, 0.0f, 0.0f);
 		m_rigidBody.angularSpeed = 0.0f;
 	}
-
-
-	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Home))
-		m_rigidBody.velocity.z = -4.0f;
-	else if (UserInput::IsKeyPressed(UserInput::KeyCodes::End))
-		m_rigidBody.velocity.z = 4.0f;
-	else
-		m_rigidBody.velocity.z = 0.0f;
 }
 
 

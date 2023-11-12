@@ -27,6 +27,12 @@ void eae6320::Physics::sRigidBodyState::Update( const float i_secondCountToInteg
 }
 
 
+eae6320::Math::sVector eae6320::Physics::sRigidBodyState::GetForwardDirection() const
+{
+	return orientation.CalculateForwardDirection().GetNormalized();
+}
+
+
 eae6320::Math::sVector eae6320::Physics::sRigidBodyState::PredictFuturePosition( const float i_secondCountToExtrapolate ) const
 {
 	return position + ( velocity * i_secondCountToExtrapolate );
