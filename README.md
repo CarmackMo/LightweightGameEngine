@@ -22,12 +22,13 @@ Read this in other languages:
 | **Rendering Pipeline Demo** |
 |           :---              |
 | The gif below demostrates the functionality of the renderind pipeline, such as mesh rendering, mesh transforms, vertex color, animate shaders. <br> The two white-box character models are exported using the *"Maya Exporter"* plugin provided by this game engine (See [Asset Pipeline](#AssetPipeline) session for more detail). <br> The development of lighting, shardowing and texturing is in progress. |
-| <img src="Documents/Gifs/RenderingPipelineDemo.gif" width="900px" height="510px"> |
+| <img src="Documents/Gifs/RenderingPipelineDemo.gif" width="850px" height="480px"> |
 
 
-| **Physics System Demo** |
-|           :---:         | 
-| git status   |
+| **Physics System Demo - BVH Tree** |
+|               :---                | 
+| The gif below demostrates how BVH tree is used to manage colliders in the game world, and how the BVH tree updates. The BVH tree is represented by blue frames while colliders are represented by frames with other color.    |
+|  <img src="Documents/Gifs/BVHDemo.gif" width="900px" height="510px"> |
 
 
 

@@ -657,8 +657,9 @@ void eae6320::Physics::Collision::CollisionResolution(cCollider* i_lhs, cCollide
 
 void eae6320::Physics::Collision::CollisionResolution(cSphereCollider* i_lhs, cSphereCollider* i_rhs)
 {
-	// normal start from the centroid of lhs, points to rhs
-	Math::sVector collisionNormal = (i_rhs->GetCentroid_world() - i_lhs->GetCentroid_world()).GetNormalized();
+	// normal start from the centroid of lhs, points to the centroid of rhs
+	Math::sVector collisionNormal = i_rhs->GetCentroid_world() - i_lhs->GetCentroid_world();
+	collisionNormal = (collisionNormal == Math::sVector()) ? Math::sVector() : collisionNormal.GetNormalized();
 
 	float centroidSqDistance = Math::SqDistance(i_lhs->GetCentroid_world(), i_rhs->GetCentroid_world());
 	float raidusDistance = i_lhs->GetRadius() + i_rhs->GetRadius();
@@ -680,9 +681,10 @@ void eae6320::Physics::Collision::CollisionResolution(cAABBCollider* i_lhs, cSph
 	// Collision normal is calculated based on the princile that AABB and sphere want to 
 	// get away from each other by traveling minimum distance. Thus, the collision normal 
 	// is the normalized vector from closest point to centroid;
-	Math::sVector AABBNormal = (i_lhs->GetCentroid_world() - closestPoint).GetNormalized();
-	Math::sVector sphereNormal = (i_rhs->GetCentroid_world()- closestPoint).GetNormalized();
-
+	Math::sVector AABBNormal = i_lhs->GetCentroid_world() - closestPoint;
+	AABBNormal = (AABBNormal == Math::sVector()) ? Math::sVector() : AABBNormal.GetNormalized();
+	Math::sVector sphereNormal = i_rhs->GetCentroid_world() - closestPoint;
+	sphereNormal = (sphereNormal == Math::sVector()) ? Math::sVector() : sphereNormal.GetNormalized();
 
 	float collisionDepth = i_rhs->GetRadius() - sqrtf(Math::SqDistance(closestPoint, i_rhs->GetCentroid_world()));
 
@@ -703,8 +705,10 @@ void eae6320::Physics::Collision::CollisionResolution(cAABBCollider* i_lhs, cAAB
 	// Collision normal is calculated based on the princile that both AABB want to 
 	// get away from each other by traveling minimum distance. Thus, the collision normal 
 	// is the normalized vector from closest point to centroid;
-	Math::sVector lhsNormal = (i_lhs->GetCentroid_world() - closestPointLeftCentroidToRightAABB);
-	Math::sVector rhsNormal = (i_rhs->GetCentroid_world() - closestPointRightCentroidToLeftAABB);
+	Math::sVector lhsNormal = i_lhs->GetCentroid_world() - closestPointLeftCentroidToRightAABB;
+	lhsNormal = (lhsNormal == Math::sVector()) ? Math::sVector() : lhsNormal.GetNormalized();
+	Math::sVector rhsNormal = i_rhs->GetCentroid_world() - closestPointRightCentroidToLeftAABB;
+	rhsNormal = (rhsNormal == Math::sVector()) ? Math::sVector() : rhsNormal.GetNormalized();
 
 	float collisionDepth = sqrtf(Math::SqDistance(closestPointLeftCentroidToRightAABB, closestPointRightCentroidToLeftAABB));
 

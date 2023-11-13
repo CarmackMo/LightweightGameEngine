@@ -139,7 +139,7 @@ void eae6320::cMyGame::SubmitDataToBeRendered(
 	// TODO: Submit debug for box collider
 	{
 		auto BVHRenderData = std::vector<std::pair<eae6320::Graphics::cLine*, eae6320::Math::cMatrix_transformation>>();
-		//BVHRenderData = Physics::Collision::GetBVHRenderData();
+		BVHRenderData = Physics::Collision::GetBVHRenderData();
 
 		size_t staticSize = m_colliderObjectList.size();
 		size_t arraySize = BVHRenderData.size() + staticSize;
@@ -284,7 +284,7 @@ void eae6320::cMyGame::InitializeGameObject()
 		// Plane
 		m_renderObject_plane.InitializeMesh(m_planeMeshPath);
 		m_renderObject_plane.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
-		m_renderObject_plane.GetRigidBody().position = Math::sVector(+2.0f, -2.0f, -3.0f);
+		m_renderObject_plane.GetRigidBody().position = Math::sVector(+6.0f, -5.0f, -3.0f);
 
 		// Cube
 		m_renderObject_cube.InitializeMesh(m_cubeMeshPath);
@@ -308,13 +308,13 @@ void eae6320::cMyGame::InitializeGameObject()
 
 
 
-		m_renderObjectList.push_back(&m_renderObject_triangle);
-		m_renderObjectList.push_back(&m_renderObject_rectangle);
+		//m_renderObjectList.push_back(&m_renderObject_triangle);
+		//m_renderObjectList.push_back(&m_renderObject_rectangle);
 		m_renderObjectList.push_back(&m_renderObject_plane);
-		m_renderObjectList.push_back(&m_renderObject_cube);
-		m_renderObjectList.push_back(&m_renderObject_Keqing);
+		//m_renderObjectList.push_back(&m_renderObject_cube);
+		//m_renderObjectList.push_back(&m_renderObject_Keqing);
 		//m_renderObjectList.push_back(&m_renderObject_Keqing_skin);
-		m_renderObjectList.push_back(&m_renderObject_Ganyu);
+		//m_renderObjectList.push_back(&m_renderObject_Ganyu);
 	}
 
 
@@ -411,23 +411,30 @@ void eae6320::cMyGame::InitializeGameObject()
 
 		m_colliderObjectList.push_back(&m_colliderObject_AABB1);
 		m_colliderObjectList.push_back(&m_colliderObject_AABB2);
-		//m_colliderObjectList.push_back(&m_colliderObject_AABB3);
-		//m_colliderObjectList.push_back(&m_colliderObject_AABB4);
+		m_colliderObjectList.push_back(&m_colliderObject_AABB3);
+		m_colliderObjectList.push_back(&m_colliderObject_AABB4);
 		m_colliderObjectList.push_back(&m_colliderObject_sphere1);
-		//m_colliderObjectList.push_back(&m_colliderObject_sphere2);
-		//m_colliderObjectList.push_back(&m_colliderObject_sphere3);
+		m_colliderObjectList.push_back(&m_colliderObject_sphere2);
+		m_colliderObjectList.push_back(&m_colliderObject_sphere3);
 	}
 }
 
 
 void eae6320::cMyGame::CleanUpGameObject()
 {
-
+	m_renderObject_triangle.CleanUp();
+	m_renderObject_rectangle.CleanUp();
+	//m_renderObject_plane.CleanUp();
+	m_renderObject_cube.CleanUp();
+	m_renderObject_Keqing.CleanUp();
+	m_renderObject_Keqing_skin.CleanUp();
+	m_renderObject_Ganyu.CleanUp();
 	for (cGameObject* renderObject : m_renderObjectList)
 	{
 		renderObject->CleanUp();
 	}
-	m_renderObject_Keqing_skin.CleanUp();
+
+
 
 
 	m_camera.CleanUp();
