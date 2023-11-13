@@ -50,6 +50,8 @@
 
 + [渲染管线](#RenderingPipeline)
 
++ [物理系统](#PhysicsSystem)
+
 + [资产管线](#AssetPipeline)
 
 + [任务队列系统](#JobSystem)
@@ -115,6 +117,33 @@
     为了支持渲染管线的运作，该游戏引擎实现了渲染数据类，例如网格类（mesh class），效果类（effect class），常缓冲区类（constant buffer class）。由于渲染管线是跨平台的，因此这些渲染组件的底层逻辑也采用了跨平台实现并进行了封装，只对外暴露了平台独立（platform-independent）的接口以供调用。
 
     此外，如前所述渲染管线采用了 “生产者-消费者” 设计模式，因而渲染数据在渲染管线的运行过程中涉及了大量的迁移。为了更好地管理渲染数据的创建、拷贝、迁移和清理，渲染数据使用了 **观察者设计模式（Observer Design Pattern）** 进行开发。
+
+
+
+
+<br></br>
+<br></br>
+<a id="PhysicsSystem"></a>
+
+# 物理系统
+
+物理系统包含了多个组件，包括物理对象的实现、刚体动力学的模拟，以及碰撞检测和解决机制。
+
+该物理系统实现了包括 **变换（transform）**、**刚体（rigid bodies）** 和 **碰撞器（collider）** 在内的物理对象。
+
+对于碰撞检测，该物理系统实现了碰撞检测的 **碰撞初筛（broad phase）** 和 **碰撞细筛（narrow phase）**。在碰撞初筛检测中，物理引擎实现了 **Sweep And Prune** 算法和 **包围体层次结构（BVH）** 算法，用户可以根据实际的运行需求来决定使用哪一种算法。
+
+对于碰撞解决，物理系统采用了基于解坐标约束的碰撞解决机制。此外，物理系统实现了针对动态碰撞器（dynamic collider）、静态碰撞器（static collider）和触发器碰撞器（trigger collider）提供了特定的碰撞解决策略，以应对这些对象类型之间不同的需求和相互作用。
+
+
+## 架构设计
+
+为了方便理解，下面附上渲物理系统的流程图：
+
+<img src="Documents/Images/PhysicsSystem.png" width="550px" >
+
+
+对于物理系统具体的描述仍在撰写中。
 
 
 

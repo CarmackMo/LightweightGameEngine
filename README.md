@@ -127,13 +127,13 @@ Furthermore, as aforementioned, the engine's rendering pipeline adheres to a "pr
 
 # Physics System
 
-The physics system encompasses the implementation of physics objects, simulation of rigid body dynamics, collision detection, and collision resolution mechanisms.
+The physics system encompasses various components, including the implementation of physics objects, simulation of rigid body dynamics, and mechanisms for collision detection and resolution.
 
-For physics objects, the physics system implements representations for **transform**, **rigid bodie**, and **collider**.
+Regarding physics objects, the system implements the representations for **transform**, **rigid bodie**, and **collider**.
 
-For collision detection, the physics system implements **broad phase** collision detection and **narrow phase** collision detection. During the broad phase of collision detection, the engine employs the **Sweep And Prune** algorithm alongside **Bounding Volume Hierarchies (BVH)** algorithm. Users are provided the flexibility to choose between these algorithms based on their specific runtime requirements and complexity.
+For collision detection, the physics system utilizes both **broad phase** collision detection and **narrow phase** collision detection techniques. During the broad phase of collision detection, the system employs the **Sweep And Prune** algorithm in conjunction with **Bounding Volume Hierarchies (BVH)** algorithm. Users can choose between these algorithms based on their specific runtime requirements and complexity.
 
-For collision resolution, the physics system employs a constraint-based resolution mechanism. Additionally, the physics engine provides tailored collision resolution strategies for dynamic colliders, static colliders, and trigger colliders, addressing the varying requirements and interactions between these object types.
+For collision resolution, the physics system employs a constraint-based resolution mechanism. Additionally, the physics system provides tailored collision resolution strategies for dynamic colliders, static colliders, and trigger colliders, addressing the varying requirements and interactions between these object types.
 
 
 该物理系统包括了物理对象的代码实现，刚体动力学的模拟，碰撞检测，以及碰撞解决。
@@ -150,6 +150,9 @@ For collision resolution, the physics system employs a constraint-based resoluti
 For a comprehensive understanding, the workflow diagram of the physics system is attached below:
 
 <img src="Documents/Images/PhysicsSystem.png" width="550px" >
+
+
+The detail descrition of the physics engine is still in progress
 
 
 
