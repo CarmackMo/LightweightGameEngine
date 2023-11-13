@@ -1,0 +1,23 @@
+Opened log file "Engine.log"
+Initialized time
+Registered main window class "MoZheng's EAE6320 Main Window Class"
+The user settings file "settings.ini" doesn't exist. Using default settings instead.
+Created main window "MoZheng's MyGame -- OpenGL"
+Set main window resolution to 1500 x 900
+
+ --------------MoZiheng MyGame customized log messge--------------
+Solution Platform: OpenGL
+Machine Platform: x86
+Configuration: Release
+Initialization Successfull!! 
+
+The application was successfully initialized
+
+ --------------MoZiheng MyGame customized log messge--------------
+Solution Platform: OpenGL
+Machine Platform: x86
+Configuration: Release
+Clan Up Successfull!!
+
+Unregistered main window class
+Closing log file

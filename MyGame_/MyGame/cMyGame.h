@@ -52,7 +52,7 @@ namespace eae6320
 		// so that it's easy to tell at a glance what kind of build is running.
 		const char* GetMainWindowName() const final
 		{
-			return "MoZheng's EAE6320 MyGame"
+			return "MoZheng's MyGame"
 				" -- "
 #if defined( EAE6320_PLATFORM_D3D )
 				"Direct3D"

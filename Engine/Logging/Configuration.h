@@ -9,7 +9,7 @@
 // Unless you change the path here the log will be generated
 // in the same directory as the game's executable
 // (which can be nice because it is easy for a user to find)
-#define EAE6320_LOGGING_PATH "eae6320.log"
+#define EAE6320_LOGGING_PATH "Engine.log"
 
 // Flushing the logging buffer to disk is expensive,
 // but it can be done after every message is output during development

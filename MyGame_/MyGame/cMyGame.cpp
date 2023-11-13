@@ -308,13 +308,13 @@ void eae6320::cMyGame::InitializeGameObject()
 
 
 
-		//m_renderObjectList.push_back(&m_renderObject_triangle);
-		//m_renderObjectList.push_back(&m_renderObject_rectangle);
+		m_renderObjectList.push_back(&m_renderObject_triangle);
+		m_renderObjectList.push_back(&m_renderObject_rectangle);
 		m_renderObjectList.push_back(&m_renderObject_plane);
-		//m_renderObjectList.push_back(&m_renderObject_cube);
-		//m_renderObjectList.push_back(&m_renderObject_Keqing);
+		m_renderObjectList.push_back(&m_renderObject_cube);
+		m_renderObjectList.push_back(&m_renderObject_Keqing);
 		//m_renderObjectList.push_back(&m_renderObject_Keqing_skin);
-		//m_renderObjectList.push_back(&m_renderObject_Ganyu);
+		m_renderObjectList.push_back(&m_renderObject_Ganyu);
 	}
 
 
@@ -422,13 +422,13 @@ void eae6320::cMyGame::InitializeGameObject()
 
 void eae6320::cMyGame::CleanUpGameObject()
 {
-	m_renderObject_triangle.CleanUp();
-	m_renderObject_rectangle.CleanUp();
-	//m_renderObject_plane.CleanUp();
-	m_renderObject_cube.CleanUp();
-	m_renderObject_Keqing.CleanUp();
+	//m_renderObject_triangle.CleanUp();
+	//m_renderObject_rectangle.CleanUp();
+	////m_renderObject_plane.CleanUp();
+	//m_renderObject_cube.CleanUp();
+	//m_renderObject_Keqing.CleanUp();
 	m_renderObject_Keqing_skin.CleanUp();
-	m_renderObject_Ganyu.CleanUp();
+	//m_renderObject_Ganyu.CleanUp();
 	for (cGameObject* renderObject : m_renderObjectList)
 	{
 		renderObject->CleanUp();
