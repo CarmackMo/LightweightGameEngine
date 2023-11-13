@@ -149,6 +149,7 @@ For collision resolution, the physics system employs a constraint-based resoluti
 
 For a comprehensive understanding, the workflow diagram of the physics system is attached below:
 
+<img src="Documents/Images/PhysicsSystem.png" width="550px" >
 
 
 
@@ -168,7 +169,7 @@ Like the rendering pipeline, the asset pipeline constitutes a complex system. Wh
 
 To provide a comprehensive understanding, the following section elaborates on the management of model data as an example, showcasing the architecture and flow of the asset pipeline.
 
-![Asset Pipeline Architecture](Documents/Images/AssetPipeline.png)
+![Asset Pipeline Architecture](Documents/Images/AssetPipeline.png )
 
 
 + The game engine presently utilizes models produced by Maya. Since Maya is an external third-party software from the perspective of the game engine, the asset pipeline requires plugins to extract model data from Maya. Autodesk, the parent company of Maya, offers SDKs and APIs like the **Maya Devkit** and **OpenMaya** for developers to extend its functionalities. The current game engine employs these SDKs to create a plugin that extracts model data from Maya. During build-time, the game engine compiles this plugin, which is then loaded by users into Maya.
