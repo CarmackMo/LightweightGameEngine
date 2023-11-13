@@ -2,7 +2,7 @@
 
 ## Introduction
 
-A lightweight game engine that is developed by C/C++ and targeted on the Windows operating system. The systems and components of this game engine include:
+A lightweight game engine that is developed by C/C++. The systems and components of this game engine include:
 
 - **Rendering pipeline**
 - **Physics System**
@@ -22,19 +22,19 @@ Read this in other languages:
 | **Rendering Pipeline Demo** |
 |           :---              |
 | The GIF below demostrates the functionality of the renderind pipeline, such as mesh rendering, mesh transforms, vertex color, animate shaders. <br> The two white-box character models are exported using the *"Maya Exporter"* plugin provided by this game engine (See [Asset Pipeline](#AssetPipeline) session for more detail). <br> The development of lighting, shardowing and texturing is in progress. |
-| <img src="Documents/Gifs/RenderingPipelineDemo.gif" width="820px" height="460px"> |
+| <img src="Documents/Gifs/RenderingPipelineDemo.gif" width="810px" height="455px"> |
 
 
 | **Physics System Demo - BVH Tree** |
 |               :---                 | 
 | The GIF below demonstrates the usage of the BVH (Bounding Volume Hierarchy) tree for managing colliders in the game world, and illustrates how the BVH tree updates. <br> In the visualization, the BVH tree is represented by blue frames, while the colliders are represented by frames in various colors.  |
-|  <img src="Documents/Gifs/BVHTreeDemo.gif" width="820px" height="460px"> |
+|  <img src="Documents/Gifs/BVHTreeDemo.gif" width="810px" height="455px"> |
 
 
 | **Physics System Demo - Collision Detection and Resolution** |
 |                           :---                               | 
-| The GIF below illustrates the collision detection and collision resolution processes within the games runtime. <br> In the visualization, cube frames represent AABB (Axis-Aligned Bounding Box) colliders and diamon frames represent sphere colliders. The color code is as follows: green denotes normal colliders, yellow denotes static colliders, pink denotes trigger colliders and red indicates that collider is colliding with other colliders. <br> Note that both static colliders and trigger colliders are not involved in collision resolution.  |
-|  <img src="Documents/Gifs/CollisionDemo.gif" width="820px" height="460px"> |
+| The GIF below illustrates the collision detection and collision resolution processes within the games runtime. <br> In the visualization, cube frames represent AABB (Axis-Aligned Bounding Box) colliders and diamon frames represent sphere colliders. <br> The color code is as follows: green denotes normal colliders, yellow denotes static colliders, pink denotes trigger colliders and red indicates that collider is colliding with other colliders. <br> Note that both static colliders and trigger colliders are not involved in collision resolution.  |
+|  <img src="Documents/Gifs/CollisionDemo.gif" width="810px" height="455px"> |
 
 
 | **Lightweight Game Engine Release** |
