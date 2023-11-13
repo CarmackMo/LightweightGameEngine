@@ -50,6 +50,8 @@ Read this in other languages:
 
 + [Rendering Pipeline](#RenderingPipeline)
 
++ [Physics System](#PhysicsSystem)
+
 + [Asset Pipeline](#AssetPipeline)
 
 + [Job System](#JobSystem)
@@ -115,6 +117,38 @@ For a comprehensive understanding, the architecture diagram of the rendering pip
 To bolster the functioning of the rendering pipeline, the game engine implements the representations of rendering data, such as mesh, effect, and constant buffer. With the rendering pipeline being cross-platform, these components also employs a cross-platform implementation, encapsulating platform-specific underlying logics and presenting a platform-independent interface for invocations.
 
 Furthermore, as aforementioned, the engine's rendering pipeline adheres to a "producer-consumer" design, involving extensive data migrations. To better manage the creation, duplication, migration, and clean up of rendering data, rendering data representations are implemented using **Observer design pattern**. 
+
+
+
+
+<br></br>
+<br></br>
+<a id="PhysicsSystem"></a>
+
+# Physics System
+
+The physics system encompasses the implementation of physics objects, simulation of rigid body dynamics, collision detection, and collision resolution mechanisms.
+
+For physics objects, the physics system implements representations for **transform**, **rigid bodie**, and **collider**.
+
+For collision detection, the physics system implements **broad phase** collision detection and **narrow phase** collision detection. During the broad phase of collision detection, the engine employs the **Sweep And Prune** algorithm alongside **Bounding Volume Hierarchies (BVH)** algorithm. Users are provided the flexibility to choose between these algorithms based on their specific runtime requirements and complexity.
+
+For collision resolution, the physics system employs a constraint-based resolution mechanism. Additionally, the physics engine provides tailored collision resolution strategies for dynamic colliders, static colliders, and trigger colliders, addressing the varying requirements and interactions between these object types.
+
+
+该物理系统包括了物理对象的代码实现，刚体动力学的模拟，碰撞检测，以及碰撞解决。
+
+对于物理对象，该物理引擎 implements the representation of transform, rigid body and collider. 
+
+对于碰撞检测阶段，该物理引擎实现了碰撞检测的 Broad Phase 和 Narrow Phase。对于 Broad Phase，物理引擎实现了 Sweep And Prune 和 BVH 两种 Broad Phase 碰撞检测算法，用户可以根据实际的运行需求来决定使用哪一种算法。
+
+对于碰撞解决阶段，该物理引擎实现了基于解坐标约束的碰撞解决。此外还实现了针对 dynamic collider, static collider 和 trigger collider 的不同的碰撞解决方案。
+
+
+## Architecture
+
+For a comprehensive understanding, the workflow diagram of the physics system is attached below:
+
 
 
 
