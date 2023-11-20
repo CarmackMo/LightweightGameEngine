@@ -91,6 +91,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ScrollShooterGame", "Scroll
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScrollShooterGame", "ScrollShooterGame_\ScrollShooterGame\ScrollShooterGame.vcxproj", "{9545B8A6-A104-4CA2-BC56-A8F7B6B17E32}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BuildScrollShooterGameAssets", "ScrollShooterGame_\BuildScrollShooterGameAssets\BuildScrollShooterGameAssets.vcxproj", "{27C8641A-629C-4F2A-8B12-37ECCA4B5143}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -362,6 +364,14 @@ Global
 		{9545B8A6-A104-4CA2-BC56-A8F7B6B17E32}.Release|x64.Build.0 = Release|x64
 		{9545B8A6-A104-4CA2-BC56-A8F7B6B17E32}.Release|x86.ActiveCfg = Release|Win32
 		{9545B8A6-A104-4CA2-BC56-A8F7B6B17E32}.Release|x86.Build.0 = Release|Win32
+		{27C8641A-629C-4F2A-8B12-37ECCA4B5143}.Debug|x64.ActiveCfg = Debug|x64
+		{27C8641A-629C-4F2A-8B12-37ECCA4B5143}.Debug|x64.Build.0 = Debug|x64
+		{27C8641A-629C-4F2A-8B12-37ECCA4B5143}.Debug|x86.ActiveCfg = Debug|Win32
+		{27C8641A-629C-4F2A-8B12-37ECCA4B5143}.Debug|x86.Build.0 = Debug|Win32
+		{27C8641A-629C-4F2A-8B12-37ECCA4B5143}.Release|x64.ActiveCfg = Release|x64
+		{27C8641A-629C-4F2A-8B12-37ECCA4B5143}.Release|x64.Build.0 = Release|x64
+		{27C8641A-629C-4F2A-8B12-37ECCA4B5143}.Release|x86.ActiveCfg = Release|Win32
+		{27C8641A-629C-4F2A-8B12-37ECCA4B5143}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -401,6 +411,7 @@ Global
 		{4C622CAE-D1C2-4909-94A9-6BDB6E4CE0D6} = {31B05C03-4BB2-4A0D-B621-B41DA6B0F57E}
 		{7E1B3DFF-88C1-43F2-AE97-BE197D80EF2B} = {31B05C03-4BB2-4A0D-B621-B41DA6B0F57E}
 		{9545B8A6-A104-4CA2-BC56-A8F7B6B17E32} = {64677875-B8BF-4DD4-B884-6A6CFF7527B9}
+		{27C8641A-629C-4F2A-8B12-37ECCA4B5143} = {64677875-B8BF-4DD4-B884-6A6CFF7527B9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A89F366F-0B7F-464F-90A8-A4828B273298}
