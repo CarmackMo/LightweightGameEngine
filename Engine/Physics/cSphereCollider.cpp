@@ -1,9 +1,9 @@
 // Includes
 //=========
 
-#include <cmath>
-#include "cSphereCollider.h"
+#include <Engine/Physics/cSphereCollider.h>
 
+#include <cmath>
 
 
 eae6320::Math::sVector eae6320::Physics::cSphereCollider::GetMinExtent_world() const

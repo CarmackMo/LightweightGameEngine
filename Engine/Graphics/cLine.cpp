@@ -2,9 +2,11 @@
 //=========
 
 #include <Engine/Asserts/Asserts.h>
+#include <Engine/Graphics/cLine.h>
 #include <Engine/Logging/Logging.h>
 #include <Engine/ScopeGuard/cScopeGuard.h>
-#include "cLine.h"
+
+#include <new>
 
 
 eae6320::cResult eae6320::Graphics::cLine::Create(
