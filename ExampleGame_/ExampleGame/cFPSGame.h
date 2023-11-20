@@ -20,7 +20,7 @@
 
 namespace eae6320
 {
-	class cExampleGame final : public Application::iApplication
+	class cFPSGame final : public Application::iApplication
 	{
 		// Inherited Implementation
 		//=========================
@@ -36,7 +36,7 @@ namespace eae6320
 		// so that it's easy to tell at a glance what kind of build is running.
 		const char* GetMainWindowName() const final
 		{
-			return "John-Paul's EAE6320 Example Game"
+			return "MoZiheng's FPS Game"
 				" -- "
 #if defined( EAE6320_PLATFORM_D3D )
 				"Direct3D"

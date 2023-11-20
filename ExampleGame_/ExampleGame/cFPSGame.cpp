@@ -1,7 +1,7 @@
 // Includes
 //=========
 
-#include "cExampleGame.h"
+#include "cFPSGame.h"
 
 #include <Engine/Asserts/Asserts.h>
 #include <Engine/UserInput/UserInput.h>
@@ -12,7 +12,7 @@
 // Run
 //----
 
-void eae6320::cExampleGame::UpdateBasedOnInput()
+void eae6320::cFPSGame::UpdateBasedOnInput()
 {
 	// Is the user pressing the ESC key?
 	if ( UserInput::IsKeyPressed( UserInput::KeyCodes::Escape ) )
@@ -26,12 +26,12 @@ void eae6320::cExampleGame::UpdateBasedOnInput()
 // Initialize / Clean Up
 //----------------------
 
-eae6320::cResult eae6320::cExampleGame::Initialize()
+eae6320::cResult eae6320::cFPSGame::Initialize()
 {
 	return Results::Success;
 }
 
-eae6320::cResult eae6320::cExampleGame::CleanUp()
+eae6320::cResult eae6320::cFPSGame::CleanUp()
 {
 	return Results::Success;
 }

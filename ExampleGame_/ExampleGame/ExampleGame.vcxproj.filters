@@ -31,10 +31,10 @@
     <ClInclude Include="Resource Files\targetver.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
-    <ClInclude Include="cExampleGame.h" />
+    <ClInclude Include="cFPSGame.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="cExampleGame.cpp" />
+    <ClCompile Include="cFPSGame.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
   </ItemGroup>
 </Project>
