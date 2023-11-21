@@ -45,47 +45,43 @@ namespace ConstantBufferFormats
 	};
 
 
-	// Data that is constant for a single draw call
-	struct sDrawCall
-	{
-		Math::cMatrix_transformation g_transform_localToWorld;
-	};
-
-
 	// Data for rendering an object 
-	struct sMeshEffectPair
+	struct sNormalRender
 	{
 		cMesh* mesh = nullptr;
 		cEffect* effect = nullptr;
+		Math::cMatrix_transformation transform_localToWorld;
 
 		// Initialize / Clean Up
 		//----------------------
 
-		sMeshEffectPair() = default;
-		~sMeshEffectPair() = default;
+		sNormalRender() = default;
+		~sNormalRender() = default;
 
-		sMeshEffectPair& operator= (sMeshEffectPair& other)
+		sNormalRender& operator= (sNormalRender& other)
 		{
 			mesh = other.mesh;
 			mesh->IncrementReferenceCount();
 			effect = other.effect;
 			effect->IncrementReferenceCount();
+			transform_localToWorld = other.transform_localToWorld;
 			return *this;
 		}
 
-		sMeshEffectPair(cMesh* i_mesh, cEffect* i_effect) :
-			mesh(i_mesh), effect(i_effect)
+		sNormalRender(cMesh* i_mesh, cEffect* i_effect, Math::cMatrix_transformation i_transform) :
+			mesh(i_mesh), effect(i_effect), transform_localToWorld(i_transform)
 		{
 			mesh->IncrementReferenceCount();
 			effect->IncrementReferenceCount();
 		}
 
-		void Initialize(cMesh* i_mesh, cEffect* i_effect)
+		void Initialize(cMesh* i_mesh, cEffect* i_effect, Math::cMatrix_transformation i_transform)
 		{
 			mesh = i_mesh;
 			mesh->IncrementReferenceCount();
 			effect = i_effect;
 			effect->IncrementReferenceCount();
+			transform_localToWorld = i_transform;
 		}
 
 		void CleanUp()
@@ -113,7 +109,7 @@ namespace ConstantBufferFormats
 
 
 	// Data for rendering debug information
-	struct sDebug
+	struct sDebugRender
 	{
 		cLine* line = nullptr;
 		Math::cMatrix_transformation transform;
@@ -121,10 +117,10 @@ namespace ConstantBufferFormats
 		// Initialize / Clean Up
 		//----------------------
 
-		sDebug() = default;
-		~sDebug() = default;
+		sDebugRender() = default;
+		~sDebugRender() = default;
 
-		sDebug& operator= (sDebug& other)
+		sDebugRender& operator= (sDebugRender& other)
 		{
 			line = other.line;
 			line->IncrementReferenceCount();
@@ -132,16 +128,17 @@ namespace ConstantBufferFormats
 			return *this;
 		}
 
-		sDebug(cLine* i_line, Math::cMatrix_transformation i_transformMatrix) : line(i_line), transform(i_transformMatrix)
+		sDebugRender(cLine* i_line, Math::cMatrix_transformation i_transform) : 
+			line(i_line), transform(i_transform)
 		{
 			line->IncrementReferenceCount();
 		}
 
-		void Initialize(cLine* i_line, Math::cMatrix_transformation i_transformMatrix)
+		void Initialize(cLine* i_line, Math::cMatrix_transformation i_transform)
 		{
 			line = i_line;
 			line->IncrementReferenceCount();
-			transform = i_transformMatrix;
+			transform = i_transform;
 		}
 
 		void CleanUp()

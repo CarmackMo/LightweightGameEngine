@@ -98,26 +98,26 @@ void ScrollShooterGame::cScrollShooterGame::SubmitDataToBeRendered(
 	{
 		size_t arraySize = m_renderObjectList.size();
 
-		Graphics::ConstantBufferFormats::sMeshEffectPair* meshEffectPairArray = new Graphics::ConstantBufferFormats::sMeshEffectPair[arraySize];
-		Math::cMatrix_transformation* transformMatrixArray = new Math::cMatrix_transformation[arraySize];
+		Graphics::ConstantBufferFormats::sNormalRender* normalRenderDataArray = new Graphics::ConstantBufferFormats::sNormalRender[arraySize];
 
 		// Render data of render objects 
 		for (size_t i = 0; i < arraySize; i++)
 		{
-			meshEffectPairArray[i].Initialize(m_renderObjectList[i]->GetMesh(), m_renderObjectList[i]->GetEffect());
-			transformMatrixArray[i] = m_renderObjectList[i]->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate);
+
+			normalRenderDataArray[i].Initialize(
+				m_renderObjectList[i]->GetMesh(), m_renderObjectList[i]->GetEffect(),
+				m_renderObjectList[i]->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
 		}
 
-		Graphics::SubmitMeshEffectData(meshEffectPairArray, transformMatrixArray, static_cast<uint32_t>(arraySize));
+		Graphics::SubmitNormalRenderData(normalRenderDataArray, static_cast<uint32_t>(arraySize));
 
 		// clean up 
 		for (size_t i = 0; i < arraySize; i++)
 		{
-			meshEffectPairArray[i].CleanUp();
+			normalRenderDataArray[i].CleanUp();
 		}
 
-		delete[] meshEffectPairArray;
-		delete[] transformMatrixArray;
+		delete[] normalRenderDataArray;
 	}
 
 
@@ -129,7 +129,7 @@ void ScrollShooterGame::cScrollShooterGame::SubmitDataToBeRendered(
 		size_t staticSize = m_colliderObjectList.size();
 		size_t arraySize = BVHRenderData.size() + staticSize;
 
-		Graphics::ConstantBufferFormats::sDebug* debugDataArray = new Graphics::ConstantBufferFormats::sDebug[arraySize];
+		Graphics::ConstantBufferFormats::sDebugRender* debugDataArray = new Graphics::ConstantBufferFormats::sDebugRender[arraySize];
 
 		// Render data of hard-coded collider
 		for (size_t i = 0; i < m_colliderObjectList.size(); i++)
@@ -144,7 +144,7 @@ void ScrollShooterGame::cScrollShooterGame::SubmitDataToBeRendered(
 			debugDataArray[i].Initialize(BVHRenderData[i - staticSize].first, BVHRenderData[i - staticSize].second);
 		}
 
-		Graphics::SubmitDebugData(debugDataArray, static_cast<uint32_t>(arraySize));
+		Graphics::SubmitDebugRenderData(debugDataArray, static_cast<uint32_t>(arraySize));
 
 		// Clean up
 		for (size_t i = 0; i < arraySize; i++)

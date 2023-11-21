@@ -52,14 +52,13 @@ namespace Graphics
 		Math::cMatrix_transformation i_transform_cameraToProjectedMatrix);
 
 
-	eae6320::cResult SubmitMeshEffectData(
-		ConstantBufferFormats::sMeshEffectPair i_meshEffectPairArray[], 
-		Math::cMatrix_transformation i_transformMatrix[],
-		uint32_t i_meshEffectPairCount);
+	eae6320::cResult SubmitNormalRenderData(
+		ConstantBufferFormats::sNormalRender i_normalDataArray[],
+		uint32_t i_normalDataCount);
 
 
-	eae6320::cResult SubmitDebugData(
-		ConstantBufferFormats::sDebug i_debugDataArray[],
+	eae6320::cResult SubmitDebugRenderData(
+		ConstantBufferFormats::sDebugRender i_debugDataArray[],
 		uint32_t i_debugDataCount);
 
 
