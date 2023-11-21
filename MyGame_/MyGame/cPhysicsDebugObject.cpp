@@ -17,7 +17,6 @@ void eae6320::cPhysicDebugObject::CleanUp()
 }
 
 
-
 void eae6320::cPhysicDebugObject::UpdateBasedOnInput()
 {
 	// TODO 
@@ -42,11 +41,6 @@ void eae6320::cPhysicDebugObject::UpdateBasedOnInput()
 	else
 		m_rigidBody.velocity.z = 0.0f;
 }
-
-
-
-
-
 
 
 void eae6320::cPhysicDebugObject::InitializeColliderLine()
@@ -114,12 +108,6 @@ void eae6320::cPhysicDebugObject::InitializeColliderLine()
 }
 
 
-void eae6320::cPhysicDebugObject::InitializeCollider(const Physics::sColliderSetting& i_builder)
-{
-	Physics::cCollider::Create(m_collider, i_builder, &m_rigidBody);
-}
-
-
 eae6320::Graphics::cLine* eae6320::cPhysicDebugObject::GetColliderLine() const
 {
 	if (m_isCollide)
@@ -128,8 +116,3 @@ eae6320::Graphics::cLine* eae6320::cPhysicDebugObject::GetColliderLine() const
 		return m_colliderLine;
 }
 
-
-eae6320::Physics::cCollider* eae6320::cPhysicDebugObject::GetCollider() const
-{
-	return m_collider;
-}

@@ -33,17 +33,17 @@ void eae6320::cGameObject::InitializeEffect(
 }
 
 
+void eae6320::cGameObject::InitializeCollider(const Physics::sColliderSetting& i_builder)
+{
+	Physics::cCollider::Create(m_collider, i_builder, &m_rigidBody);
+}
+
+
 void eae6320::cGameObject::CleanUp()
 {
 	if (m_mesh != nullptr) { m_mesh->DecrementReferenceCount(); }
 	if (m_effect != nullptr) { m_effect->DecrementReferenceCount(); }
 	if (m_collider != nullptr) { delete m_collider; }
-}
-
-
-eae6320::Physics::sRigidBodyState& eae6320::cGameObject::GetRigidBody()
-{
-	return m_rigidBody;
 }
 
 
@@ -56,6 +56,18 @@ eae6320::Graphics::cMesh* eae6320::cGameObject::GetMesh() const
 eae6320::Graphics::cEffect* eae6320::cGameObject::GetEffect() const
 {
 	return m_effect;
+}
+
+
+eae6320::Physics::sRigidBodyState& eae6320::cGameObject::GetRigidBody()
+{
+	return m_rigidBody;
+}
+
+
+eae6320::Physics::cCollider* eae6320::cGameObject::GetCollider() const
+{
+	return m_collider;
 }
 
 

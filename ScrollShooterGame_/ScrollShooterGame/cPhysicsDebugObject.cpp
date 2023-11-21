@@ -19,6 +19,7 @@ void ScrollShooterGame::cPhysicDebugObject::CleanUp()
 
 }
 
+
 void ScrollShooterGame::cPhysicDebugObject::UpdateBasedOnInput()
 {
 	// TODO 
@@ -43,11 +44,6 @@ void ScrollShooterGame::cPhysicDebugObject::UpdateBasedOnInput()
 	else
 		m_rigidBody.velocity.z = 0.0f;
 }
-
-
-
-
-
 
 
 void ScrollShooterGame::cPhysicDebugObject::InitializeColliderLine()
@@ -115,22 +111,10 @@ void ScrollShooterGame::cPhysicDebugObject::InitializeColliderLine()
 }
 
 
-void ScrollShooterGame::cPhysicDebugObject::InitializeCollider(const Physics::sColliderSetting& i_builder)
-{
-	Physics::cCollider::Create(m_collider, i_builder, &m_rigidBody);
-}
-
-
 eae6320::Graphics::cLine* ScrollShooterGame::cPhysicDebugObject::GetColliderLine() const
 {
 	if (m_isCollide)
 		return m_collisionLine;
 	else
 		return m_colliderLine;
-}
-
-
-eae6320::Physics::cCollider* ScrollShooterGame::cPhysicDebugObject::GetCollider() const
-{
-	return m_collider;
 }

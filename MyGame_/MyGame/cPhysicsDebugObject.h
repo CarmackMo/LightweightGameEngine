@@ -14,19 +14,14 @@ namespace eae6320
 	class cPhysicDebugObject : public cGameObject
 	{
 	public:
+
 		void CleanUp() override;
 
 		void UpdateBasedOnInput() override;
 
-
-
 		void InitializeColliderLine();
 
-		void InitializeCollider(const Physics::sColliderSetting& i_builder);
-
 		Graphics::cLine* GetColliderLine() const;
-
-		Physics::cCollider* GetCollider() const;
 
 		void SetIsCollide(bool isCollide)
 		{

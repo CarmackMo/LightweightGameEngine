@@ -6,18 +6,16 @@
 #include <Engine/GameObject/cGameObject.h>
 
 
-
-using namespace eae6320;
-
-
-namespace ScrollShooterGame
+namespace ScrollShooterGame 
 {
 
-	class cPlayer
+	class cPlayer : public eae6320::cGameObject
 	{
+
 	public:
-		cPlayer();
-		~cPlayer();
+
+		void CleanUp() override;
+
 
 	private:
 

@@ -29,20 +29,22 @@ namespace eae6320
 
 		void InitializeMesh(const std::string& i_meshPath);
 
-		void InitializeEffect(
-			const std::string& i_vertexShaderPath,
-			const std::string& i_fragmentShaderPath);
+		void InitializeEffect(const std::string& i_vertexShaderPath, const std::string& i_fragmentShaderPath);
+
+		void InitializeCollider(const Physics::sColliderSetting& i_builder);
 
 		virtual void CleanUp();
 
 		// Property Getters
 		//--------------------------
 
-		Physics::sRigidBodyState& GetRigidBody();
-
 		Graphics::cMesh* GetMesh() const;
 
 		Graphics::cEffect* GetEffect() const;
+
+		Physics::sRigidBodyState& GetRigidBody();
+
+		Physics::cCollider* GetCollider() const;
 
 		Math::cMatrix_transformation GetCurrentTransform() const;
 

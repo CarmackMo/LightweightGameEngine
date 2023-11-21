@@ -14,19 +14,14 @@ namespace ScrollShooterGame
 	class cPhysicDebugObject : public eae6320::cGameObject
 	{
 	public:
+
 		void CleanUp() override;
 
 		void UpdateBasedOnInput() override;
 
-
-
 		void InitializeColliderLine();
 
-		void InitializeCollider(const eae6320::Physics::sColliderSetting& i_builder);
-
 		eae6320::Graphics::cLine* GetColliderLine() const;
-
-		eae6320::Physics::cCollider* GetCollider() const;
 
 		void SetIsCollide(bool isCollide)
 		{

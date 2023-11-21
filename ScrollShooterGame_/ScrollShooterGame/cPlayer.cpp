@@ -3,12 +3,8 @@
 
 
 
-
-
-ScrollShooterGame::cPlayer::cPlayer()
+void ScrollShooterGame::cPlayer::CleanUp()
 {
-}
 
-ScrollShooterGame::cPlayer::~cPlayer()
-{
+
 }
