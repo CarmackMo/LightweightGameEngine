@@ -6,6 +6,15 @@
 #include <vector>
 
 
+
+void eae6320::cGameObject::CleanUp()
+{
+	if (m_mesh != nullptr) { m_mesh->DecrementReferenceCount(); }
+	if (m_effect != nullptr) { m_effect->DecrementReferenceCount(); }
+	if (m_collider != nullptr) { delete m_collider; }
+}
+
+
 void eae6320::cGameObject::InitializeMesh(const std::string& i_meshPath)
 {
 	if (m_mesh != nullptr)
@@ -36,14 +45,6 @@ void eae6320::cGameObject::InitializeEffect(
 void eae6320::cGameObject::InitializeCollider(const Physics::sColliderSetting& i_builder)
 {
 	Physics::cCollider::Create(m_collider, i_builder, &m_rigidBody);
-}
-
-
-void eae6320::cGameObject::CleanUp()
-{
-	if (m_mesh != nullptr) { m_mesh->DecrementReferenceCount(); }
-	if (m_effect != nullptr) { m_effect->DecrementReferenceCount(); }
-	if (m_collider != nullptr) { delete m_collider; }
 }
 
 

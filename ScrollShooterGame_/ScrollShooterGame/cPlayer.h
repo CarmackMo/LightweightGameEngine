@@ -4,6 +4,11 @@
 //========
 
 #include <Engine/GameObject/cGameObject.h>
+#include <Engine/UserInput/UserInput.h>
+
+
+// TODO
+#include <functional>
 
 
 namespace ScrollShooterGame 
@@ -14,11 +19,17 @@ namespace ScrollShooterGame
 
 	public:
 
-		void CleanUp() override;
+		void UpdateBasedOnInput() override;
+
+
+	public:
+
+		std::function<void()> bulletCreation = nullptr;
 
 
 	private:
 
+
 	};
 
-}
+} 

@@ -34,11 +34,13 @@
     <ClInclude Include="cScrollShooterGame.h" />
     <ClInclude Include="cPlayer.h" />
     <ClInclude Include="cPhysicsDebugObject.h" />
+    <ClInclude Include="cBullet.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cScrollShooterGame.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
     <ClCompile Include="cPlayer.cpp" />
     <ClCompile Include="cPhysicsDebugObject.cpp" />
+    <ClCompile Include="cBullet.cpp" />
   </ItemGroup>
 </Project>

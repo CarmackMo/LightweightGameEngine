@@ -15,6 +15,8 @@
 #include <Engine/Results/Results.h>
 
 #include <ScrollShooterGame_/ScrollShooterGame/cPhysicsDebugObject.h>
+#include <ScrollShooterGame_/ScrollShooterGame/cPlayer.h>
+#include <ScrollShooterGame_/ScrollShooterGame/cBullet.h>
 
 
 #include <Engine/Graphics/cMesh.h>
@@ -146,8 +148,6 @@ namespace ScrollShooterGame
 		std::vector<eae6320::cGameObject*> m_renderObjectList;
 
 
-		bool isKeyPressed = false;
-
 		void InitializeMeshData();
 
 		void InitializeCamera();
@@ -158,23 +158,17 @@ namespace ScrollShooterGame
 
 
 
-
-
 		// TODO: temporary colldier object
 
-		cPhysicDebugObject m_colliderObject_AABB1;
-		cPhysicDebugObject m_colliderObject_AABB2;
-		cPhysicDebugObject m_colliderObject_AABB3;
-		cPhysicDebugObject m_colliderObject_AABB4;
 
-		cPhysicDebugObject m_colliderObject_sphere1;
-		cPhysicDebugObject m_colliderObject_sphere2;
-		cPhysicDebugObject m_colliderObject_sphere3;
 
 		std::vector<cPhysicDebugObject*> m_colliderObjectList;
 
 		void InitializeCollisionSystem();
 
+
+		// TODO: temporary player object
+		cPlayer m_player;
 
 
 	};

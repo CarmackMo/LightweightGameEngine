@@ -27,13 +27,13 @@ namespace eae6320
 		// Initialization / Clean Up
 		//--------------------------
 
+		virtual void CleanUp();
+
 		void InitializeMesh(const std::string& i_meshPath);
 
 		void InitializeEffect(const std::string& i_vertexShaderPath, const std::string& i_fragmentShaderPath);
 
 		void InitializeCollider(const Physics::sColliderSetting& i_builder);
-
-		virtual void CleanUp();
 
 		// Property Getters
 		//--------------------------
