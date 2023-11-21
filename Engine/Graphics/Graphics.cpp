@@ -144,9 +144,12 @@ eae6320::cResult eae6320::Graphics::SubmitNormalRenderData(
 
 		for (uint32_t i = 0; i < i_normalDataCount; i++)
 		{
-			constantData_normalRender[i].Initialize(
-				i_normalDataArray[i].mesh, i_normalDataArray[i].effect,
-				i_normalDataArray[i].transform_localToWorld);
+			if (i_normalDataArray[i].IsValid())
+			{
+				constantData_normalRender[i].Initialize(
+					i_normalDataArray[i].mesh, i_normalDataArray[i].effect,
+					i_normalDataArray[i].transform_localToWorld);
+			}
 		}
 
 		return Results::Success;

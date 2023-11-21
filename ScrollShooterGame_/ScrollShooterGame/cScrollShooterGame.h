@@ -170,7 +170,7 @@ namespace ScrollShooterGame
 		// TODO: temporary player object
 		cPlayer m_player;
 
-
+		std::vector<cBullet*> m_bulletList;
 	};
 }
 
