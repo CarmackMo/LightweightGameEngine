@@ -8,14 +8,15 @@
 // Includes
 //=========
 
-#include "cEffect.h"
-#include "cMesh.h"
-#include "ConstantBufferFormats.h"
-#include "Configuration.h"
+#include <Engine/Graphics/cEffect.h>
+#include <Engine/Graphics/cMesh.h>
+#include <Engine/Graphics/ConstantBufferFormats.h>
+#include <Engine/Graphics/Configuration.h>
+#include <Engine/GameObject/cCamera.h>
+#include <Engine/Results/Results.h>
+
 
 #include <cstdint>
-#include <Engine/Camera/cCamera.h>
-#include <Engine/Results/Results.h>
 
 #if defined( EAE6320_PLATFORM_WINDOWS )
 	#include <Engine/Windows/Includes.h>

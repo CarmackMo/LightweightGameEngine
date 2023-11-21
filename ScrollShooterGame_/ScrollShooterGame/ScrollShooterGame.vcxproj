@@ -28,11 +28,13 @@
     <ResourceCompile Include="Resource Files\ScrollShooterGame.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cPlayer.h" />
     <ClInclude Include="cScrollShooterGame.h" />
     <ClInclude Include="Resource Files\Resource.h" />
     <ClInclude Include="Resource Files\targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="cPlayer.cpp" />
     <ClCompile Include="cScrollShooterGame.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
   </ItemGroup>
@@ -42,9 +44,6 @@
     </ProjectReference>
     <ProjectReference Include="..\..\Engine\Asserts\Asserts.vcxproj">
       <Project>{464a6551-fca9-4027-bd9e-2b26914782ab}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Engine\Camera\Camera.vcxproj">
-      <Project>{e97a35a2-8798-4c91-9543-9ff8bf098c76}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\Engine\GameObject\GameObject.vcxproj">
       <Project>{16e33daa-7734-4082-b347-6ff140d7891a}</Project>

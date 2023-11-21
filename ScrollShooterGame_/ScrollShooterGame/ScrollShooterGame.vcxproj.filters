@@ -32,9 +32,11 @@
       <Filter>Resource Files</Filter>
     </ClInclude>
     <ClInclude Include="cScrollShooterGame.h" />
+    <ClInclude Include="cPlayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cScrollShooterGame.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
+    <ClCompile Include="cPlayer.cpp" />
   </ItemGroup>
 </Project>
