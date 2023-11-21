@@ -22,7 +22,7 @@
 #include <vector>
 #include <iostream>
 
-
+using namespace eae6320;
 
 // Inherited Implementation
 //=========================
@@ -30,19 +30,19 @@
 // Run
 //----
 
-void eae6320::cScrollShooterGame::UpdateBasedOnInput()
+void ScrollShooterGame::cScrollShooterGame::UpdateBasedOnInput()
 {
 	// Is the user pressing the ESC key?
-	if ( UserInput::IsKeyPressed( UserInput::KeyCodes::Escape ) )
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Escape))
 	{
 		// Exit the application
-		const auto result = Exit( EXIT_SUCCESS );
-		EAE6320_ASSERT( result );
+		const auto result = Exit(EXIT_SUCCESS);
+		EAE6320_ASSERT(result);
 	}
 }
 
 
-void eae6320::cScrollShooterGame::UpdateSimulationBasedOnInput()
+void ScrollShooterGame::cScrollShooterGame::UpdateSimulationBasedOnInput()
 {
 	m_camera.UpdateBasedOnInput();
 
@@ -66,7 +66,7 @@ void eae6320::cScrollShooterGame::UpdateSimulationBasedOnInput()
 }
 
 
-void eae6320::cScrollShooterGame::UpdateSimulationBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate)
+void ScrollShooterGame::cScrollShooterGame::UpdateSimulationBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate)
 {
 	m_camera.UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
 
@@ -88,8 +88,8 @@ void eae6320::cScrollShooterGame::UpdateSimulationBasedOnTime(const float i_elap
 }
 
 
-void eae6320::cScrollShooterGame::SubmitDataToBeRendered(
-	const float i_elapsedSecondCount_systemTime, 
+void ScrollShooterGame::cScrollShooterGame::SubmitDataToBeRendered(
+	const float i_elapsedSecondCount_systemTime,
 	const float i_elapsedSecondCount_sinceLastSimulationUpdate)
 {
 	// Submit camera data
@@ -147,7 +147,7 @@ void eae6320::cScrollShooterGame::SubmitDataToBeRendered(
 		Graphics::ConstantBufferFormats::sDebug* debugDataArray = new Graphics::ConstantBufferFormats::sDebug[arraySize];
 
 		// Render data of hard-coded collider
-		for (size_t i = 0 ; i < m_colliderObjectList.size(); i++)
+		for (size_t i = 0; i < m_colliderObjectList.size(); i++)
 		{
 			auto collider = m_colliderObjectList[i];
 			debugDataArray[i].Initialize(collider->GetColliderLine(), collider->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
@@ -175,7 +175,7 @@ void eae6320::cScrollShooterGame::SubmitDataToBeRendered(
 // Initialize / Clean Up
 //----------------------
 
-eae6320::cResult eae6320::cScrollShooterGame::Initialize()
+eae6320::cResult ScrollShooterGame::cScrollShooterGame::Initialize()
 {
 	eae6320::Logging::OutputMessage("\n --------------MoZiheng MyGame customized log messge--------------");
 
@@ -214,7 +214,7 @@ eae6320::cResult eae6320::cScrollShooterGame::Initialize()
 }
 
 
-eae6320::cResult eae6320::cScrollShooterGame::CleanUp()
+eae6320::cResult ScrollShooterGame::cScrollShooterGame::CleanUp()
 {
 	eae6320::Logging::OutputMessage("\n --------------MoZiheng MyGame customized log messge--------------");
 
@@ -244,7 +244,7 @@ eae6320::cResult eae6320::cScrollShooterGame::CleanUp()
 }
 
 
-void eae6320::cScrollShooterGame::InitializeMeshData()
+void ScrollShooterGame::cScrollShooterGame::InitializeMeshData()
 {
 	Graphics::cEffect::Create(m_effect_animate, m_vertexShaderPath, m_fragmentShaderPath_animate);
 
@@ -252,12 +252,12 @@ void eae6320::cScrollShooterGame::InitializeMeshData()
 }
 
 
-void eae6320::cScrollShooterGame::InitializeCamera()
+void ScrollShooterGame::cScrollShooterGame::InitializeCamera()
 {
 	m_camera.Initialize(
 		0.0f, 0.0f, 5.0f,
-		Math::ConvertDegreesToRadians(45.0f), 
-		0.1f, 
+		Math::ConvertDegreesToRadians(45.0f),
+		0.1f,
 		100.0f);
 
 	//m_camera.InitializeMesh(m_rectangleMeshPath);
@@ -265,7 +265,7 @@ void eae6320::cScrollShooterGame::InitializeCamera()
 }
 
 
-void eae6320::cScrollShooterGame::InitializeGameObject()
+void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 {
 	// Game object initialization
 	{
@@ -331,33 +331,33 @@ void eae6320::cScrollShooterGame::InitializeGameObject()
 		m_colliderObject_AABB1.InitializeCollider(setting_AABB1);
 		m_colliderObject_AABB1.InitializeColliderLine();
 		m_colliderObject_AABB1.GetCollider()->m_name = "AABB_1";
-		m_colliderObject_AABB1.GetCollider()->OnCollisionEnter = 
+		m_colliderObject_AABB1.GetCollider()->OnCollisionEnter =
 			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Enter collision, other: ", other->m_name.c_str()); m_colliderObject_AABB1.SetIsCollide(true); };
-		m_colliderObject_AABB1.GetCollider()->OnCollisionStay = 
-			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(std::string("Stay collision, " + self->m_name + " : " ).c_str(), other->m_name.c_str()); };
-		m_colliderObject_AABB1.GetCollider()->OnCollisionExit = 
+		m_colliderObject_AABB1.GetCollider()->OnCollisionStay =
+			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(std::string("Stay collision, " + self->m_name + " : ").c_str(), other->m_name.c_str()); };
+		m_colliderObject_AABB1.GetCollider()->OnCollisionExit =
 			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Exit collision, other: ", other->m_name.c_str()); m_colliderObject_AABB1.SetIsCollide(false); };
 
 		m_colliderObject_AABB2.GetRigidBody().position = Math::sVector(-1.0f, -0.5f, 1.5f);
 		m_colliderObject_AABB2.InitializeCollider(setting_AABB1);
 		m_colliderObject_AABB2.InitializeColliderLine();
 		m_colliderObject_AABB2.GetCollider()->m_name = "AABB_2";
-		m_colliderObject_AABB2.GetCollider()->OnCollisionEnter = 
+		m_colliderObject_AABB2.GetCollider()->OnCollisionEnter =
 			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Enter collision, other: ", other->m_name.c_str()); m_colliderObject_AABB2.SetIsCollide(true); };
 		m_colliderObject_AABB2.GetCollider()->OnCollisionStay =
 			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(std::string("Stay collision, " + self->m_name + " : ").c_str(), other->m_name.c_str()); };
-		m_colliderObject_AABB2.GetCollider()->OnCollisionExit = 
+		m_colliderObject_AABB2.GetCollider()->OnCollisionExit =
 			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Exit collision, other: ", other->m_name.c_str()); m_colliderObject_AABB2.SetIsCollide(false); };
 
 		m_colliderObject_AABB3.GetRigidBody().position = Math::sVector(1.0f, -2.0f, 3.0f);
 		m_colliderObject_AABB3.InitializeCollider(setting_AABB1);
 		m_colliderObject_AABB3.InitializeColliderLine();
 		m_colliderObject_AABB3.GetCollider()->m_name = "AABB_3";
-		m_colliderObject_AABB3.GetCollider()->OnCollisionEnter = 
+		m_colliderObject_AABB3.GetCollider()->OnCollisionEnter =
 			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Enter collision, other: ", other->m_name.c_str()); m_colliderObject_AABB3.SetIsCollide(true); };
 		m_colliderObject_AABB3.GetCollider()->OnCollisionStay =
 			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(std::string("Stay collision, " + self->m_name + " : ").c_str(), other->m_name.c_str()); };
-		m_colliderObject_AABB3.GetCollider()->OnCollisionExit = 
+		m_colliderObject_AABB3.GetCollider()->OnCollisionExit =
 			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Exit collision, other: ", other->m_name.c_str()); m_colliderObject_AABB3.SetIsCollide(false); };
 
 		m_colliderObject_AABB4.GetRigidBody().position = Math::sVector(-1.5f, -2.0f, 1.0f);
@@ -377,13 +377,13 @@ void eae6320::cScrollShooterGame::InitializeGameObject()
 		m_colliderObject_sphere1.InitializeCollider(setting_sphere1);
 		m_colliderObject_sphere1.InitializeColliderLine();
 		m_colliderObject_sphere1.GetCollider()->m_name = "Sphere_1";
-		m_colliderObject_sphere1.GetCollider()->OnCollisionEnter = 
+		m_colliderObject_sphere1.GetCollider()->OnCollisionEnter =
 			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Enter collision, other: ", other->m_name.c_str()); m_colliderObject_sphere1.SetIsCollide(true); };
-		m_colliderObject_sphere1.GetCollider()->OnCollisionStay = 
+		m_colliderObject_sphere1.GetCollider()->OnCollisionStay =
 			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(std::string("Stay collision, " + self->m_name + " : ").c_str(), other->m_name.c_str()); };
-		m_colliderObject_sphere1.GetCollider()->OnCollisionExit = 
+		m_colliderObject_sphere1.GetCollider()->OnCollisionExit =
 			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { UserOutput::ConsolePrint(" Exit collision, other: ", other->m_name.c_str()); m_colliderObject_sphere1.SetIsCollide(false); };
-	
+
 		m_colliderObject_sphere2.GetRigidBody().position = Math::sVector(2.0f, 1.5f, 1.0f);
 		m_colliderObject_sphere2.InitializeCollider(setting_sphere1);
 		m_colliderObject_sphere2.InitializeColliderLine();
@@ -420,7 +420,7 @@ void eae6320::cScrollShooterGame::InitializeGameObject()
 }
 
 
-void eae6320::cScrollShooterGame::CleanUpGameObject()
+void ScrollShooterGame::cScrollShooterGame::CleanUpGameObject()
 {
 	//m_renderObject_triangle.CleanUp();
 	//m_renderObject_rectangle.CleanUp();
@@ -444,7 +444,7 @@ void eae6320::cScrollShooterGame::CleanUpGameObject()
 
 
 	// TODO: temporary code for clean up colldier object
-	for (cGameObject* colliderObject : m_colliderObjectList)
+	for (cPhysicDebugObject* colliderObject : m_colliderObjectList)
 	{
 		colliderObject->CleanUp();
 	}
@@ -452,11 +452,11 @@ void eae6320::cScrollShooterGame::CleanUpGameObject()
 
 
 
-void eae6320::cScrollShooterGame::InitializeCollisionSystem()
+void ScrollShooterGame::cScrollShooterGame::InitializeCollisionSystem()
 {
 	std::vector<Physics::cCollider*> colliderList;
 
-	for (cGameObject* colliderObject : m_colliderObjectList)
+	for (cPhysicDebugObject* colliderObject : m_colliderObjectList)
 	{
 		colliderList.push_back(colliderObject->GetCollider());
 	}

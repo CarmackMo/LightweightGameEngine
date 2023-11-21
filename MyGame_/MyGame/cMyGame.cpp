@@ -444,7 +444,7 @@ void eae6320::cMyGame::CleanUpGameObject()
 
 
 	// TODO: temporary code for clean up colldier object
-	for (cGameObject* colliderObject : m_colliderObjectList)
+	for (cPhysicDebugObject* colliderObject : m_colliderObjectList)
 	{
 		colliderObject->CleanUp();
 	}
@@ -456,7 +456,7 @@ void eae6320::cMyGame::InitializeCollisionSystem()
 {
 	std::vector<Physics::cCollider*> colliderList;
 
-	for (cGameObject* colliderObject : m_colliderObjectList)
+	for (cPhysicDebugObject* colliderObject : m_colliderObjectList)
 	{
 		colliderList.push_back(colliderObject->GetCollider());
 	}

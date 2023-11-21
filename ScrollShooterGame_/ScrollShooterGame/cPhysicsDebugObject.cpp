@@ -4,11 +4,14 @@
 
 #include <Engine/Math/sVector.h>
 
-#include <MyGame_/MyGame/cPhysicsDebugObject.h>
+#include <ScrollShooterGame_/ScrollShooterGame/cPhysicsDebugObject.h>
+
+
+using namespace eae6320;
 
 
 
-void eae6320::cPhysicDebugObject::CleanUp()
+void ScrollShooterGame::cPhysicDebugObject::CleanUp()
 {
 	cGameObject::CleanUp();
 
@@ -16,9 +19,7 @@ void eae6320::cPhysicDebugObject::CleanUp()
 
 }
 
-
-
-void eae6320::cPhysicDebugObject::UpdateBasedOnInput()
+void ScrollShooterGame::cPhysicDebugObject::UpdateBasedOnInput()
 {
 	// TODO 
 	if (UserInput::IsKeyPressed('A'))
@@ -49,7 +50,7 @@ void eae6320::cPhysicDebugObject::UpdateBasedOnInput()
 
 
 
-void eae6320::cPhysicDebugObject::InitializeColliderLine()
+void ScrollShooterGame::cPhysicDebugObject::InitializeColliderLine()
 {
 	if (m_colliderLine != nullptr)
 	{
@@ -114,13 +115,13 @@ void eae6320::cPhysicDebugObject::InitializeColliderLine()
 }
 
 
-void eae6320::cPhysicDebugObject::InitializeCollider(const Physics::sColliderSetting& i_builder)
+void ScrollShooterGame::cPhysicDebugObject::InitializeCollider(const Physics::sColliderSetting& i_builder)
 {
 	Physics::cCollider::Create(m_collider, i_builder, &m_rigidBody);
 }
 
 
-eae6320::Graphics::cLine* eae6320::cPhysicDebugObject::GetColliderLine() const
+eae6320::Graphics::cLine* ScrollShooterGame::cPhysicDebugObject::GetColliderLine() const
 {
 	if (m_isCollide)
 		return m_collisionLine;
@@ -129,7 +130,7 @@ eae6320::Graphics::cLine* eae6320::cPhysicDebugObject::GetColliderLine() const
 }
 
 
-eae6320::Physics::cCollider* eae6320::cPhysicDebugObject::GetCollider() const
+eae6320::Physics::cCollider* ScrollShooterGame::cPhysicDebugObject::GetCollider() const
 {
 	return m_collider;
 }

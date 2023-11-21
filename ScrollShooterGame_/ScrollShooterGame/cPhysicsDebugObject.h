@@ -8,10 +8,10 @@
 #include <Engine/UserInput/UserInput.h>
 
 
-namespace eae6320
+namespace ScrollShooterGame
 {
 
-	class cPhysicDebugObject : public cGameObject
+	class cPhysicDebugObject : public eae6320::cGameObject
 	{
 	public:
 		void CleanUp() override;
@@ -22,11 +22,11 @@ namespace eae6320
 
 		void InitializeColliderLine();
 
-		void InitializeCollider(const Physics::sColliderSetting& i_builder);
+		void InitializeCollider(const eae6320::Physics::sColliderSetting& i_builder);
 
-		Graphics::cLine* GetColliderLine() const;
+		eae6320::Graphics::cLine* GetColliderLine() const;
 
-		Physics::cCollider* GetCollider() const;
+		eae6320::Physics::cCollider* GetCollider() const;
 
 		void SetIsCollide(bool isCollide)
 		{
@@ -44,9 +44,9 @@ namespace eae6320
 
 		bool m_isCollide = false;
 
-		Graphics::cLine* m_colliderLine = nullptr;
+		eae6320::Graphics::cLine* m_colliderLine = nullptr;
 
-		Graphics::cLine* m_collisionLine = nullptr;
+		eae6320::Graphics::cLine* m_collisionLine = nullptr;
 
 	};
 

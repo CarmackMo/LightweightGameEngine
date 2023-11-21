@@ -5,21 +5,12 @@
 
 #include <Engine/Graphics/cEffect.h>
 #include <Engine/Graphics/cMesh.h>
-#include <Engine/Graphics/VertexFormats.h>
 #include <Engine/Math/cMatrix_transformation.h>
 #include <Engine/Physics/cRigidBody.h>
+#include <Engine/Physics/cColliderBase.h>
 #include <Engine/UserInput/UserInput.h>
 
 #include <string>
-
-
-// TODO: Tempory code for collider
-#include <Engine/Graphics/cLine.h>
-#include <Engine/Physics/cAABBCollider.h>
-#include <Engine/Physics/cColliderBase.h>
-#include <Engine/Physics/cSphereCollider.h>
-
-
 
 
 namespace eae6320
@@ -35,15 +26,6 @@ namespace eae6320
 		
 		// Initialization / Clean Up
 		//--------------------------
-
-		void InitializeMesh(
-			Graphics::VertexFormats::sVertex_mesh* i_vertexData,
-			const uint32_t i_vertexCount,
-			uint16_t* i_indexData,
-			const uint32_t i_indexCount,
-			const uint32_t i_indexCountToRender,
-			const uint32_t i_indexOfFirstIndexToUse = 0,
-			const uint32_t i_offsetToAddToEachIndex = 0);
 
 		void InitializeMesh(const std::string& i_meshPath);
 
@@ -74,48 +56,15 @@ namespace eae6320
 		virtual void UpdateBasedOnInput();
 
 
-
-
-
-		// TODO: Tempory code for rendering collider box and debug collider
-
-		void InitializeColliderLine();
-
-		void InitializeCollider(const Physics::sColliderSetting& i_builder);
-
-		Graphics::cLine* GetColliderLine() const;
-
-		Physics::cCollider* GetCollider() const;
-
-		void SetIsCollide(bool isCollide)
-		{
-			m_isCollide = isCollide;
-		}
-
-
-
-
-
 		// Data
 		//=========================
 
 	protected:
 
-		Physics::sRigidBodyState m_rigidBody;
-
 		Graphics::cMesh* m_mesh = nullptr;
 		Graphics::cEffect* m_effect = nullptr;
 
-
-
-		// TODO: Temporary code for collider
-
-		bool m_isCollide = false;
-
-		Graphics::cLine* m_colliderLine = nullptr;
-
-		Graphics::cLine* m_collisionLine = nullptr;
-
+		Physics::sRigidBodyState m_rigidBody;
 		Physics::cCollider* m_collider = nullptr;
 
 	};

@@ -14,18 +14,18 @@
 #include <Engine/Physics/cRigidBody.h>
 #include <Engine/Results/Results.h>
 
+#include <ScrollShooterGame_/ScrollShooterGame/cPhysicsDebugObject.h>
+
+
+#include <Engine/Graphics/cMesh.h>
+#include <Engine/Graphics/cEffect.h>
+// TODO: Tempory code for collider testing
+#include <Engine/Physics/cColliderBase.h>
+
 
 #if defined( EAE6320_PLATFORM_WINDOWS )
 	#include "Resource Files/Resource.h"
 #endif
-
-
-
-// TODO: Tempory code for collider testing
-#include <Engine/Graphics/cMesh.h>
-#include <Engine/Graphics/cEffect.h>
-#include <Engine/Physics/cColliderBase.h>
-#include <Engine/Physics/cSphereCollider.h>
 
 
 
@@ -34,9 +34,9 @@
 // Class Declaration
 //==================
 
-namespace eae6320
+namespace ScrollShooterGame
 {
-	class cScrollShooterGame final : public Application::iApplication
+	class cScrollShooterGame final : public  eae6320::Application::iApplication
 	{
 		// Inherited Implementation
 		//=========================
@@ -100,8 +100,8 @@ namespace eae6320
 		// Initialize / Clean Up
 		//----------------------
 
-		cResult Initialize() final;
-		cResult CleanUp() final;
+		eae6320::cResult Initialize() final;
+		eae6320::cResult CleanUp() final;
 
 
 		// Data
@@ -130,20 +130,20 @@ namespace eae6320
 		//std::string m_keqing_SkinMeshPath = "data/meshes/mesh_keqing_skin.lua";
 		//std::string m_ganyuMeshPath = "data/meshes/mesh_ganyu.lua";
 
-		Graphics::cEffect* m_effect_animate = nullptr;
-		Graphics::cEffect* m_effect_standard = nullptr;
+		eae6320::Graphics::cEffect* m_effect_animate = nullptr;
+		eae6320::Graphics::cEffect* m_effect_standard = nullptr;
 
-		Camera::cCamera m_camera;
+		eae6320::Camera::cCamera m_camera;
 
-		cGameObject m_renderObject_triangle;
-		cGameObject m_renderObject_rectangle;
-		cGameObject m_renderObject_plane;
-		cGameObject m_renderObject_cube;
-		cGameObject m_renderObject_Keqing;
-		cGameObject m_renderObject_Keqing_skin;
-		cGameObject m_renderObject_Ganyu;
+		eae6320::cGameObject m_renderObject_triangle;
+		eae6320::cGameObject m_renderObject_rectangle;
+		eae6320::cGameObject m_renderObject_plane;
+		eae6320::cGameObject m_renderObject_cube;
+		eae6320::cGameObject m_renderObject_Keqing;
+		eae6320::cGameObject m_renderObject_Keqing_skin;
+		eae6320::cGameObject m_renderObject_Ganyu;
 
-		std::vector<cGameObject*> m_renderObjectList;
+		std::vector<eae6320::cGameObject*> m_renderObjectList;
 
 
 		bool isKeyPressed = false;
@@ -162,16 +162,16 @@ namespace eae6320
 
 		// TODO: temporary colldier object
 
-		cGameObject m_colliderObject_AABB1;
-		cGameObject m_colliderObject_AABB2;
-		cGameObject m_colliderObject_AABB3;
-		cGameObject m_colliderObject_AABB4;
+		cPhysicDebugObject m_colliderObject_AABB1;
+		cPhysicDebugObject m_colliderObject_AABB2;
+		cPhysicDebugObject m_colliderObject_AABB3;
+		cPhysicDebugObject m_colliderObject_AABB4;
 
-		cGameObject m_colliderObject_sphere1;
-		cGameObject m_colliderObject_sphere2;
-		cGameObject m_colliderObject_sphere3;
+		cPhysicDebugObject m_colliderObject_sphere1;
+		cPhysicDebugObject m_colliderObject_sphere2;
+		cPhysicDebugObject m_colliderObject_sphere3;
 
-		std::vector<cGameObject*> m_colliderObjectList;
+		std::vector<cPhysicDebugObject*> m_colliderObjectList;
 
 		void InitializeCollisionSystem();
 

@@ -29,11 +29,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cMyGame.h" />
+    <ClInclude Include="cPhysicsDebugObject.h" />
     <ClInclude Include="Resource Files\Resource.h" />
     <ClInclude Include="Resource Files\targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cMyGame.cpp" />
+    <ClCompile Include="cPhysicsDebugObject.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
   </ItemGroup>
   <ItemGroup>
