@@ -14,36 +14,6 @@
 eae6320::cResult eae6320::Graphics::cEffect::Create(cEffect*& o_effect, const std::string& i_vertexShaderPath, const std::string& i_fragmentShaderPath)
 {
 
-	// Wait for the graphics thread finishes the rendering of last frame,
-	// Then claim the rendering context from rendering thread and signal rendering
-	// thread that a new effect object starts initializing.
-	{
-		cResult canBeInitialized;
-		canBeInitialized = Graphics::WaitUntilRenderingOfCurrentFrameIsCompleted(~unsigned int(0u));
-
-		if (canBeInitialized == Results::Success)
-		{
-			if (Graphics::ResetThatExistRenderObjectNotInitializedYet() == Results::Failure)
-			{
-				EAE6320_ASSERTF(false, "Couldn't signal that new effect starts initializing");
-				Logging::OutputError("Couldn't signal that new effect starts initializing");
-				return Results::Failure;
-			}
-
-			if (sContext::g_context.EnableContext() == FALSE)
-			{
-				EAE6320_ASSERTF(false, "Enable rendering context for initializing new effect in main thread failed");
-				Logging::OutputError("Enable rendering context for initializing new effect in main thread failed");
-				return Results::Failure;
-			}
-		}
-		else
-		{
-			Logging::OutputError("Failed to wait for rendering thread finishes rendering last frame");
-			return Results::Failure;
-		}
-	}
-
 	auto result = eae6320::Results::Success;
 	cEffect* newEffect = nullptr;
 
@@ -64,22 +34,6 @@ eae6320::cResult eae6320::Graphics::cEffect::Create(cEffect*& o_effect, const st
 					newEffect = nullptr;
 				}
 				o_effect = nullptr;
-			}
-
-			// Release rendering context and signal rendering thread that this effect 
-			// object finishes initializing
-			{
-				if (sContext::g_context.DisableContext() == FALSE)
-				{
-					EAE6320_ASSERTF(false, "Release rendering context after initializing new effect in main thread failed");
-					Logging::OutputError("Release rendering context after initializing new effect in main thread failed");
-				}
-
-				if (Graphics::SignalThatAllRenderObjectsHaveBeenInitialized() == Results::Failure)
-				{
-					EAE6320_ASSERTF(false, "Couldn't signal that new effect finishes initializing");
-					Logging::OutputError("Couldn't signal that new effect finishes initializing");
-				}
 			}
 		}
 	);

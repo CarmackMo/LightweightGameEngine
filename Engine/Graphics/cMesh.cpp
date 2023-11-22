@@ -4,7 +4,6 @@
 
 #include <Engine/Asserts/Asserts.h>
 #include <Engine/Graphics/cMesh.h>
-#include <Engine/Graphics/Graphics.h>
 #include <Engine/Logging/Logging.h>
 #include <Engine/Platform/Platform.h>
 #include <Engine/ScopeGuard/cScopeGuard.h>
@@ -41,15 +40,6 @@ eae6320::cResult eae6320::Graphics::cMesh::Create(
 	const uint32_t i_indexOfFirstIndexToUse,
 	const uint32_t i_offsetToAddToEachIndex)
 {
-
-	// Wait for the graphics thread finishes the rendering of last frame
-	{
-		Graphics::WaitUntilRenderingOfCurrentFrameIsCompleted(~unsigned int(0u));
-		Graphics::ResetThatExistRenderObjectNotInitializedYet();
-		UserOutput::ConsolePrint("cMesh: Start Initializeing \n");
-	}
-
-
 	auto result = Results::Success;
 	cMesh* newMesh = nullptr;
 
@@ -73,9 +63,6 @@ eae6320::cResult eae6320::Graphics::cMesh::Create(
 				}
 				o_mesh = nullptr;
 			}
-
-			Graphics::SignalThatAllRenderObjectsHaveBeenInitialized();
-			UserOutput::ConsolePrint("cMesh: Finish Initializeing \n");
 		});
 
 	// Allocate a new mesh
@@ -110,15 +97,6 @@ eae6320::cResult eae6320::Graphics::cMesh::Create(
 	cMesh*& o_mesh, 
 	const std::string& i_meshPath)
 {
-
-	// Wait for the graphics thread finishes the rendering of last frame
-	{
-		Graphics::WaitUntilRenderingOfCurrentFrameIsCompleted(~unsigned int(0u));
-		Graphics::ResetThatExistRenderObjectNotInitializedYet();
-		UserOutput::ConsolePrint("cMesh: Start Initializeing \n");
-	}
-
-
 	auto result = eae6320::Results::Success;
 	cMesh* newMesh = nullptr;
 
@@ -142,9 +120,6 @@ eae6320::cResult eae6320::Graphics::cMesh::Create(
 				}
 				o_mesh = nullptr;
 			}
-
-			Graphics::SignalThatAllRenderObjectsHaveBeenInitialized();
-			UserOutput::ConsolePrint("cMesh: Finish Initializeing \n");
 		});
 
 	// Allocate a new mesh

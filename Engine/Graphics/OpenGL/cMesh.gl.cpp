@@ -3,10 +3,9 @@
 
 #include <Engine/Asserts/Asserts.h>
 #include <Engine/Graphics/cMesh.h>
-#include <Engine/Logging/Logging.h>
-
+#include <Engine/Graphics/Graphics.h>
 #include <Engine/Graphics/sContext.h>
-
+#include <Engine/Logging/Logging.h>
 
 
 
@@ -28,9 +27,34 @@ eae6320::cResult eae6320::Graphics::cMesh::Initialize(
 	auto GLContextHandler = wglGetCurrentContext();
 	auto temp = 0;
 
-	if (sContext::g_context.EnableContext() == FALSE)
+	// Wait for the graphics thread finishes the rendering of last frame,
+	// Then claim the rendering context from rendering thread and signal rendering
+	// thread that a new effect object starts initializing.
 	{
-		EAE6320_ASSERTF(false, "Enable openGL context in game loop thread fail");
+		cResult canBeInitialized;
+		canBeInitialized = Graphics::WaitUntilRenderingOfCurrentFrameIsCompleted(~unsigned int(0u));
+
+		if (canBeInitialized == Results::Success)
+		{
+			if (Graphics::ResetThatExistRenderObjectNotInitializedYet() == Results::Failure)
+			{
+				EAE6320_ASSERTF(false, "Couldn't signal that new effect starts initializing");
+				Logging::OutputError("Couldn't signal that new effect starts initializing");
+				return Results::Failure;
+			}
+
+			if (sContext::g_context.EnableContext() == FALSE)
+			{
+				EAE6320_ASSERTF(false, "Enable rendering context for initializing new effect in main thread failed");
+				Logging::OutputError("Enable rendering context for initializing new effect in main thread failed");
+				return Results::Failure;
+			}
+		}
+		else
+		{
+			Logging::OutputError("Failed to wait for rendering thread finishes rendering last frame");
+			return Results::Failure;
+		}
 	}
 
 	auto result = eae6320::Results::Success;
@@ -227,9 +251,20 @@ eae6320::cResult eae6320::Graphics::cMesh::Initialize(
 
 
 
-	if (sContext::g_context.DisableContext() == FALSE)
+	// Release rendering context and signal rendering thread that this effect 
+	// object finishes initializing
 	{
-		EAE6320_ASSERTF(false, "Disable openGL context in game loop thread fail");
+		if (sContext::g_context.DisableContext() == FALSE)
+		{
+			EAE6320_ASSERTF(false, "Release rendering context after initializing new effect in main thread failed");
+			Logging::OutputError("Release rendering context after initializing new effect in main thread failed");
+		}
+
+		if (Graphics::SignalThatAllRenderObjectsHaveBeenInitialized() == Results::Failure)
+		{
+			EAE6320_ASSERTF(false, "Couldn't signal that new effect finishes initializing");
+			Logging::OutputError("Couldn't signal that new effect finishes initializing");
+		}
 	}
 
 

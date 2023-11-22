@@ -3,6 +3,8 @@
 
 #include <Engine/Asserts/Asserts.h>
 #include <Engine/Graphics/cEffect.h>
+#include <Engine/Graphics/Graphics.h>
+#include <Engine/Graphics/sContext.h>
 #include <Engine/Logging/Logging.h>
 #include <Engine/ScopeGuard/cScopeGuard.h>
 
@@ -23,15 +25,43 @@ void eae6320::Graphics::cEffect::Bind()
 
 eae6320::cResult eae6320::Graphics::cEffect::Initialize(const std::string& i_vertexShaderPath, const std::string& i_fragmentShaderPath)
 {
-	auto result = eae6320::Results::Success;
+	// Wait for the graphics thread finishes the rendering of last frame,
+	// Then claim the rendering context from rendering thread and signal rendering
+	// thread that a new effect object starts initializing.
+	{
+		cResult canBeInitialized;
+		canBeInitialized = Graphics::WaitUntilRenderingOfCurrentFrameIsCompleted(~unsigned int(0u));
 
+		if (canBeInitialized == Results::Success)
+		{
+			if (Graphics::ResetThatExistRenderObjectNotInitializedYet() == Results::Failure)
+			{
+				EAE6320_ASSERTF(false, "Couldn't signal that new effect starts initializing");
+				Logging::OutputError("Couldn't signal that new effect starts initializing");
+				return Results::Failure;
+			}
+
+			if (sContext::g_context.EnableContext() == FALSE)
+			{
+				EAE6320_ASSERTF(false, "Enable rendering context for initializing new effect in main thread failed");
+				Logging::OutputError("Enable rendering context for initializing new effect in main thread failed");
+				return Results::Failure;
+			}
+		}
+		else
+		{
+			Logging::OutputError("Failed to wait for rendering thread finishes rendering last frame");
+			return Results::Failure;
+		}
+	}
+
+
+	auto result = Results::Success;
 	result = InitializeShader(i_vertexShaderPath, i_fragmentShaderPath);
 
 	// If initialization fails, clean up the OpenGL program that is already
 	// been registered.
-	// This logic needs to be executed at the end of the initialization process
-	// ScopeGuard will make sure it must be executed before exiting current function scope.
-	eae6320::cScopeGuard scopeGuard_program([&result, this]
+	cScopeGuard scopeGuard_program([&result, this]
 		{
 			if (!result)
 			{
@@ -43,11 +73,11 @@ eae6320::cResult eae6320::Graphics::cEffect::Initialize(const std::string& i_ver
 					{
 						if (result)
 						{
-							result = eae6320::Results::Failure;
+							result = Results::Failure;
 						}
 
 						EAE6320_ASSERTF(false, reinterpret_cast<const char*>(gluErrorString(errorCode)));
-						eae6320::Logging::OutputError("OpenGL failed to delete the program: %s",
+						Logging::OutputError("OpenGL failed to delete the program: %s",
 							reinterpret_cast<const char*>(gluErrorString(errorCode)));
 					}
 					m_programId = 0;
@@ -202,6 +232,23 @@ eae6320::cResult eae6320::Graphics::cEffect::Initialize(const std::string& i_ver
 			eae6320::Logging::OutputError("OpenGL failed to link the program: %s",
 				reinterpret_cast<const char*>(gluErrorString(errorCode)));
 			return result;
+		}
+	}
+
+
+	// Release rendering context and signal rendering thread that this effect 
+	// object finishes initializing
+	{
+		if (sContext::g_context.DisableContext() == FALSE)
+		{
+			EAE6320_ASSERTF(false, "Release rendering context after initializing new effect in main thread failed");
+			Logging::OutputError("Release rendering context after initializing new effect in main thread failed");
+		}
+
+		if (Graphics::SignalThatAllRenderObjectsHaveBeenInitialized() == Results::Failure)
+		{
+			EAE6320_ASSERTF(false, "Couldn't signal that new effect finishes initializing");
+			Logging::OutputError("Couldn't signal that new effect finishes initializing");
 		}
 	}
 
