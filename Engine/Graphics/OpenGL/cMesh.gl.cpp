@@ -22,28 +22,23 @@ eae6320::cResult eae6320::Graphics::cMesh::Initialize(
 	m_offsetToAddToEachIndex = i_offsetToAddToEachIndex;
 	m_indexCountToRender = i_indexCountToRender;
 
-
-	sContext& GLContext = sContext::g_context;
-	auto GLContextHandler = wglGetCurrentContext();
-	auto temp = 0;
-
 	// Wait for the graphics thread finishes the rendering of last frame,
 	// Then claim the rendering context from rendering thread and signal rendering
 	// thread that a new effect object starts initializing.
 	{
 		cResult canBeInitialized;
-		canBeInitialized = Graphics::WaitUntilRenderingOfCurrentFrameIsCompleted(~unsigned int(0u));
+		canBeInitialized = Graphics::WaitUntilContextReleaseByRenderingThread();
 
 		if (canBeInitialized == Results::Success)
 		{
-			if (Graphics::ResetThatExistRenderObjectNotInitializedYet() == Results::Failure)
+			if (Graphics::ResetThatContextIsClaimedByApplicationThread() == Results::Failure)
 			{
 				EAE6320_ASSERTF(false, "Couldn't signal that new effect starts initializing");
 				Logging::OutputError("Couldn't signal that new effect starts initializing");
 				return Results::Failure;
 			}
 
-			if (sContext::g_context.EnableContext() == FALSE)
+			if (sContext::g_context.EnableContext(GetCurrentThreadId()) == FALSE)
 			{
 				EAE6320_ASSERTF(false, "Enable rendering context for initializing new effect in main thread failed");
 				Logging::OutputError("Enable rendering context for initializing new effect in main thread failed");
@@ -260,7 +255,7 @@ eae6320::cResult eae6320::Graphics::cMesh::Initialize(
 			Logging::OutputError("Release rendering context after initializing new effect in main thread failed");
 		}
 
-		if (Graphics::SignalThatAllRenderObjectsHaveBeenInitialized() == Results::Failure)
+		if (Graphics::SignalThatContextIsReleasedByApplicationThread() == Results::Failure)
 		{
 			EAE6320_ASSERTF(false, "Couldn't signal that new effect finishes initializing");
 			Logging::OutputError("Couldn't signal that new effect finishes initializing");
@@ -276,6 +271,45 @@ eae6320::cResult eae6320::Graphics::cMesh::Initialize(
 eae6320::cResult eae6320::Graphics::cMesh::CleanUp()
 {
 	auto result = Results::Success;
+
+	//sContext& temp = sContext::g_context;
+
+	//// Wait for the graphics thread finishes the rendering of last frame,
+	//// Then claim the rendering context from rendering thread and signal rendering
+	//// thread that a new effect object starts initializing.
+	//{
+	//	cResult canBeInitialized;
+	//	canBeInitialized = Graphics::WaitUntilRenderingOfCurrentFrameIsCompleted(~unsigned int(0u));
+
+	//	if (canBeInitialized == Results::Success)
+	//	{
+	//		if (Graphics::ResetThatExistRenderObjectNotInitializedYet() == Results::Failure)
+	//		{
+	//			EAE6320_ASSERTF(false, "Couldn't signal that new effect starts initializing");
+	//			Logging::OutputError("Couldn't signal that new effect starts initializing");
+	//			return Results::Failure;
+	//		}
+
+	//		temp = sContext::g_context;
+
+	//		if (sContext::g_context.EnableContext(ThreadType::Render) == FALSE)
+	//		{
+	//			EAE6320_ASSERTF(false, "Enable rendering context for initializing new effect in main thread failed");
+	//			Logging::OutputError("Enable rendering context for initializing new effect in main thread failed");
+	//			return Results::Failure;
+	//		}
+	//	}
+	//	else
+	//	{
+	//		Logging::OutputError("Failed to wait for rendering thread finishes rendering last frame");
+	//		return Results::Failure;
+	//	}
+	//}
+
+
+
+
+
 
 	if (m_vertexArrayId != 0)
 	{

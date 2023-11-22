@@ -37,67 +37,71 @@
 	struct IDXGISwapChain;
 #endif
 
+
 // Class Declaration
 //==================
 
 namespace eae6320
 {
-	namespace Graphics
+namespace Graphics
+{
+	struct sContext
 	{
-		struct sContext
-		{
-			// Data
-			//=====
+		// Data
+		//=====
 
 #if defined( EAE6320_PLATFORM_WINDOWS )
-			HWND windowBeingRenderedTo = NULL;
+		HWND windowBeingRenderedTo = NULL;
 #endif
 
 #if defined( EAE6320_PLATFORM_D3D )
-			// The device is an interface representing a graphics device (i.e. a graphics card)
-			ID3D11Device* direct3dDevice = nullptr;
-			// A device's immediate context can only be used by the main/render thread
-			// (it is not thread safe)
-			ID3D11DeviceContext* direct3dImmediateContext = nullptr;
-			// A swap chain is like an array (a "chain") of textures
-			// that are rendered to in sequence,
-			// with a single one being currently displayed
-			IDXGISwapChain* swapChain = nullptr;
+		// The device is an interface representing a graphics device (i.e. a graphics card)
+		ID3D11Device* direct3dDevice = nullptr;
+		// A device's immediate context can only be used by the main/render thread
+		// (it is not thread safe)
+		ID3D11DeviceContext* direct3dImmediateContext = nullptr;
+		// A swap chain is like an array (a "chain") of textures
+		// that are rendered to in sequence,
+		// with a single one being currently displayed
+		IDXGISwapChain* swapChain = nullptr;
 #elif defined( EAE6320_PLATFORM_GL )
-			// The device context and OpenGL rendering context are required to use OpenGL with Windows
-			// (i.e. they are Windows concepts and wouldn't be used on other platforms that use OpenGL)
-			HDC deviceContext = NULL;
-			HGLRC openGlRenderingContext = NULL;
+		// The device context and OpenGL rendering context are required to use OpenGL with Windows
+		// (i.e. they are Windows concepts and wouldn't be used on other platforms that use OpenGL)
+		HDC deviceContext = NULL;
+		HGLRC openGlRenderingContext = NULL;
 #endif
 
-			// Interface
-			//==========
+		unsigned long ownerThreadId = NULL;
 
-			// Access
-			//-------
 
-			static sContext g_context;
+		// Interface
+		//==========
 
-			// Initialize / Clean Up
-			//----------------------
+		// Access
+		//-------
 
-			cResult Initialize( const sInitializationParameters& i_initializationParameters );
-			cResult CleanUp();
+		static sContext g_context;
 
-			~sContext();
+		// Initialize / Clean Up
+		//----------------------
 
-			BOOL DisableContext();
+		cResult Initialize( const sInitializationParameters& i_initializationParameters );
+		cResult CleanUp();
 
-			BOOL EnableContext();
+		~sContext();
 
-			// Implementation
-			//===============
+		BOOL DisableContext();
 
-		private:
+		BOOL EnableContext(unsigned long i_threadId);
 
-			sContext() = default;
-		};
-	}
+		// Implementation
+		//===============
+
+	private:
+
+		sContext() = default;
+	};
+}
 }
 
 #endif	// EAE6320_GRAPHICS_CCONTEXT_H

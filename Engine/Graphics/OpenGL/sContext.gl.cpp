@@ -47,6 +47,8 @@ eae6320::cResult eae6320::Graphics::sContext::Initialize( const sInitializationP
 		return result;
 	}
 
+	ownerThreadId = GetCurrentThreadId();
+
 	return result;
 }
 
@@ -98,12 +100,14 @@ eae6320::cResult eae6320::Graphics::sContext::CleanUp()
 
 BOOL eae6320::Graphics::sContext::DisableContext()
 {
+	ownerThreadId = NULL;
 	return wglMakeCurrent(deviceContext, NULL);
 }
 
 
-BOOL eae6320::Graphics::sContext::EnableContext()
+BOOL eae6320::Graphics::sContext::EnableContext(unsigned long i_threadId)
 {
+	ownerThreadId = i_threadId;
 	return wglMakeCurrent(deviceContext, openGlRenderingContext);
 }
 

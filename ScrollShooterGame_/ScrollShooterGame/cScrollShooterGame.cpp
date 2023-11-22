@@ -303,6 +303,10 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 		m_renderObject_Ganyu.GetRigidBody().position = Math::sVector(5.0f, -10.0f, -20.0f);
 
 
+		m_temp.InitializeMesh(m_cubeMeshPath);
+		m_temp.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_animate);
+		
+
 
 		//m_renderObjectList.push_back(&m_renderObject_triangle);
 		//m_renderObjectList.push_back(&m_renderObject_rectangle);
@@ -327,11 +331,13 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 
 		m_player.bulletCreation = [this]() -> void 
 			{
+				//m_temp.CleanUp();
+				
+
 				cBullet* newBullet = new cBullet();
 				newBullet->Initialize(m_player.GetRigidBody().position, Math::sVector(0, 1, 0));
 				newBullet->InitializeMesh(m_triangleMeshPath);
 				newBullet->InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
-				
 				m_bulletList.push_back(newBullet);
 			};
 

@@ -268,6 +268,12 @@ void eae6320::Application::iApplication::EntryPoint_applicationLoopThread( void*
 {
 	auto *const application = static_cast<iApplication*>( io_application );
 	EAE6320_ASSERT( application );
+	//application->Initialize();
+	//cScopeGuard cScopeGuard([&application]
+	//	{
+	//		application->CleanUp();
+	//	});
+
 	return application->UpdateUntilExit();
 }
 
@@ -311,6 +317,7 @@ eae6320::cResult eae6320::Application::iApplication::Initialize_all( const sEntr
 		return result;
 	}
 
+
 	// Start the application loop thread
 	if ( !( result = m_applicationLoopThread.Start( EntryPoint_applicationLoopThread, this ) ) )
 	{
@@ -318,6 +325,10 @@ eae6320::cResult eae6320::Application::iApplication::Initialize_all( const sEntr
 		Logging::OutputError( "The application loop thread couldn't be started" );
 		return result;
 	}
+
+	m_applicationThreadID = GetThreadId(m_applicationLoopThread.GetThreadHandle());
+	m_renderThreadID = GetCurrentThreadId();
+
 
 	return result;
 }

@@ -30,18 +30,22 @@ eae6320::cResult eae6320::Graphics::cEffect::Initialize(const std::string& i_ver
 	// thread that a new effect object starts initializing.
 	{
 		cResult canBeInitialized;
-		canBeInitialized = Graphics::WaitUntilRenderingOfCurrentFrameIsCompleted(~unsigned int(0u));
+		canBeInitialized = Graphics::WaitUntilContextReleaseByRenderingThread();
+
 
 		if (canBeInitialized == Results::Success)
 		{
-			if (Graphics::ResetThatExistRenderObjectNotInitializedYet() == Results::Failure)
+			if (Graphics::ResetThatContextIsClaimedByApplicationThread() == Results::Failure)
 			{
 				EAE6320_ASSERTF(false, "Couldn't signal that new effect starts initializing");
 				Logging::OutputError("Couldn't signal that new effect starts initializing");
 				return Results::Failure;
 			}
 
-			if (sContext::g_context.EnableContext() == FALSE)
+			auto id1 = GetCurrentThreadId();
+			auto id2 = sContext::g_context.ownerThreadId;
+
+			if (sContext::g_context.EnableContext(GetCurrentThreadId()) == FALSE)
 			{
 				EAE6320_ASSERTF(false, "Enable rendering context for initializing new effect in main thread failed");
 				Logging::OutputError("Enable rendering context for initializing new effect in main thread failed");
@@ -245,7 +249,7 @@ eae6320::cResult eae6320::Graphics::cEffect::Initialize(const std::string& i_ver
 			Logging::OutputError("Release rendering context after initializing new effect in main thread failed");
 		}
 
-		if (Graphics::SignalThatAllRenderObjectsHaveBeenInitialized() == Results::Failure)
+		if (Graphics::SignalThatContextIsReleasedByApplicationThread() == Results::Failure)
 		{
 			EAE6320_ASSERTF(false, "Couldn't signal that new effect finishes initializing");
 			Logging::OutputError("Couldn't signal that new effect finishes initializing");

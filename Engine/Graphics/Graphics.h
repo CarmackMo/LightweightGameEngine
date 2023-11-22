@@ -8,11 +8,8 @@
 // Includes
 //=========
 
-#include <Engine/Graphics/cEffect.h>
-#include <Engine/Graphics/cMesh.h>
 #include <Engine/Graphics/ConstantBufferFormats.h>
 #include <Engine/Graphics/Configuration.h>
-#include <Engine/GameObject/cCamera.h>
 #include <Engine/Results/Results.h>
 
 
@@ -71,12 +68,18 @@ namespace Graphics
 	// it must call this function
 	cResult SignalThatAllDataForAFrameHasBeenSubmitted();
 
-	cResult WaitUntilRenderingOfCurrentFrameIsCompleted(const unsigned int i_timeToWait_inMilliseconds);
 
-	cResult SignalThatAllRenderObjectsHaveBeenInitialized();
+	cResult WaitUntilContextReleaseByRenderingThread(const unsigned int i_timeToWait_inMilliseconds = ~unsigned int(0u));
 
-	cResult ResetThatExistRenderObjectNotInitializedYet();
+	cResult SignalThatContextIsReleasedByRenderingThread();
 
+	cResult ResetThatContextIsClaimedByRenderingThread();
+
+	cResult WaitUntilContextReleaseByApplicationThread(const unsigned int i_timeToWait_inMilliseconds = ~unsigned int(0u));
+
+	cResult SignalThatContextIsReleasedByApplicationThread();
+
+	cResult ResetThatContextIsClaimedByApplicationThread();
 
 
 	// Render

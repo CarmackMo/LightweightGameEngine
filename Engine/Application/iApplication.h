@@ -234,6 +234,10 @@ namespace Application
 		// so that it knows if the main thread requires it to exit
 		bool m_shouldApplicationLoopExit = false;
 
+		DWORD m_renderThreadID;
+		DWORD m_applicationThreadID;
+
+
 		// Implementation
 		//===============
 

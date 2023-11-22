@@ -68,9 +68,9 @@ namespace
 	// (the application loop thread waits for the signal)
 	eae6320::Concurrency::cEvent s_whenDataForANewFrameCanBeSubmittedFromApplicationThread;
 
+	eae6320::Concurrency::cEvent s_whenContextIsReleaseByRenderingThread;
+	eae6320::Concurrency::cEvent s_whenContextIsReleaseByApplicationThread;
 
-	eae6320::Concurrency::cEvent s_whenAllRenderObjectsHaveBeenInitialized;
-	eae6320::Concurrency::cEvent s_whenRenderingOfCurrentFrameIsCompleted;
 
 
 	// View Data
@@ -204,22 +204,47 @@ eae6320::cResult eae6320::Graphics::SignalThatAllDataForAFrameHasBeenSubmitted()
 }
 
 
-eae6320::cResult eae6320::Graphics::WaitUntilRenderingOfCurrentFrameIsCompleted(const unsigned int i_timeToWait_inMilliseconds)
+eae6320::cResult eae6320::Graphics::WaitUntilContextReleaseByRenderingThread(const unsigned int i_timeToWait_inMilliseconds)
 {
-	return Concurrency::WaitForEvent(s_whenRenderingOfCurrentFrameIsCompleted, i_timeToWait_inMilliseconds);
+	return Concurrency::WaitForEvent(s_whenContextIsReleaseByRenderingThread);
 }
 
 
-eae6320::cResult eae6320::Graphics::SignalThatAllRenderObjectsHaveBeenInitialized()
+eae6320::cResult eae6320::Graphics::SignalThatContextIsReleasedByRenderingThread()
 {
-	return s_whenAllRenderObjectsHaveBeenInitialized.Signal();
+	return s_whenContextIsReleaseByRenderingThread.Signal();
 }
 
 
-eae6320::cResult eae6320::Graphics::ResetThatExistRenderObjectNotInitializedYet()
+eae6320::cResult eae6320::Graphics::ResetThatContextIsClaimedByRenderingThread()
 {
-	return s_whenAllRenderObjectsHaveBeenInitialized.ResetToUnsignaled();
+	return s_whenContextIsReleaseByRenderingThread.ResetToUnsignaled();
 }
+
+
+eae6320::cResult eae6320::Graphics::WaitUntilContextReleaseByApplicationThread(const unsigned int i_timeToWait_inMilliseconds)
+{
+	return Concurrency::WaitForEvent(s_whenContextIsReleaseByApplicationThread);
+}
+
+
+eae6320::cResult eae6320::Graphics::SignalThatContextIsReleasedByApplicationThread()
+{
+	return s_whenContextIsReleaseByApplicationThread.Signal();
+}
+
+
+eae6320::cResult eae6320::Graphics::ResetThatContextIsClaimedByApplicationThread()
+{
+	return s_whenContextIsReleaseByApplicationThread.ResetToUnsignaled();
+}
+
+
+
+
+
+
+
 
 
 
@@ -228,48 +253,6 @@ eae6320::cResult eae6320::Graphics::ResetThatExistRenderObjectNotInitializedYet(
 
 void eae6320::Graphics::RenderFrame()
 {
-	// Wait for the initialization of all render objects is completed
-	{
-		// TODO
-		if (Concurrency::WaitForEvent(s_whenAllRenderObjectsHaveBeenInitialized))
-		{
-			s_whenRenderingOfCurrentFrameIsCompleted.ResetToUnsignaled();
-			UserOutput::ConsolePrint("Graphic Library: Start Rendering \n");
-			
-
-			sContext& GLContext = sContext::g_context;
-			auto GLContextHandler = wglGetCurrentContext();
-			auto temp = 0;
-			if (sContext::g_context.EnableContext() == FALSE)
-			{
-				EAE6320_ASSERTF(false, "Enable openGL context in rendering thread fail");
-			}
-
-
-			//if (wglMakeCurrent(sContext::g_context.deviceContext, sContext::g_context.openGlRenderingContext) == FALSE)
-			//{
-			//	EAE6320_ASSERTF(false, "Set openGL context in rendering thread fail");
-			//}
-
-
-			//if (!s_whenRenderingOfCurrentFrameIsCompleted.ResetToUnsignaled())
-			//{
-			//	EAE6320_ASSERTF(false, "Couldn't signal that new frame begin to render");
-			//	return;
-			//}
-		}
-
-
-		//s_whenRenderingOfCurrentFrameIsCompleted.ResetToUnsignaled();
-
-
-		//bool temp1 = (s_whenRenderingOfCurrentFrameIsCompleted.Signal() == Results::Success);
-		//bool temp2 = (s_whenRenderingOfCurrentFrameIsCompleted.Signal() == Results::Success);
-		//bool temp3 = (s_whenRenderingOfCurrentFrameIsCompleted.ResetToUnsignaled() == Results::Success);
-		//bool temp4 = (s_whenRenderingOfCurrentFrameIsCompleted.ResetToUnsignaled() == Results::Success);
- 		//auto temp0 = 0;
-	}
-
 
 	// Wait for the application loop to submit data to be rendered
 	{
@@ -297,6 +280,43 @@ void eae6320::Graphics::RenderFrame()
 				" The application is probably in a bad state and should be exited");
 			return;
 		}
+	}
+
+
+	// Wait for the initialization of all render objects is completed
+	{
+		if (WaitUntilContextReleaseByApplicationThread(5000))
+		{
+			ResetThatContextIsClaimedByRenderingThread();
+			if (sContext::g_context.EnableContext(GetCurrentThreadId()) == FALSE)
+			{
+				EAE6320_ASSERTF(false, "Enable openGL context in rendering thread fail");
+			}
+
+			//UserOutput::ConsolePrint("Rendering Thread: claim rendering context and start rendering \n");
+		}
+		else
+		{
+			EAE6320_ASSERTF(false, "Waiting for application thread to release rendering context fail");
+		}
+
+
+		//// TODO
+		//if (Concurrency::WaitForEvent(s_whenAllRenderObjectsHaveBeenInitialized))
+		//{
+		//	s_whenRenderingOfCurrentFrameIsCompleted.ResetToUnsignaled();
+		//	UserOutput::ConsolePrint("Graphic Library: Start Rendering \n");
+		//	
+
+		//	sContext& GLContext = sContext::g_context;
+		//	auto GLContextHandler = wglGetCurrentContext();
+		//	auto temp = 0;
+		//	if (sContext::g_context.EnableContext(GetCurrentThreadId()) == FALSE)
+		//	{
+		//		EAE6320_ASSERTF(false, "Enable openGL context in rendering thread fail");
+		//	}
+
+		//}
 	}
 
 
@@ -370,15 +390,8 @@ void eae6320::Graphics::RenderFrame()
 		{
 			EAE6320_ASSERTF(false, "Disable openGL context in rendering thread fail");
 		}
-
-		s_whenRenderingOfCurrentFrameIsCompleted.Signal();
-		UserOutput::ConsolePrint("Graphic Library: Complete Rendering \n");
-
-		//if (!s_whenRenderingOfCurrentFrameIsCompleted.Signal())
-		//{
-		//	EAE6320_ASSERTF(false, "Couldn't signal that current frame completes rendering");
-		//	return;
-		//}
+		SignalThatContextIsReleasedByRenderingThread();
+		//UserOutput::ConsolePrint("Rendering Thread: finish rendering and release rendering context \n");
 	}
 }
 
@@ -436,14 +449,14 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without event for when data can be submitted from the application thread");
 			return result;
 		}
-		if (!(result = s_whenRenderingOfCurrentFrameIsCompleted.Initialize(Concurrency::EventType::RemainSignaledUntilReset, 
+		if (!(result = s_whenContextIsReleaseByRenderingThread.Initialize(Concurrency::EventType::RemainSignaledUntilReset,
 			Concurrency::EventState::Signaled)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without event for when rendering of current frame is completed");
 			return result;
 		}
-		if (!(result = s_whenAllRenderObjectsHaveBeenInitialized.Initialize(Concurrency::EventType::RemainSignaledUntilReset,
-			Concurrency::EventState::Unsignaled)))
+		if (!(result = s_whenContextIsReleaseByApplicationThread.Initialize(Concurrency::EventType::RemainSignaledUntilReset,
+			Concurrency::EventState::Signaled)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without event for when all render objects have been initialized");
 			return result;
@@ -459,6 +472,14 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 		}
 	}
 
+	// Release rendering context
+	{
+		if (!(sContext::g_context.DisableContext()))
+		{
+			EAE6320_ASSERTF(false, "Can't relese rendering context");
+			return result;
+		}
+	}
 
 	return result;
 }
