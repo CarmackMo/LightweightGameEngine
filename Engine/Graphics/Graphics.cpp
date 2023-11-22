@@ -476,8 +476,14 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 	{
 		if (!(sContext::g_context.DisableContext()))
 		{
-			EAE6320_ASSERTF(false, "Can't relese rendering context");
+			EAE6320_ASSERTF(false, "Release rendering context from rendering failed");
 			return result;
+		}
+
+		if (SignalThatContextIsReleasedByRenderingThread() == Results::Failure)
+		{
+			EAE6320_ASSERTF(false, "Couldn't signal that rendering thread releases rendering context");
+			Logging::OutputError("Couldn't signal that rendering thread releases rendering context");
 		}
 	}
 
@@ -488,6 +494,17 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 eae6320::cResult eae6320::Graphics::CleanUp()
 {
 	auto result = Results::Success;
+
+
+	auto id1 = GetCurrentThreadId();
+	auto id2 = sContext::g_context.ownerThreadId;
+	if (Graphics::sContext::g_context.EnableContext(GetCurrentThreadId()) == FALSE)
+	{
+		EAE6320_ASSERTF(false, "Claim rendering context for rendering thread failed");
+		Logging::OutputError("Claim rendering context for rendering thread failed");
+	}
+
+
 
 	// view clean up
 	{

@@ -12,6 +12,11 @@
 #include <Engine/Time/Time.h>
 #include <Engine/UserOutput/UserOutput.h>
 
+#include <Engine/Graphics/sContext.h>
+
+
+
+
 // Interface
 //==========
 
@@ -268,13 +273,38 @@ void eae6320::Application::iApplication::EntryPoint_applicationLoopThread( void*
 {
 	auto *const application = static_cast<iApplication*>( io_application );
 	EAE6320_ASSERT( application );
-	//application->Initialize();
-	//cScopeGuard cScopeGuard([&application]
-	//	{
-	//		application->CleanUp();
-	//	});
+	application->Initialize();
 
-	return application->UpdateUntilExit();
+	application->UpdateUntilExit();
+
+	{
+		UserOutput::ConsolePrint("Application thread: begin to clean up \n");
+		Graphics::WaitUntilContextReleaseByRenderingThread(100);
+		Graphics::ResetThatContextIsClaimedByApplicationThread();
+		auto id1 = GetCurrentThreadId();
+		auto id2 = Graphics::sContext::g_context.ownerThreadId;
+		if (Graphics::sContext::g_context.DisableContext() == FALSE)
+		{
+			EAE6320_ASSERTF(false, "Release rendering context for application thread failed");
+			UserOutput::ConsolePrint("Release rendering context for application thread failed \n");
+			Logging::OutputError("Release rendering context for application thread failed");
+		}
+		if (Graphics::sContext::g_context.EnableContext(GetCurrentThreadId()) == FALSE)
+		{
+			EAE6320_ASSERTF(false, "Claim rendering context for application thread failed");
+			UserOutput::ConsolePrint("Claim rendering context for application thread failed \n");
+			Logging::OutputError("Claim rendering context for application thread failed");
+		}
+
+		application->CleanUp();
+
+		Graphics::SignalThatContextIsReleasedByApplicationThread();
+		Graphics::sContext::g_context.DisableContext();
+	}
+
+
+
+	return;
 }
 
 // Initialize / Clean Up
@@ -310,12 +340,12 @@ eae6320::cResult eae6320::Application::iApplication::Initialize_all( const sEntr
 	{
 		return result;
 	}
-	// Initialize the derived application
-	if ( !( result = Initialize() ) )
-	{
-		EAE6320_ASSERTF( false, "Application couldn't be initialized" );
-		return result;
-	}
+	//// Initialize the derived application
+	//if ( !( result = Initialize() ) )
+	//{
+	//	EAE6320_ASSERTF( false, "Application couldn't be initialized" );
+	//	return result;
+	//}
 
 
 	// Start the application loop thread
@@ -385,7 +415,7 @@ eae6320::cResult eae6320::Application::iApplication::CleanUp_all()
 		m_shouldApplicationLoopExit = true;
 		// Wait for the thread to exit
 		{
-			constexpr unsigned int timeToWait_inMilliseconds = 5 * 1000;
+			constexpr unsigned int timeToWait_inMilliseconds = 6 * 1000;
 			const auto result_threadStop = Concurrency::WaitForThreadToStop( m_applicationLoopThread, timeToWait_inMilliseconds );
 			if ( !result_threadStop )
 			{
@@ -401,18 +431,18 @@ eae6320::cResult eae6320::Application::iApplication::CleanUp_all()
 			}
 		}
 	}
-	// Clean up the derived application
-	{
-		const auto result_application = CleanUp();
-		if ( !result_application )
-		{
-			EAE6320_ASSERTF( false, "Application couldn't be cleaned up" );
-			if ( result )
-			{
-				result = result_application;
-			}
-		}
-	}
+	//// Clean up the derived application
+	//{
+	//	const auto result_application = CleanUp();
+	//	if ( !result_application )
+	//	{
+	//		EAE6320_ASSERTF( false, "Application couldn't be cleaned up" );
+	//		if ( result )
+	//		{
+	//			result = result_application;
+	//		}
+	//	}
+	//}
 	// Clean up engine systems
 	{
 		const auto result_engine = CleanUp_engine();

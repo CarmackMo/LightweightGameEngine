@@ -331,7 +331,7 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 
 		m_player.bulletCreation = [this]() -> void 
 			{
-				//m_temp.CleanUp();
+				m_temp.CleanUp();
 				
 
 				cBullet* newBullet = new cBullet();
