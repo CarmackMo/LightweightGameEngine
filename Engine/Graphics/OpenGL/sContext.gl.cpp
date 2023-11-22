@@ -50,6 +50,7 @@ eae6320::cResult eae6320::Graphics::sContext::Initialize( const sInitializationP
 	return result;
 }
 
+
 eae6320::cResult eae6320::Graphics::sContext::CleanUp()
 {
 	auto result = Results::Success;
@@ -93,6 +94,20 @@ eae6320::cResult eae6320::Graphics::sContext::CleanUp()
 
 	return result;
 }
+
+
+BOOL eae6320::Graphics::sContext::DisableContext()
+{
+	return wglMakeCurrent(deviceContext, NULL);
+}
+
+
+BOOL eae6320::Graphics::sContext::EnableContext()
+{
+	return wglMakeCurrent(deviceContext, openGlRenderingContext);
+}
+
+
 
 // Helper Declarations
 //====================

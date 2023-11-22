@@ -1,18 +1,26 @@
 // Includes
 //=========
 
-#include "cEffect.h"
-
 #include <Engine/Asserts/Asserts.h>
+#include <Engine/Graphics/cEffect.h>
+#include <Engine/Graphics/Graphics.h>
 #include <Engine/Logging/Logging.h>
 #include <Engine/ScopeGuard/cScopeGuard.h>
+#include <Engine/UserOutput/UserOutput.h>
 #include <new>
 
 
 eae6320::cResult eae6320::Graphics::cEffect::Create(cEffect*& o_effect, const std::string& i_vertexShaderPath, const std::string& i_fragmentShaderPath)
 {
-	auto result = eae6320::Results::Success;
 
+	// Wait for the graphics thread finishes the rendering of last frame
+	{
+		Graphics::WaitUntilRenderingOfCurrentFrameIsCompleted(~unsigned int(0u));
+		Graphics::ResetThatExistRenderObjectNotInitializedYet();
+		UserOutput::ConsolePrint("cEffect: Start Initializeing \n");
+	}
+
+	auto result = eae6320::Results::Success;
 	cEffect* newEffect = nullptr;
 
 	// If a new effect instance is successfully created, pass it out from 
@@ -35,6 +43,9 @@ eae6320::cResult eae6320::Graphics::cEffect::Create(cEffect*& o_effect, const st
 				}
 				o_effect = nullptr;
 			}
+
+			Graphics::SignalThatAllRenderObjectsHaveBeenInitialized();
+			UserOutput::ConsolePrint("cEffect: Finish Initializeing \n");
 		}
 	);
 

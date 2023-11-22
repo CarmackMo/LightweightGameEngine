@@ -86,6 +86,10 @@ namespace eae6320
 
 			~sContext();
 
+			BOOL DisableContext();
+
+			BOOL EnableContext();
+
 			// Implementation
 			//===============
 

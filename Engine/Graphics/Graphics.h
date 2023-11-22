@@ -71,6 +71,14 @@ namespace Graphics
 	// it must call this function
 	cResult SignalThatAllDataForAFrameHasBeenSubmitted();
 
+	cResult WaitUntilRenderingOfCurrentFrameIsCompleted(const unsigned int i_timeToWait_inMilliseconds);
+
+	cResult SignalThatAllRenderObjectsHaveBeenInitialized();
+
+	cResult ResetThatExistRenderObjectNotInitializedYet();
+
+
+
 	// Render
 	//-------
 

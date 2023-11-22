@@ -27,92 +27,97 @@
 
 namespace eae6320
 {
-	namespace Concurrency
+namespace Concurrency
+{
+
+	enum class EventType
 	{
-		enum class EventType
-		{
-			ResetAutomaticallyAfterBeingSignaled,
-			RemainSignaledUntilReset
-		};
-		enum class EventState
-		{
-			Unsignaled,
-			Signaled
-		};
-	}
-}
+		ResetAutomaticallyAfterBeingSignaled,
+		RemainSignaledUntilReset
+	};
+	enum class EventState
+	{
+		Unsignaled,
+		Signaled
+	};
+
+}// Namespace Concurrency
+}// Namespace eae6320
+
 
 // Class Declaration
 //==================
 
 namespace eae6320
 {
-	namespace Concurrency
+namespace Concurrency
+{
+
+	class cEvent
 	{
-		class cEvent
-		{
-			// Interface
-			//==========
+		// Interface
+		//==========
 
-		public:
+	public:
 
-			// This function will return as soon as any one of the following happens:
-			//	* The event happens
-			//		* More specifically, the event becomes signaled (because a different thread calls cEvent::Signal())
-			//		* If multiple threads are waiting on the same automatically-resetting event
-			//			then only one of them will return from this function when the event is signaled
-			//			and the rest will keep waiting
-			//	* The event has already happened
-			//		* If the event is already signaled when the function is called then it will return immediately
-			//	* The specified time-out period elapses
-			//		* If the caller doesn't specify a time-out period then the function will never return until the event happens
-			//		* If the caller specifies a time-out period of zero then the function will return immediately
-			friend cResult WaitForEvent( const cEvent& i_event, const unsigned int i_timeToWait_inMilliseconds = Constants::DontTimeOut );
+		// This function will return as soon as any one of the following happens:
+		//	* The event happens
+		//		* More specifically, the event becomes signaled (because a different thread calls cEvent::Signal())
+		//		* If multiple threads are waiting on the same automatically-resetting event
+		//			then only one of them will return from this function when the event is signaled
+		//			and the rest will keep waiting
+		//	* The event has already happened
+		//		* If the event is already signaled when the function is called then it will return immediately
+		//	* The specified time-out period elapses
+		//		* If the caller doesn't specify a time-out period then the function will never return until the event happens
+		//		* If the caller specifies a time-out period of zero then the function will return immediately
+		friend cResult WaitForEvent( const cEvent& i_event, const unsigned int i_timeToWait_inMilliseconds = Constants::DontTimeOut );
 
-			// This function should be called when an event happens
-			// (which "signals" the event happening to any waiting threads)
-			cResult Signal();
-			// Calling this function sets the state of the event to unsignaled
-			// (it resets the event as if it had never happened)
-			cResult ResetToUnsignaled();
+		// This function should be called when an event happens
+		// (which "signals" the event happening to any waiting threads)
+		cResult Signal();
+		// Calling this function sets the state of the event to unsignaled
+		// (it resets the event as if it had never happened)
+		cResult ResetToUnsignaled();
 
-			// Initialization / Clean Up
-			//--------------------------
+		// Initialization / Clean Up
+		//--------------------------
 
-			cResult Initialize( const EventType i_type, const EventState i_initialState = EventState::Unsignaled );
-			cResult CleanUp();
+		cResult Initialize( const EventType i_type, const EventState i_initialState = EventState::Unsignaled );
+		cResult CleanUp();
 
-			cEvent();
-			~cEvent();
+		cEvent();
+		~cEvent();
 
-			// Data
-			//=====
+		// Data
+		//=====
 
-		private:
+	private:
 
 #if defined( EAE6320_PLATFORM_WINDOWS )
-			HANDLE m_handle = NULL;
+		HANDLE m_handle = NULL;
 #endif
 
-			// Implementation
-			//---------------
+		// Implementation
+		//---------------
 
-		private:
+	private:
 
-			// Initialization / Clean Up
-			//--------------------------
+		// Initialization / Clean Up
+		//--------------------------
 
-			cEvent( const cEvent& ) = delete;
-			cEvent( cEvent&& ) = delete;
-			cEvent& operator =( const cEvent& ) = delete;
-			cEvent& operator =( cEvent&& ) = delete;
-		};
+		cEvent( const cEvent& ) = delete;
+		cEvent( cEvent&& ) = delete;
+		cEvent& operator =( const cEvent& ) = delete;
+		cEvent& operator =( cEvent&& ) = delete;
+	};
 
-		// Friends
-		//========
+	// Friends
+	//========
 
-		cResult WaitForEvent( const cEvent& i_event, const unsigned int i_timeToWait_inMilliseconds );
-	}
-}
+	cResult WaitForEvent( const cEvent& i_event, const unsigned int i_timeToWait_inMilliseconds );
+
+}// Namespace Concurrency
+}// Namespace eae6320
 
 #endif	// EAE6320_CONCURRENCY_CEVENT_H

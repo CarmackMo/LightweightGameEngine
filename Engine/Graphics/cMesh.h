@@ -9,16 +9,16 @@
 #pragma once
 
 #include <Engine/Assets/ReferenceCountedAssets.h>
+#include <Engine/Graphics/VertexFormats.h>
 #include <Engine/Results/Results.h>
-#include "VertexFormats.h"
 
 #include <string>
 
 #if defined ( EAE6320_PLATFORM_D3D )
-	#include "cVertexFormat.h"
-	#include "Direct3D/Includes.h"
+	#include <Engine/Graphics/cVertexFormat.h>
+	#include <Engine/Graphics/Direct3D/Includes.h>
 #elif defined ( EAE6320_PLATFORM_GL )
-	#include "OpenGL/Includes.h"
+	#include "Engine/Graphics/OpenGL/Includes.h"
 #endif
 
 

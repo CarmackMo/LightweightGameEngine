@@ -69,6 +69,10 @@ namespace
 	eae6320::Concurrency::cEvent s_whenDataForANewFrameCanBeSubmittedFromApplicationThread;
 
 
+	eae6320::Concurrency::cEvent s_whenAllRenderObjectsHaveBeenInitialized;
+	eae6320::Concurrency::cEvent s_whenRenderingOfCurrentFrameIsCompleted;
+
+
 	// View Data
 	//-------------
 
@@ -200,11 +204,73 @@ eae6320::cResult eae6320::Graphics::SignalThatAllDataForAFrameHasBeenSubmitted()
 }
 
 
+eae6320::cResult eae6320::Graphics::WaitUntilRenderingOfCurrentFrameIsCompleted(const unsigned int i_timeToWait_inMilliseconds)
+{
+	return Concurrency::WaitForEvent(s_whenRenderingOfCurrentFrameIsCompleted, i_timeToWait_inMilliseconds);
+}
+
+
+eae6320::cResult eae6320::Graphics::SignalThatAllRenderObjectsHaveBeenInitialized()
+{
+	return s_whenAllRenderObjectsHaveBeenInitialized.Signal();
+}
+
+
+eae6320::cResult eae6320::Graphics::ResetThatExistRenderObjectNotInitializedYet()
+{
+	return s_whenAllRenderObjectsHaveBeenInitialized.ResetToUnsignaled();
+}
+
+
+
 // Render
 //-------
 
 void eae6320::Graphics::RenderFrame()
 {
+	// Wait for the initialization of all render objects is completed
+	{
+		// TODO
+		if (Concurrency::WaitForEvent(s_whenAllRenderObjectsHaveBeenInitialized))
+		{
+			s_whenRenderingOfCurrentFrameIsCompleted.ResetToUnsignaled();
+			UserOutput::ConsolePrint("Graphic Library: Start Rendering \n");
+			
+
+			sContext& GLContext = sContext::g_context;
+			auto GLContextHandler = wglGetCurrentContext();
+			auto temp = 0;
+			if (sContext::g_context.EnableContext() == FALSE)
+			{
+				EAE6320_ASSERTF(false, "Enable openGL context in rendering thread fail");
+			}
+
+
+			//if (wglMakeCurrent(sContext::g_context.deviceContext, sContext::g_context.openGlRenderingContext) == FALSE)
+			//{
+			//	EAE6320_ASSERTF(false, "Set openGL context in rendering thread fail");
+			//}
+
+
+			//if (!s_whenRenderingOfCurrentFrameIsCompleted.ResetToUnsignaled())
+			//{
+			//	EAE6320_ASSERTF(false, "Couldn't signal that new frame begin to render");
+			//	return;
+			//}
+		}
+
+
+		//s_whenRenderingOfCurrentFrameIsCompleted.ResetToUnsignaled();
+
+
+		//bool temp1 = (s_whenRenderingOfCurrentFrameIsCompleted.Signal() == Results::Success);
+		//bool temp2 = (s_whenRenderingOfCurrentFrameIsCompleted.Signal() == Results::Success);
+		//bool temp3 = (s_whenRenderingOfCurrentFrameIsCompleted.ResetToUnsignaled() == Results::Success);
+		//bool temp4 = (s_whenRenderingOfCurrentFrameIsCompleted.ResetToUnsignaled() == Results::Success);
+ 		//auto temp0 = 0;
+	}
+
+
 	// Wait for the application loop to submit data to be rendered
 	{
 		if (Concurrency::WaitForEvent(s_whenAllDataHasBeenSubmittedFromApplicationThread))
@@ -232,6 +298,7 @@ void eae6320::Graphics::RenderFrame()
 			return;
 		}
 	}
+
 
 	EAE6320_ASSERT(s_dataBeingRenderedByRenderThread_frame);
 	auto& constantData_frame = s_dataBeingRenderedByRenderThread_frame->constantData_frame;
@@ -296,6 +363,23 @@ void eae6320::Graphics::RenderFrame()
 			constantData_debugRender[i].CleanUp();
 		}
 	}
+
+
+	{
+		if (sContext::g_context.DisableContext() == FALSE)
+		{
+			EAE6320_ASSERTF(false, "Disable openGL context in rendering thread fail");
+		}
+
+		s_whenRenderingOfCurrentFrameIsCompleted.Signal();
+		UserOutput::ConsolePrint("Graphic Library: Complete Rendering \n");
+
+		//if (!s_whenRenderingOfCurrentFrameIsCompleted.Signal())
+		//{
+		//	EAE6320_ASSERTF(false, "Couldn't signal that current frame completes rendering");
+		//	return;
+		//}
+	}
 }
 
 
@@ -352,6 +436,19 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without event for when data can be submitted from the application thread");
 			return result;
 		}
+		if (!(result = s_whenRenderingOfCurrentFrameIsCompleted.Initialize(Concurrency::EventType::RemainSignaledUntilReset, 
+			Concurrency::EventState::Signaled)))
+		{
+			EAE6320_ASSERTF(false, "Can't initialize Graphics without event for when rendering of current frame is completed");
+			return result;
+		}
+		if (!(result = s_whenAllRenderObjectsHaveBeenInitialized.Initialize(Concurrency::EventType::RemainSignaledUntilReset,
+			Concurrency::EventState::Unsignaled)))
+		{
+			EAE6320_ASSERTF(false, "Can't initialize Graphics without event for when all render objects have been initialized");
+			return result;
+		}
+
 	}
 	// Initialize the views
 	{
@@ -365,6 +462,7 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 
 	return result;
 }
+
 
 eae6320::cResult eae6320::Graphics::CleanUp()
 {
@@ -439,7 +537,6 @@ eae6320::cResult eae6320::Graphics::CleanUp()
 
 	return result;
 }
-
 
 
 // Helper Definitions

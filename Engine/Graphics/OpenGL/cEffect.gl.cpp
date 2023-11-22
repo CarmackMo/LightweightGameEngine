@@ -2,9 +2,10 @@
 //=========
 
 #include <Engine/Asserts/Asserts.h>
+#include <Engine/Graphics/cEffect.h>
+#include <Engine/Graphics/sContext.h>
 #include <Engine/Logging/Logging.h>
 #include <Engine/ScopeGuard/cScopeGuard.h>
-#include "../cEffect.h"
 
 
 void eae6320::Graphics::cEffect::Bind()
@@ -24,6 +25,14 @@ void eae6320::Graphics::cEffect::Bind()
 eae6320::cResult eae6320::Graphics::cEffect::Initialize(const std::string& i_vertexShaderPath, const std::string& i_fragmentShaderPath)
 {
 	auto result = eae6320::Results::Success;
+
+
+	if (sContext::g_context.EnableContext() == FALSE)
+	{
+		EAE6320_ASSERTF(false, "Enable openGL context in game loop thread fail");
+	}
+
+
 
 	result = InitializeShader(i_vertexShaderPath, i_fragmentShaderPath);
 
@@ -204,6 +213,14 @@ eae6320::cResult eae6320::Graphics::cEffect::Initialize(const std::string& i_ver
 			return result;
 		}
 	}
+
+
+
+	if (sContext::g_context.DisableContext() == FALSE)
+	{
+		EAE6320_ASSERTF(false, "Disable openGL context in game loop thread fail");
+	}
+
 
 	return result;
 }

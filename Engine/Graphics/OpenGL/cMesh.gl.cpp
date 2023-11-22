@@ -2,8 +2,10 @@
 //=========
 
 #include <Engine/Asserts/Asserts.h>
+#include <Engine/Graphics/cMesh.h>
 #include <Engine/Logging/Logging.h>
-#include "../cMesh.h"
+
+#include <Engine/Graphics/sContext.h>
 
 
 
@@ -21,6 +23,15 @@ eae6320::cResult eae6320::Graphics::cMesh::Initialize(
 	m_offsetToAddToEachIndex = i_offsetToAddToEachIndex;
 	m_indexCountToRender = i_indexCountToRender;
 
+
+	sContext& GLContext = sContext::g_context;
+	auto GLContextHandler = wglGetCurrentContext();
+	auto temp = 0;
+
+	if (sContext::g_context.EnableContext() == FALSE)
+	{
+		EAE6320_ASSERTF(false, "Enable openGL context in game loop thread fail");
+	}
 
 	auto result = eae6320::Results::Success;
 
@@ -213,6 +224,14 @@ eae6320::cResult eae6320::Graphics::cMesh::Initialize(
 			}
 		}
 	}
+
+
+
+	if (sContext::g_context.DisableContext() == FALSE)
+	{
+		EAE6320_ASSERTF(false, "Disable openGL context in game loop thread fail");
+	}
+
 
 	return result;
 
