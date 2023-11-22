@@ -81,6 +81,7 @@ namespace Graphics
 
 	cResult ResetThatContextIsClaimedByApplicationThread();
 
+	void ReleaseShareResource();
 
 	// Render
 	//-------

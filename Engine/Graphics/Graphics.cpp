@@ -240,6 +240,29 @@ eae6320::cResult eae6320::Graphics::ResetThatContextIsClaimedByApplicationThread
 }
 
 
+void eae6320::Graphics::ReleaseShareResource()
+{
+	UserOutput::ConsolePrint("Rendering thread: Manually release share resources \n");
+
+	auto currentId = GetCurrentThreadId();
+	auto ownerID = sContext::g_context.ownerThreadId;
+
+	auto staticDC = GetDC(Graphics::sContext::g_context.windowBeingRenderedTo);
+	auto currentDC = wglGetCurrentDC();
+
+	if (sContext::g_context.DisableContext() == FALSE)
+	{
+		UserOutput::ConsolePrint("Rendering thread: Release rendering context failed, it is own by another thread \n");
+	}
+	else
+	{
+		UserOutput::ConsolePrint("Rendering thread: Releasing rendering context successfull \n");
+	}
+
+	SignalThatContextIsReleasedByRenderingThread();
+}
+
+
 
 
 
@@ -283,7 +306,7 @@ void eae6320::Graphics::RenderFrame()
 	}
 
 
-	// Wait for the initialization of all render objects is completed
+	// Wait rendering objects in application thead release the rendering context
 	{
 		if (WaitUntilContextReleaseByApplicationThread(5000))
 		{
@@ -299,24 +322,6 @@ void eae6320::Graphics::RenderFrame()
 		{
 			EAE6320_ASSERTF(false, "Waiting for application thread to release rendering context fail");
 		}
-
-
-		//// TODO
-		//if (Concurrency::WaitForEvent(s_whenAllRenderObjectsHaveBeenInitialized))
-		//{
-		//	s_whenRenderingOfCurrentFrameIsCompleted.ResetToUnsignaled();
-		//	UserOutput::ConsolePrint("Graphic Library: Start Rendering \n");
-		//	
-
-		//	sContext& GLContext = sContext::g_context;
-		//	auto GLContextHandler = wglGetCurrentContext();
-		//	auto temp = 0;
-		//	if (sContext::g_context.EnableContext(GetCurrentThreadId()) == FALSE)
-		//	{
-		//		EAE6320_ASSERTF(false, "Enable openGL context in rendering thread fail");
-		//	}
-
-		//}
 	}
 
 
@@ -384,7 +389,7 @@ void eae6320::Graphics::RenderFrame()
 		}
 	}
 
-
+	// Release the rendering context
 	{
 		if (sContext::g_context.DisableContext() == FALSE)
 		{

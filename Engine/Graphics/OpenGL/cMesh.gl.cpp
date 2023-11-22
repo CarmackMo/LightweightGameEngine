@@ -416,4 +416,4 @@ void eae6320::Graphics::cMesh::Draw()
 		glDrawElements(mode, static_cast<GLsizei>(m_indexCountToRender), GL_UNSIGNED_SHORT, offset);
 		EAE6320_ASSERT(glGetError() == GL_NO_ERROR);
 	}
-}
+} 

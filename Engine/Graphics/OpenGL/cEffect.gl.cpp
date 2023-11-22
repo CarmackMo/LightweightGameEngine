@@ -274,6 +274,8 @@ eae6320::cResult eae6320::Graphics::cEffect::CleanUp()
 			// TODO
 			auto id1 = GetCurrentThreadId();
 			auto id2 = sContext::g_context.ownerThreadId;
+			auto staticDC = GetDC(Graphics::sContext::g_context.windowBeingRenderedTo);
+			auto currentDC = wglGetCurrentDC();
 
 			if (sContext::g_context.EnableContext(GetCurrentThreadId()) == FALSE)
 			{

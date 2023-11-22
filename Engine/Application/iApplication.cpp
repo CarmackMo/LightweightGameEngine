@@ -277,30 +277,32 @@ void eae6320::Application::iApplication::EntryPoint_applicationLoopThread( void*
 
 	application->UpdateUntilExit();
 
-	{
-		UserOutput::ConsolePrint("Application thread: begin to clean up \n");
-		Graphics::WaitUntilContextReleaseByRenderingThread(100);
-		Graphics::ResetThatContextIsClaimedByApplicationThread();
-		auto id1 = GetCurrentThreadId();
-		auto id2 = Graphics::sContext::g_context.ownerThreadId;
-		if (Graphics::sContext::g_context.DisableContext() == FALSE)
-		{
-			EAE6320_ASSERTF(false, "Release rendering context for application thread failed");
-			UserOutput::ConsolePrint("Release rendering context for application thread failed \n");
-			Logging::OutputError("Release rendering context for application thread failed");
-		}
-		if (Graphics::sContext::g_context.EnableContext(GetCurrentThreadId()) == FALSE)
-		{
-			EAE6320_ASSERTF(false, "Claim rendering context for application thread failed");
-			UserOutput::ConsolePrint("Claim rendering context for application thread failed \n");
-			Logging::OutputError("Claim rendering context for application thread failed");
-		}
+	//{
+	//	UserOutput::ConsolePrint("Application thread: begin to clean up \n");
+	//	Graphics::WaitUntilContextReleaseByRenderingThread(100);
+	//	Graphics::ResetThatContextIsClaimedByApplicationThread();
+	//	auto id1 = GetCurrentThreadId();
+	//	auto id2 = Graphics::sContext::g_context.ownerThreadId;
 
-		application->CleanUp();
 
-		Graphics::SignalThatContextIsReleasedByApplicationThread();
-		Graphics::sContext::g_context.DisableContext();
-	}
+	//	auto staticDC = GetDC(Graphics::sContext::g_context.windowBeingRenderedTo);
+	//	auto currentDC = wglGetCurrentDC();
+
+	//	auto res = wglMakeCurrent(Graphics::sContext::g_context.deviceContext, Graphics::sContext::g_context.openGlRenderingContext);
+
+
+	//	if (Graphics::sContext::g_context.EnableContext(GetCurrentThreadId()) == FALSE)
+	//	{
+	//		EAE6320_ASSERTF(false, "Claim rendering context for application thread failed");
+	//		UserOutput::ConsolePrint("Claim rendering context for application thread failed \n");
+	//		Logging::OutputError("Claim rendering context for application thread failed");
+	//	}
+
+	application->CleanUp();
+
+	//	Graphics::SignalThatContextIsReleasedByApplicationThread();
+	//	Graphics::sContext::g_context.DisableContext();
+	//}
 
 
 
