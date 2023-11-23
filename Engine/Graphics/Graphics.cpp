@@ -3,15 +3,14 @@
 
 #include <Engine/Graphics/Graphics.h>
 
+#include <Engine/Concurrency/cEvent.h>
+#include <Engine/Concurrency/cMutex.h>
 #include <Engine/Graphics/cConstantBuffer.h>
 #include <Engine/Graphics/cEffect.h>
 #include <Engine/Graphics/cMesh.h>
 #include <Engine/Graphics/ConstantBufferFormats.h>
 #include <Engine/Graphics/cView.h>
 #include <Engine/Graphics/sContext.h>
-
-#include <Engine/Concurrency/cEvent.h>
-#include <Engine/Concurrency/cMutex.h>
 #include <Engine/Logging/Logging.h>
 #include <Engine/UserOutput/UserOutput.h>
 
@@ -72,11 +71,8 @@ namespace
 	// (the application loop thread waits for the signal)
 	eae6320::Concurrency::cEvent s_whenDataForANewFrameCanBeSubmittedFromApplicationThread;
 
-	eae6320::Concurrency::cEvent s_whenContextIsReleaseByRenderingThread;
-	eae6320::Concurrency::cEvent s_whenContextIsReleaseByApplicationThread;
 
-
-	// Rendering Object Initialize List
+	// Rendering Object Initialization/Clean up List
 	
 	std::queue<std::pair<std::function<void(eae6320::Graphics::cMesh*)>, std::string>> s_meshInitializeQueue;
 	//std::queue<eae6320::Graphics::cMesh**> s_meshInitializeQueue;
@@ -226,64 +222,6 @@ eae6320::cResult eae6320::Graphics::SignalThatAllDataForAFrameHasBeenSubmitted()
 }
 
 
-eae6320::cResult eae6320::Graphics::WaitUntilContextReleaseByRenderingThread(const unsigned int i_timeToWait_inMilliseconds)
-{
-	return Concurrency::WaitForEvent(s_whenContextIsReleaseByRenderingThread);
-}
-
-
-eae6320::cResult eae6320::Graphics::SignalThatContextIsReleasedByRenderingThread()
-{
-	return s_whenContextIsReleaseByRenderingThread.Signal();
-}
-
-
-eae6320::cResult eae6320::Graphics::ResetThatContextIsClaimedByRenderingThread()
-{
-	return s_whenContextIsReleaseByRenderingThread.ResetToUnsignaled();
-}
-
-
-eae6320::cResult eae6320::Graphics::WaitUntilContextReleaseByApplicationThread(const unsigned int i_timeToWait_inMilliseconds)
-{
-	return Concurrency::WaitForEvent(s_whenContextIsReleaseByApplicationThread);
-}
-
-
-eae6320::cResult eae6320::Graphics::SignalThatContextIsReleasedByApplicationThread()
-{
-	return s_whenContextIsReleaseByApplicationThread.Signal();
-}
-
-
-eae6320::cResult eae6320::Graphics::ResetThatContextIsClaimedByApplicationThread()
-{
-	return s_whenContextIsReleaseByApplicationThread.ResetToUnsignaled();
-}
-
-
-void eae6320::Graphics::ReleaseShareResource()
-{
-	UserOutput::ConsolePrint("Rendering thread: Manually release share resources \n");
-
-	auto currentId = GetCurrentThreadId();
-	auto ownerID = sContext::g_context.ownerThreadId;
-
-	auto staticDC = GetDC(Graphics::sContext::g_context.windowBeingRenderedTo);
-	auto currentDC = wglGetCurrentDC();
-
-	if (sContext::g_context.DisableContext() == FALSE)
-	{
-		UserOutput::ConsolePrint("Rendering thread: Release rendering context failed, it is own by another thread \n");
-	}
-	else
-	{
-		UserOutput::ConsolePrint("Rendering thread: Releasing rendering context successfull \n");
-	}
-
-	SignalThatContextIsReleasedByRenderingThread();
-}
-
 
 void eae6320::Graphics::InitializeRenderObjects()
 {
@@ -381,6 +319,9 @@ void eae6320::Graphics::CleanUpRenderObjects()
 }
 
 
+// Render Objects Initialize / Clean Up
+//-------
+
 DWORD eae6320::Graphics::AcquireRenderObjectInitMutex(DWORD i_waitTime_MS)
 {
 	return s_renderObjectInitializeMutex.Acquire(i_waitTime_MS);
@@ -428,10 +369,6 @@ void eae6320::Graphics::AddEffectCleanUpTask(cEffect** i_effect)
 }
 
 
-
-
-
-
 // Render
 //-------
 
@@ -465,26 +402,6 @@ void eae6320::Graphics::RenderFrame()
 			return;
 		}
 	}
-
-
-	//// Wait rendering objects in application thead release the rendering context
-	//{
-	//	if (WaitUntilContextReleaseByApplicationThread(5000))
-	//	{
-	//		ResetThatContextIsClaimedByRenderingThread();
-	//		if (sContext::g_context.EnableContext(GetCurrentThreadId()) == FALSE)
-	//		{
-	//			EAE6320_ASSERTF(false, "Enable openGL context in rendering thread fail");
-	//		}
-
-	//		//UserOutput::ConsolePrint("Rendering Thread: claim rendering context and start rendering \n");
-	//	}
-	//	else
-	//	{
-	//		EAE6320_ASSERTF(false, "Waiting for application thread to release rendering context fail");
-	//	}
-	//}
-
 
 	EAE6320_ASSERT(s_dataBeingRenderedByRenderThread_frame);
 	auto& constantData_frame = s_dataBeingRenderedByRenderThread_frame->constantData_frame;
@@ -550,15 +467,6 @@ void eae6320::Graphics::RenderFrame()
 		}
 	}
 
-	//// Release the rendering context
-	//{
-	//	if (sContext::g_context.DisableContext() == FALSE)
-	//	{
-	//		EAE6320_ASSERTF(false, "Disable openGL context in rendering thread fail");
-	//	}
-	//	SignalThatContextIsReleasedByRenderingThread();
-	//	//UserOutput::ConsolePrint("Rendering Thread: finish rendering and release rendering context \n");
-	//}
 }
 
 
@@ -616,18 +524,6 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without event for when data can be submitted from the application thread");
 			return result;
 		}
-		if (!(result = s_whenContextIsReleaseByRenderingThread.Initialize(Concurrency::EventType::RemainSignaledUntilReset,
-			Concurrency::EventState::Signaled)))
-		{
-			EAE6320_ASSERTF(false, "Can't initialize Graphics without event for when rendering of current frame is completed");
-			return result;
-		}
-		if (!(result = s_whenContextIsReleaseByApplicationThread.Initialize(Concurrency::EventType::RemainSignaledUntilReset,
-			Concurrency::EventState::Signaled)))
-		{
-			EAE6320_ASSERTF(false, "Can't initialize Graphics without event for when all render objects have been initialized");
-			return result;
-		}
 	}
 	// Initialize the mutexes
 	{
@@ -651,21 +547,6 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 		}
 	}
 
-	//// Release rendering context
-	//{
-	//	if (!(sContext::g_context.DisableContext()))
-	//	{
-	//		EAE6320_ASSERTF(false, "Release rendering context from rendering failed");
-	//		return result;
-	//	}
-
-	//	if (SignalThatContextIsReleasedByRenderingThread() == Results::Failure)
-	//	{
-	//		EAE6320_ASSERTF(false, "Couldn't signal that rendering thread releases rendering context");
-	//		Logging::OutputError("Couldn't signal that rendering thread releases rendering context");
-	//	}
-	//}
-
 	return result;
 }
 
@@ -674,17 +555,9 @@ eae6320::cResult eae6320::Graphics::CleanUp()
 {
 	auto result = Results::Success;
 
-
-	//auto id1 = GetCurrentThreadId();
-	//auto id2 = sContext::g_context.ownerThreadId;
-	//if (Graphics::sContext::g_context.EnableContext(GetCurrentThreadId()) == FALSE)
-	//{
-	//	EAE6320_ASSERTF(false, "Claim rendering context for rendering thread failed");
-	//	Logging::OutputError("Claim rendering context for rendering thread failed");
-	//}
-
-	CleanUpRenderObjects();
-
+	{
+		CleanUpRenderObjects();
+	}
 
 	// view clean up
 	{

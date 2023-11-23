@@ -90,9 +90,6 @@ namespace Graphics
 
 		~sContext();
 
-		BOOL DisableContext();
-
-		BOOL EnableContext(unsigned long i_threadId);
 
 		// Implementation
 		//===============

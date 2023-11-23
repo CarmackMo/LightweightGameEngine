@@ -25,38 +25,6 @@ void eae6320::Graphics::cEffect::Bind()
 
 eae6320::cResult eae6320::Graphics::cEffect::Initialize(const std::string& i_vertexShaderPath, const std::string& i_fragmentShaderPath)
 {
-	//// Wait for the rendering thread release the rendering context
-	//// Then claim the rendering context and signal the rendering thread
-	//{
-	//	if (Graphics::WaitUntilContextReleaseByRenderingThread(5000) == Results::Success)
-	//	{
-	//		if (Graphics::ResetThatContextIsClaimedByApplicationThread() == Results::Failure)
-	//		{
-	//			EAE6320_ASSERTF(false, "Couldn't signal that application thread is trying to claim rendering context");
-	//			Logging::OutputError("Couldn't signal that application thread is trying to claim rendering context");
-	//			return Results::Failure;
-	//		}
-
-	//		// TODO
-	//		auto id1 = GetCurrentThreadId();
-	//		auto id2 = sContext::g_context.ownerThreadId;
-
-	//		if (sContext::g_context.EnableContext(GetCurrentThreadId()) == FALSE)
-	//		{
-	//			EAE6320_ASSERTF(false, "Claim rendering context for application thread failed");
-	//			Logging::OutputError("Claim rendering context for application thread failed");
-	//			return Results::Failure;
-	//		}
-	//	}
-	//	else
-	//	{
-	//		EAE6320_ASSERTF(false, "Failed to wait for rendering thread releases rendering context")
-	//		Logging::OutputError("Failed to wait for rendering thread releases rendering context");
-	//		return Results::Failure;
-	//	}
-	//}
-
-
 	auto result = Results::Success;
 	result = InitializeShader(i_vertexShaderPath, i_fragmentShaderPath);
 
@@ -236,63 +204,12 @@ eae6320::cResult eae6320::Graphics::cEffect::Initialize(const std::string& i_ver
 		}
 	}
 
-
-	//// Release rendering context and signal the rendering thread 
-	//{
-	//	if (sContext::g_context.DisableContext() == FALSE)
-	//	{
-	//		EAE6320_ASSERTF(false, "Release rendering context from application failed");
-	//		Logging::OutputError("Release rendering context from application failed");
-	//	}
-
-	//	if (Graphics::SignalThatContextIsReleasedByApplicationThread() == Results::Failure)
-	//	{
-	//		EAE6320_ASSERTF(false, "Couldn't signal that application thread releases rendering context");
-	//		Logging::OutputError("Couldn't signal that application thread releases rendering context");
-	//	}
-	//}
-
 	return result;
 }
 
 
 eae6320::cResult eae6320::Graphics::cEffect::CleanUp()
 {
-
-	//// Wait for the rendering thread release the rendering context
-	//// Then claim the rendering context and signal the rendering thread
-	//{
-	//	if (Graphics::WaitUntilContextReleaseByRenderingThread(100) == Results::Success)
-	//	{
-	//		if (Graphics::ResetThatContextIsClaimedByApplicationThread() == Results::Failure)
-	//		{
-	//			EAE6320_ASSERTF(false, "Couldn't signal that application thread is trying to claim rendering context");
-	//			Logging::OutputError("Couldn't signal that application thread is trying to claim rendering context");
-	//			return Results::Failure;
-	//		}
-
-	//		// TODO
-	//		auto id1 = GetCurrentThreadId();
-	//		auto id2 = sContext::g_context.ownerThreadId;
-	//		auto staticDC = GetDC(Graphics::sContext::g_context.windowBeingRenderedTo);
-	//		auto currentDC = wglGetCurrentDC();
-
-	//		if (sContext::g_context.EnableContext(GetCurrentThreadId()) == FALSE)
-	//		{
-	//			EAE6320_ASSERTF(false, "Claim rendering context for application thread failed");
-	//			Logging::OutputError("Claim rendering context for application thread failed");
-	//			return Results::Failure;
-	//		}
-	//	}
-	//	else
-	//	{
-	//		EAE6320_ASSERTF(false, "Failed to wait for rendering thread releases rendering context");
-	//		Logging::OutputError("Failed to wait for rendering thread releases rendering context");
-	//		return Results::Failure;
-	//	}
-	//}
-
-
 	auto result = eae6320::Results::Success;
 
 	// Clean up OpenGL program
@@ -318,21 +235,6 @@ eae6320::cResult eae6320::Graphics::cEffect::CleanUp()
 	{
 		result = CleanUpShader();
 	}
-
-	//// Release rendering context and signal the rendering thread 
-	//{
-	//	if (sContext::g_context.DisableContext() == FALSE)
-	//	{
-	//		EAE6320_ASSERTF(false, "Release rendering context from application failed");
-	//		Logging::OutputError("Release rendering context from application failed");
-	//	}
-
-	//	if (Graphics::SignalThatContextIsReleasedByApplicationThread() == Results::Failure)
-	//	{
-	//		EAE6320_ASSERTF(false, "Couldn't signal that application thread releases rendering context");
-	//		Logging::OutputError("Couldn't signal that application thread releases rendering context");
-	//	}
-	//}
 
 	return result;
 }

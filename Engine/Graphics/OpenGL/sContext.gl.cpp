@@ -98,37 +98,6 @@ eae6320::cResult eae6320::Graphics::sContext::CleanUp()
 }
 
 
-BOOL eae6320::Graphics::sContext::DisableContext()
-{
-	BOOL result;
-	if (wglMakeCurrent(deviceContext, NULL) == TRUE)
-	{
-		result = TRUE;
-		ownerThreadId = NULL;
-	}
-	else
-		result = FALSE;
-
-	return result;
-}
-
-
-BOOL eae6320::Graphics::sContext::EnableContext(unsigned long i_threadId)
-{
-	BOOL result;
-	if (wglMakeCurrent(deviceContext, openGlRenderingContext) == TRUE)
-	{
-		result = TRUE;
-		ownerThreadId = i_threadId;
-	}
-	else
-		result = FALSE;
-
-	return result;
-}
-
-
-
 // Helper Declarations
 //====================
 

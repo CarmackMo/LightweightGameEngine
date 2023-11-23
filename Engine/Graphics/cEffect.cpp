@@ -13,7 +13,6 @@
 
 eae6320::cResult eae6320::Graphics::cEffect::Create(cEffect*& o_effect, const std::string& i_vertexShaderPath, const std::string& i_fragmentShaderPath)
 {
-
 	auto result = eae6320::Results::Success;
 	cEffect* newEffect = nullptr;
 

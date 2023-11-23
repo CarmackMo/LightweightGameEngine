@@ -70,21 +70,6 @@ namespace Graphics
 	// When the application has finished submitting data for a frame
 	// it must call this function
 	cResult SignalThatAllDataForAFrameHasBeenSubmitted();
-
-
-	cResult WaitUntilContextReleaseByRenderingThread(const unsigned int i_timeToWait_inMilliseconds = ~unsigned int(0u));
-
-	cResult SignalThatContextIsReleasedByRenderingThread();
-
-	cResult ResetThatContextIsClaimedByRenderingThread();
-
-	cResult WaitUntilContextReleaseByApplicationThread(const unsigned int i_timeToWait_inMilliseconds = ~unsigned int(0u));
-
-	cResult SignalThatContextIsReleasedByApplicationThread();
-
-	cResult ResetThatContextIsClaimedByApplicationThread();
-
-	void ReleaseShareResource();
 	
 
 	// Render Objects Initialization / Clean Up
@@ -97,6 +82,7 @@ namespace Graphics
 	DWORD AcquireRenderObjectCleanUpMutex(DWORD i_waitTime_MS = INFINITE);
 
 	void ReleaseRenderObjectCleanUpMutex();
+
 
 	void InitializeRenderObjects();
 

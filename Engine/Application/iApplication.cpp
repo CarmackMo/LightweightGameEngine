@@ -1,10 +1,7 @@
 // Includes
 //=========
 
-#include "iApplication.h"
-
-#include <algorithm>
-#include <cstdlib>
+#include <Engine/Application/iApplication.h>
 #include <Engine/Asserts/Asserts.h>
 #include <Engine/Graphics/Graphics.h>
 #include <Engine/Logging/Logging.h>
@@ -12,8 +9,8 @@
 #include <Engine/Time/Time.h>
 #include <Engine/UserOutput/UserOutput.h>
 
-#include <Engine/Graphics/sContext.h>
-
+#include <algorithm>
+#include <cstdlib>
 
 
 
@@ -274,39 +271,7 @@ void eae6320::Application::iApplication::EntryPoint_applicationLoopThread( void*
 	auto *const application = static_cast<iApplication*>( io_application );
 	EAE6320_ASSERT( application );
 	
-	
-	//application->Initialize();
-
 	application->UpdateUntilExit();
-
-	//{
-	//	UserOutput::ConsolePrint("Application thread: begin to clean up \n");
-	//	Graphics::WaitUntilContextReleaseByRenderingThread(100);
-	//	Graphics::ResetThatContextIsClaimedByApplicationThread();
-	//	auto id1 = GetCurrentThreadId();
-	//	auto id2 = Graphics::sContext::g_context.ownerThreadId;
-
-
-	//	auto staticDC = GetDC(Graphics::sContext::g_context.windowBeingRenderedTo);
-	//	auto currentDC = wglGetCurrentDC();
-
-	//	auto res = wglMakeCurrent(Graphics::sContext::g_context.deviceContext, Graphics::sContext::g_context.openGlRenderingContext);
-
-
-	//	if (Graphics::sContext::g_context.EnableContext(GetCurrentThreadId()) == FALSE)
-	//	{
-	//		EAE6320_ASSERTF(false, "Claim rendering context for application thread failed");
-	//		UserOutput::ConsolePrint("Claim rendering context for application thread failed \n");
-	//		Logging::OutputError("Claim rendering context for application thread failed");
-	//	}
-
-	//  application->CleanUp();
-
-	//	Graphics::SignalThatContextIsReleasedByApplicationThread();
-	//	Graphics::sContext::g_context.DisableContext();
-	//}
-
-
 
 	return;
 }
@@ -351,7 +316,6 @@ eae6320::cResult eae6320::Application::iApplication::Initialize_all( const sEntr
 		return result;
 	}
 
-
 	// Start the application loop thread
 	if ( !( result = m_applicationLoopThread.Start( EntryPoint_applicationLoopThread, this ) ) )
 	{
@@ -362,7 +326,6 @@ eae6320::cResult eae6320::Application::iApplication::Initialize_all( const sEntr
 
 	m_applicationThreadID = GetThreadId(m_applicationLoopThread.GetThreadHandle());
 	m_renderThreadID = GetCurrentThreadId();
-
 
 	return result;
 }
