@@ -7,6 +7,10 @@
 #include <Engine/Windows/Functions.h>
 
 
+// Interface
+//==========
+
+
 eae6320::cResult eae6320::Concurrency::cSemaphore::Initialize(unsigned int initCount, unsigned int maxCount, const char* name)
 {
 	EAE6320_ASSERT(initCount <= maxCount);
@@ -52,9 +56,10 @@ eae6320::cResult eae6320::Concurrency::cSemaphore::CleanUp()
 }
 
 
-eae6320::Concurrency::cSemaphore::cSemaphore() : 
-	m_handle(INVALID_HANDLE_VALUE) 
-{}
+eae6320::Concurrency::cSemaphore::cSemaphore()
+{
+
+}
 
 
 eae6320::Concurrency::cSemaphore::~cSemaphore()
@@ -64,10 +69,8 @@ eae6320::Concurrency::cSemaphore::~cSemaphore()
 }
 
 
-HANDLE eae6320::Concurrency::cSemaphore::GetHandle(void)
-{
-	return m_handle;
-}
+// Initialize / Clean Up
+//----------------------
 
 
 void eae6320::Concurrency::cSemaphore::Increment(unsigned int count)

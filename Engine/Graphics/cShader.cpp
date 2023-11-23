@@ -29,11 +29,11 @@ namespace
 		void AddShader( const eae6320::Graphics::cShader* const i_shader );
 		void RemoveShader( const eae6320::Graphics::cShader* const i_shader );
 		// Initializate / Clean Up
-		cShaderTracker() = default;
+		cShaderTracker() { m_mutex.Initialize(); };
 		~cShaderTracker();
 
 		// Data
-		//-----
+		//-------------
 
 	private:
 
