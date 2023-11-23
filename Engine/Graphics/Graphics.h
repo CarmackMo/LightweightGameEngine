@@ -14,10 +14,13 @@
 
 
 #include <cstdint>
+#include <functional>
 
 #if defined( EAE6320_PLATFORM_WINDOWS )
 	#include <Engine/Windows/Includes.h>
 #endif
+
+
 
 // Interface
 //==========
@@ -82,6 +85,21 @@ namespace Graphics
 	cResult ResetThatContextIsClaimedByApplicationThread();
 
 	void ReleaseShareResource();
+	
+
+	// Proudce
+	//-------
+
+	void InitializeRenderObjects();
+
+	DWORD AcquireRenderObjectInitMutex(DWORD i_waitTime_MS = INFINITE);
+
+	void ReleaseRenderObjectInitMutex();
+
+	void AddMeshInitializeTask(std::function<void(cMesh*)> i_callback, std::string i_meshPath);
+
+
+
 
 	// Render
 	//-------

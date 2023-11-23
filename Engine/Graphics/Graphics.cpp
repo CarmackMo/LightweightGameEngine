@@ -1,20 +1,21 @@
 // Includes
 //=========
 
-#include "Graphics.h"
+#include <Engine/Graphics/Graphics.h>
 
-#include "cConstantBuffer.h"
-#include "cEffect.h"
-#include "cMesh.h"
-#include "ConstantBufferFormats.h"
-#include "cView.h"
-#include "sContext.h"
+#include <Engine/Graphics/cConstantBuffer.h>
+#include <Engine/Graphics/cEffect.h>
+#include <Engine/Graphics/cMesh.h>
+#include <Engine/Graphics/ConstantBufferFormats.h>
+#include <Engine/Graphics/cView.h>
+#include <Engine/Graphics/sContext.h>
 
 #include <Engine/Concurrency/cEvent.h>
+#include <Engine/Concurrency/cMutex.h>
 #include <Engine/Logging/Logging.h>
 #include <Engine/UserOutput/UserOutput.h>
 
-
+#include <string>
 #include <queue>
 
 
@@ -76,10 +77,14 @@ namespace
 
 
 	// Rendering Object Initialize List
-	std::queue<eae6320::Graphics::cMesh**> s_meshInitializeList;
-	std::queue<eae6320::Graphics::cEffect**> s_effectInitialzieList;
-	std::queue<eae6320::Graphics::cLine**> s_lineInitializeList;
+	
+	std::queue<std::pair<std::function<void(eae6320::Graphics::cMesh*)>, std::string>> s_meshInitializeQueue;
+	//std::queue<eae6320::Graphics::cMesh**> s_meshInitializeQueue;
+	
+	std::queue<eae6320::Graphics::cEffect**> s_effectInitialzieQueue;
+	std::queue<eae6320::Graphics::cLine**> s_lineInitializeQueue;
 
+	eae6320::Concurrency::cMutex s_renderObjectInitializeMutex;
 
 
 	// View Data
@@ -269,6 +274,65 @@ void eae6320::Graphics::ReleaseShareResource()
 	}
 
 	SignalThatContextIsReleasedByRenderingThread();
+}
+
+
+void eae6320::Graphics::InitializeRenderObjects()
+{
+	if (AcquireRenderObjectInitMutex(5000) == WAIT_OBJECT_0)
+	{
+		// Initialize mesh objects
+		{
+			while (s_meshInitializeQueue.empty() == false)
+			{
+				auto task = s_meshInitializeQueue.front();
+				s_meshInitializeQueue.pop();
+
+				auto callback = task.first;
+				std::string meshPath = task.second;
+
+				cMesh* newMesh = nullptr;
+
+				cMesh::Create(newMesh, meshPath);
+
+				callback(newMesh);
+			}
+		}
+		// Initialize effect objects
+		{
+
+		}
+		// Initialize line objects
+		{
+
+		}
+
+		ReleaseRenderObjectInitMutex();
+	}
+	else
+	{
+		// TODO: logging
+	}
+
+
+}
+
+
+DWORD eae6320::Graphics::AcquireRenderObjectInitMutex(DWORD i_waitTime_MS)
+{
+	return s_renderObjectInitializeMutex.Acquire(i_waitTime_MS);
+}
+
+
+void eae6320::Graphics::ReleaseRenderObjectInitMutex()
+{
+	s_renderObjectInitializeMutex.Release();
+}
+
+
+void eae6320::Graphics::AddMeshInitializeTask(std::function<void(cMesh*)> i_callback, std::string i_meshPath)
+{
+	s_meshInitializeQueue.push({ i_callback, i_meshPath });
 }
 
 
@@ -475,7 +539,14 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without event for when all render objects have been initialized");
 			return result;
 		}
-
+	}
+	// Initialize the mutexes
+	{
+		if (!(result = s_renderObjectInitializeMutex.Initialize()))
+		{
+			EAE6320_ASSERTF(false, "Can't initialize Graphics without mutex for protecting render object initialization");
+			return result;
+		}
 	}
 	// Initialize the views
 	{
@@ -486,20 +557,20 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 		}
 	}
 
-	// Release rendering context
-	{
-		if (!(sContext::g_context.DisableContext()))
-		{
-			EAE6320_ASSERTF(false, "Release rendering context from rendering failed");
-			return result;
-		}
+	//// Release rendering context
+	//{
+	//	if (!(sContext::g_context.DisableContext()))
+	//	{
+	//		EAE6320_ASSERTF(false, "Release rendering context from rendering failed");
+	//		return result;
+	//	}
 
-		if (SignalThatContextIsReleasedByRenderingThread() == Results::Failure)
-		{
-			EAE6320_ASSERTF(false, "Couldn't signal that rendering thread releases rendering context");
-			Logging::OutputError("Couldn't signal that rendering thread releases rendering context");
-		}
-	}
+	//	if (SignalThatContextIsReleasedByRenderingThread() == Results::Failure)
+	//	{
+	//		EAE6320_ASSERTF(false, "Couldn't signal that rendering thread releases rendering context");
+	//		Logging::OutputError("Couldn't signal that rendering thread releases rendering context");
+	//	}
+	//}
 
 	return result;
 }

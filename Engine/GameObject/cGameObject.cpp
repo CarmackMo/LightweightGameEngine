@@ -1,10 +1,12 @@
 // Includes
 //=========
 
+#include <Engine/Concurrency/cEvent.h>
 #include <Engine/GameObject/cGameObject.h>
+#include <Engine/Graphics/Graphics.h>
 
 #include <vector>
-
+#include <functional>
 
 
 void eae6320::cGameObject::CleanUp()
@@ -23,7 +25,32 @@ void eae6320::cGameObject::InitializeMesh(const std::string& i_meshPath)
 		m_mesh = nullptr;
 	}
 
-	Graphics::cMesh::Create(m_mesh, i_meshPath);
+
+	if (Graphics::AcquireRenderObjectInitMutex(5000) == WAIT_OBJECT_0)
+	{
+		Graphics::cMesh** mesh = &m_mesh;
+		Concurrency::cEvent initEvent;
+		initEvent.Initialize(Concurrency::EventType::RemainSignaledUntilReset);
+
+		auto callback = [&initEvent, mesh](Graphics::cMesh* i_mesh) -> void
+		{
+			*mesh = i_mesh;
+			initEvent.Signal();
+			return;
+		};
+
+
+		Graphics::AddMeshInitializeTask(callback, i_meshPath);
+		Graphics::ReleaseRenderObjectInitMutex();
+
+		if (Concurrency::WaitForEvent(initEvent), 5000)
+		{
+			auto temp = 0;
+		}
+	}
+
+
+	//Graphics::cMesh::Create(m_mesh, i_meshPath);
 }
 
 
