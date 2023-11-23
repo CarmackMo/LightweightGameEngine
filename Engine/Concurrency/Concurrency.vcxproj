@@ -25,6 +25,7 @@
     <ClInclude Include="Constants.h" />
     <ClInclude Include="cSemaphore.h" />
     <ClInclude Include="cThread.h" />
+    <ClInclude Include="cWaitableObject.h" />
     <ClInclude Include="Windows\ExternalLibraries.win.h" />
   </ItemGroup>
   <ItemGroup>

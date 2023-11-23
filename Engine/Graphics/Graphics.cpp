@@ -15,6 +15,9 @@
 #include <Engine/UserOutput/UserOutput.h>
 
 
+#include <queue>
+
+
 
 // Static Data
 //============
@@ -70,6 +73,12 @@ namespace
 
 	eae6320::Concurrency::cEvent s_whenContextIsReleaseByRenderingThread;
 	eae6320::Concurrency::cEvent s_whenContextIsReleaseByApplicationThread;
+
+
+	// Rendering Object Initialize List
+	std::queue<eae6320::Graphics::cMesh**> s_meshInitializeList;
+	std::queue<eae6320::Graphics::cEffect**> s_effectInitialzieList;
+	std::queue<eae6320::Graphics::cLine**> s_lineInitializeList;
 
 
 

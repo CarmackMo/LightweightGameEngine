@@ -10,6 +10,7 @@
       <Filter>Windows</Filter>
     </ClInclude>
     <ClInclude Include="cSemaphore.h" />
+    <ClInclude Include="cWaitableObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cThread.cpp" />
