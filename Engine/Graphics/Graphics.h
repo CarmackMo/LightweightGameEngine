@@ -98,7 +98,7 @@ namespace Graphics
 
 	void AddMeshInitializeTask(std::function<void(cMesh*)> i_callback, std::string i_meshPath);
 
-
+	void AddEffectInitializeTask(std::function<void(cEffect*)> i_callback, std::string i_vertexPath, std::string i_fragmentPath);
 
 
 	// Render

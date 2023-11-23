@@ -26,7 +26,7 @@ void eae6320::cGameObject::InitializeMesh(const std::string& i_meshPath)
 	}
 
 
-	if (Graphics::AcquireRenderObjectInitMutex(5000) == WAIT_OBJECT_0)
+	if (Graphics::AcquireRenderObjectInitMutex() == WAIT_OBJECT_0)
 	{
 		Graphics::cMesh** mesh = &m_mesh;
 		Concurrency::cEvent initEvent;
@@ -35,7 +35,7 @@ void eae6320::cGameObject::InitializeMesh(const std::string& i_meshPath)
 		auto callback = [&initEvent, mesh](Graphics::cMesh* i_mesh) -> void
 		{
 			*mesh = i_mesh;
-			initEvent.Signal();
+			//initEvent.Signal();
 			return;
 		};
 
@@ -43,10 +43,10 @@ void eae6320::cGameObject::InitializeMesh(const std::string& i_meshPath)
 		Graphics::AddMeshInitializeTask(callback, i_meshPath);
 		Graphics::ReleaseRenderObjectInitMutex();
 
-		if (Concurrency::WaitForEvent(initEvent), 5000)
-		{
-			auto temp = 0;
-		}
+		//if (Concurrency::WaitForEvent(initEvent))
+		//{
+		//	auto temp = 0;
+		//}
 	}
 
 
@@ -64,8 +64,33 @@ void eae6320::cGameObject::InitializeEffect(
 		m_effect = nullptr;
 	}
 
-	Graphics::cEffect::Create(
-		m_effect, i_vertexShaderPath, i_fragmentShaderPath);
+
+	if (Graphics::AcquireRenderObjectInitMutex() == WAIT_OBJECT_0)
+	{
+		Graphics::cEffect** effect = &m_effect;
+		Concurrency::cEvent initEvent;
+		initEvent.Initialize(Concurrency::EventType::RemainSignaledUntilReset);
+
+		auto callback = [&initEvent, effect](Graphics::cEffect* i_effect) -> void
+			{
+				*effect = i_effect;
+				//initEvent.Signal();
+				return;
+			};
+
+
+		Graphics::AddEffectInitializeTask(callback, i_vertexShaderPath, i_fragmentShaderPath);
+		Graphics::ReleaseRenderObjectInitMutex();
+
+		//if (Concurrency::WaitForEvent(initEvent))
+		//{
+		//	auto temp = 0;
+		//}
+	}
+
+
+
+	//Graphics::cEffect::Create(m_effect, i_vertexShaderPath, i_fragmentShaderPath);
 }
 
 

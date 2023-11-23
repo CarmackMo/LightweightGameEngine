@@ -108,6 +108,8 @@ void ScrollShooterGame::cScrollShooterGame::SubmitDataToBeRendered(
 		// Render data of render objects 
 		for (size_t i = 0; i < m_renderObjectList.size(); i++)
 		{
+			if (m_renderObjectList[i]->GetMesh() == nullptr || m_renderObjectList[i]->GetEffect() == nullptr)
+				continue;
 
 			normalRenderDataArray[i].Initialize(
 				m_renderObjectList[i]->GetMesh(), m_renderObjectList[i]->GetEffect(),
@@ -117,6 +119,9 @@ void ScrollShooterGame::cScrollShooterGame::SubmitDataToBeRendered(
 		//TODO: Render data for bullets
 		for (size_t i = renderObjectNum; i < arraySize; i++)
 		{
+			if (m_bulletList[i - renderObjectNum]->GetMesh() == nullptr || m_bulletList[i - renderObjectNum]->GetEffect() == nullptr)
+				continue;
+
 			normalRenderDataArray[i].Initialize(
 				m_bulletList[i - renderObjectNum]->GetMesh(), m_bulletList[i - renderObjectNum]->GetEffect(),
 				m_bulletList[i - renderObjectNum]->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
@@ -201,9 +206,9 @@ eae6320::cResult ScrollShooterGame::cScrollShooterGame::Initialize()
 
 	InitializeCamera();
 
-	InitializeMeshData();
-
 	InitializeGameObject();
+
+	InitializeMeshData();
 
 	// TODO: temporary code for initialize collision system
 	InitializeCollisionSystem();
@@ -265,37 +270,37 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 {
 	// Game object initialization
 	{
-		// Tirangle
-		m_renderObject_triangle.InitializeMesh(m_triangleMeshPath);
-		m_renderObject_triangle.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
-		m_renderObject_triangle.GetRigidBody().angularSpeed = 1.0f;
-		m_renderObject_triangle.GetRigidBody().angularVelocity_axis_local = Math::sVector(0.0f, 0.0f, 1.0f);
+		//// Tirangle
+		//m_renderObject_triangle.InitializeMesh(m_triangleMeshPath);
+		//m_renderObject_triangle.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
+		//m_renderObject_triangle.GetRigidBody().angularSpeed = 1.0f;
+		//m_renderObject_triangle.GetRigidBody().angularVelocity_axis_local = Math::sVector(0.0f, 0.0f, 1.0f);
 
-		// Rectangle
-		m_renderObject_rectangle.InitializeMesh(m_rectangleMeshPath);
-		m_renderObject_rectangle.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
-		m_renderObject_rectangle.GetRigidBody().orientation = Math::cQuaternion(0.5f, Math::sVector(1, 0, 1));
-		m_renderObject_rectangle.GetRigidBody().position = Math::sVector(+0.0f, -1.0f, +0.5f);
+		//// Rectangle
+		//m_renderObject_rectangle.InitializeMesh(m_rectangleMeshPath);
+		//m_renderObject_rectangle.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
+		//m_renderObject_rectangle.GetRigidBody().orientation = Math::cQuaternion(0.5f, Math::sVector(1, 0, 1));
+		//m_renderObject_rectangle.GetRigidBody().position = Math::sVector(+0.0f, -1.0f, +0.5f);
 
-		// Plane
-		m_renderObject_plane.InitializeMesh(m_planeMeshPath);
-		m_renderObject_plane.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
-		m_renderObject_plane.GetRigidBody().position = Math::sVector(+6.0f, -5.0f, -3.0f);
+		//// Plane
+		//m_renderObject_plane.InitializeMesh(m_planeMeshPath);
+		//m_renderObject_plane.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
+		//m_renderObject_plane.GetRigidBody().position = Math::sVector(+6.0f, -5.0f, -3.0f);
 
-		// Cube
-		m_renderObject_cube.InitializeMesh(m_cubeMeshPath);
-		m_renderObject_cube.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_animate);
-		m_renderObject_cube.GetRigidBody().position = Math::sVector(-2.0f, -2.0f, -3.0f);
+		//// Cube
+		//m_renderObject_cube.InitializeMesh(m_cubeMeshPath);
+		//m_renderObject_cube.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_animate);
+		//m_renderObject_cube.GetRigidBody().position = Math::sVector(-2.0f, -2.0f, -3.0f);
 
 		// Keqing
 		m_renderObject_Keqing.InitializeMesh(m_keqingMeshPath);
 		m_renderObject_Keqing.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
 		m_renderObject_Keqing.GetRigidBody().position = Math::sVector(-5.0f, -10.0f, -20.0f);
 
-		// Keqing - skin
-		m_renderObject_Keqing_skin.InitializeMesh(m_keqing_SkinMeshPath);
-		m_renderObject_Keqing_skin.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
-		m_renderObject_Keqing_skin.GetRigidBody().position = Math::sVector(-5.0f, -10.0f, -20.0f);
+		//// Keqing - skin
+		//m_renderObject_Keqing_skin.InitializeMesh(m_keqing_SkinMeshPath);
+		//m_renderObject_Keqing_skin.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
+		//m_renderObject_Keqing_skin.GetRigidBody().position = Math::sVector(-5.0f, -10.0f, -20.0f);
 
 		// Ganyu
 		m_renderObject_Ganyu.InitializeMesh(m_ganyuMeshPath);
@@ -331,7 +336,7 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 
 		m_player.bulletCreation = [this]() -> void 
 			{
-				m_temp.CleanUp();
+				//m_temp.CleanUp();
 				
 
 				cBullet* newBullet = new cBullet();

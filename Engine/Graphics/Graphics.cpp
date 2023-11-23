@@ -81,8 +81,12 @@ namespace
 	std::queue<std::pair<std::function<void(eae6320::Graphics::cMesh*)>, std::string>> s_meshInitializeQueue;
 	//std::queue<eae6320::Graphics::cMesh**> s_meshInitializeQueue;
 	
-	std::queue<eae6320::Graphics::cEffect**> s_effectInitialzieQueue;
+	std::queue<std::pair<std::function<void(eae6320::Graphics::cEffect*)>, std::pair<std::string, std::string>>> s_effectInitializeQueue;
+	//std::queue<eae6320::Graphics::cEffect**> s_effectInitialzieQueue;
 	std::queue<eae6320::Graphics::cLine**> s_lineInitializeQueue;
+
+
+
 
 	eae6320::Concurrency::cMutex s_renderObjectInitializeMutex;
 
@@ -279,7 +283,7 @@ void eae6320::Graphics::ReleaseShareResource()
 
 void eae6320::Graphics::InitializeRenderObjects()
 {
-	if (AcquireRenderObjectInitMutex(5000) == WAIT_OBJECT_0)
+	if (AcquireRenderObjectInitMutex() == WAIT_OBJECT_0)
 	{
 		// Initialize mesh objects
 		{
@@ -300,7 +304,21 @@ void eae6320::Graphics::InitializeRenderObjects()
 		}
 		// Initialize effect objects
 		{
+			while (s_effectInitializeQueue.empty() == false)
+			{
+				auto task = s_effectInitializeQueue.front();
+				s_effectInitializeQueue.pop();
 
+				auto callback = task.first;
+				std::string vertexPath = task.second.first;
+				std::string fragmentPath = task.second.second;
+
+				cEffect* newEffect = nullptr;
+
+				cEffect::Create(newEffect, vertexPath, fragmentPath);
+
+				callback(newEffect);
+			}
 		}
 		// Initialize line objects
 		{
@@ -335,11 +353,10 @@ void eae6320::Graphics::AddMeshInitializeTask(std::function<void(cMesh*)> i_call
 	s_meshInitializeQueue.push({ i_callback, i_meshPath });
 }
 
-
-
-
-
-
+void eae6320::Graphics::AddEffectInitializeTask(std::function<void(cEffect*)> i_callback, std::string i_vertexPath, std::string i_fragmentPath)
+{
+	s_effectInitializeQueue.push({ i_callback, {i_vertexPath, i_fragmentPath}});
+}
 
 
 
@@ -379,23 +396,23 @@ void eae6320::Graphics::RenderFrame()
 	}
 
 
-	// Wait rendering objects in application thead release the rendering context
-	{
-		if (WaitUntilContextReleaseByApplicationThread(5000))
-		{
-			ResetThatContextIsClaimedByRenderingThread();
-			if (sContext::g_context.EnableContext(GetCurrentThreadId()) == FALSE)
-			{
-				EAE6320_ASSERTF(false, "Enable openGL context in rendering thread fail");
-			}
+	//// Wait rendering objects in application thead release the rendering context
+	//{
+	//	if (WaitUntilContextReleaseByApplicationThread(5000))
+	//	{
+	//		ResetThatContextIsClaimedByRenderingThread();
+	//		if (sContext::g_context.EnableContext(GetCurrentThreadId()) == FALSE)
+	//		{
+	//			EAE6320_ASSERTF(false, "Enable openGL context in rendering thread fail");
+	//		}
 
-			//UserOutput::ConsolePrint("Rendering Thread: claim rendering context and start rendering \n");
-		}
-		else
-		{
-			EAE6320_ASSERTF(false, "Waiting for application thread to release rendering context fail");
-		}
-	}
+	//		//UserOutput::ConsolePrint("Rendering Thread: claim rendering context and start rendering \n");
+	//	}
+	//	else
+	//	{
+	//		EAE6320_ASSERTF(false, "Waiting for application thread to release rendering context fail");
+	//	}
+	//}
 
 
 	EAE6320_ASSERT(s_dataBeingRenderedByRenderThread_frame);
@@ -462,15 +479,15 @@ void eae6320::Graphics::RenderFrame()
 		}
 	}
 
-	// Release the rendering context
-	{
-		if (sContext::g_context.DisableContext() == FALSE)
-		{
-			EAE6320_ASSERTF(false, "Disable openGL context in rendering thread fail");
-		}
-		SignalThatContextIsReleasedByRenderingThread();
-		//UserOutput::ConsolePrint("Rendering Thread: finish rendering and release rendering context \n");
-	}
+	//// Release the rendering context
+	//{
+	//	if (sContext::g_context.DisableContext() == FALSE)
+	//	{
+	//		EAE6320_ASSERTF(false, "Disable openGL context in rendering thread fail");
+	//	}
+	//	SignalThatContextIsReleasedByRenderingThread();
+	//	//UserOutput::ConsolePrint("Rendering Thread: finish rendering and release rendering context \n");
+	//}
 }
 
 
@@ -516,7 +533,8 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 	}
 	// Initialize the events
 	{
-		if (!(result = s_whenAllDataHasBeenSubmittedFromApplicationThread.Initialize(Concurrency::EventType::ResetAutomaticallyAfterBeingSignaled)))
+		if (!(result = s_whenAllDataHasBeenSubmittedFromApplicationThread.Initialize(Concurrency::EventType::ResetAutomaticallyAfterBeingSignaled,
+			Concurrency::EventState::Signaled)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without event for when data has been submitted from the application thread");
 			return result;
