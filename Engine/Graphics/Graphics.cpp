@@ -86,9 +86,13 @@ namespace
 	std::queue<eae6320::Graphics::cLine**> s_lineInitializeQueue;
 
 
+	std::queue<eae6320::Graphics::cMesh**> s_meshCleanUpQueue;
+	std::queue<eae6320::Graphics::cEffect**> s_effectCleanUpQueue;
+	std::queue<eae6320::Graphics::cLine**> s_lineCleanUpQueue;
 
 
 	eae6320::Concurrency::cMutex s_renderObjectInitializeMutex;
+	eae6320::Concurrency::cMutex s_renderObjectCleanUpMutex;
 
 
 	// View Data
@@ -322,7 +326,7 @@ void eae6320::Graphics::InitializeRenderObjects()
 		}
 		// Initialize line objects
 		{
-
+			// TODO: 
 		}
 
 		ReleaseRenderObjectInitMutex();
@@ -331,7 +335,48 @@ void eae6320::Graphics::InitializeRenderObjects()
 	{
 		// TODO: logging
 	}
+}
 
+
+
+void eae6320::Graphics::CleanUpRenderObjects()
+{
+
+	if (AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
+	{
+		// Clean up mesh objects
+		{
+			while (s_meshCleanUpQueue.empty() == false)
+			{
+				cMesh** task = s_meshCleanUpQueue.front();
+				s_meshCleanUpQueue.pop();
+
+				(*task)->DecrementReferenceCount();
+				(*task) = nullptr;
+			}
+		}
+		// Clean up effect objects
+		{
+			while (s_effectCleanUpQueue.empty() == false)
+			{
+				cEffect** task = s_effectCleanUpQueue.front();
+				s_effectCleanUpQueue.pop();
+
+				(*task)->DecrementReferenceCount();
+				(*task) = nullptr;
+			}
+		}
+		// Clean up line objects
+		{
+			// TODO
+		}
+
+		ReleaseRenderObjectCleanUpMutex();
+	}
+	else
+	{
+		// TODO
+	}
 
 }
 
@@ -348,6 +393,18 @@ void eae6320::Graphics::ReleaseRenderObjectInitMutex()
 }
 
 
+DWORD eae6320::Graphics::AcquireRenderObjectCleanUpMutex(DWORD i_waitTime_MS)
+{
+	return s_renderObjectCleanUpMutex.Acquire(i_waitTime_MS);
+}
+
+
+void eae6320::Graphics::ReleaseRenderObjectCleanUpMutex()
+{
+	s_renderObjectCleanUpMutex.Release();
+}
+
+
 void eae6320::Graphics::AddMeshInitializeTask(std::function<void(cMesh*)> i_callback, std::string i_meshPath)
 {
 	s_meshInitializeQueue.push({ i_callback, i_meshPath });
@@ -357,6 +414,20 @@ void eae6320::Graphics::AddEffectInitializeTask(std::function<void(cEffect*)> i_
 {
 	s_effectInitializeQueue.push({ i_callback, {i_vertexPath, i_fragmentPath}});
 }
+
+
+void eae6320::Graphics::AddMeshCleanUpTask(cMesh** i_mesh)
+{
+	s_meshCleanUpQueue.push(i_mesh);
+}
+
+
+void eae6320::Graphics::AddEffectCleanUpTask(cEffect** i_effect)
+{
+	s_effectCleanUpQueue.push(i_effect);
+}
+
+
 
 
 
@@ -565,6 +636,11 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without mutex for protecting render object initialization");
 			return result;
 		}
+		if (!(result = s_renderObjectCleanUpMutex.Initialize()))
+		{
+			EAE6320_ASSERTF(false, "Can't initialize Graphics without mutex for protecting render object clean up");
+			return result;
+		}
 	}
 	// Initialize the views
 	{
@@ -599,14 +675,15 @@ eae6320::cResult eae6320::Graphics::CleanUp()
 	auto result = Results::Success;
 
 
-	auto id1 = GetCurrentThreadId();
-	auto id2 = sContext::g_context.ownerThreadId;
-	if (Graphics::sContext::g_context.EnableContext(GetCurrentThreadId()) == FALSE)
-	{
-		EAE6320_ASSERTF(false, "Claim rendering context for rendering thread failed");
-		Logging::OutputError("Claim rendering context for rendering thread failed");
-	}
+	//auto id1 = GetCurrentThreadId();
+	//auto id2 = sContext::g_context.ownerThreadId;
+	//if (Graphics::sContext::g_context.EnableContext(GetCurrentThreadId()) == FALSE)
+	//{
+	//	EAE6320_ASSERTF(false, "Claim rendering context for rendering thread failed");
+	//	Logging::OutputError("Claim rendering context for rendering thread failed");
+	//}
 
+	CleanUpRenderObjects();
 
 
 	// view clean up

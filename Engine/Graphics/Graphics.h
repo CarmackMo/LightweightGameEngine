@@ -87,18 +87,29 @@ namespace Graphics
 	void ReleaseShareResource();
 	
 
-	// Proudce
+	// Render Objects Initialization / Clean Up
 	//-------
-
-	void InitializeRenderObjects();
 
 	DWORD AcquireRenderObjectInitMutex(DWORD i_waitTime_MS = INFINITE);
 
 	void ReleaseRenderObjectInitMutex();
 
+	DWORD AcquireRenderObjectCleanUpMutex(DWORD i_waitTime_MS = INFINITE);
+
+	void ReleaseRenderObjectCleanUpMutex();
+
+	void InitializeRenderObjects();
+
 	void AddMeshInitializeTask(std::function<void(cMesh*)> i_callback, std::string i_meshPath);
 
 	void AddEffectInitializeTask(std::function<void(cEffect*)> i_callback, std::string i_vertexPath, std::string i_fragmentPath);
+
+
+	void CleanUpRenderObjects();
+
+	void AddMeshCleanUpTask(cMesh** i_mesh);
+
+	void AddEffectCleanUpTask(cEffect** i_effect);
 
 
 	// Render

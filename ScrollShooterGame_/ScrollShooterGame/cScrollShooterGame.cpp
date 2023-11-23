@@ -336,7 +336,7 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 
 		m_player.bulletCreation = [this]() -> void 
 			{
-				//m_temp.CleanUp();
+				m_temp.CleanUp();
 				
 
 				cBullet* newBullet = new cBullet();
@@ -382,7 +382,7 @@ void ScrollShooterGame::cScrollShooterGame::CleanUpGameObject()
 	}
 
 	// TODO: temporary code for clean up colldier object
-	m_player.CleanUp();
+	//m_player.CleanUp();
 	for (cBullet* bulletObjet : m_bulletList)
 	{
 		bulletObjet->CleanUp();

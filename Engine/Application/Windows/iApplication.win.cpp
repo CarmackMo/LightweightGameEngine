@@ -106,6 +106,8 @@ eae6320::cResult eae6320::Application::iApplication::RenderFramesWhileWaitingFor
 		{
 			Graphics::InitializeRenderObjects();
 
+			Graphics::CleanUpRenderObjects();
+
 			// Usually there will be no messages in the queue, and a new frame can be rendered
 			Graphics::RenderFrame();
 		}

@@ -11,8 +11,30 @@
 
 void eae6320::cGameObject::CleanUp()
 {
-	if (m_mesh != nullptr) { m_mesh->DecrementReferenceCount(); }
-	if (m_effect != nullptr) { m_effect->DecrementReferenceCount(); }
+	if (m_mesh != nullptr)
+	{
+		if (Graphics::AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
+		{
+			Graphics::cMesh** mesh = &m_mesh;
+			Graphics::AddMeshCleanUpTask(mesh);
+			Graphics::ReleaseRenderObjectCleanUpMutex();
+		}
+	}
+
+	if (m_effect != nullptr)
+	{
+		if (Graphics::AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
+		{
+			Graphics::cEffect** effect = &m_effect;
+			Graphics::AddEffectCleanUpTask(effect);
+			Graphics::ReleaseRenderObjectCleanUpMutex();
+		}
+	}
+
+
+
+	//if (m_mesh != nullptr) { m_mesh->DecrementReferenceCount(); }
+	//if (m_effect != nullptr) { m_effect->DecrementReferenceCount(); }
 	if (m_collider != nullptr) { delete m_collider; }
 }
 
