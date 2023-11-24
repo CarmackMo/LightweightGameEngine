@@ -39,11 +39,6 @@ void ScrollShooterGame::cPlayer::UpdateBasedOnInput()
 	// Attack
 	if (UserInput::IsKeyPressed(UserInput::KeyCodes::Enter))
 	{
-		//TODO
-
-		//cBullet* newBullet = new cBullet();
-		//newBullet->Initialize(m_rigidBody.position, Math::sVector(0,1,0) );
-
 		if (bulletCreation != nullptr)
 			bulletCreation();
 	}

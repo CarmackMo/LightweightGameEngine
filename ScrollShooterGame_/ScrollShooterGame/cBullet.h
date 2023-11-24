@@ -11,6 +11,12 @@
 
 #include <functional>
 
+
+// TODO
+#include <Engine/Graphics/cLine.h>
+
+
+
 namespace ScrollShooterGame
 {
 
@@ -30,6 +36,25 @@ namespace ScrollShooterGame
 	public: 
 
 		std::function<void()> m_cleanUpCallback = nullptr;
+
+		
+		
+		
+		// TODO
+		
+		bool m_isCollide = false;
+		eae6320::Graphics::cLine* m_colliderLine = nullptr;
+		eae6320::Graphics::cLine* m_collisionLine = nullptr;
+
+
+		void InitializeColliderLine();
+
+		eae6320::Graphics::cLine* GetColliderLine() const;
+
+		void SetIsCollide(bool isCollide)
+		{
+			m_isCollide = isCollide;
+		}
 
 
 	private:

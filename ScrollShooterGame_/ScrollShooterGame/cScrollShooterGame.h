@@ -171,7 +171,6 @@ namespace ScrollShooterGame
 		cPlayer m_player;
 
 		std::vector<cBullet*> m_bulletList;
-		std::vector<eae6320::Graphics::cMesh*> m_bulletMesh;
 	};
 }
 

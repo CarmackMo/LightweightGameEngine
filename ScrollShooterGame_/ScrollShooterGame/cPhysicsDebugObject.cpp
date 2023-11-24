@@ -91,10 +91,12 @@ void ScrollShooterGame::cPhysicDebugObject::InitializeColliderLine()
 			indexData[i] = indexVec[i];
 		}
 
-		Graphics::cLine::Create(
-			m_colliderLine,
-			vertexData, vertexCount,
-			indexData, indexCount);
+		// Send cLine data to rendering thread for initialization
+		if (Graphics::AcquireRenderObjectInitMutex() == WAIT_OBJECT_0)
+		{
+			Graphics::AddLineInitializeTask(&m_colliderLine, vertexData, vertexCount, indexData, indexCount);
+			Graphics::ReleaseRenderObjectInitMutex();
+		}
 
 		delete[] vertexData;
 		delete[] indexData;
@@ -113,10 +115,12 @@ void ScrollShooterGame::cPhysicDebugObject::InitializeColliderLine()
 			indexData[i] = indexVec[i];
 		}
 
-		Graphics::cLine::Create(
-			m_collisionLine,
-			vertexData, vertexCount,
-			indexData, indexCount);
+		// Send cLine data to rendering thread for initialization
+		if (Graphics::AcquireRenderObjectInitMutex() == WAIT_OBJECT_0)
+		{
+			Graphics::AddLineInitializeTask(&m_collisionLine, vertexData, vertexCount, indexData, indexCount);
+			Graphics::ReleaseRenderObjectInitMutex();
+		}
 
 		delete[] vertexData;
 		delete[] indexData;

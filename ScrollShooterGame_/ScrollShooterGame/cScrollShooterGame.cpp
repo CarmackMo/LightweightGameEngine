@@ -61,16 +61,6 @@ void ScrollShooterGame::cScrollShooterGame::UpdateSimulationBasedOnTime(const fl
 		object->UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
 	}
 
-
-
-	//// TODO: Temporary code for player update
-	//m_player.UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
-	//for (cBullet* bullet : m_bulletList)
-	//{
-	//	bullet->UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
-	//}
-
-
 	// TODO: Temporary code for collider debug
 
 	Physics::Collision::Update_CollisionDetection();
@@ -100,7 +90,6 @@ void ScrollShooterGame::cScrollShooterGame::SubmitDataToBeRendered(
 		Graphics::SubmitBackgroundColor(0.5f, 0.5f, 0.5f);
 	}
 
-
 	// Submit normal render data
 	{
 		size_t renderObjectNum = m_renderObjectList.size();
@@ -119,18 +108,6 @@ void ScrollShooterGame::cScrollShooterGame::SubmitDataToBeRendered(
 				m_renderObjectList[i]->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
 		}
 
-		////TODO: Render data for bullets
-		//for (size_t i = renderObjectNum; i < arraySize; i++)
-		//{
-		//	if (m_bulletList[i - renderObjectNum]->GetMesh() == nullptr || m_bulletList[i - renderObjectNum]->GetEffect() == nullptr)
-		//		continue;
-
-		//	normalRenderDataArray[i].Initialize(
-		//		m_bulletList[i - renderObjectNum]->GetMesh(), m_bulletList[i - renderObjectNum]->GetEffect(),
-		//		m_bulletList[i - renderObjectNum]->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
-		//}
-
-
 		Graphics::SubmitNormalRenderData(normalRenderDataArray, static_cast<uint32_t>(arraySize));
 
 		// clean up 
@@ -142,16 +119,16 @@ void ScrollShooterGame::cScrollShooterGame::SubmitDataToBeRendered(
 		delete[] normalRenderDataArray;
 	}
 
-
 	// Submit debug render data (for colliders)
 	{
 		auto BVHRenderData = std::vector<std::pair<eae6320::Graphics::cLine*, eae6320::Math::cMatrix_transformation>>();
 		BVHRenderData = Physics::Collision::GetBVHRenderData();
 
-		size_t staticSize = m_colliderObjectList.size();
-		size_t arraySize = BVHRenderData.size() + staticSize;
+		size_t colliderListSize = m_colliderObjectList.size();
+		size_t BVHTreeSize = BVHRenderData.size() + colliderListSize;
+		size_t totalArraySize = m_bulletList.size() + BVHTreeSize;
 
-		Graphics::ConstantBufferFormats::sDebugRender* debugDataArray = new Graphics::ConstantBufferFormats::sDebugRender[arraySize];
+		Graphics::ConstantBufferFormats::sDebugRender* debugDataArray = new Graphics::ConstantBufferFormats::sDebugRender[totalArraySize];
 
 		// Render data of hard-coded collider
 		for (size_t i = 0; i < m_colliderObjectList.size(); i++)
@@ -161,15 +138,22 @@ void ScrollShooterGame::cScrollShooterGame::SubmitDataToBeRendered(
 		}
 
 		// Render data of BVH tree
-		for (size_t i = staticSize; i < arraySize; i++)
+		for (size_t i = colliderListSize; i < BVHTreeSize; i++)
 		{
-			debugDataArray[i].Initialize(BVHRenderData[i - staticSize].first, BVHRenderData[i - staticSize].second);
+			debugDataArray[i].Initialize(BVHRenderData[i - colliderListSize].first, BVHRenderData[i - colliderListSize].second);
 		}
 
-		Graphics::SubmitDebugRenderData(debugDataArray, static_cast<uint32_t>(arraySize));
+		// Render data of bullets
+		for (size_t i = BVHTreeSize; i < totalArraySize; i++)
+		{
+			auto bullet = m_bulletList[i - BVHTreeSize];
+			debugDataArray[i].Initialize(bullet->GetColliderLine(), bullet->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
+		}
+
+		Graphics::SubmitDebugRenderData(debugDataArray, static_cast<uint32_t>(totalArraySize));
 
 		// Clean up
-		for (size_t i = 0; i < arraySize; i++)
+		for (size_t i = 0; i < totalArraySize; i++)
 		{
 			debugDataArray[i].CleanUp();
 		}
@@ -339,21 +323,28 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 			{
 				cBullet* newBullet = new cBullet();
 				newBullet->Initialize(m_player.GetRigidBody().position, Math::sVector(0, 1, 0));
-				newBullet->InitializeMesh(m_triangleMeshPath);
-				newBullet->InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
 
 				newBullet->m_cleanUpCallback = [this, newBullet]() -> void
 					{
-						auto iter = std::find(m_renderObjectList.begin(), m_renderObjectList.end(), newBullet);
-						if (iter != m_renderObjectList.end())
+						auto objIter = std::find(m_renderObjectList.begin(), m_renderObjectList.end(), newBullet);
+						if (objIter != m_renderObjectList.end())
 						{
-							m_renderObjectList.erase(iter);
+							m_renderObjectList.erase(objIter);
 						}
+
+						auto bulletIter = std::find(m_bulletList.begin(), m_bulletList.end(), newBullet);
+						if (bulletIter != m_bulletList.end())
+						{
+							m_bulletList.erase(bulletIter);
+						}
+
+						Physics::Collision::DeregisterCollider(newBullet->GetCollider());
 					};
 
+
+				Physics::Collision::RegisterCollider(newBullet->GetCollider());
 				m_renderObjectList.push_back(newBullet);
 				m_bulletList.push_back(newBullet);
-				m_bulletMesh.push_back(newBullet->GetMesh());
 			};
 
 		m_renderObjectList.push_back(&m_player);
@@ -389,12 +380,6 @@ void ScrollShooterGame::cScrollShooterGame::CleanUpGameObject()
 		colliderObject->CleanUp();
 	}
 
-	//// TODO: temporary code for clean up colldier object
-	////m_player.CleanUp();
-	//for (cBullet* bulletObjet : m_bulletList)
-	//{
-	//	bulletObjet->CleanUp();
-	//}
 }
 
 
