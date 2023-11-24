@@ -17,6 +17,7 @@
 #include <ScrollShooterGame_/ScrollShooterGame/cPhysicsDebugObject.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cPlayer.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cBullet.h>
+#include <ScrollShooterGame_/ScrollShooterGame/cEnemy.h>
 
 
 #include <Engine/Graphics/cMesh.h>
@@ -145,7 +146,7 @@ namespace ScrollShooterGame
 		eae6320::cGameObject m_renderObject_Keqing_skin;
 		eae6320::cGameObject m_renderObject_Ganyu;
 
-		std::vector<eae6320::cGameObject*> m_renderObjectList;
+		std::vector<eae6320::cGameObject*> m_gameObjectList;
 
 
 		void InitializeMeshData();
@@ -160,15 +161,12 @@ namespace ScrollShooterGame
 
 		// TODO: temporary colldier object
 
-
-
-		std::vector<cPhysicDebugObject*> m_colliderObjectList;
-
 		void InitializeCollisionSystem();
 
 
 		// TODO: temporary player object
 		cPlayer m_player;
+		cEnemy m_enemy;
 
 		std::vector<cBullet*> m_bulletList;
 	};

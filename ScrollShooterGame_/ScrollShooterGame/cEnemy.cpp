@@ -2,45 +2,30 @@
 // Includes
 //========
 
-#include <Engine/Math/cQuaternion.h>
-#include <Engine/Graphics/Graphics.h>
-#include <Engine/UserOutput/UserOutput.h>
 
-#include <ScrollShooterGame_/ScrollShooterGame/cBullet.h>
+#include <Engine/Graphics/Graphics.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cEnemy.h>
 
 using namespace eae6320;
 
-
-void ScrollShooterGame::cBullet::Initialize(
-	eae6320::Math::sVector i_position,
-	eae6320::Math::sVector i_velocity)
+void ScrollShooterGame::cEnemy::Initialize(eae6320::Math::sVector i_position, eae6320::Math::sVector i_velocity)
 {
 	// Initialize rigid body
 	{
 		m_rigidBody.position = i_position;
 		m_rigidBody.velocity = i_velocity;
-		m_rigidBody.isTrigger = true;
 	}
 
 	// Initialize collider
 	{
-		Physics::sColliderSetting setting_sphere;
-		setting_sphere.SettingForSphere(Math::sVector(0, 0, 0), 0.5f);
-		InitializeCollider(setting_sphere);
+		Physics::sColliderSetting setting_AABB1;
+		setting_AABB1.SettingForAABB(Math::sVector(-0.5, -0.5, -0.5), Math::sVector(0.5, 0.5, 0.5));
+		InitializeCollider(setting_AABB1);
 		InitializeColliderLine();
-		
-		m_collider->OnCollisionEnter = [this](Physics::cCollider* self, Physics::cCollider* other) -> void 
-			{ 
-				m_isCollide = true;  
-				if (dynamic_cast<cEnemy*>(other->m_gameobject) != nullptr)
-				{
-					UserOutput::ConsolePrint("Bullet hit enemy!! \n");
-				}
-			};
-
+		m_collider->OnCollisionEnter =
+			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { m_isCollide = true; };
 		m_collider->OnCollisionStay =
-			[this](Physics::cCollider* self, Physics::cCollider* other) -> void {  };
+			[this](Physics::cCollider* self, Physics::cCollider* other) -> void {};
 		m_collider->OnCollisionExit =
 			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { m_isCollide = false; };
 	}
@@ -50,16 +35,17 @@ void ScrollShooterGame::cBullet::Initialize(
 		InitializeMesh("data/meshes/mesh_rectangle.mesh");
 		InitializeEffect("data/Shaders/Vertex/standard.shader", "data/Shaders/Fragment/standard.shader");
 	}
-}
+} 
 
 
-void ScrollShooterGame::cBullet::UpdateBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate)
+
+
+void ScrollShooterGame::cEnemy::UpdateBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate)
 {
 	cGameObject::UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
 }
 
-
-void ScrollShooterGame::cBullet::CleanUp()
+void ScrollShooterGame::cEnemy::CleanUp()
 {
 	if (m_cleanUpCallback != nullptr)
 		m_cleanUpCallback();
@@ -73,7 +59,7 @@ void ScrollShooterGame::cBullet::CleanUp()
 
 // TODO
 
-void ScrollShooterGame::cBullet::InitializeColliderLine()
+void ScrollShooterGame::cEnemy::InitializeColliderLine()
 {
 	if (m_colliderLine != nullptr)
 	{
@@ -142,10 +128,37 @@ void ScrollShooterGame::cBullet::InitializeColliderLine()
 }
 
 
-eae6320::Graphics::cLine* ScrollShooterGame::cBullet::GetColliderLine() const
+eae6320::Graphics::cLine* ScrollShooterGame::cEnemy::GetColliderLine() const
 {
 	if (m_isCollide)
 		return m_collisionLine;
 	else
 		return m_colliderLine;
+}
+
+
+void ScrollShooterGame::cEnemy::UpdateBasedOnInput()
+{
+	// Basic movement
+	if (UserInput::IsKeyPressed('A'))
+		m_rigidBody.velocity.x = -3.0f;
+	else if (UserInput::IsKeyPressed('D'))
+		m_rigidBody.velocity.x = 3.0f;
+	else
+		m_rigidBody.velocity.x = 0.0f;
+
+	if (UserInput::IsKeyPressed('S'))
+		m_rigidBody.velocity.y = -3.0f;
+	else if (UserInput::IsKeyPressed('W'))
+		m_rigidBody.velocity.y = 3.0f;
+	else
+		m_rigidBody.velocity.y = 0.0f;
+
+	if (UserInput::IsKeyPressed('R'))
+		m_rigidBody.velocity.z = -3.0f;
+	else if (UserInput::IsKeyPressed('F'))
+		m_rigidBody.velocity.z = 3.0f;
+	else
+		m_rigidBody.velocity.z = 0.0f;
+
 }
