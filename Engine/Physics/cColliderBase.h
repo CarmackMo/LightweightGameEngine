@@ -28,6 +28,12 @@ namespace Physics
 }
 }
 
+namespace eae6320
+{
+	class cGameObject;
+}
+
+
 
 // Collider Types
 //=============
@@ -91,7 +97,7 @@ namespace Physics
 		// Initialization / Clean Up
 		//--------------------------
 
-		static cResult Create(cCollider*& o_collider, const sColliderSetting& i_setting, sRigidBodyState* i_rigidBody);
+		static cResult Create(cCollider*& o_collider, const sColliderSetting& i_setting, cGameObject* i_ownerGameObject);
 
 		// Property Getters
 		//--------------------------
@@ -141,6 +147,8 @@ namespace Physics
 	public:
 
 		sRigidBodyState* m_objectRigidBody = nullptr;
+
+		cGameObject* m_gameobject = nullptr;
 
 		std::function<void(cCollider*, cCollider*)> OnCollisionEnter = nullptr;
 		std::function<void(cCollider*, cCollider*)> OnCollisionStay = nullptr;

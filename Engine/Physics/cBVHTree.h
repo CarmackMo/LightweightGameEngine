@@ -125,7 +125,7 @@ namespace Physics
 		void ComputePairsHelper(sBVHNode* i_node0, sBVHNode* i_node1);
 		void ClearChildrenCrossFlagHelper(sBVHNode* i_node);
 		void CrossChildren(sBVHNode* i_node);
-		void RenderInitializeHelper(Graphics::cLine*& io_AABBLine);
+		void RenderInitializeHelper(Graphics::cLine** io_AABBLine);
 		void RenderUpdateHelper();
 
 		// Data

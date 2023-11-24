@@ -71,7 +71,7 @@ void eae6320::cGameObject::InitializeEffect(
 
 void eae6320::cGameObject::InitializeCollider(const Physics::sColliderSetting& i_builder)
 {
-	Physics::cCollider::Create(m_collider, i_builder, &m_rigidBody);
+	Physics::cCollider::Create(m_collider, i_builder, this);
 }
 
 

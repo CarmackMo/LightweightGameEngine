@@ -143,31 +143,35 @@ void eae6320::cMyGame::SubmitDataToBeRendered(
 		auto BVHRenderData = std::vector<std::pair<eae6320::Graphics::cLine*, eae6320::Math::cMatrix_transformation>>();
 		BVHRenderData = Physics::Collision::GetBVHRenderData();
 
-		size_t staticSize = m_colliderObjectList.size();
-		size_t arraySize = BVHRenderData.size() + staticSize;
+		size_t colliderListSize = m_colliderObjectList.size();
+		size_t totalArraySize = BVHRenderData.size() + colliderListSize;
 
-		Graphics::ConstantBufferFormats::sDebugRender* debugDataArray = new Graphics::ConstantBufferFormats::sDebugRender[arraySize];
+		Graphics::ConstantBufferFormats::sDebugRender* debugDataArray = new Graphics::ConstantBufferFormats::sDebugRender[totalArraySize];
 
 		// Render data of hard-coded collider
 		for (size_t i = 0 ; i < m_colliderObjectList.size(); i++)
 		{
-			if (m_colliderObjectList[i]->GetColliderLine() == nullptr)
+			auto collider = m_colliderObjectList[i];
+
+			if (collider->GetColliderLine() == nullptr)
 				continue;
 
-			auto collider = m_colliderObjectList[i];
 			debugDataArray[i].Initialize(collider->GetColliderLine(), collider->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
 		}
 
 		// Render data of BVH tree
-		for (size_t i = staticSize; i < arraySize; i++)
+		for (size_t i = colliderListSize; i < totalArraySize; i++)
 		{
-			debugDataArray[i].Initialize(BVHRenderData[i - staticSize].first, BVHRenderData[i - staticSize].second);
+			if (BVHRenderData[i - colliderListSize].first == nullptr)
+				continue;
+
+			debugDataArray[i].Initialize(BVHRenderData[i - colliderListSize].first, BVHRenderData[i - colliderListSize].second);
 		}
 
-		Graphics::SubmitDebugRenderData(debugDataArray, static_cast<uint32_t>(arraySize));
+		Graphics::SubmitDebugRenderData(debugDataArray, static_cast<uint32_t>(totalArraySize));
 
 		// Clean up
-		for (size_t i = 0; i < arraySize; i++)
+		for (size_t i = 0; i < totalArraySize; i++)
 		{
 			debugDataArray[i].CleanUp();
 		}
