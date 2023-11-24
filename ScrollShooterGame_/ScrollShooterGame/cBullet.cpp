@@ -47,9 +47,9 @@ void ScrollShooterGame::cBullet::UpdateBasedOnTime(const float i_elapsedSecondCo
 
 
 	// TODO: 
-	if (m_rigidBody.position.x >= 3.0f ||
-		m_rigidBody.position.y >= 3.0f ||
-		m_rigidBody.position.z >= 3.0f)
+	if (m_rigidBody.position.x >= 5.0f ||
+		m_rigidBody.position.y >= 5.0f ||
+		m_rigidBody.position.z >= 5.0f)
 	{
 		CleanUp();
 	}

@@ -1,6 +1,7 @@
 // Includes
 //=========
 
+#include <Engine/Graphics/Graphics.h>
 #include <Engine/Physics/cBVHTree.h>
 #include <Engine/Physics/Collision.h>
 
@@ -91,9 +92,9 @@ eae6320::Physics::sBVHNode* eae6320::Physics::cBVHTree::Search(cCollider* i_coll
 		}
 		else if (current->IsLeaf() == false)
 		{
-			if (current->children[0]->fatAABB.IsContains(*i_collider))
+			if (Collision::IsOverlaps(&(current->children[0]->fatAABB), i_collider))
 				container.push(current->children[0]);
-			else if (current->children[1]->fatAABB.IsContains(*i_collider))
+			if (Collision::IsOverlaps(&(current->children[1]->fatAABB), i_collider))
 				container.push(current->children[1]);
 		}
 	}
@@ -111,6 +112,17 @@ void eae6320::Physics::cBVHTree::Add(cCollider* i_collider)
 		node->SetLeaf(i_collider);
 		node->UpdateFatAABB(m_margin);
 		InsertNode(node, &m_root);
+
+		// Create two new debug cLine object, one for new node, the other for branch node
+		{
+			Graphics::cLine* newNodeLine = nullptr;
+			RenderInitializeHelper(newNodeLine);
+			m_renderData.push_back(std::pair<Graphics::cLine*, Math::cMatrix_transformation>(newNodeLine, Math::cMatrix_transformation()));
+
+			Graphics::cLine* branchNodeLine = nullptr;
+			RenderInitializeHelper(branchNodeLine);
+			m_renderData.push_back(std::pair<Graphics::cLine*, Math::cMatrix_transformation>(branchNodeLine, Math::cMatrix_transformation()));
+		}
 	}
 	else
 	{
@@ -118,6 +130,13 @@ void eae6320::Physics::cBVHTree::Add(cCollider* i_collider)
 		m_root = new sBVHNode();
 		m_root->SetLeaf(i_collider);
 		m_root->UpdateFatAABB(m_margin);
+
+		// Create one new debug cLine objec for the new node
+		{
+			Graphics::cLine* newNodeLine = nullptr;
+			RenderInitializeHelper(newNodeLine);
+			m_renderData.push_back(std::pair<Graphics::cLine*, Math::cMatrix_transformation>(newNodeLine, Math::cMatrix_transformation()));
+		}
 	}
 }
 
@@ -322,12 +341,17 @@ void eae6320::Physics::cBVHTree::RemoveNode(sBVHNode* i_node)
 
 		delete i_node;
 		delete parent;
+
+		m_renderData.pop_back();
+		m_renderData.pop_back();
 	}
 	// if current node is root
 	else
 	{
 		m_root = nullptr;
 		delete parent;
+
+		m_renderData.pop_back();
 	}
 }
 
@@ -486,7 +510,12 @@ void eae6320::Physics::cBVHTree::RenderInitializeHelper(Graphics::cLine*& io_AAB
 		indexData[i] = i;
 	}
 
-	Graphics::cLine::Create(io_AABBLine, vertexData, vertexCount, indexData, indexCount);
+	// Send cLine data to rendering thread for initialization
+	if (Graphics::AcquireRenderObjectInitMutex() == WAIT_OBJECT_0)
+	{
+		Graphics::AddLineInitializeTask(&io_AABBLine, vertexData, vertexCount, indexData, indexCount);
+		Graphics::ReleaseRenderObjectInitMutex();
+	}
 }
 
 

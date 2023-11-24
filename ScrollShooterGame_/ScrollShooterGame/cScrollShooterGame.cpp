@@ -134,12 +134,19 @@ void ScrollShooterGame::cScrollShooterGame::SubmitDataToBeRendered(
 		for (size_t i = 0; i < m_colliderObjectList.size(); i++)
 		{
 			auto collider = m_colliderObjectList[i];
+
+			if (collider->GetColliderLine() == nullptr)
+				continue;
+
 			debugDataArray[i].Initialize(collider->GetColliderLine(), collider->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
 		}
 
 		// Render data of BVH tree
 		for (size_t i = colliderListSize; i < BVHTreeSize; i++)
 		{
+			if (BVHRenderData[i - colliderListSize].first == nullptr)
+				continue;
+
 			debugDataArray[i].Initialize(BVHRenderData[i - colliderListSize].first, BVHRenderData[i - colliderListSize].second);
 		}
 
@@ -147,6 +154,10 @@ void ScrollShooterGame::cScrollShooterGame::SubmitDataToBeRendered(
 		for (size_t i = BVHTreeSize; i < totalArraySize; i++)
 		{
 			auto bullet = m_bulletList[i - BVHTreeSize];
+
+			if (bullet->GetColliderLine() == nullptr)
+				continue;
+
 			debugDataArray[i].Initialize(bullet->GetColliderLine(), bullet->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
 		}
 
