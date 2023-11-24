@@ -118,6 +118,9 @@ void eae6320::cMyGame::SubmitDataToBeRendered(
 		// Render data of render objects 
 		for (size_t i = 0; i < arraySize; i++)
 		{
+			if (m_renderObjectList[i]->GetMesh() == nullptr || m_renderObjectList[i]->GetEffect() == nullptr)
+				continue;
+
 			normalRenderDataArray[i].Initialize(
 				m_renderObjectList[i]->GetMesh(), m_renderObjectList[i]->GetEffect(),
 				m_renderObjectList[i]->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
@@ -148,6 +151,9 @@ void eae6320::cMyGame::SubmitDataToBeRendered(
 		// Render data of hard-coded collider
 		for (size_t i = 0 ; i < m_colliderObjectList.size(); i++)
 		{
+			if (m_colliderObjectList[i]->GetColliderLine() == nullptr)
+				continue;
+
 			auto collider = m_colliderObjectList[i];
 			debugDataArray[i].Initialize(collider->GetColliderLine(), collider->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
 		}

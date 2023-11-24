@@ -15,26 +15,19 @@ void eae6320::cGameObject::CleanUp()
 	{
 		if (Graphics::AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
 		{
-			Graphics::cMesh** mesh = &m_mesh;
-			Graphics::AddMeshCleanUpTask(mesh);
+			Graphics::AddMeshCleanUpTask(&m_mesh);
 			Graphics::ReleaseRenderObjectCleanUpMutex();
 		}
 	}
-
 	if (m_effect != nullptr)
 	{
 		if (Graphics::AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
 		{
-			Graphics::cEffect** effect = &m_effect;
-			Graphics::AddEffectCleanUpTask(effect);
+			Graphics::AddEffectCleanUpTask(&m_effect);
 			Graphics::ReleaseRenderObjectCleanUpMutex();
 		}
 	}
 
-
-
-	//if (m_mesh != nullptr) { m_mesh->DecrementReferenceCount(); }
-	//if (m_effect != nullptr) { m_effect->DecrementReferenceCount(); }
 	if (m_collider != nullptr) { delete m_collider; }
 }
 
@@ -47,6 +40,7 @@ void eae6320::cGameObject::InitializeMesh(const std::string& i_meshPath)
 		m_mesh = nullptr;
 	}
 
+	// Send cMesh data to rendering thread for initialzation
 	if (Graphics::AcquireRenderObjectInitMutex() == WAIT_OBJECT_0)
 	{
 		Graphics::AddMeshInitializeTask(&m_mesh, i_meshPath);
@@ -65,6 +59,7 @@ void eae6320::cGameObject::InitializeEffect(
 		m_effect = nullptr;
 	}
 
+	// Send cEffect data to rendering thread for initialzation
 	if (Graphics::AcquireRenderObjectInitMutex() == WAIT_OBJECT_0)
 	{
 		Graphics::AddEffectInitializeTask(&m_effect, i_vertexShaderPath, i_fragmentShaderPath);

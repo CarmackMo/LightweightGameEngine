@@ -3,6 +3,7 @@
 //=========
 
 #include <Engine/Math/sVector.h>
+#include <Engine/Graphics/Graphics.h>
 
 #include <MyGame_/MyGame/cPhysicsDebugObject.h>
 
@@ -12,8 +13,22 @@ void eae6320::cPhysicDebugObject::CleanUp()
 {
 	cGameObject::CleanUp();
 
-	if (m_colliderLine != nullptr) { m_colliderLine->DecrementReferenceCount(); }
-
+	if (m_colliderLine != nullptr)
+	{
+		if (Graphics::AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
+		{
+			Graphics::AddLineCleanUpTask(&m_colliderLine);
+			Graphics::ReleaseRenderObjectCleanUpMutex();
+		}
+	}
+	if (m_collisionLine != nullptr)
+	{
+		if (Graphics::AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
+		{
+			Graphics::AddLineCleanUpTask(&m_collisionLine);
+			Graphics::ReleaseRenderObjectCleanUpMutex();
+		}
+	}
 }
 
 
@@ -75,10 +90,12 @@ void eae6320::cPhysicDebugObject::InitializeColliderLine()
 			indexData[i] = indexVec[i];
 		}
 
-		Graphics::cLine::Create(
-			m_colliderLine,
-			vertexData, vertexCount,
-			indexData, indexCount);
+		// Send cLine data to rendering thread for initialization
+		if (Graphics::AcquireRenderObjectInitMutex() == WAIT_OBJECT_0)
+		{
+			Graphics::AddLineInitializeTask(&m_colliderLine, vertexData, vertexCount, indexData, indexCount);
+			Graphics::ReleaseRenderObjectInitMutex();
+		}
 
 		delete[] vertexData;
 		delete[] indexData;
@@ -97,10 +114,12 @@ void eae6320::cPhysicDebugObject::InitializeColliderLine()
 			indexData[i] = indexVec[i];
 		}
 
-		Graphics::cLine::Create(
-			m_collisionLine,
-			vertexData, vertexCount,
-			indexData, indexCount);
+		// Send cLine data to rendering thread for initialization
+		if (Graphics::AcquireRenderObjectInitMutex() == WAIT_OBJECT_0)
+		{
+			Graphics::AddLineInitializeTask(&m_collisionLine, vertexData, vertexCount, indexData, indexCount);
+			Graphics::ReleaseRenderObjectInitMutex();
+		}
 
 		delete[] vertexData;
 		delete[] indexData;

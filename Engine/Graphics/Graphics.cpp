@@ -88,6 +88,15 @@ namespace
 		std::string fragmentShaderPath;
 	};
 
+	struct sLineBuilder
+	{
+		eae6320::Graphics::cLine** linePtr = nullptr;
+		eae6320::Graphics::VertexFormats::sVertex_line* vertexData = nullptr;
+		uint32_t vertexCount = 0;
+		uint16_t* indexData = nullptr;
+		uint32_t indexCount = 0;
+	};
+
 
 	// Rendering Object Initialization / Clean Up Queue
 	//-------------------------
@@ -96,7 +105,7 @@ namespace
 
 	std::queue<sEffectBuilder> s_effectInitializeQueue;
 
-	std::queue<eae6320::Graphics::cLine**> s_lineInitializeQueue;
+	std::queue<sLineBuilder> s_lineInitializeQueue;
 
 
 	std::queue<eae6320::Graphics::cMesh**> s_meshCleanUpQueue;
@@ -226,7 +235,6 @@ eae6320::cResult eae6320::Graphics::SubmitDebugRenderData(
 }
 
 
-
 eae6320::cResult eae6320::Graphics::WaitUntilDataForANewFrameCanBeSubmitted(const unsigned int i_timeToWait_inMilliseconds)
 {
 	return Concurrency::WaitForEvent(s_whenDataForANewFrameCanBeSubmittedFromApplicationThread, i_timeToWait_inMilliseconds);
@@ -239,6 +247,8 @@ eae6320::cResult eae6320::Graphics::SignalThatAllDataForAFrameHasBeenSubmitted()
 }
 
 
+// Render Objects Initialize / Clean Up
+//-------
 
 void eae6320::Graphics::InitializeRenderObjects()
 {
@@ -266,7 +276,16 @@ void eae6320::Graphics::InitializeRenderObjects()
 		}
 		// Initialize line objects
 		{
-			// TODO: 
+			while (s_lineInitializeQueue.empty() == false)
+			{
+				sLineBuilder builder = s_lineInitializeQueue.front();
+				s_lineInitializeQueue.pop();
+
+				cLine::Create(*(builder.linePtr), builder.vertexData, builder.vertexCount, builder.indexData, builder.indexCount);
+
+				delete[] builder.vertexData;
+				delete[] builder.indexData;
+			}
 		}
 
 		ReleaseRenderObjectInitMutex();
@@ -277,7 +296,6 @@ void eae6320::Graphics::InitializeRenderObjects()
 		Logging::OutputError("Waiting for the application thread submit render object initialize tasks failed");
 	}
 }
-
 
 
 void eae6320::Graphics::CleanUpRenderObjects()
@@ -308,7 +326,14 @@ void eae6320::Graphics::CleanUpRenderObjects()
 		}
 		// Clean up line objects
 		{
-			// TODO
+			while (s_lineCleanUpQueue.empty() == false)
+			{
+				cLine** task = s_lineCleanUpQueue.front();
+				s_lineCleanUpQueue.pop();
+
+				(*task)->DecrementReferenceCount();
+				(*task) = nullptr;
+			}
 		}
 
 		ReleaseRenderObjectCleanUpMutex();
@@ -321,9 +346,6 @@ void eae6320::Graphics::CleanUpRenderObjects()
 
 }
 
-
-// Render Objects Initialize / Clean Up
-//-------
 
 DWORD eae6320::Graphics::AcquireRenderObjectInitMutex(DWORD i_waitTime_MS)
 {
@@ -358,7 +380,23 @@ void eae6320::Graphics::AddMeshInitializeTask(cMesh** i_meshPtr, std::string i_m
 void eae6320::Graphics::AddEffectInitializeTask(cEffect** i_effectPtr, std::string i_vertexShaderPath, std::string i_fragmentShaderPath)
 {
 	s_effectInitializeQueue.push({ i_effectPtr, i_vertexShaderPath , i_fragmentShaderPath });
+}
 
+
+void eae6320::Graphics::AddLineInitializeTask(cLine** i_linePtr, VertexFormats::sVertex_line i_vertexData[], const uint32_t i_vertexCount, uint16_t i_indexData[], const uint32_t i_indexCount)
+{
+	VertexFormats::sVertex_line* vertexData = new VertexFormats::sVertex_line[i_vertexCount];
+	for (uint32_t i = 0; i < i_vertexCount; i++)
+	{
+		vertexData[i] = i_vertexData[i];
+	}
+	uint16_t* indexData = new uint16_t[i_indexCount];
+	for (uint32_t i = 0; i < i_indexCount; i++)
+	{
+		indexData[i] = i_indexData[i];
+	}
+
+	s_lineInitializeQueue.push({ i_linePtr, vertexData, i_vertexCount, indexData, i_indexCount });
 }
 
 
@@ -371,6 +409,12 @@ void eae6320::Graphics::AddMeshCleanUpTask(cMesh** i_mesh)
 void eae6320::Graphics::AddEffectCleanUpTask(cEffect** i_effect)
 {
 	s_effectCleanUpQueue.push(i_effect);
+}
+
+
+void eae6320::Graphics::AddLineCleanUpTask(cLine** i_line)
+{
+	s_lineCleanUpQueue.push(i_line);
 }
 
 

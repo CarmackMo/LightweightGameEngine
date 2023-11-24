@@ -90,12 +90,18 @@ namespace Graphics
 
 	void AddEffectInitializeTask(cEffect** i_effectPtr, std::string i_vertexShaderPath, std::string i_fragmentShaderPath);
 
+	void AddLineInitializeTask(cLine** i_linePtr, 
+		VertexFormats::sVertex_line i_vertexData[], const uint32_t i_vertexCount, 
+		uint16_t i_indexData[], const uint32_t i_indexCount);
+
 
 	void CleanUpRenderObjects();
 
 	void AddMeshCleanUpTask(cMesh** i_mesh);
 
 	void AddEffectCleanUpTask(cEffect** i_effect);
+
+	void AddLineCleanUpTask(cLine** i_line);
 
 
 	// Render
