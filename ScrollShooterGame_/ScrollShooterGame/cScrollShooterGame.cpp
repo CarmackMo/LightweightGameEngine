@@ -126,32 +126,21 @@ void ScrollShooterGame::cScrollShooterGame::SubmitDataToBeRendered(
 		auto BVHRenderData = std::vector<std::pair<eae6320::Graphics::cLine*, eae6320::Math::cMatrix_transformation>>();
 		BVHRenderData = Physics::Collision::GetBVHRenderData();
 
-		size_t colliderListSize = 0;
-		size_t BVHTreeSize = BVHRenderData.size() + colliderListSize;
+		size_t BVHTreeSize = BVHRenderData.size();
 		size_t bulletSize = m_bulletList.size() + BVHTreeSize;
 		size_t enemySize = 1;
 		size_t totalArraySize = bulletSize + enemySize;
 
 		Graphics::ConstantBufferFormats::sDebugRender* debugDataArray = new Graphics::ConstantBufferFormats::sDebugRender[totalArraySize];
 
-		//// Render data of hard-coded collider
-		//for (size_t i = 0; i < m_colliderObjectList.size(); i++)
-		//{
-		//	auto collider = m_colliderObjectList[i];
-
-		//	if (collider->GetColliderLine() == nullptr)
-		//		continue;
-
-		//	debugDataArray[i].Initialize(collider->GetColliderLine(), collider->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
-		//}
 
 		// Render data of BVH tree
-		for (size_t i = colliderListSize; i < BVHTreeSize; i++)
+		for (size_t i = 0; i < BVHTreeSize; i++)
 		{
-			if (BVHRenderData[i - colliderListSize].first == nullptr)
+			if (BVHRenderData[i].first == nullptr)
 				continue;
 
-			debugDataArray[i].Initialize(BVHRenderData[i - colliderListSize].first, BVHRenderData[i - colliderListSize].second);
+			debugDataArray[i].Initialize(BVHRenderData[i].first, BVHRenderData[i].second);
 		}
 
 		// Render data of bullets
@@ -218,8 +207,6 @@ eae6320::cResult ScrollShooterGame::cScrollShooterGame::Initialize()
 
 	InitializeGameObject();
 
-	InitializeMeshData();
-
 	// TODO: temporary code for initialize collision system
 	InitializeCollisionSystem();
 
@@ -258,14 +245,6 @@ eae6320::cResult ScrollShooterGame::cScrollShooterGame::CleanUp()
 }
 
 
-void ScrollShooterGame::cScrollShooterGame::InitializeMeshData()
-{
-	Graphics::cEffect::Create(m_effect_animate, m_vertexShaderPath, m_fragmentShaderPath_animate);
-
-	Graphics::cEffect::Create(m_effect_standard, m_vertexShaderPath, m_fragmentShaderPath_standard);
-}
-
-
 void ScrollShooterGame::cScrollShooterGame::InitializeCamera()
 {
 	m_camera.Initialize(
@@ -278,57 +257,6 @@ void ScrollShooterGame::cScrollShooterGame::InitializeCamera()
 
 void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 {
-	// Game object initialization
-	{
-		//// Tirangle
-		//m_renderObject_triangle.InitializeMesh(m_triangleMeshPath);
-		//m_renderObject_triangle.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
-		//m_renderObject_triangle.GetRigidBody().angularSpeed = 1.0f;
-		//m_renderObject_triangle.GetRigidBody().angularVelocity_axis_local = Math::sVector(0.0f, 0.0f, 1.0f);
-
-		//// Rectangle
-		//m_renderObject_rectangle.InitializeMesh(m_rectangleMeshPath);
-		//m_renderObject_rectangle.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
-		//m_renderObject_rectangle.GetRigidBody().orientation = Math::cQuaternion(0.5f, Math::sVector(1, 0, 1));
-		//m_renderObject_rectangle.GetRigidBody().position = Math::sVector(+0.0f, -1.0f, +0.5f);
-
-		//// Plane
-		//m_renderObject_plane.InitializeMesh(m_planeMeshPath);
-		//m_renderObject_plane.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
-		//m_renderObject_plane.GetRigidBody().position = Math::sVector(+6.0f, -5.0f, -3.0f);
-
-		//// Cube
-		//m_renderObject_cube.InitializeMesh(m_cubeMeshPath);
-		//m_renderObject_cube.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_animate);
-		//m_renderObject_cube.GetRigidBody().position = Math::sVector(-2.0f, -2.0f, -3.0f);
-
-		//// Keqing
-		//m_renderObject_Keqing.InitializeMesh(m_keqingMeshPath);
-		//m_renderObject_Keqing.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
-		//m_renderObject_Keqing.GetRigidBody().position = Math::sVector(-5.0f, -10.0f, -20.0f);
-
-		//// Keqing - skin
-		//m_renderObject_Keqing_skin.InitializeMesh(m_keqing_SkinMeshPath);
-		//m_renderObject_Keqing_skin.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
-		//m_renderObject_Keqing_skin.GetRigidBody().position = Math::sVector(-5.0f, -10.0f, -20.0f);
-
-		//// Ganyu
-		//m_renderObject_Ganyu.InitializeMesh(m_ganyuMeshPath);
-		//m_renderObject_Ganyu.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
-		//m_renderObject_Ganyu.GetRigidBody().position = Math::sVector(5.0f, -10.0f, -20.0f);
-		
-
-
-		//m_gameObjectList.push_back(&m_renderObject_triangle);
-		//m_gameObjectList.push_back(&m_renderObject_rectangle);
-		//m_gameObjectList.push_back(&m_renderObject_plane);
-		//m_gameObjectList.push_back(&m_renderObject_cube);
-		//m_gameObjectList.push_back(&m_renderObject_Keqing);
-		//m_gameObjectList.push_back(&m_renderObject_Keqing_skin);
-		//m_gameObjectList.push_back(&m_renderObject_Ganyu);
-
-	}
-
 	// TODO: temporary code for player object
 	{
 		m_player.InitializeMesh(m_cubeMeshPath);
@@ -392,25 +320,11 @@ void ScrollShooterGame::cScrollShooterGame::CleanUpGameObject()
 {
 	m_camera.CleanUp();
 
-	m_effect_animate->DecrementReferenceCount();
-	m_effect_standard->DecrementReferenceCount();
-
-
-	// clean up render object
-	//m_renderObject_triangle.CleanUp();
-	//m_renderObject_rectangle.CleanUp();
-	//m_renderObject_plane.CleanUp();
-	//m_renderObject_cube.CleanUp();
-	//m_renderObject_Keqing.CleanUp();
-	m_renderObject_Keqing_skin.CleanUp();
-	//m_renderObject_Ganyu.CleanUp();
 	for (cGameObject* renderObject : m_gameObjectList)
 	{
 		renderObject->CleanUp();
 	}
-
 }
-
 
 
 void ScrollShooterGame::cScrollShooterGame::InitializeCollisionSystem()

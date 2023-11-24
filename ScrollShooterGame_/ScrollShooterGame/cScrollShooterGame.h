@@ -116,7 +116,6 @@ namespace ScrollShooterGame
 		std::string m_fragmentShaderPath_animate = ("data/Shaders/Fragment/moziheng.shader");
 		std::string m_fragmentShaderPath_standard = ("data/Shaders/Fragment/standard.shader");
 
-
 		std::string m_triangleMeshPath = "data/meshes/mesh_triangle.mesh";
 		std::string m_rectangleMeshPath = "data/meshes/mesh_rectangle.mesh";
 		std::string m_planeMeshPath = "data/meshes/mesh_plane.mesh";
@@ -125,26 +124,8 @@ namespace ScrollShooterGame
 		std::string m_keqing_SkinMeshPath = "data/meshes/mesh_keqing_skin.mesh";
 		std::string m_ganyuMeshPath = "data/meshes/mesh_ganyu.mesh";
 
-		//std::string m_triangleMeshPath = "data/meshes/mesh_triangle.lua";
-		//std::string m_rectangleMeshPath = "data/meshes/mesh_rectangle.lua";
-		//std::string m_planeMeshPath = "data/meshes/mesh_plane.lua";
-		//std::string m_cubeMeshPath = "data/meshes/mesh_cube.lua";
-		//std::string m_keqingMeshPath = "data/meshes/mesh_keqing.lua";
-		//std::string m_keqing_SkinMeshPath = "data/meshes/mesh_keqing_skin.lua";
-		//std::string m_ganyuMeshPath = "data/meshes/mesh_ganyu.lua";
-
-		eae6320::Graphics::cEffect* m_effect_animate = nullptr;
-		eae6320::Graphics::cEffect* m_effect_standard = nullptr;
 
 		eae6320::Camera::cCamera m_camera;
-
-		eae6320::cGameObject m_renderObject_triangle;
-		eae6320::cGameObject m_renderObject_rectangle;
-		eae6320::cGameObject m_renderObject_plane;
-		eae6320::cGameObject m_renderObject_cube;
-		eae6320::cGameObject m_renderObject_Keqing;
-		eae6320::cGameObject m_renderObject_Keqing_skin;
-		eae6320::cGameObject m_renderObject_Ganyu;
 
 		std::vector<eae6320::cGameObject*> m_gameObjectList;
 
