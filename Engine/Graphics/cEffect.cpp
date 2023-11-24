@@ -3,11 +3,9 @@
 
 #include <Engine/Asserts/Asserts.h>
 #include <Engine/Graphics/cEffect.h>
-#include <Engine/Graphics/Graphics.h>
-#include <Engine/Graphics/sContext.h>
 #include <Engine/Logging/Logging.h>
 #include <Engine/ScopeGuard/cScopeGuard.h>
-#include <Engine/UserOutput/UserOutput.h>
+
 #include <new>
 
 

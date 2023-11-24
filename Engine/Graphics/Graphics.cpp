@@ -25,7 +25,7 @@
 namespace
 {
 	// Memory Budget
-	//-------------
+	//-------------------------
 	constexpr uint32_t s_memoryBudget = 100;
 
 
@@ -35,7 +35,7 @@ namespace
 	
 
 	// Submission Data
-	//----------------
+	//-------------------------
 
 	// This struct's data is populated at submission time;
 	// it must cache whatever is necessary in order to render a frame or perform a draw call
@@ -72,13 +72,30 @@ namespace
 	eae6320::Concurrency::cEvent s_whenDataForANewFrameCanBeSubmittedFromApplicationThread;
 
 
-	// Rendering Object Initialization/Clean up List
-	
-	std::queue<std::pair<std::function<void(eae6320::Graphics::cMesh*)>, std::string>> s_meshInitializeQueue;
-	//std::queue<eae6320::Graphics::cMesh**> s_meshInitializeQueue;
-	
-	std::queue<std::pair<std::function<void(eae6320::Graphics::cEffect*)>, std::pair<std::string, std::string>>> s_effectInitializeQueue;
-	//std::queue<eae6320::Graphics::cEffect**> s_effectInitialzieQueue;
+	// Render Object Builder
+	//-------------------------
+
+	struct sMeshBuilder
+	{
+		eae6320::Graphics::cMesh** meshPtr = nullptr;
+		std::string meshPath;
+	};
+
+	struct sEffectBuilder
+	{
+		eae6320::Graphics::cEffect** effectPtr = nullptr;
+		std::string vertexShaderPath;
+		std::string fragmentShaderPath;
+	};
+
+
+	// Rendering Object Initialization / Clean Up Queue
+	//-------------------------
+
+	std::queue<sMeshBuilder> s_meshInitializeQueue;
+
+	std::queue<sEffectBuilder> s_effectInitializeQueue;
+
 	std::queue<eae6320::Graphics::cLine**> s_lineInitializeQueue;
 
 
@@ -92,7 +109,7 @@ namespace
 
 
 	// View Data
-	//-------------
+	//-------------------------
 
 	eae6320::Graphics::cView s_view;
 
@@ -231,35 +248,20 @@ void eae6320::Graphics::InitializeRenderObjects()
 		{
 			while (s_meshInitializeQueue.empty() == false)
 			{
-				auto task = s_meshInitializeQueue.front();
+				sMeshBuilder builder = s_meshInitializeQueue.front();
 				s_meshInitializeQueue.pop();
 
-				auto callback = task.first;
-				std::string meshPath = task.second;
-
-				cMesh* newMesh = nullptr;
-
-				cMesh::Create(newMesh, meshPath);
-
-				callback(newMesh);
+				cMesh::Create(*(builder.meshPtr), builder.meshPath);
 			}
 		}
 		// Initialize effect objects
 		{
 			while (s_effectInitializeQueue.empty() == false)
 			{
-				auto task = s_effectInitializeQueue.front();
+				sEffectBuilder builder = s_effectInitializeQueue.front();
 				s_effectInitializeQueue.pop();
 
-				auto callback = task.first;
-				std::string vertexPath = task.second.first;
-				std::string fragmentPath = task.second.second;
-
-				cEffect* newEffect = nullptr;
-
-				cEffect::Create(newEffect, vertexPath, fragmentPath);
-
-				callback(newEffect);
+				cEffect::Create(*(builder.effectPtr), builder.vertexShaderPath, builder.fragmentShaderPath);
 			}
 		}
 		// Initialize line objects
@@ -271,7 +273,8 @@ void eae6320::Graphics::InitializeRenderObjects()
 	}
 	else
 	{
-		// TODO: logging
+		EAE6320_ASSERTF(false, "Waiting for the application thread submit render object initialize tasks failed");
+		Logging::OutputError("Waiting for the application thread submit render object initialize tasks failed");
 	}
 }
 
@@ -279,7 +282,6 @@ void eae6320::Graphics::InitializeRenderObjects()
 
 void eae6320::Graphics::CleanUpRenderObjects()
 {
-
 	if (AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
 	{
 		// Clean up mesh objects
@@ -313,7 +315,8 @@ void eae6320::Graphics::CleanUpRenderObjects()
 	}
 	else
 	{
-		// TODO
+		EAE6320_ASSERTF(false, "Waiting for the application thread submit render object clean up tasks failed");
+		Logging::OutputError("Waiting for the application thread submit render object clean up tasks failed");
 	}
 
 }
@@ -346,14 +349,16 @@ void eae6320::Graphics::ReleaseRenderObjectCleanUpMutex()
 }
 
 
-void eae6320::Graphics::AddMeshInitializeTask(std::function<void(cMesh*)> i_callback, std::string i_meshPath)
+void eae6320::Graphics::AddMeshInitializeTask(cMesh** i_meshPtr, std::string i_meshPath)
 {
-	s_meshInitializeQueue.push({ i_callback, i_meshPath });
+	s_meshInitializeQueue.push({ i_meshPtr, i_meshPath });
 }
 
-void eae6320::Graphics::AddEffectInitializeTask(std::function<void(cEffect*)> i_callback, std::string i_vertexPath, std::string i_fragmentPath)
+
+void eae6320::Graphics::AddEffectInitializeTask(cEffect** i_effectPtr, std::string i_vertexShaderPath, std::string i_fragmentShaderPath)
 {
-	s_effectInitializeQueue.push({ i_callback, {i_vertexPath, i_fragmentPath}});
+	s_effectInitializeQueue.push({ i_effectPtr, i_vertexShaderPath , i_fragmentShaderPath });
+
 }
 
 

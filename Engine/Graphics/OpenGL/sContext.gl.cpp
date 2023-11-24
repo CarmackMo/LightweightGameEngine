@@ -1,12 +1,12 @@
 // Includes
 //=========
 
-#include "../sContext.h"
-
 #include <Engine/Asserts/Asserts.h>
+#include <Engine/Graphics/sContext.h>
 #include <Engine/Logging/Logging.h>
 #include <Engine/Windows/Functions.h>
 #include <External/OpenGlExtensions/OpenGlExtensions.h>
+
 #include <sstream>
 #include <string>
 

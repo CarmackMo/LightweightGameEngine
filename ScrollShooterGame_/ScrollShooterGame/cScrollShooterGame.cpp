@@ -270,27 +270,27 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 {
 	// Game object initialization
 	{
-		//// Tirangle
-		//m_renderObject_triangle.InitializeMesh(m_triangleMeshPath);
-		//m_renderObject_triangle.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
-		//m_renderObject_triangle.GetRigidBody().angularSpeed = 1.0f;
-		//m_renderObject_triangle.GetRigidBody().angularVelocity_axis_local = Math::sVector(0.0f, 0.0f, 1.0f);
+		// Tirangle
+		m_renderObject_triangle.InitializeMesh(m_triangleMeshPath);
+		m_renderObject_triangle.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
+		m_renderObject_triangle.GetRigidBody().angularSpeed = 1.0f;
+		m_renderObject_triangle.GetRigidBody().angularVelocity_axis_local = Math::sVector(0.0f, 0.0f, 1.0f);
 
-		//// Rectangle
-		//m_renderObject_rectangle.InitializeMesh(m_rectangleMeshPath);
-		//m_renderObject_rectangle.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
-		//m_renderObject_rectangle.GetRigidBody().orientation = Math::cQuaternion(0.5f, Math::sVector(1, 0, 1));
-		//m_renderObject_rectangle.GetRigidBody().position = Math::sVector(+0.0f, -1.0f, +0.5f);
+		// Rectangle
+		m_renderObject_rectangle.InitializeMesh(m_rectangleMeshPath);
+		m_renderObject_rectangle.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
+		m_renderObject_rectangle.GetRigidBody().orientation = Math::cQuaternion(0.5f, Math::sVector(1, 0, 1));
+		m_renderObject_rectangle.GetRigidBody().position = Math::sVector(+0.0f, -1.0f, +0.5f);
 
-		//// Plane
-		//m_renderObject_plane.InitializeMesh(m_planeMeshPath);
-		//m_renderObject_plane.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
-		//m_renderObject_plane.GetRigidBody().position = Math::sVector(+6.0f, -5.0f, -3.0f);
+		// Plane
+		m_renderObject_plane.InitializeMesh(m_planeMeshPath);
+		m_renderObject_plane.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
+		m_renderObject_plane.GetRigidBody().position = Math::sVector(+6.0f, -5.0f, -3.0f);
 
-		//// Cube
-		//m_renderObject_cube.InitializeMesh(m_cubeMeshPath);
-		//m_renderObject_cube.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_animate);
-		//m_renderObject_cube.GetRigidBody().position = Math::sVector(-2.0f, -2.0f, -3.0f);
+		// Cube
+		m_renderObject_cube.InitializeMesh(m_cubeMeshPath);
+		m_renderObject_cube.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_animate);
+		m_renderObject_cube.GetRigidBody().position = Math::sVector(-2.0f, -2.0f, -3.0f);
 
 		// Keqing
 		m_renderObject_Keqing.InitializeMesh(m_keqingMeshPath);
@@ -313,10 +313,10 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 		
 
 
-		//m_renderObjectList.push_back(&m_renderObject_triangle);
-		//m_renderObjectList.push_back(&m_renderObject_rectangle);
-		//m_renderObjectList.push_back(&m_renderObject_plane);
-		//m_renderObjectList.push_back(&m_renderObject_cube);
+		m_renderObjectList.push_back(&m_renderObject_triangle);
+		m_renderObjectList.push_back(&m_renderObject_rectangle);
+		m_renderObjectList.push_back(&m_renderObject_plane);
+		m_renderObjectList.push_back(&m_renderObject_cube);
 		m_renderObjectList.push_back(&m_renderObject_Keqing);
 		//m_renderObjectList.push_back(&m_renderObject_Keqing_skin);
 		m_renderObjectList.push_back(&m_renderObject_Ganyu);
@@ -362,10 +362,10 @@ void ScrollShooterGame::cScrollShooterGame::CleanUpGameObject()
 
 
 	// clean up render object
-	m_renderObject_triangle.CleanUp();
-	m_renderObject_rectangle.CleanUp();
-	m_renderObject_plane.CleanUp();
-	m_renderObject_cube.CleanUp();
+	//m_renderObject_triangle.CleanUp();
+	//m_renderObject_rectangle.CleanUp();
+	//m_renderObject_plane.CleanUp();
+	//m_renderObject_cube.CleanUp();
 	//m_renderObject_Keqing.CleanUp();
 	m_renderObject_Keqing_skin.CleanUp();
 	//m_renderObject_Ganyu.CleanUp();

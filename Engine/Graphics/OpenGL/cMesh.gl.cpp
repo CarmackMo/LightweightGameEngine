@@ -3,8 +3,6 @@
 
 #include <Engine/Asserts/Asserts.h>
 #include <Engine/Graphics/cMesh.h>
-#include <Engine/Graphics/Graphics.h>
-#include <Engine/Graphics/sContext.h>
 #include <Engine/Logging/Logging.h>
 
 

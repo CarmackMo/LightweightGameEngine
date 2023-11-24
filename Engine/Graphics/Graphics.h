@@ -86,9 +86,9 @@ namespace Graphics
 
 	void InitializeRenderObjects();
 
-	void AddMeshInitializeTask(std::function<void(cMesh*)> i_callback, std::string i_meshPath);
+	void AddMeshInitializeTask(cMesh** i_meshPtr, std::string i_meshPath);
 
-	void AddEffectInitializeTask(std::function<void(cEffect*)> i_callback, std::string i_vertexPath, std::string i_fragmentPath);
+	void AddEffectInitializeTask(cEffect** i_effectPtr, std::string i_vertexShaderPath, std::string i_fragmentShaderPath);
 
 
 	void CleanUpRenderObjects();
