@@ -35,6 +35,8 @@ namespace eae6320
 
 		void InitializeCollider(const Physics::sColliderSetting& i_builder);
 
+		virtual ~cGameObject();
+
 		// Property Getters
 		//--------------------------
 

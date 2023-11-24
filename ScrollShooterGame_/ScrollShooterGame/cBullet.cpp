@@ -30,14 +30,14 @@ void ScrollShooterGame::cBullet::Initialize(
 		InitializeCollider(setting_sphere);
 		InitializeColliderLine();
 		
-		m_collider->OnCollisionEnter = [this](Physics::cCollider* self, Physics::cCollider* other) -> void 
-			{ 
-				m_isCollide = true;  
-				if (dynamic_cast<cEnemy*>(other->m_gameobject) != nullptr)
-				{
-					UserOutput::ConsolePrint("Bullet hit enemy!! \n");
-				}
-			};
+		//m_collider->OnCollisionEnter = [this](Physics::cCollider* self, Physics::cCollider* other) -> void 
+		//	{ 
+		//		m_isCollide = true;  
+		//		if (dynamic_cast<cEnemy*>(other->m_gameobject) != nullptr)
+		//		{
+		//			UserOutput::ConsolePrint("Bullet hit enemy!! \n");
+		//		}
+		//	};
 
 		m_collider->OnCollisionStay =
 			[this](Physics::cCollider* self, Physics::cCollider* other) -> void {  };
@@ -63,8 +63,6 @@ void ScrollShooterGame::cBullet::CleanUp()
 {
 	if (m_cleanUpCallback != nullptr)
 		m_cleanUpCallback();
-
-	cGameObject::CleanUp();
 
 	delete this;
 }

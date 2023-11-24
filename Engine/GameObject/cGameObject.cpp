@@ -75,6 +75,12 @@ void eae6320::cGameObject::InitializeCollider(const Physics::sColliderSetting& i
 }
 
 
+eae6320::cGameObject::~cGameObject()
+{
+	CleanUp();
+}
+
+
 // Property Getters
 //--------------------------
 

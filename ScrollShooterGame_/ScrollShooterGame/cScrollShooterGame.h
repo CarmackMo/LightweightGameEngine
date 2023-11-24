@@ -20,10 +20,8 @@
 #include <ScrollShooterGame_/ScrollShooterGame/cEnemy.h>
 
 
-#include <Engine/Graphics/cMesh.h>
-#include <Engine/Graphics/cEffect.h>
-// TODO: Tempory code for collider testing
-#include <Engine/Physics/cColliderBase.h>
+#include <vector>
+#include <queue>
 
 
 #if defined( EAE6320_PLATFORM_WINDOWS )
@@ -99,6 +97,9 @@ namespace ScrollShooterGame
 			const float i_elapsedSecondCount_systemTime, 
 			const float i_elapsedSecondCount_sinceLastSimulationUpdate) final;
 
+		void RuntimeCleanUp() final;
+
+
 
 		// Initialize / Clean Up
 		//----------------------
@@ -129,27 +130,30 @@ namespace ScrollShooterGame
 
 		std::vector<eae6320::cGameObject*> m_gameObjectList;
 
-
-		void InitializeMeshData();
-
 		void InitializeCamera();
 
 		void InitializeGameObject();
 
 		void CleanUpGameObject();
 
-
-
-		// TODO: temporary colldier object
-
 		void InitializeCollisionSystem();
+
+
 
 
 		// TODO: temporary player object
 		cPlayer m_player;
-		cEnemy m_enemy;
+		cEnemy* m_enemy = nullptr;
 
 		std::vector<cBullet*> m_bulletList;
+
+
+		std::queue<eae6320::cGameObject*> m_gameObjectCleanUpQueue;
+
+
+	public:
+
+		void AddGameObjectCleanUpTask(eae6320::cGameObject* i_gameObject);
 	};
 }
 

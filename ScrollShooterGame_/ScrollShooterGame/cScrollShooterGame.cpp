@@ -148,19 +148,19 @@ void ScrollShooterGame::cScrollShooterGame::SubmitDataToBeRendered(
 		{
 			auto bullet = m_bulletList[i - BVHTreeSize];
 
-			if (bullet->GetColliderLine() == nullptr)
+			if (bullet == nullptr || bullet->GetColliderLine() == nullptr)
 				continue;
 
 			debugDataArray[i].Initialize(bullet->GetColliderLine(), bullet->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
 		}
 
-		// Render data of enemy
-		{
-			if (m_enemy.GetColliderLine() != nullptr)
-			{
-				debugDataArray[totalArraySize - 1].Initialize(m_enemy.GetColliderLine(), m_enemy.GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
-			}
-		}
+		//// Render data of enemy
+		//{
+		//	if (m_enemy != nullptr && m_enemy->GetColliderLine() != nullptr)
+		//	{
+		//		debugDataArray[totalArraySize - 1].Initialize(m_enemy->GetColliderLine(), m_enemy->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
+		//	}
+		//}
 
 		Graphics::SubmitDebugRenderData(debugDataArray, static_cast<uint32_t>(totalArraySize));
 
@@ -175,32 +175,41 @@ void ScrollShooterGame::cScrollShooterGame::SubmitDataToBeRendered(
 }
 
 
+void ScrollShooterGame::cScrollShooterGame::RuntimeCleanUp()
+{
+	CleanUpGameObject();
+}
+
+
 // Initialize / Clean Up
 //----------------------
 
 eae6320::cResult ScrollShooterGame::cScrollShooterGame::Initialize()
 {
-	eae6320::Logging::OutputMessage("\n --------------MoZiheng MyGame customized log messge--------------");
+	// Logging
+	{
+		eae6320::Logging::OutputMessage("\n --------------MoZiheng MyGame customized log messge--------------");
 
-#if defined( EAE6320_PLATFORM_D3D )
-	eae6320::Logging::OutputMessage("Solution Platform: Direct3D");
-#elif defined( EAE6320_PLATFORM_GL )
-	eae6320::Logging::OutputMessage("Solution Platform: OpenGL");
-#endif
+	#if defined( EAE6320_PLATFORM_D3D )
+		eae6320::Logging::OutputMessage("Solution Platform: Direct3D");
+	#elif defined( EAE6320_PLATFORM_GL )
+		eae6320::Logging::OutputMessage("Solution Platform: OpenGL");
+	#endif
 
-#ifdef _WIN64
-	eae6320::Logging::OutputMessage("Machine Platform: x64");
-#else
-	eae6320::Logging::OutputMessage("Machine Platform: x86");
-#endif
+	#ifdef _WIN64
+		eae6320::Logging::OutputMessage("Machine Platform: x64");
+	#else
+		eae6320::Logging::OutputMessage("Machine Platform: x86");
+	#endif
 
-#ifdef _DEBUG
-	eae6320::Logging::OutputMessage("Configuration: Debug");
-#else
-	eae6320::Logging::OutputMessage("Configuration: Release");
-#endif
+	#ifdef _DEBUG
+		eae6320::Logging::OutputMessage("Configuration: Debug");
+	#else
+		eae6320::Logging::OutputMessage("Configuration: Release");
+	#endif
 
-	eae6320::Logging::OutputMessage("Initialization Successfull!! \n");
+		eae6320::Logging::OutputMessage("Initialization Successfull!! \n");
+	}
 
 
 	InitializeCamera();
@@ -217,27 +226,38 @@ eae6320::cResult ScrollShooterGame::cScrollShooterGame::Initialize()
 
 eae6320::cResult ScrollShooterGame::cScrollShooterGame::CleanUp()
 {
-	eae6320::Logging::OutputMessage("\n --------------MoZiheng MyGame customized log messge--------------");
+	// Logging
+	{
+		eae6320::Logging::OutputMessage("\n --------------MoZiheng MyGame customized log messge--------------");
 
-#if defined( EAE6320_PLATFORM_D3D )
-	eae6320::Logging::OutputMessage("Solution Platform: Direct3D");
-#elif defined( EAE6320_PLATFORM_GL )
-	eae6320::Logging::OutputMessage("Solution Platform: OpenGL");
-#endif
+	#if defined( EAE6320_PLATFORM_D3D )
+		eae6320::Logging::OutputMessage("Solution Platform: Direct3D");
+	#elif defined( EAE6320_PLATFORM_GL )
+		eae6320::Logging::OutputMessage("Solution Platform: OpenGL");
+	#endif
 
-#ifdef _WIN64
-	eae6320::Logging::OutputMessage("Machine Platform: x64");
-#else
-	eae6320::Logging::OutputMessage("Machine Platform: x86");
-#endif
+	#ifdef _WIN64
+		eae6320::Logging::OutputMessage("Machine Platform: x64");
+	#else
+		eae6320::Logging::OutputMessage("Machine Platform: x86");
+	#endif
 
-#ifdef _DEBUG
-	eae6320::Logging::OutputMessage("Configuration: Debug");
-#else
-	eae6320::Logging::OutputMessage("Configuration: Release");
-#endif
+	#ifdef _DEBUG
+		eae6320::Logging::OutputMessage("Configuration: Debug");
+	#else
+		eae6320::Logging::OutputMessage("Configuration: Release");
+	#endif
 
-	eae6320::Logging::OutputMessage("Clan Up Successfull!!\n");
+		eae6320::Logging::OutputMessage("Clan Up Successfull!!\n");		
+	}
+
+
+	m_camera.CleanUp();
+
+	for (cGameObject* object : m_gameObjectList)
+	{
+		m_gameObjectCleanUpQueue.push(object);
+	}
 
 	CleanUpGameObject();
 
@@ -285,6 +305,17 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 						Physics::Collision::DeregisterCollider(newBullet->GetCollider());
 					};
 
+				newBullet->GetCollider()->OnCollisionEnter = [this](Physics::cCollider* self, Physics::cCollider* other) -> void
+					{
+						dynamic_cast<cBullet*>(self->m_gameobject)->m_isCollide = true;
+
+						if (dynamic_cast<cEnemy*>(other->m_gameobject) != nullptr)
+						{
+							UserOutput::ConsolePrint("Bullet hit enemy!! \n");
+							this->AddGameObjectCleanUpTask(self->m_gameobject);
+						}
+					};
+
 
 				Physics::Collision::RegisterCollider(newBullet->GetCollider());
 				m_gameObjectList.push_back(newBullet);
@@ -296,11 +327,12 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 
 	// TODO: temporary code for enemy object
 	{
-		m_enemy.Initialize(Math::sVector(0.0f, 4.0f, -5.0f), Math::sVector(0.0f, 0.0f, 0.0f));
+		m_enemy = new cEnemy();
+		m_enemy->Initialize(Math::sVector(0.0f, 4.0f, -5.0f), Math::sVector(0.0f, 0.0f, 0.0f));
 
-		cGameObject* enemyPtr = &m_enemy;
+		cGameObject* enemyPtr = m_enemy;
 
-		m_enemy.m_cleanUpCallback = [this, enemyPtr]() -> void
+		m_enemy->m_cleanUpCallback = [this, enemyPtr]() -> void
 			{
 				auto objIter = std::find(m_gameObjectList.begin(), m_gameObjectList.end(), enemyPtr);
 				if (objIter != m_gameObjectList.end())
@@ -311,18 +343,29 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 				Physics::Collision::DeregisterCollider(enemyPtr->GetCollider());
 			};
 
-		m_gameObjectList.push_back(&m_enemy);
+		m_enemy->GetCollider()->OnCollisionEnter = [this](Physics::cCollider* self, Physics::cCollider* other) -> void
+			{
+				dynamic_cast<cEnemy*>(self->m_gameobject)->m_isCollide = true;
+				if (dynamic_cast<cEnemy*>(other->m_gameobject) != nullptr)
+				{
+					UserOutput::ConsolePrint("Enemy is Killed!! \n");
+					this->AddGameObjectCleanUpTask(self->m_gameobject);
+				}
+			};
+
+		m_gameObjectList.push_back(m_enemy);
 	}
 }
 
 
 void ScrollShooterGame::cScrollShooterGame::CleanUpGameObject()
 {
-	m_camera.CleanUp();
-
-	for (cGameObject* renderObject : m_gameObjectList)
+	while (m_gameObjectCleanUpQueue.empty() == false)
 	{
-		renderObject->CleanUp();
+		cGameObject* object = m_gameObjectCleanUpQueue.front();
+		m_gameObjectCleanUpQueue.pop();
+
+		object->CleanUp();
 	}
 }
 
@@ -331,9 +374,15 @@ void ScrollShooterGame::cScrollShooterGame::InitializeCollisionSystem()
 {
 	std::vector<Physics::cCollider*> colliderList;
 
-	colliderList.push_back(m_enemy.GetCollider());
+	colliderList.push_back(m_enemy->GetCollider());
 
 	Physics::Collision::Initialize(colliderList, Physics::Collision::BroadPhase_BVH | Physics::Collision::NarrowPhase_Overlaps);
+}
+
+
+void ScrollShooterGame::cScrollShooterGame::AddGameObjectCleanUpTask(cGameObject* i_gameObject)
+{
+	m_gameObjectCleanUpQueue.push(i_gameObject);
 }
 
 

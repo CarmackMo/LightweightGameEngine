@@ -263,6 +263,11 @@ void eae6320::Application::iApplication::UpdateUntilExit()
 				EAE6320_ASSERT( result );
 			}
 		}
+
+		// Clean up resource that are added to the clean up waiting list
+		{
+			RuntimeCleanUp();
+		}
 	}
 }
 

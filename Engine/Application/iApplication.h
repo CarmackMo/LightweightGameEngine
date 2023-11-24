@@ -185,6 +185,8 @@ namespace Application
 		// to instuct the Graphics system what to render for the next frame
 		virtual void SubmitDataToBeRendered( const float i_elapsedSecondCount_systemTime, const float i_elapsedSecondCount_sinceLastSimulationUpdate ) {}
 
+		virtual void RuntimeCleanUp() {};
+
 		// Initialize / Clean Up
 		//----------------------
 
