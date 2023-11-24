@@ -38,6 +38,8 @@ namespace eae6320
 		// Property Getters
 		//--------------------------
 
+		bool IsActive();
+
 		Graphics::cMesh* GetMesh() const;
 
 		Graphics::cEffect* GetEffect() const;
@@ -57,11 +59,15 @@ namespace eae6320
 
 		virtual void UpdateBasedOnInput();
 
+		void SetActive(bool i_active);
+
 
 		// Data
 		//=========================
 
 	protected:
+
+		bool m_active = true;
 
 		Graphics::cMesh* m_mesh = nullptr;
 		Graphics::cEffect* m_effect = nullptr;

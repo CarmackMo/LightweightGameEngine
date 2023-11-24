@@ -9,23 +9,24 @@
 #include <functional>
 
 
+// Initialization / Clean Up
+//--------------------------
+
 void eae6320::cGameObject::CleanUp()
 {
-	if (m_mesh != nullptr)
+	// This function might be called when cLine is not yet initialized by the
+	// rendering thread. Add the cLine clean up task to rendering thread anyway
+	// and do null pointer safety check in rendering thread
+	if (Graphics::AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
 	{
-		if (Graphics::AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
-		{
-			Graphics::AddMeshCleanUpTask(&m_mesh);
-			Graphics::ReleaseRenderObjectCleanUpMutex();
-		}
+		Graphics::AddMeshCleanUpTask(m_mesh, &m_mesh);
+		Graphics::ReleaseRenderObjectCleanUpMutex();
 	}
-	if (m_effect != nullptr)
+
+	if (Graphics::AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
 	{
-		if (Graphics::AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
-		{
-			Graphics::AddEffectCleanUpTask(&m_effect);
-			Graphics::ReleaseRenderObjectCleanUpMutex();
-		}
+		Graphics::AddEffectCleanUpTask(m_effect, &m_effect);
+		Graphics::ReleaseRenderObjectCleanUpMutex();
 	}
 
 	if (m_collider != nullptr) { delete m_collider; }
@@ -74,6 +75,15 @@ void eae6320::cGameObject::InitializeCollider(const Physics::sColliderSetting& i
 }
 
 
+// Property Getters
+//--------------------------
+
+bool eae6320::cGameObject::IsActive()
+{
+	return m_active;
+}
+
+
 eae6320::Graphics::cMesh* eae6320::cGameObject::GetMesh() const
 {
 	return m_mesh;
@@ -110,6 +120,9 @@ eae6320::Math::cMatrix_transformation eae6320::cGameObject::GetPredictedTransfor
 }
 
 
+// Update
+//--------------------------
+
 void eae6320::cGameObject::UpdateBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate)
 {
 	// Update rigid body 
@@ -119,3 +132,10 @@ void eae6320::cGameObject::UpdateBasedOnTime(const float i_elapsedSecondCount_si
 
 void eae6320::cGameObject::UpdateBasedOnInput()
 { }
+
+
+void eae6320::cGameObject::SetActive(bool i_active)
+{
+	m_active = i_active;
+}
+

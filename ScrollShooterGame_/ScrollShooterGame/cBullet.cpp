@@ -23,13 +23,22 @@ void ScrollShooterGame::cBullet::UpdateBasedOnTime(const float i_elapsedSecondCo
 
 
 	// TODO: 
-	//if (m_rigidBody.position.x >= 40.0f ||
-	//	m_rigidBody.position.y >= 40.0f ||
-	//	m_rigidBody.position.z >= 40.0f)
-	//{
-	//	cGameObject::CleanUp();
-	//	delete this;
-	//}
+	if (m_rigidBody.position.x >= 3.0f ||
+		m_rigidBody.position.y >= 3.0f ||
+		m_rigidBody.position.z >= 3.0f)
+	{
+		CleanUp();
+	}
 
+}
+
+void ScrollShooterGame::cBullet::CleanUp()
+{
+	if (m_cleanUpCallback != nullptr)
+		m_cleanUpCallback();
+
+	cGameObject::CleanUp();
+
+	delete this;
 }
 

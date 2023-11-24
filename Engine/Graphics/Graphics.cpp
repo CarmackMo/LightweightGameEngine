@@ -102,15 +102,13 @@ namespace
 	//-------------------------
 
 	std::queue<sMeshBuilder> s_meshInitializeQueue;
-
 	std::queue<sEffectBuilder> s_effectInitializeQueue;
-
 	std::queue<sLineBuilder> s_lineInitializeQueue;
 
 
-	std::queue<eae6320::Graphics::cMesh**> s_meshCleanUpQueue;
-	std::queue<eae6320::Graphics::cEffect**> s_effectCleanUpQueue;
-	std::queue<eae6320::Graphics::cLine**> s_lineCleanUpQueue;
+	std::queue<std::pair<eae6320::Graphics::cMesh*, eae6320::Graphics::cMesh**>> s_meshCleanUpQueue;
+	std::queue<std::pair<eae6320::Graphics::cEffect*, eae6320::Graphics::cEffect**>> s_effectCleanUpQueue;
+	std::queue<std::pair<eae6320::Graphics::cLine*, eae6320::Graphics::cLine**>> s_lineCleanUpQueue;
 
 
 	eae6320::Concurrency::cMutex s_renderObjectInitializeMutex;
@@ -306,33 +304,36 @@ void eae6320::Graphics::CleanUpRenderObjects()
 		{
 			while (s_meshCleanUpQueue.empty() == false)
 			{
-				cMesh** task = s_meshCleanUpQueue.front();
+				auto task = s_meshCleanUpQueue.front();
 				s_meshCleanUpQueue.pop();
 
-				(*task)->DecrementReferenceCount();
-				(*task) = nullptr;
+				if (task.first != nullptr)
+					task.first->DecrementReferenceCount();
+				(*task.second) = nullptr;
 			}
 		}
 		// Clean up effect objects
 		{
 			while (s_effectCleanUpQueue.empty() == false)
 			{
-				cEffect** task = s_effectCleanUpQueue.front();
+				auto task = s_effectCleanUpQueue.front();
 				s_effectCleanUpQueue.pop();
 
-				(*task)->DecrementReferenceCount();
-				(*task) = nullptr;
+				if (task.first != nullptr)
+					task.first->DecrementReferenceCount();
+				(*task.second) = nullptr;
 			}
 		}
 		// Clean up line objects
 		{
 			while (s_lineCleanUpQueue.empty() == false)
 			{
-				cLine** task = s_lineCleanUpQueue.front();
+				auto task = s_lineCleanUpQueue.front();
 				s_lineCleanUpQueue.pop();
 
-				(*task)->DecrementReferenceCount();
-				(*task) = nullptr;
+				if (task.first != nullptr)
+					task.first->DecrementReferenceCount();
+				(*task.second) = nullptr;
 			}
 		}
 
@@ -400,21 +401,21 @@ void eae6320::Graphics::AddLineInitializeTask(cLine** i_linePtr, VertexFormats::
 }
 
 
-void eae6320::Graphics::AddMeshCleanUpTask(cMesh** i_mesh)
+void eae6320::Graphics::AddMeshCleanUpTask(cMesh* i_mesh, cMesh** i_meshPtr)
 {
-	s_meshCleanUpQueue.push(i_mesh);
+	s_meshCleanUpQueue.push({ i_mesh, i_meshPtr });
 }
 
 
-void eae6320::Graphics::AddEffectCleanUpTask(cEffect** i_effect)
+void eae6320::Graphics::AddEffectCleanUpTask(cEffect* i_effect, cEffect** i_effectPtr)
 {
-	s_effectCleanUpQueue.push(i_effect);
+	s_effectCleanUpQueue.push({ i_effect, i_effectPtr });
 }
 
 
-void eae6320::Graphics::AddLineCleanUpTask(cLine** i_line)
+void eae6320::Graphics::AddLineCleanUpTask(cLine* i_line, cLine** i_linePtr)
 {
-	s_lineCleanUpQueue.push(i_line);
+	s_lineCleanUpQueue.push({ i_line, i_linePtr });
 }
 
 

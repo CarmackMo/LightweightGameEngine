@@ -9,6 +9,7 @@
 #include <Engine/Math/sVector.h>
 #include <Engine/UserInput/UserInput.h>
 
+#include <functional>
 
 namespace ScrollShooterGame
 {
@@ -24,6 +25,11 @@ namespace ScrollShooterGame
 
 		void UpdateBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate) override;
 
+		void CleanUp() override;
+
+	public: 
+
+		std::function<void()> m_cleanUpCallback = nullptr;
 
 
 	private:

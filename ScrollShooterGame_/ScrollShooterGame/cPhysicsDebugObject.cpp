@@ -3,6 +3,7 @@
 //=========
 
 #include <Engine/Math/sVector.h>
+#include <Engine/Graphics/Graphics.h>
 
 #include <ScrollShooterGame_/ScrollShooterGame/cPhysicsDebugObject.h>
 
@@ -15,8 +16,20 @@ void ScrollShooterGame::cPhysicDebugObject::CleanUp()
 {
 	cGameObject::CleanUp();
 
-	if (m_colliderLine != nullptr) { m_colliderLine->DecrementReferenceCount(); }
+	// This function might be called when cLine is not yet initialized by the
+	// rendering thread. Add the cLine clean up task to rendering thread anyway
+	// and do null pointer safety check in rendering thread
+	if (Graphics::AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
+	{
+		Graphics::AddLineCleanUpTask(m_colliderLine, &m_colliderLine);
+		Graphics::ReleaseRenderObjectCleanUpMutex();
+	}
 
+	if (Graphics::AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
+	{
+		Graphics::AddLineCleanUpTask(m_collisionLine, &m_collisionLine);
+		Graphics::ReleaseRenderObjectCleanUpMutex();
+	}
 }
 
 

@@ -55,17 +55,20 @@ void ScrollShooterGame::cScrollShooterGame::UpdateSimulationBasedOnTime(const fl
 {
 	m_camera.UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
 
-	m_renderObject_triangle.UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
-	m_renderObject_Ganyu.UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
-	m_renderObject_Keqing.UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
 
-
-	// TODO: Temporary code for player update
-	m_player.UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
-	for (cBullet* bullet : m_bulletList)
+	for (cGameObject* object : m_renderObjectList)
 	{
-		bullet->UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
+		object->UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
 	}
+
+
+
+	//// TODO: Temporary code for player update
+	//m_player.UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
+	//for (cBullet* bullet : m_bulletList)
+	//{
+	//	bullet->UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
+	//}
 
 
 	// TODO: Temporary code for collider debug
@@ -101,7 +104,7 @@ void ScrollShooterGame::cScrollShooterGame::SubmitDataToBeRendered(
 	// Submit normal render data
 	{
 		size_t renderObjectNum = m_renderObjectList.size();
-		size_t arraySize = m_renderObjectList.size() + m_bulletList.size();
+		size_t arraySize = m_renderObjectList.size();
 
 		Graphics::ConstantBufferFormats::sNormalRender* normalRenderDataArray = new Graphics::ConstantBufferFormats::sNormalRender[arraySize];
 
@@ -116,16 +119,16 @@ void ScrollShooterGame::cScrollShooterGame::SubmitDataToBeRendered(
 				m_renderObjectList[i]->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
 		}
 
-		//TODO: Render data for bullets
-		for (size_t i = renderObjectNum; i < arraySize; i++)
-		{
-			if (m_bulletList[i - renderObjectNum]->GetMesh() == nullptr || m_bulletList[i - renderObjectNum]->GetEffect() == nullptr)
-				continue;
+		////TODO: Render data for bullets
+		//for (size_t i = renderObjectNum; i < arraySize; i++)
+		//{
+		//	if (m_bulletList[i - renderObjectNum]->GetMesh() == nullptr || m_bulletList[i - renderObjectNum]->GetEffect() == nullptr)
+		//		continue;
 
-			normalRenderDataArray[i].Initialize(
-				m_bulletList[i - renderObjectNum]->GetMesh(), m_bulletList[i - renderObjectNum]->GetEffect(),
-				m_bulletList[i - renderObjectNum]->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
-		}
+		//	normalRenderDataArray[i].Initialize(
+		//		m_bulletList[i - renderObjectNum]->GetMesh(), m_bulletList[i - renderObjectNum]->GetEffect(),
+		//		m_bulletList[i - renderObjectNum]->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
+		//}
 
 
 		Graphics::SubmitNormalRenderData(normalRenderDataArray, static_cast<uint32_t>(arraySize));
@@ -317,17 +320,12 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 		//m_renderObjectList.push_back(&m_renderObject_Keqing_skin);
 		//m_renderObjectList.push_back(&m_renderObject_Ganyu);
 
-
-
-		m_temp.InitializeMesh(m_cubeMeshPath);
-		m_temp.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
-		m_temp.GetRigidBody().position = Math::sVector(3.0f, 0.0f, -5.0f);
-		m_renderObjectList.push_back(&m_temp);
 	}
 
 
 	// TODO: temporary code for initialize colldier object
 	{
+
 
 	}
 
@@ -339,17 +337,24 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 
 		m_player.bulletCreation = [this]() -> void 
 			{
-				m_temp.CleanUp();
-				
-
 				cBullet* newBullet = new cBullet();
 				newBullet->Initialize(m_player.GetRigidBody().position, Math::sVector(0, 1, 0));
 				newBullet->InitializeMesh(m_triangleMeshPath);
 				newBullet->InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
+
+				newBullet->m_cleanUpCallback = [this, newBullet]() -> void
+					{
+						auto iter = std::find(m_renderObjectList.begin(), m_renderObjectList.end(), newBullet);
+						if (iter != m_renderObjectList.end())
+						{
+							m_renderObjectList.erase(iter);
+						}
+					};
+
+				m_renderObjectList.push_back(newBullet);
 				m_bulletList.push_back(newBullet);
+				m_bulletMesh.push_back(newBullet->GetMesh());
 			};
-
-
 
 		m_renderObjectList.push_back(&m_player);
 	}
@@ -384,12 +389,12 @@ void ScrollShooterGame::cScrollShooterGame::CleanUpGameObject()
 		colliderObject->CleanUp();
 	}
 
-	// TODO: temporary code for clean up colldier object
-	//m_player.CleanUp();
-	for (cBullet* bulletObjet : m_bulletList)
-	{
-		bulletObjet->CleanUp();
-	}
+	//// TODO: temporary code for clean up colldier object
+	////m_player.CleanUp();
+	//for (cBullet* bulletObjet : m_bulletList)
+	//{
+	//	bulletObjet->CleanUp();
+	//}
 }
 
 

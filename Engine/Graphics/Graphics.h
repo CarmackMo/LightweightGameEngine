@@ -97,11 +97,11 @@ namespace Graphics
 
 	void CleanUpRenderObjects();
 
-	void AddMeshCleanUpTask(cMesh** i_mesh);
+	void AddMeshCleanUpTask(cMesh* i_mesh, cMesh** i_meshPtr);
 
-	void AddEffectCleanUpTask(cEffect** i_effect);
+	void AddEffectCleanUpTask(cEffect* i_effect, cEffect** i_effectPtr);
 
-	void AddLineCleanUpTask(cLine** i_line);
+	void AddLineCleanUpTask(cLine* i_line, cLine** i_linePtr);
 
 
 	// Render

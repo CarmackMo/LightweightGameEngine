@@ -170,10 +170,8 @@ namespace ScrollShooterGame
 		// TODO: temporary player object
 		cPlayer m_player;
 
-		eae6320::cGameObject m_temp;
-
-
 		std::vector<cBullet*> m_bulletList;
+		std::vector<eae6320::Graphics::cMesh*> m_bulletMesh;
 	};
 }
 
