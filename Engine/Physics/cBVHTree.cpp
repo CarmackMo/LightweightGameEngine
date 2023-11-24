@@ -116,12 +116,12 @@ void eae6320::Physics::cBVHTree::Add(cCollider* i_collider)
 		// Create two new debug cLine object, one for new node, the other for branch node
 		{
 			Graphics::cLine* newNodeLine = nullptr;
-			RenderInitializeHelper(newNodeLine);
 			m_renderData.push_back(std::pair<Graphics::cLine*, Math::cMatrix_transformation>(newNodeLine, Math::cMatrix_transformation()));
+			RenderInitializeHelper(m_renderData.back().first);
 
 			Graphics::cLine* branchNodeLine = nullptr;
-			RenderInitializeHelper(branchNodeLine);
-			m_renderData.push_back(std::pair<Graphics::cLine*, Math::cMatrix_transformation>(branchNodeLine, Math::cMatrix_transformation()));
+			m_renderData.push_back(std::pair<Graphics::cLine*, Math::cMatrix_transformation>(newNodeLine, Math::cMatrix_transformation()));
+			RenderInitializeHelper(m_renderData.back().first);
 		}
 	}
 	else
@@ -134,8 +134,8 @@ void eae6320::Physics::cBVHTree::Add(cCollider* i_collider)
 		// Create one new debug cLine objec for the new node
 		{
 			Graphics::cLine* newNodeLine = nullptr;
-			RenderInitializeHelper(newNodeLine);
 			m_renderData.push_back(std::pair<Graphics::cLine*, Math::cMatrix_transformation>(newNodeLine, Math::cMatrix_transformation()));
+			RenderInitializeHelper(m_renderData.back().first);
 		}
 	}
 }
@@ -513,7 +513,8 @@ void eae6320::Physics::cBVHTree::RenderInitializeHelper(Graphics::cLine*& io_AAB
 	// Send cLine data to rendering thread for initialization
 	if (Graphics::AcquireRenderObjectInitMutex() == WAIT_OBJECT_0)
 	{
-		Graphics::AddLineInitializeTask(&io_AABBLine, vertexData, vertexCount, indexData, indexCount);
+		Graphics::cLine** linePtr = &(io_AABBLine);
+		Graphics::AddLineInitializeTask(linePtr, vertexData, vertexCount, indexData, indexCount);
 		Graphics::ReleaseRenderObjectInitMutex();
 	}
 }
