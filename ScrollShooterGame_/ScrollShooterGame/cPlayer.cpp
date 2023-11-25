@@ -5,6 +5,7 @@
 #include <Engine/Graphics/Graphics.h>
 #include <Engine/Physics/cColliderBase.h>
 #include <Engine/Physics/Collision.h>
+#include <Engine/Time/Time.h>
 #include <Engine/UserInput/UserInput.h>
 #include <Engine/UserOutput/UserOutput.h>
 
@@ -83,7 +84,7 @@ void ScrollShooterGame::cPlayer::CleanUp()
 
 void ScrollShooterGame::cPlayer::UpdateBasedOnInput()
 {
-	// Basic movement
+	// Basic movement update
 	{
 		if (UserInput::IsKeyPressed('A'))
 			m_rigidBody.velocity.x = -3.0f;
@@ -107,11 +108,16 @@ void ScrollShooterGame::cPlayer::UpdateBasedOnInput()
 			m_rigidBody.velocity.z = 0.0f;
 	}
 
-	// Attack
+	// Attack update
 	{
 		if (UserInput::IsKeyPressed(UserInput::KeyCodes::Enter))
 		{
-			ShootBullet();
+			auto currentTime = Time::ConvertTicksToSeconds(Time::GetCurrentSystemTimeTickCount());
+			if (currentTime - m_lastShoot_second >= m_shootCoolDown)
+			{
+				ShootBullet();
+				m_lastShoot_second = currentTime;
+			}
 		}
 	}
 }

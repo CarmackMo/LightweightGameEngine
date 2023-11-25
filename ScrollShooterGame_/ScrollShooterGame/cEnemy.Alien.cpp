@@ -110,7 +110,7 @@ void ScrollShooterGame::cEnemy_Alien::UpdateBasedOnTime(const float i_elapsedSec
 	{
 		auto currentTime = Time::ConvertTicksToSeconds(Time::GetCurrentSystemTimeTickCount());
 
-		if (currentTime - m_lastShoot_second >= m_shootInterval)
+		if (currentTime - m_lastShoot_second >= m_shootCoolDown)
 		{
 			ShootBullet();
 			m_lastShoot_second = currentTime;

@@ -48,7 +48,7 @@ namespace ScrollShooterGame
 
 		float m_Boundary = 4.0f;
 
-		double m_shootInterval = 2.5;
+		double m_shootCoolDown = 2.5;
 
 		double m_lastShoot_second = 0;
 

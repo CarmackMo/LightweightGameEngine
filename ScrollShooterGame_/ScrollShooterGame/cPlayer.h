@@ -45,6 +45,16 @@ namespace ScrollShooterGame
 		void ShootBullet();
 
 
+		// Data
+		//=========================
+
+	private:
+
+		double m_shootCoolDown = 0.5f;
+
+		double m_lastShoot_second = 0;
+
+
 		// TODO: Debug
 		//=========================
 
