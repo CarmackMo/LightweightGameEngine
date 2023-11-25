@@ -13,6 +13,7 @@
 #include <Engine/GameObject/cGameObject.h>
 #include <Engine/Physics/cRigidBody.h>
 #include <Engine/Results/Results.h>
+#include <Engine/Utilities/cSingleton.h>
 
 #include <MyGame_/MyGame/cPhysicsDebugObject.h>
 
@@ -36,7 +37,7 @@
 
 namespace eae6320
 {
-	class cMyGame final : public Application::iApplication
+	class cMyGame final : public Application::iApplication, public eae6320::cSingleton<cMyGame>
 	{
 		// Inherited Implementation
 		//=========================

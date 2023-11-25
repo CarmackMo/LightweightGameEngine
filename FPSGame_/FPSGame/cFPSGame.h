@@ -10,6 +10,7 @@
 
 #include <Engine/Application/iApplication.h>
 #include <Engine/Results/Results.h>
+#include <Engine/Utilities/cSingleton.h>
 
 #if defined( EAE6320_PLATFORM_WINDOWS )
 	#include "Resource Files/Resource.h"
@@ -20,7 +21,7 @@
 
 namespace eae6320
 {
-	class cFPSGame final : public Application::iApplication
+	class cFPSGame final : public Application::iApplication, public eae6320::cSingleton<cFPSGame>
 	{
 		// Inherited Implementation
 		//=========================

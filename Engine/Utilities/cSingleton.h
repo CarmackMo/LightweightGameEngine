@@ -46,7 +46,7 @@ namespace eae6320
 			return instance;
 		}
 
-		inline virtual void CleanUp()
+		inline virtual void Destroy()
 		{
 			if (instance != nullptr)
 				delete instance;

@@ -59,10 +59,16 @@ namespace Application
 			i_thisInstanceOfTheApplication, i_commandLineArguments, i_initialWindowDisplayState
 #endif
 		};
-		// Create an instance of the applciation
-		tApplication newApplicationInstance;
+
+		//// Create an instance of the applciation
+		//tApplication newApplicationInstance;
+		//// Run it
+		//return newApplicationInstance.ParseEntryPointParametersAndRun( entryPointParameters );
+
+		// Create an singleton instance of the application
+		tApplication::Instance();
 		// Run it
-		return newApplicationInstance.ParseEntryPointParametersAndRun( entryPointParameters );
+		return tApplication::Instance()->ParseEntryPointParametersAndRun(entryPointParameters);
 	}
 
 

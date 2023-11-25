@@ -13,12 +13,12 @@
 #include <Engine/GameObject/cGameObject.h>
 #include <Engine/Physics/cRigidBody.h>
 #include <Engine/Results/Results.h>
+#include <Engine/Utilities/cSingleton.h>
 
 #include <ScrollShooterGame_/ScrollShooterGame/cPhysicsDebugObject.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cPlayer.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cBullet.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cEnemy.h>
-
 
 #include <vector>
 #include <queue>
@@ -37,7 +37,7 @@
 
 namespace ScrollShooterGame
 {
-	class cScrollShooterGame final : public  eae6320::Application::iApplication
+	class cScrollShooterGame final : public  eae6320::Application::iApplication, public eae6320::cSingleton<cScrollShooterGame>
 	{
 		// Inherited Implementation
 		//=========================

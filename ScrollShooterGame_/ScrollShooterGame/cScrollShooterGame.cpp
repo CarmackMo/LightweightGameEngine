@@ -366,6 +366,7 @@ void ScrollShooterGame::cScrollShooterGame::CleanUpGameObject()
 		m_gameObjectCleanUpQueue.pop();
 
 		object->CleanUp();
+		delete object;
 	}
 }
 

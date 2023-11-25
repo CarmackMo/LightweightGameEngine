@@ -35,8 +35,6 @@ namespace ScrollShooterGame
 
 		std::function<void()> m_cleanUpCallback = nullptr;
 
-		int enemyData = 0;
-
 		// TODO
 
 		bool m_isCollide = false;

@@ -63,8 +63,6 @@ void ScrollShooterGame::cBullet::CleanUp()
 {
 	if (m_cleanUpCallback != nullptr)
 		m_cleanUpCallback();
-
-	delete this;
 }
 
 

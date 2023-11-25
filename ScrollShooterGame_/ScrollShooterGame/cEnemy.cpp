@@ -49,8 +49,6 @@ void ScrollShooterGame::cEnemy::CleanUp()
 {
 	if (m_cleanUpCallback != nullptr)
 		m_cleanUpCallback();
-
-	delete this;
 }
 
 
