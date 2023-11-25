@@ -5,7 +5,6 @@
 
 #include <Engine/GameObject/cGameObject.h>
 #include <Engine/Math/sVector.h>
-#include <Engine/UserInput/UserInput.h>
 
 // TODO
 #include <Engine/Graphics/cLine.h>
@@ -37,8 +36,6 @@ namespace ScrollShooterGame
 		//=========================
 
 	public:
-
-		//std::function<void()> m_cleanUpCallback = nullptr;
 
 		bool m_isCollide = false;
 		eae6320::Graphics::cLine* m_colliderLine = nullptr;

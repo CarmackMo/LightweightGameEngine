@@ -280,48 +280,7 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 	// TODO: temporary code for player object
 	{
 		m_player = new cPlayer();
-		m_player->InitializeMesh(m_cubeMeshPath);
-		m_player->InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
-		m_player->GetRigidBody().position = Math::sVector(0.0f, 0.0f, -5.0f);
-
-		m_player->bulletCreation = [this]() -> void
-			{
-				cBullet* newBullet = new cBullet();
-				newBullet->Initialize(m_player->GetRigidBody().position, Math::sVector(0, 1, 0));
-
-				//newBullet->m_cleanUpCallback = [this, newBullet]() -> void
-				//	{
-				//		auto objIter = std::find(m_gameObjectList.begin(), m_gameObjectList.end(), newBullet);
-				//		if (objIter != m_gameObjectList.end())
-				//		{
-				//			m_gameObjectList.erase(objIter);
-				//		}
-
-				//		auto bulletIter = std::find(m_bulletList.begin(), m_bulletList.end(), newBullet);
-				//		if (bulletIter != m_bulletList.end())
-				//		{
-				//			m_bulletList.erase(bulletIter);
-				//		}
-
-				//		Physics::Collision::DeregisterCollider(newBullet->GetCollider());
-				//	};
-
-				//newBullet->GetCollider()->OnCollisionEnter = [this](Physics::cCollider* self, Physics::cCollider* other) -> void
-				//	{
-				//		dynamic_cast<cBullet*>(self->m_gameobject)->m_isCollide = true;
-
-				//		if (dynamic_cast<cEnemy*>(other->m_gameobject) != nullptr)
-				//		{
-				//			UserOutput::ConsolePrint("Bullet hit enemy!! \n");
-				//			this->AddGameObjectCleanUpTask(self->m_gameobject);
-				//		}
-				//	};
-
-
-				Physics::Collision::RegisterCollider(newBullet->GetCollider());
-				m_gameObjectList.push_back(newBullet);
-				m_bulletList.push_back(newBullet);
-			};
+		m_player->Initialize(Math::sVector(0.0f, 0.0f, -5.0f), Math::sVector());
 
 		m_gameObjectList.push_back(m_player);
 	}
@@ -330,29 +289,6 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 	{
 		m_enemy = new cEnemy();
 		m_enemy->Initialize(Math::sVector(0.0f, 4.0f, -5.0f), Math::sVector(0.0f, 0.0f, 0.0f));
-
-		cGameObject* enemyPtr = m_enemy;
-
-		//m_enemy->m_cleanUpCallback = [this, enemyPtr]() -> void
-		//	{
-		//		auto objIter = std::find(m_gameObjectList.begin(), m_gameObjectList.end(), enemyPtr);
-		//		if (objIter != m_gameObjectList.end())
-		//		{
-		//			m_gameObjectList.erase(objIter);
-		//		}
-
-		//		Physics::Collision::DeregisterCollider(enemyPtr->GetCollider());
-		//	};
-
-		//m_enemy->GetCollider()->OnCollisionEnter = [this](Physics::cCollider* self, Physics::cCollider* other) -> void
-		//	{
-		//		dynamic_cast<cEnemy*>(self->m_gameobject)->m_isCollide = true;
-		//		if (dynamic_cast<cEnemy*>(other->m_gameobject) != nullptr)
-		//		{
-		//			UserOutput::ConsolePrint("Enemy is Killed!! \n");
-		//			this->AddGameObjectCleanUpTask(self->m_gameobject);
-		//		}
-		//	};
 
 		m_gameObjectList.push_back(m_enemy);
 	}
@@ -376,6 +312,7 @@ void ScrollShooterGame::cScrollShooterGame::InitializeCollisionSystem()
 {
 	std::vector<Physics::cCollider*> colliderList;
 
+	colliderList.push_back(m_player->GetCollider());
 	colliderList.push_back(m_enemy->GetCollider());
 
 	Physics::Collision::Initialize(colliderList, Physics::Collision::BroadPhase_BVH | Physics::Collision::NarrowPhase_Overlaps);

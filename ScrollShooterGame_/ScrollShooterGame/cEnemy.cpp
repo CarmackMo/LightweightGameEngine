@@ -3,6 +3,7 @@
 //========
 
 #include <Engine/Graphics/Graphics.h>
+#include <Engine/Physics/cColliderBase.h>
 #include <Engine/Physics/Collision.h>
 #include <Engine/UserOutput/UserOutput.h>
 
