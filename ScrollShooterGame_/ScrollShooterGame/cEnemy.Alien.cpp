@@ -3,9 +3,11 @@
 //========
 
 #include <Engine/Physics/Collision.h>
+#include <Engine/Time/Time.h>
 #include <Engine/UserOutput/UserOutput.h>
 
-#include <ScrollShooterGame_/ScrollShooterGame/cBullet.h>
+#include <ScrollShooterGame_/ScrollShooterGame/cBullet.Enemy.h>
+#include <ScrollShooterGame_/ScrollShooterGame/cBullet.Player.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cEnemy.Alien.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cPlayer.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cScrollShooterGame.h>
@@ -22,6 +24,7 @@ void ScrollShooterGame::cEnemy_Alien::Initialize(eae6320::Math::sVector i_positi
 	// Initialize property
 	{
 		m_HP = 3;
+		m_lastShoot_second = Time::ConvertTicksToSeconds(Time::GetCurrentSystemTimeTickCount());
 	}
 
 	// Initialize rigid body
@@ -50,7 +53,7 @@ void ScrollShooterGame::cEnemy_Alien::Initialize(eae6320::Math::sVector i_positi
 		m_collider->OnCollisionEnter = [this](Physics::cCollider* self, Physics::cCollider* other) -> void
 			{
 				m_isCollide = true;
-				if (dynamic_cast<cBullet*>(other->m_gameobject) != nullptr ||
+				if (dynamic_cast<cBullet_Player*>(other->m_gameobject) != nullptr ||
 					dynamic_cast<cPlayer*>(other->m_gameobject) != nullptr)
 				{
 					m_HP--;
@@ -91,12 +94,42 @@ void ScrollShooterGame::cEnemy_Alien::UpdateBasedOnTime(const float i_elapsedSec
 {
 	cGameObject::UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
 
-	if (m_rigidBody.position.x < -1 * m_Boundary)
+	// Movement update
 	{
-		m_rigidBody.velocity.x = -1 * m_velocity.x;
+		if (m_rigidBody.position.x < -1 * m_Boundary)
+		{
+			m_rigidBody.velocity.x = -1 * m_velocity.x;
+		}
+		else if (m_rigidBody.position.x > m_Boundary)
+		{
+			m_rigidBody.velocity.x = m_velocity.x;
+		}
 	}
-	else if (m_rigidBody.position.x > m_Boundary)
+
+	// Shoot update
 	{
-		m_rigidBody.velocity.x = m_velocity.x;
+		auto currentTime = Time::ConvertTicksToSeconds(Time::GetCurrentSystemTimeTickCount());
+
+		if (currentTime - m_lastShoot_second >= m_shootInterval)
+		{
+			ShootBullet();
+			m_lastShoot_second = currentTime;
+		}
 	}
+}
+
+
+// Implementation
+//=========================
+
+void ScrollShooterGame::cEnemy_Alien::ShootBullet()
+{
+	cBullet_Enemy* newBullet = new cBullet_Enemy();
+	newBullet->Initialize(GetRigidBody().position);
+
+	Physics::Collision::RegisterCollider(newBullet->GetCollider());
+
+	auto game = cScrollShooterGame::Instance();
+	game->m_gameObjectList.push_back(newBullet);
+	game->m_bulletList.push_back(newBullet);
 }

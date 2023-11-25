@@ -57,10 +57,10 @@ void ScrollShooterGame::cScrollShooterGame::UpdateSimulationBasedOnTime(const fl
 {
 	m_camera.UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
 
-
-	for (cGameObject* object : m_gameObjectList)
+	size_t listSize = m_gameObjectList.size();
+	for (size_t i = 0; i < listSize; i++)
 	{
-		object->UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
+		m_gameObjectList[i]->UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
 	}
 
 	// TODO: Temporary code for collider debug

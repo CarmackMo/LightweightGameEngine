@@ -9,6 +9,7 @@
 #include <Engine/UserOutput/UserOutput.h>
 
 #include <ScrollShooterGame_/ScrollShooterGame/cBullet.Player.h>
+#include <ScrollShooterGame_/ScrollShooterGame/cBullet.Enemy.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cEnemy.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cPlayer.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cScrollShooterGame.h>
@@ -47,7 +48,8 @@ void ScrollShooterGame::cPlayer::Initialize(eae6320::Math::sVector i_position, e
 		m_collider->OnCollisionEnter = [this](Physics::cCollider* self, Physics::cCollider* other) -> void
 			{
 				m_isCollide = true;
-				if (dynamic_cast<cEnemy*>(other->m_gameobject) != nullptr)
+				if (dynamic_cast<cEnemy*>(other->m_gameobject) != nullptr ||
+					dynamic_cast<cBullet_Enemy*>(other->m_gameobject) != nullptr)
 				{
 					UserOutput::ConsolePrint("Player is killed by enemy!! \n");
 					cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(self->m_gameobject);
@@ -120,7 +122,7 @@ void ScrollShooterGame::cPlayer::UpdateBasedOnInput()
 
 void ScrollShooterGame::cPlayer::ShootBullet()
 {
-	cBullet* newBullet = new cBullet_Player();
+	cBullet_Player* newBullet = new cBullet_Player();
 	newBullet->Initialize(GetRigidBody().position);
 
 	Physics::Collision::RegisterCollider(newBullet->GetCollider());

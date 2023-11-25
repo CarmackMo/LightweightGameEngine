@@ -5,7 +5,7 @@
 #include <Engine/Physics/Collision.h>
 #include <Engine/UserOutput/UserOutput.h>
 
-#include <ScrollShooterGame_/ScrollShooterGame/cBullet.h>
+#include <ScrollShooterGame_/ScrollShooterGame/cBullet.Player.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cEnemy.Rock.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cPlayer.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cScrollShooterGame.h>
@@ -50,7 +50,7 @@ void ScrollShooterGame::cEnemy_Rock::Initialize(eae6320::Math::sVector i_positio
 		m_collider->OnCollisionEnter = [this](Physics::cCollider* self, Physics::cCollider* other) -> void
 			{
 				m_isCollide = true;
-				if (dynamic_cast<cBullet*>(other->m_gameobject) != nullptr ||
+				if (dynamic_cast<cBullet_Player*>(other->m_gameobject) != nullptr ||
 					dynamic_cast<cPlayer*>(other->m_gameobject) != nullptr)
 				{
 					m_HP--;
