@@ -17,64 +17,6 @@ using namespace eae6320;
 // Interface
 //=========================
 
-void ScrollShooterGame::cEnemy::Initialize(eae6320::Math::sVector i_position, eae6320::Math::sVector i_velocity)
-{
-	// Initialize rigid body
-	{
-		m_rigidBody.position = i_position;
-		m_rigidBody.velocity = i_velocity;
-	}
-
-	// Initialize collider
-	{
-		Physics::sColliderSetting setting_AABB1;
-		setting_AABB1.SettingForAABB(Math::sVector(-0.5, -0.5, -0.5), Math::sVector(0.5, 0.5, 0.5));
-		InitializeCollider(setting_AABB1);
-		InitializeColliderLine();
-	}
-
-	// Initialize mesh & effect
-	{
-		InitializeMesh("data/meshes/mesh_rectangle.mesh");
-		InitializeEffect("data/Shaders/Vertex/standard.shader", "data/Shaders/Fragment/standard.shader");
-	}
-
-	// Define physics behavior
-	{
-		m_collider->OnCollisionEnter = [this](Physics::cCollider* self, Physics::cCollider* other) -> void 
-			{ 
-				 m_isCollide = true; 
-				 if (dynamic_cast<cBullet*>(other->m_gameobject) != nullptr)
-				 {
-					 UserOutput::ConsolePrint("Enemy is Killed!! \n");
-					 cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(self->m_gameobject);
-				 }
-			};
-
-		m_collider->OnCollisionStay = [this](Physics::cCollider* self, Physics::cCollider* other) -> void 
-			{};
-
-		m_collider->OnCollisionExit = [this](Physics::cCollider* self, Physics::cCollider* other) -> void 
-			{ 
-				m_isCollide = false; 
-			};
-	}
-} 
-
-
-void ScrollShooterGame::cEnemy::CleanUp()
-{
-	auto game = cScrollShooterGame::Instance();
-
-	auto objIter = std::find(game->m_gameObjectList.begin(), game->m_gameObjectList.end(), this);
-	if (objIter != game->m_gameObjectList.end())
-	{
-		game->m_gameObjectList.erase(objIter);
-	}
-
-	Physics::Collision::DeregisterCollider(this->GetCollider());
-}
-
 
 // TODO: Debug
 //=========================

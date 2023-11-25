@@ -25,11 +25,9 @@ namespace ScrollShooterGame
 		// Initialization / Clean Up
 		//--------------------------
 
-		void Initialize(
+		virtual void Initialize(
 			eae6320::Math::sVector i_position = eae6320::Math::sVector(),
-			eae6320::Math::sVector i_velocity = eae6320::Math::sVector());
-
-		void CleanUp() override;
+			eae6320::Math::sVector i_velocity = eae6320::Math::sVector()) = 0;
 
 
 		// TODO: Debug

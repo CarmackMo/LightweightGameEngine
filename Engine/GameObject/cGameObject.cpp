@@ -29,7 +29,7 @@ void eae6320::cGameObject::CleanUp()
 		Graphics::ReleaseRenderObjectCleanUpMutex();
 	}
 
-	if (m_collider != nullptr) { delete m_collider; }
+	if (m_collider != nullptr) { delete m_collider; m_collider = nullptr; }
 }
 
 
