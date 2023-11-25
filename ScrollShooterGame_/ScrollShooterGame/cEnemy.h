@@ -6,6 +6,8 @@
 #include <Engine/GameObject/cGameObject.h>
 #include <Engine/Math/sVector.h>
 
+#include <cstdint>
+
 // TODO
 #include <Engine/Graphics/cLine.h>
 
@@ -28,6 +30,16 @@ namespace ScrollShooterGame
 		virtual void Initialize(
 			eae6320::Math::sVector i_position = eae6320::Math::sVector(),
 			eae6320::Math::sVector i_velocity = eae6320::Math::sVector()) = 0;
+
+		// Property Getter
+		//--------------------------
+
+		uint16_t GetHP();
+
+
+	protected:
+
+		uint16_t m_HP = 0;
 
 
 		// TODO: Debug

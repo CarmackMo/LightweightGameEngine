@@ -7,6 +7,7 @@
 
 #include <ScrollShooterGame_/ScrollShooterGame/cBullet.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cEnemy.Rock.h>
+#include <ScrollShooterGame_/ScrollShooterGame/cPlayer.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cScrollShooterGame.h>
 
 
@@ -18,6 +19,11 @@ using namespace eae6320;
 
 void ScrollShooterGame::cEnemy_Rock::Initialize(eae6320::Math::sVector i_position, eae6320::Math::sVector i_velocity)
 {
+	// Initialize property
+	{
+		m_HP = 2;
+	}
+
 	// Initialize rigid body
 	{
 		m_rigidBody.position = i_position;
@@ -44,10 +50,15 @@ void ScrollShooterGame::cEnemy_Rock::Initialize(eae6320::Math::sVector i_positio
 		m_collider->OnCollisionEnter = [this](Physics::cCollider* self, Physics::cCollider* other) -> void
 			{
 				m_isCollide = true;
-				if (dynamic_cast<cBullet*>(other->m_gameobject) != nullptr)
+				if (dynamic_cast<cBullet*>(other->m_gameobject) != nullptr ||
+					dynamic_cast<cPlayer*>(other->m_gameobject) != nullptr)
 				{
-					UserOutput::ConsolePrint("Enemy is Killed!! \n");
-					cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(self->m_gameobject);
+					m_HP--;
+					if (m_HP == 0)
+					{
+						UserOutput::ConsolePrint("Enemy is Killed!! \n");
+						cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(self->m_gameobject);
+					}
 				}
 			};
 

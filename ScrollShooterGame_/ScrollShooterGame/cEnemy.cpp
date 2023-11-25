@@ -3,19 +3,19 @@
 //========
 
 #include <Engine/Graphics/Graphics.h>
-#include <Engine/Physics/cColliderBase.h>
-#include <Engine/Physics/Collision.h>
-#include <Engine/UserOutput/UserOutput.h>
 
-#include <ScrollShooterGame_/ScrollShooterGame/cBullet.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cEnemy.h>
-#include <ScrollShooterGame_/ScrollShooterGame/cScrollShooterGame.h>
 
 using namespace eae6320;
 
 
 // Interface
 //=========================
+
+uint16_t ScrollShooterGame::cEnemy::GetHP()
+{
+	return m_HP;
+}
 
 
 // TODO: Debug
