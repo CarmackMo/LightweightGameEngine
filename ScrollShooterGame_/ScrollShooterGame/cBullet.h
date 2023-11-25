@@ -34,11 +34,6 @@ namespace ScrollShooterGame
 		
 		void CleanUp() override;
 
-		// Update
-		//--------------------------
-
-		void UpdateBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate) override;
-
 
 		// TODO: Debug
 		//=========================

@@ -143,7 +143,7 @@ namespace ScrollShooterGame
 	public:
 
 		// TODO: temporary player object
-		cPlayer m_player;
+		cPlayer* m_player;
 		cEnemy* m_enemy = nullptr;
 
 		std::vector<cBullet*> m_bulletList;

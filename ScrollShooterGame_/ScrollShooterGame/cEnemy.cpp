@@ -2,11 +2,19 @@
 // Includes
 //========
 
-
 #include <Engine/Graphics/Graphics.h>
+#include <Engine/Physics/Collision.h>
+#include <Engine/UserOutput/UserOutput.h>
+
+#include <ScrollShooterGame_/ScrollShooterGame/cBullet.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cEnemy.h>
+#include <ScrollShooterGame_/ScrollShooterGame/cScrollShooterGame.h>
 
 using namespace eae6320;
+
+
+// Interface
+//=========================
 
 void ScrollShooterGame::cEnemy::Initialize(eae6320::Math::sVector i_position, eae6320::Math::sVector i_velocity)
 {
@@ -22,12 +30,6 @@ void ScrollShooterGame::cEnemy::Initialize(eae6320::Math::sVector i_position, ea
 		setting_AABB1.SettingForAABB(Math::sVector(-0.5, -0.5, -0.5), Math::sVector(0.5, 0.5, 0.5));
 		InitializeCollider(setting_AABB1);
 		InitializeColliderLine();
-		m_collider->OnCollisionEnter =
-			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { m_isCollide = true; };
-		m_collider->OnCollisionStay =
-			[this](Physics::cCollider* self, Physics::cCollider* other) -> void {};
-		m_collider->OnCollisionExit =
-			[this](Physics::cCollider* self, Physics::cCollider* other) -> void { m_isCollide = false; };
 	}
 
 	// Initialize mesh & effect
@@ -35,25 +37,46 @@ void ScrollShooterGame::cEnemy::Initialize(eae6320::Math::sVector i_position, ea
 		InitializeMesh("data/meshes/mesh_rectangle.mesh");
 		InitializeEffect("data/Shaders/Vertex/standard.shader", "data/Shaders/Fragment/standard.shader");
 	}
+
+	// Define physics behavior
+	{
+		m_collider->OnCollisionEnter = [this](Physics::cCollider* self, Physics::cCollider* other) -> void 
+			{ 
+				 m_isCollide = true; 
+				 if (dynamic_cast<cBullet*>(other->m_gameobject) != nullptr)
+				 {
+					 UserOutput::ConsolePrint("Enemy is Killed!! \n");
+					 cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(self->m_gameobject);
+				 }
+			};
+
+		m_collider->OnCollisionStay = [this](Physics::cCollider* self, Physics::cCollider* other) -> void 
+			{};
+
+		m_collider->OnCollisionExit = [this](Physics::cCollider* self, Physics::cCollider* other) -> void 
+			{ 
+				m_isCollide = false; 
+			};
+	}
 } 
 
 
-
-
-void ScrollShooterGame::cEnemy::UpdateBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate)
-{
-	cGameObject::UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
-}
-
 void ScrollShooterGame::cEnemy::CleanUp()
 {
-	if (m_cleanUpCallback != nullptr)
-		m_cleanUpCallback();
+	auto game = cScrollShooterGame::Instance();
+
+	auto objIter = std::find(game->m_gameObjectList.begin(), game->m_gameObjectList.end(), this);
+	if (objIter != game->m_gameObjectList.end())
+	{
+		game->m_gameObjectList.erase(objIter);
+	}
+
+	Physics::Collision::DeregisterCollider(this->GetCollider());
 }
 
 
-
-// TODO
+// TODO: Debug
+//=========================
 
 void ScrollShooterGame::cEnemy::InitializeColliderLine()
 {
@@ -130,31 +153,4 @@ eae6320::Graphics::cLine* ScrollShooterGame::cEnemy::GetColliderLine() const
 		return m_collisionLine;
 	else
 		return m_colliderLine;
-}
-
-
-void ScrollShooterGame::cEnemy::UpdateBasedOnInput()
-{
-	// Basic movement
-	if (UserInput::IsKeyPressed('A'))
-		m_rigidBody.velocity.x = -3.0f;
-	else if (UserInput::IsKeyPressed('D'))
-		m_rigidBody.velocity.x = 3.0f;
-	else
-		m_rigidBody.velocity.x = 0.0f;
-
-	if (UserInput::IsKeyPressed('S'))
-		m_rigidBody.velocity.y = -3.0f;
-	else if (UserInput::IsKeyPressed('W'))
-		m_rigidBody.velocity.y = 3.0f;
-	else
-		m_rigidBody.velocity.y = 0.0f;
-
-	if (UserInput::IsKeyPressed('R'))
-		m_rigidBody.velocity.z = -3.0f;
-	else if (UserInput::IsKeyPressed('F'))
-		m_rigidBody.velocity.z = 3.0f;
-	else
-		m_rigidBody.velocity.z = 0.0f;
-
 }

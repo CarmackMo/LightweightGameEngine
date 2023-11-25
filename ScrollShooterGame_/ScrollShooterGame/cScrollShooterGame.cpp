@@ -279,14 +279,15 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 {
 	// TODO: temporary code for player object
 	{
-		m_player.InitializeMesh(m_cubeMeshPath);
-		m_player.InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
-		m_player.GetRigidBody().position = Math::sVector(0.0f, 0.0f, -5.0f);
+		m_player = new cPlayer();
+		m_player->InitializeMesh(m_cubeMeshPath);
+		m_player->InitializeEffect(m_vertexShaderPath, m_fragmentShaderPath_standard);
+		m_player->GetRigidBody().position = Math::sVector(0.0f, 0.0f, -5.0f);
 
-		m_player.bulletCreation = [this]() -> void 
+		m_player->bulletCreation = [this]() -> void
 			{
 				cBullet* newBullet = new cBullet();
-				newBullet->Initialize(m_player.GetRigidBody().position, Math::sVector(0, 1, 0));
+				newBullet->Initialize(m_player->GetRigidBody().position, Math::sVector(0, 1, 0));
 
 				//newBullet->m_cleanUpCallback = [this, newBullet]() -> void
 				//	{
@@ -322,7 +323,7 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 				m_bulletList.push_back(newBullet);
 			};
 
-		m_gameObjectList.push_back(&m_player);
+		m_gameObjectList.push_back(m_player);
 	}
 
 	// TODO: temporary code for enemy object
@@ -332,26 +333,26 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 
 		cGameObject* enemyPtr = m_enemy;
 
-		m_enemy->m_cleanUpCallback = [this, enemyPtr]() -> void
-			{
-				auto objIter = std::find(m_gameObjectList.begin(), m_gameObjectList.end(), enemyPtr);
-				if (objIter != m_gameObjectList.end())
-				{
-					m_gameObjectList.erase(objIter);
-				}
+		//m_enemy->m_cleanUpCallback = [this, enemyPtr]() -> void
+		//	{
+		//		auto objIter = std::find(m_gameObjectList.begin(), m_gameObjectList.end(), enemyPtr);
+		//		if (objIter != m_gameObjectList.end())
+		//		{
+		//			m_gameObjectList.erase(objIter);
+		//		}
 
-				Physics::Collision::DeregisterCollider(enemyPtr->GetCollider());
-			};
+		//		Physics::Collision::DeregisterCollider(enemyPtr->GetCollider());
+		//	};
 
-		m_enemy->GetCollider()->OnCollisionEnter = [this](Physics::cCollider* self, Physics::cCollider* other) -> void
-			{
-				dynamic_cast<cEnemy*>(self->m_gameobject)->m_isCollide = true;
-				if (dynamic_cast<cEnemy*>(other->m_gameobject) != nullptr)
-				{
-					UserOutput::ConsolePrint("Enemy is Killed!! \n");
-					this->AddGameObjectCleanUpTask(self->m_gameobject);
-				}
-			};
+		//m_enemy->GetCollider()->OnCollisionEnter = [this](Physics::cCollider* self, Physics::cCollider* other) -> void
+		//	{
+		//		dynamic_cast<cEnemy*>(self->m_gameobject)->m_isCollide = true;
+		//		if (dynamic_cast<cEnemy*>(other->m_gameobject) != nullptr)
+		//		{
+		//			UserOutput::ConsolePrint("Enemy is Killed!! \n");
+		//			this->AddGameObjectCleanUpTask(self->m_gameobject);
+		//		}
+		//	};
 
 		m_gameObjectList.push_back(m_enemy);
 	}

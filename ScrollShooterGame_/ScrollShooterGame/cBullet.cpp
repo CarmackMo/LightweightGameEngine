@@ -45,9 +45,9 @@ void ScrollShooterGame::cBullet::Initialize(
 
 	// Define physics behavior
 	{
-		m_collider->OnCollisionEnter = [](Physics::cCollider* self, Physics::cCollider* other) -> void
+		m_collider->OnCollisionEnter = [this](Physics::cCollider* self, Physics::cCollider* other) -> void
 			{
-				dynamic_cast<cBullet*>(self->m_gameobject)->m_isCollide = true;
+				m_isCollide = true;
 
 				if (dynamic_cast<cEnemy*>(other->m_gameobject) != nullptr)
 				{
@@ -56,10 +56,10 @@ void ScrollShooterGame::cBullet::Initialize(
 				}
 			};
 
-		m_collider->OnCollisionStay = [](Physics::cCollider* self, Physics::cCollider* other) -> void 
+		m_collider->OnCollisionStay = [this](Physics::cCollider* self, Physics::cCollider* other) -> void 
 			{};
 
-		m_collider->OnCollisionExit = [](Physics::cCollider* self, Physics::cCollider* other) -> void 
+		m_collider->OnCollisionExit = [this](Physics::cCollider* self, Physics::cCollider* other) -> void 
 			{ 
 				dynamic_cast<cBullet*>(self->m_gameobject)->m_isCollide = false; 
 			};
