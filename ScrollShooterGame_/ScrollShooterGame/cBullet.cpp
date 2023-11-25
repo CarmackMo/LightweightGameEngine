@@ -5,12 +5,24 @@
 #include <Engine/Graphics/Graphics.h>
 
 #include <ScrollShooterGame_/ScrollShooterGame/cBullet.h>
+#include <ScrollShooterGame_/ScrollShooterGame/cScrollShooterGame.h>
 
 using namespace eae6320;
 
 
 // Interface
 //=========================
+
+void ScrollShooterGame::cBullet::UpdateBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate)
+{
+	cGameObject::UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
+
+	if (m_rigidBody.position.y >= m_boundary ||
+		m_rigidBody.position.y <= m_boundary * -1)
+	{
+		cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(this);
+	}
+}
 
 
 // TODO: Debug

@@ -31,6 +31,11 @@ namespace ScrollShooterGame
 			eae6320::Math::sVector i_position = eae6320::Math::sVector(),
 			eae6320::Math::sVector i_velocity = eae6320::Math::sVector()) = 0;
 
+		// Update
+		//--------------------------
+
+		void UpdateBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate) override;
+
 		// Property Getter
 		//--------------------------
 
@@ -43,6 +48,8 @@ namespace ScrollShooterGame
 	protected:
 
 		uint16_t m_HP = 0;
+
+		float m_boundary = -9.0f;
 
 
 		// TODO: Debug

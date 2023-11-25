@@ -5,12 +5,24 @@
 #include <Engine/Graphics/Graphics.h>
 
 #include <ScrollShooterGame_/ScrollShooterGame/cEnemy.h>
+#include <ScrollShooterGame_/ScrollShooterGame/cScrollShooterGame.h>
 
 using namespace eae6320;
 
 
 // Interface
 //=========================
+
+void ScrollShooterGame::cEnemy::UpdateBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate)
+{
+	cGameObject::UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
+
+	if (m_rigidBody.position.y <= m_boundary)
+	{
+		cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(this);
+	}
+}
+
 
 uint16_t ScrollShooterGame::cEnemy::GetHP()
 {

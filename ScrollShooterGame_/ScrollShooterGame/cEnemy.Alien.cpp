@@ -92,7 +92,7 @@ void ScrollShooterGame::cEnemy_Alien::CleanUp()
 
 void ScrollShooterGame::cEnemy_Alien::UpdateBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate)
 {
-	cGameObject::UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
+	cEnemy::UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
 
 	// Movement update
 	{
