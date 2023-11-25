@@ -4,7 +4,7 @@
 
 #include <Engine/Graphics/Graphics.h>
 
-#include <ScrollShooterGame_/ScrollShooterGame/cEnemy.h>
+#include <ScrollShooterGame_/ScrollShooterGame/Enemy/cEnemy.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cScrollShooterGame.h>
 
 using namespace eae6320;

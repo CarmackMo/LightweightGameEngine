@@ -5,8 +5,8 @@
 #include <Engine/Physics/Collision.h>
 #include <Engine/UserOutput/UserOutput.h>
 
-#include <ScrollShooterGame_/ScrollShooterGame/cBullet.Player.h>
-#include <ScrollShooterGame_/ScrollShooterGame/cEnemy.Rock.h>
+#include <ScrollShooterGame_/ScrollShooterGame/Bullet/cBullet.Player.h>
+#include <ScrollShooterGame_/ScrollShooterGame/Enemy/cEnemy.Rock.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cPlayer.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cScrollShooterGame.h>
 

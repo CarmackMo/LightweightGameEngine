@@ -4,7 +4,7 @@
 
 #include <Engine/Graphics/Graphics.h>
 
-#include <ScrollShooterGame_/ScrollShooterGame/cBullet.h>
+#include <ScrollShooterGame_/ScrollShooterGame/Bullet/cBullet.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cScrollShooterGame.h>
 
 using namespace eae6320;

@@ -6,9 +6,9 @@
 #include <Engine/Time/Time.h>
 #include <Engine/UserOutput/UserOutput.h>
 
-#include <ScrollShooterGame_/ScrollShooterGame/cBullet.Enemy.h>
-#include <ScrollShooterGame_/ScrollShooterGame/cBullet.Player.h>
-#include <ScrollShooterGame_/ScrollShooterGame/cEnemy.Alien.h>
+#include <ScrollShooterGame_/ScrollShooterGame/Bullet/cBullet.Enemy.h>
+#include <ScrollShooterGame_/ScrollShooterGame/Bullet/cBullet.Player.h>
+#include <ScrollShooterGame_/ScrollShooterGame/Enemy/cEnemy.Alien.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cPlayer.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cScrollShooterGame.h>
 

@@ -28,28 +28,28 @@
     <ResourceCompile Include="Resource Files\ScrollShooterGame.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cBullet.Enemy.h" />
-    <ClInclude Include="cBullet.h" />
-    <ClInclude Include="cBullet.Player.h" />
-    <ClInclude Include="cEnemy.Alien.h" />
-    <ClInclude Include="cEnemy.h" />
-    <ClInclude Include="cEnemy.Rock.h" />
+    <ClInclude Include="Bullet\cBullet.Enemy.h" />
+    <ClInclude Include="Bullet\cBullet.h" />
+    <ClInclude Include="Bullet\cBullet.Player.h" />
     <ClInclude Include="cPhysicsDebugObject.h" />
     <ClInclude Include="cPlayer.h" />
     <ClInclude Include="cScrollShooterGame.h" />
+    <ClInclude Include="Enemy\cEnemy.Alien.h" />
+    <ClInclude Include="Enemy\cEnemy.h" />
+    <ClInclude Include="Enemy\cEnemy.Rock.h" />
     <ClInclude Include="Resource Files\Resource.h" />
     <ClInclude Include="Resource Files\targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="cBullet.cpp" />
-    <ClCompile Include="cBullet.Enemy.cpp" />
-    <ClCompile Include="cBullet.Player.cpp" />
-    <ClCompile Include="cEnemy.Alien.cpp" />
-    <ClCompile Include="cEnemy.cpp" />
-    <ClCompile Include="cEnemy.Rock.cpp" />
+    <ClCompile Include="Bullet\cBullet.cpp" />
+    <ClCompile Include="Bullet\cBullet.Enemy.cpp" />
+    <ClCompile Include="Bullet\cBullet.Player.cpp" />
     <ClCompile Include="cPhysicsDebugObject.cpp" />
     <ClCompile Include="cPlayer.cpp" />
     <ClCompile Include="cScrollShooterGame.cpp" />
+    <ClCompile Include="Enemy\cEnemy.Alien.cpp" />
+    <ClCompile Include="Enemy\cEnemy.cpp" />
+    <ClCompile Include="Enemy\cEnemy.Rock.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -5,13 +5,13 @@
 
 #include <Engine/Math/sVector.h>
 
-#include <ScrollShooterGame_/ScrollShooterGame/cBullet.h>
+#include <ScrollShooterGame_/ScrollShooterGame/Bullet/cBullet.h>
 
 
 namespace ScrollShooterGame
 {
 
-	class cBullet_Enemy : public cBullet
+	class cBullet_Player : public cBullet
 	{
 
 		// Interface
@@ -34,7 +34,7 @@ namespace ScrollShooterGame
 
 	private:
 
-		eae6320::Math::sVector m_velocity = eae6320::Math::sVector(0.0f, -1.0f, 0.0f);
+		eae6320::Math::sVector m_velocity = eae6320::Math::sVector(0, 1, 0);
 
 
 	};

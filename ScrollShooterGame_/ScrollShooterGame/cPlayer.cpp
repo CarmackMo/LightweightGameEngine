@@ -9,9 +9,9 @@
 #include <Engine/UserInput/UserInput.h>
 #include <Engine/UserOutput/UserOutput.h>
 
-#include <ScrollShooterGame_/ScrollShooterGame/cBullet.Player.h>
-#include <ScrollShooterGame_/ScrollShooterGame/cBullet.Enemy.h>
-#include <ScrollShooterGame_/ScrollShooterGame/cEnemy.h>
+#include <ScrollShooterGame_/ScrollShooterGame/Bullet/cBullet.Player.h>
+#include <ScrollShooterGame_/ScrollShooterGame/Bullet/cBullet.Enemy.h>
+#include <ScrollShooterGame_/ScrollShooterGame/Enemy/cEnemy.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cPlayer.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cScrollShooterGame.h>
 

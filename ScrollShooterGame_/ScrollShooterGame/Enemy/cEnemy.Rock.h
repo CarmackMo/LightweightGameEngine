@@ -5,7 +5,7 @@
 
 #include <Engine/Math/sVector.h>
 
-#include <ScrollShooterGame_/ScrollShooterGame/cEnemy.h>
+#include <ScrollShooterGame_/ScrollShooterGame/Enemy/cEnemy.h>
 
 
 namespace ScrollShooterGame

@@ -4,6 +4,12 @@
     <Filter Include="Resource Files">
       <UniqueIdentifier>{38141d6c-74d4-40d8-8841-c45744437237}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Enemy">
+      <UniqueIdentifier>{8405c4d0-c686-4409-89a5-1494ad1c6e7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Bullet">
+      <UniqueIdentifier>{143fe844-b417-48fb-8b56-c4eee14d052a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resource Files\eaeAlien.ico">
@@ -34,23 +40,47 @@
     <ClInclude Include="cScrollShooterGame.h" />
     <ClInclude Include="cPlayer.h" />
     <ClInclude Include="cPhysicsDebugObject.h" />
-    <ClInclude Include="cBullet.h" />
-    <ClInclude Include="cEnemy.h" />
-    <ClInclude Include="cEnemy.Rock.h" />
-    <ClInclude Include="cEnemy.Alien.h" />
-    <ClInclude Include="cBullet.Player.h" />
-    <ClInclude Include="cBullet.Enemy.h" />
+    <ClInclude Include="Enemy\cEnemy.Alien.h">
+      <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\cEnemy.h">
+      <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\cEnemy.Rock.h">
+      <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet\cBullet.Enemy.h">
+      <Filter>Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet\cBullet.h">
+      <Filter>Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet\cBullet.Player.h">
+      <Filter>Bullet</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cScrollShooterGame.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
     <ClCompile Include="cPlayer.cpp" />
     <ClCompile Include="cPhysicsDebugObject.cpp" />
-    <ClCompile Include="cBullet.cpp" />
-    <ClCompile Include="cEnemy.cpp" />
-    <ClCompile Include="cEnemy.Rock.cpp" />
-    <ClCompile Include="cEnemy.Alien.cpp" />
-    <ClCompile Include="cBullet.Player.cpp" />
-    <ClCompile Include="cBullet.Enemy.cpp" />
+    <ClCompile Include="Enemy\cEnemy.Alien.cpp">
+      <Filter>Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy\cEnemy.cpp">
+      <Filter>Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy\cEnemy.Rock.cpp">
+      <Filter>Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet\cBullet.cpp">
+      <Filter>Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet\cBullet.Enemy.cpp">
+      <Filter>Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet\cBullet.Player.cpp">
+      <Filter>Bullet</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

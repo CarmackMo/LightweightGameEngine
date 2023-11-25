@@ -15,10 +15,10 @@
 #include <Engine/Results/Results.h>
 #include <Engine/Utilities/cSingleton.h>
 
+#include <ScrollShooterGame_/ScrollShooterGame/Bullet/cBullet.h>
+#include <ScrollShooterGame_/ScrollShooterGame/Enemy/cEnemy.Alien.h>
+#include <ScrollShooterGame_/ScrollShooterGame/Enemy/cEnemy.Rock.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cPhysicsDebugObject.h>
-#include <ScrollShooterGame_/ScrollShooterGame/cBullet.h>
-#include <ScrollShooterGame_/ScrollShooterGame/cEnemy.Alien.h>
-#include <ScrollShooterGame_/ScrollShooterGame/cEnemy.Rock.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cPlayer.h>
 
 
