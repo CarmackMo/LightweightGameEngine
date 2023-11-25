@@ -288,33 +288,33 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 				cBullet* newBullet = new cBullet();
 				newBullet->Initialize(m_player.GetRigidBody().position, Math::sVector(0, 1, 0));
 
-				newBullet->m_cleanUpCallback = [this, newBullet]() -> void
-					{
-						auto objIter = std::find(m_gameObjectList.begin(), m_gameObjectList.end(), newBullet);
-						if (objIter != m_gameObjectList.end())
-						{
-							m_gameObjectList.erase(objIter);
-						}
+				//newBullet->m_cleanUpCallback = [this, newBullet]() -> void
+				//	{
+				//		auto objIter = std::find(m_gameObjectList.begin(), m_gameObjectList.end(), newBullet);
+				//		if (objIter != m_gameObjectList.end())
+				//		{
+				//			m_gameObjectList.erase(objIter);
+				//		}
 
-						auto bulletIter = std::find(m_bulletList.begin(), m_bulletList.end(), newBullet);
-						if (bulletIter != m_bulletList.end())
-						{
-							m_bulletList.erase(bulletIter);
-						}
+				//		auto bulletIter = std::find(m_bulletList.begin(), m_bulletList.end(), newBullet);
+				//		if (bulletIter != m_bulletList.end())
+				//		{
+				//			m_bulletList.erase(bulletIter);
+				//		}
 
-						Physics::Collision::DeregisterCollider(newBullet->GetCollider());
-					};
+				//		Physics::Collision::DeregisterCollider(newBullet->GetCollider());
+				//	};
 
-				newBullet->GetCollider()->OnCollisionEnter = [this](Physics::cCollider* self, Physics::cCollider* other) -> void
-					{
-						dynamic_cast<cBullet*>(self->m_gameobject)->m_isCollide = true;
+				//newBullet->GetCollider()->OnCollisionEnter = [this](Physics::cCollider* self, Physics::cCollider* other) -> void
+				//	{
+				//		dynamic_cast<cBullet*>(self->m_gameobject)->m_isCollide = true;
 
-						if (dynamic_cast<cEnemy*>(other->m_gameobject) != nullptr)
-						{
-							UserOutput::ConsolePrint("Bullet hit enemy!! \n");
-							this->AddGameObjectCleanUpTask(self->m_gameobject);
-						}
-					};
+				//		if (dynamic_cast<cEnemy*>(other->m_gameobject) != nullptr)
+				//		{
+				//			UserOutput::ConsolePrint("Bullet hit enemy!! \n");
+				//			this->AddGameObjectCleanUpTask(self->m_gameobject);
+				//		}
+				//	};
 
 
 				Physics::Collision::RegisterCollider(newBullet->GetCollider());

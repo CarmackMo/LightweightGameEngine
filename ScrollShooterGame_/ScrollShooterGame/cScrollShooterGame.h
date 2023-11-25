@@ -128,7 +128,6 @@ namespace ScrollShooterGame
 
 		eae6320::Camera::cCamera m_camera;
 
-		std::vector<eae6320::cGameObject*> m_gameObjectList;
 
 		void InitializeCamera();
 
@@ -141,12 +140,15 @@ namespace ScrollShooterGame
 
 
 
+	public:
+
 		// TODO: temporary player object
 		cPlayer m_player;
 		cEnemy* m_enemy = nullptr;
 
 		std::vector<cBullet*> m_bulletList;
 
+		std::vector<eae6320::cGameObject*> m_gameObjectList;
 
 		std::queue<eae6320::cGameObject*> m_gameObjectCleanUpQueue;
 
