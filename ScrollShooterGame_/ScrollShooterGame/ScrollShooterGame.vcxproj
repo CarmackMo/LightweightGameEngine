@@ -37,6 +37,7 @@
     <ClInclude Include="Enemy\cEnemy.Alien.h" />
     <ClInclude Include="Enemy\cEnemy.h" />
     <ClInclude Include="Enemy\cEnemy.Rock.h" />
+    <ClInclude Include="Enemy\cEnemyGenerator.h" />
     <ClInclude Include="Resource Files\Resource.h" />
     <ClInclude Include="Resource Files\targetver.h" />
   </ItemGroup>
@@ -50,6 +51,7 @@
     <ClCompile Include="Enemy\cEnemy.Alien.cpp" />
     <ClCompile Include="Enemy\cEnemy.cpp" />
     <ClCompile Include="Enemy\cEnemy.Rock.cpp" />
+    <ClCompile Include="Enemy\cEnemyGenerator.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
   </ItemGroup>
   <ItemGroup>

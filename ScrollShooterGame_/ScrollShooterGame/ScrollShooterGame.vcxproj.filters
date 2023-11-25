@@ -58,6 +58,9 @@
     <ClInclude Include="Bullet\cBullet.Player.h">
       <Filter>Bullet</Filter>
     </ClInclude>
+    <ClInclude Include="Enemy\cEnemyGenerator.h">
+      <Filter>Enemy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cScrollShooterGame.cpp" />
@@ -81,6 +84,9 @@
     </ClCompile>
     <ClCompile Include="Bullet\cBullet.Player.cpp">
       <Filter>Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy\cEnemyGenerator.cpp">
+      <Filter>Enemy</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

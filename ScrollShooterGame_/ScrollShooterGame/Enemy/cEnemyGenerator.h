@@ -4,14 +4,13 @@
 //========
 
 #include <Engine/Math/sVector.h>
+#include <Engine/GameObject/cGameObject.h>
 
-#include <ScrollShooterGame_/ScrollShooterGame/Bullet/cBullet.h>
 
 
 namespace ScrollShooterGame
 {
-
-	class cBullet_Enemy : public cBullet
+	class cEnemyGenerator : public eae6320::cGameObject
 	{
 
 		// Interface
@@ -22,11 +21,14 @@ namespace ScrollShooterGame
 		// Initialization / Clean Up
 		//--------------------------
 
-		void Initialize(
+		virtual void Initialize(
 			eae6320::Math::sVector i_position = eae6320::Math::sVector(),
-			eae6320::Math::sVector i_velocity = eae6320::Math::sVector()) override;
+			eae6320::Math::sVector i_velocity = eae6320::Math::sVector());
 
-		void CleanUp() override;
+		// Update
+		//--------------------------
+
+		void UpdateBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate) override;
 
 
 		// Data
@@ -34,9 +36,9 @@ namespace ScrollShooterGame
 
 	private:
 
-		eae6320::Math::sVector m_velocity = eae6320::Math::sVector(0.0f, -1.0f, 0.0f);
-
-
 	};
 
+
 }
+
+
