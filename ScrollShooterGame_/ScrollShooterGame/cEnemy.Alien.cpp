@@ -27,7 +27,7 @@ void ScrollShooterGame::cEnemy_Alien::Initialize(eae6320::Math::sVector i_positi
 	// Initialize rigid body
 	{
 		m_rigidBody.position = i_position;
-		m_rigidBody.velocity = Math::sVector(-1.0f, -0.25f, 0.0f);
+		m_rigidBody.velocity = m_velocity;
 		m_rigidBody.isTrigger = true;
 	}
 
@@ -91,12 +91,12 @@ void ScrollShooterGame::cEnemy_Alien::UpdateBasedOnTime(const float i_elapsedSec
 {
 	cGameObject::UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
 
-	if (m_rigidBody.position.x < -4.0f)
+	if (m_rigidBody.position.x < -1 * m_Boundary)
 	{
-		m_rigidBody.velocity.x = 1.0f;
+		m_rigidBody.velocity.x = -1 * m_velocity.x;
 	}
-	else if (m_rigidBody.position.x > 4.0f)
+	else if (m_rigidBody.position.x > m_Boundary)
 	{
-		m_rigidBody.velocity.x = -1.0f;
+		m_rigidBody.velocity.x = m_velocity.x;
 	}
 }

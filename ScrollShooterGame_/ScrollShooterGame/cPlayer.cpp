@@ -8,7 +8,7 @@
 #include <Engine/UserInput/UserInput.h>
 #include <Engine/UserOutput/UserOutput.h>
 
-#include <ScrollShooterGame_/ScrollShooterGame/cBullet.h>
+#include <ScrollShooterGame_/ScrollShooterGame/cBullet.Player.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cEnemy.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cPlayer.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cScrollShooterGame.h>
@@ -120,8 +120,8 @@ void ScrollShooterGame::cPlayer::UpdateBasedOnInput()
 
 void ScrollShooterGame::cPlayer::ShootBullet()
 {
-	cBullet* newBullet = new cBullet();
-	newBullet->Initialize(GetRigidBody().position, Math::sVector(0, 1, 0));
+	cBullet* newBullet = new cBullet_Player();
+	newBullet->Initialize(GetRigidBody().position);
 
 	Physics::Collision::RegisterCollider(newBullet->GetCollider());
 

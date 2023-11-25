@@ -37,6 +37,9 @@ namespace ScrollShooterGame
 		uint16_t GetHP();
 
 
+		// Data
+		//=========================
+
 	protected:
 
 		uint16_t m_HP = 0;
