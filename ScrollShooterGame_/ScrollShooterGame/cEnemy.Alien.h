@@ -7,11 +7,10 @@
 
 #include <ScrollShooterGame_/ScrollShooterGame/cEnemy.h>
 
-
 namespace ScrollShooterGame
 {
 
-	class cEnemy_Rock : public cEnemy
+	class cEnemy_Alien : public cEnemy
 	{
 
 		// Interface
@@ -27,6 +26,12 @@ namespace ScrollShooterGame
 			eae6320::Math::sVector i_velocity = eae6320::Math::sVector());
 
 		void CleanUp() override;
+
+
+		// Update
+		//--------------------------
+
+		void UpdateBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate) override;
 
 	};
 

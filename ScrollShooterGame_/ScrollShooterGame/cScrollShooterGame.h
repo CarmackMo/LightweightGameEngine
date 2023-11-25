@@ -17,7 +17,7 @@
 
 #include <ScrollShooterGame_/ScrollShooterGame/cPhysicsDebugObject.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cBullet.h>
-#include <ScrollShooterGame_/ScrollShooterGame/cEnemy.h>
+#include <ScrollShooterGame_/ScrollShooterGame/cEnemy.Alien.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cEnemy.Rock.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cPlayer.h>
 
@@ -146,7 +146,9 @@ namespace ScrollShooterGame
 
 		// TODO: temporary player object
 		cPlayer* m_player = nullptr;
+		cEnemy_Alien* m_alien = nullptr;
 		cEnemy_Rock* m_rock = nullptr;
+
 
 		std::vector<cBullet*> m_bulletList;
 

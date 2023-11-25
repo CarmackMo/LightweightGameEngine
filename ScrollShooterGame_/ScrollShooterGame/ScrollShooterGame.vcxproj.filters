@@ -37,6 +37,7 @@
     <ClInclude Include="cBullet.h" />
     <ClInclude Include="cEnemy.h" />
     <ClInclude Include="cEnemy.Rock.h" />
+    <ClInclude Include="cEnemy.Alien.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cScrollShooterGame.cpp" />
@@ -46,5 +47,6 @@
     <ClCompile Include="cBullet.cpp" />
     <ClCompile Include="cEnemy.cpp" />
     <ClCompile Include="cEnemy.Rock.cpp" />
+    <ClCompile Include="cEnemy.Alien.cpp" />
   </ItemGroup>
 </Project>
