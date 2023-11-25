@@ -6,7 +6,7 @@
 #include <Engine/Physics/Collision.h>
 #include <Engine/UserOutput/UserOutput.h>
 
-#include <ScrollShooterGame_/ScrollShooterGame/cEnemy.h>
+#include <ScrollShooterGame_/ScrollShooterGame/cPlayer.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cBullet.Enemy.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cBullet.Player.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cScrollShooterGame.h>
@@ -17,7 +17,7 @@ using namespace eae6320;
 // Interface
 //=========================
 
-void ScrollShooterGame::cBullet_Player::Initialize(
+void ScrollShooterGame::cBullet_Enemy::Initialize(
 	eae6320::Math::sVector i_position,
 	eae6320::Math::sVector i_velocity)
 {
@@ -48,10 +48,10 @@ void ScrollShooterGame::cBullet_Player::Initialize(
 			{
 				m_isCollide = true;
 
-				if (dynamic_cast<cEnemy*>(other->m_gameobject) != nullptr ||
-					dynamic_cast<cBullet_Enemy*>(other->m_gameobject) != nullptr)
+				if (dynamic_cast<cPlayer*>(other->m_gameobject) != nullptr ||
+					dynamic_cast<cBullet_Player*>(other->m_gameobject) != nullptr)
 				{
-					UserOutput::ConsolePrint("Player bullet hit enemy!! \n");
+					UserOutput::ConsolePrint("Enemy bullet hit player!! \n");
 					cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(self->m_gameobject);
 				}
 			};
@@ -67,7 +67,7 @@ void ScrollShooterGame::cBullet_Player::Initialize(
 }
 
 
-void ScrollShooterGame::cBullet_Player::CleanUp()
+void ScrollShooterGame::cBullet_Enemy::CleanUp()
 {
 	auto game = cScrollShooterGame::Instance();
 

@@ -28,6 +28,7 @@
     <ResourceCompile Include="Resource Files\ScrollShooterGame.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cBullet.Enemy.h" />
     <ClInclude Include="cBullet.h" />
     <ClInclude Include="cBullet.Player.h" />
     <ClInclude Include="cEnemy.Alien.h" />
@@ -41,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cBullet.cpp" />
+    <ClCompile Include="cBullet.Enemy.cpp" />
     <ClCompile Include="cBullet.Player.cpp" />
     <ClCompile Include="cEnemy.Alien.cpp" />
     <ClCompile Include="cEnemy.cpp" />
