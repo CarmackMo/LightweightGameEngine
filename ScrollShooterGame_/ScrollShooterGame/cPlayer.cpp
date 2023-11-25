@@ -122,8 +122,9 @@ void ScrollShooterGame::cPlayer::UpdateBasedOnInput()
 
 void ScrollShooterGame::cPlayer::ShootBullet()
 {
+	Math::sVector selfPos = GetRigidBody().position;
 	cBullet_Player* newBullet = new cBullet_Player();
-	newBullet->Initialize(GetRigidBody().position);
+	newBullet->Initialize(Math::sVector(selfPos.x, selfPos.y + 1.5f, selfPos.z));
 
 	Physics::Collision::RegisterCollider(newBullet->GetCollider());
 

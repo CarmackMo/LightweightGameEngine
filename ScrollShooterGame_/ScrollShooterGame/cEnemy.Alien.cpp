@@ -124,8 +124,9 @@ void ScrollShooterGame::cEnemy_Alien::UpdateBasedOnTime(const float i_elapsedSec
 
 void ScrollShooterGame::cEnemy_Alien::ShootBullet()
 {
+	Math::sVector selfPos = GetRigidBody().position;
 	cBullet_Enemy* newBullet = new cBullet_Enemy();
-	newBullet->Initialize(GetRigidBody().position);
+	newBullet->Initialize(Math::sVector(selfPos.x, selfPos.y - 1.0f, selfPos.z));
 
 	Physics::Collision::RegisterCollider(newBullet->GetCollider());
 
