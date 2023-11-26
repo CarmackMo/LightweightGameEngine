@@ -5,6 +5,7 @@
 #include <Engine/Asserts/Asserts.h>
 #include <Engine/Graphics/Graphics.h>
 #include <Engine/Logging/Logging.h>
+#include <Engine/Math/Random.h>
 #include <Engine/ScopeGuard/cScopeGuard.h>
 #include <Engine/Time/Time.h>
 #include <Engine/UserOutput/UserOutput.h>
@@ -303,6 +304,11 @@ eae6320::cResult eae6320::Application::iApplication::Initialize_all( const sEntr
 	{
 		EAE6320_ASSERTF( false, "Application can't be initialized without Time" );
 		return result;
+	}
+	// Initialize Math::Random
+	if (!(result = Math::Random::Initialize()))
+	{
+		Logging::OutputError("Application initialized Random failed");
 	}
 	// Initialize the new application instance with entry point parameters
 	if ( !( result = Initialize_base( i_entryPointParameters ) ) )

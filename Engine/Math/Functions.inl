@@ -4,20 +4,85 @@
 // Includes
 //=========
 
-#include "Functions.h"
-
-#include "Constants.h"
+#include <Engine/Asserts/Asserts.h>
+#include <Engine/Math/Functions.h>
+#include <Engine/Math/Constants.h>
 
 #include <cmath>
-#include <Engine/Asserts/Asserts.h>
+
+
 
 // Interface
 //==========
+
+inline bool eae6320::Math::IsNAN(float val)
+{
+	volatile float val_ = val;
+	return val != val_;
+}
+
+
+inline bool eae6320::Math::IsZero(float val)
+{
+	return AreEqual_Eps(0.0f, val, .000000001f);
+}
+
+
+inline bool eae6320::Math::AreEqual_Eps(float lhs, float rhs, float maxDiff)
+{
+	return fabs(lhs - rhs) < maxDiff;
+}
+
+
+inline bool eae6320::Math::AreEqual_Rel(float lhs, float rhs, float maxDiff)
+{
+	if (lhs == rhs)
+		return true;
+
+	float relDiff;
+
+	if (fabs(rhs) > fabs(lhs))
+		relDiff = static_cast<float>(fabs((lhs - rhs) / rhs));
+	else
+		relDiff = static_cast<float>(fabs((lhs - rhs) / lhs));
+
+	return relDiff <= maxDiff;
+}
+
+
+inline bool eae6320::Math::AreEqual_Accurate(float lhs, float rhs, float maxDiff, unsigned int maxULPS)
+{
+	if (lhs == rhs)
+		return true;
+
+	double diff = fabs(lhs - rhs);
+
+	if (diff <= maxDiff)
+		return true;
+
+	unsigned int intDiff = abs(*reinterpret_cast<int*>(&lhs) - *reinterpret_cast<int*>(&rhs));
+
+	return intDiff <= maxULPS;
+}
+
+
+inline bool eae6320::Math::AreEqual(float lhs, float rhs, float maxDiff)
+{
+#if defined(EFFICIENT_COMPARE)
+	return AreEqual_Eps(lhs, rhs, maxDiff);
+#elif defined(ACCURATE_COMPARE)
+	return AreEqual_Accurate(lhs, rhs, maxDiff);
+#else
+	return AreEqual_Rel(lhs, rhs, maxDiff);
+#endif
+}
+
 
 constexpr float eae6320::Math::ConvertDegreesToRadians( const float i_degrees )
 {
 	return i_degrees * ( g_pi / 180.0f );
 }
+
 
 	template<typename tUnsignedInteger, class EnforceUnsigned>
 tUnsignedInteger eae6320::Math::RoundUpToMultiple( const tUnsignedInteger i_value, const tUnsignedInteger i_multiple )
@@ -31,6 +96,7 @@ tUnsignedInteger eae6320::Math::RoundUpToMultiple( const tUnsignedInteger i_valu
 	EAE6320_ASSERT( ( returnValue % i_multiple ) == 0 );
 	return returnValue;
 }
+
 
 	template<typename tUnsignedInteger, class EnforceUnsigned>
 tUnsignedInteger eae6320::Math::RoundUpToMultiple_powerOf2( const tUnsignedInteger i_value, const tUnsignedInteger i_multipleWhichIsAPowerOf2 )

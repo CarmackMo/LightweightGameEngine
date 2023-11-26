@@ -22,6 +22,7 @@
     <ClCompile Include="cMatrix_transformation.cpp" />
     <ClCompile Include="cQuaternion.cpp" />
     <ClCompile Include="Functions.cpp" />
+    <ClCompile Include="Random.cpp" />
     <ClCompile Include="sVector.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -29,6 +30,7 @@
     <ClInclude Include="Constants.h" />
     <ClInclude Include="cQuaternion.h" />
     <ClInclude Include="Functions.h" />
+    <ClInclude Include="Random.h" />
     <ClInclude Include="sVector.h" />
   </ItemGroup>
   <ItemGroup>
