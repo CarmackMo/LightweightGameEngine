@@ -16,8 +16,8 @@
 #include <Engine/Utilities/cSingleton.h>
 
 #include <ScrollShooterGame_/ScrollShooterGame/Bullet/cBullet.h>
-#include <ScrollShooterGame_/ScrollShooterGame/Enemy/cEnemy.Alien.h>
-#include <ScrollShooterGame_/ScrollShooterGame/Enemy/cEnemy.Rock.h>
+//#include <ScrollShooterGame_/ScrollShooterGame/Enemy/cEnemy.Alien.h>
+//#include <ScrollShooterGame_/ScrollShooterGame/Enemy/cEnemy.Rock.h>
 #include <ScrollShooterGame_/ScrollShooterGame/Enemy/cEnemyGenerator.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cPhysicsDebugObject.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cPlayer.h>
@@ -147,7 +147,6 @@ namespace ScrollShooterGame
 
 		// TODO: temporary player object
 		cPlayer* m_player = nullptr;
-		cEnemy_Alien* m_alien = nullptr;
 		cEnemyGenerator* m_enemyGenerator = nullptr;
 
 

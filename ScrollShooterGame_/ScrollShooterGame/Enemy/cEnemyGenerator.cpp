@@ -7,6 +7,7 @@
 #include <Engine/Physics/Collision.h>
 #include <Engine/Time/Time.h>
 
+#include <ScrollShooterGame_/ScrollShooterGame/Enemy/cEnemy.Alien.h>
 #include <ScrollShooterGame_/ScrollShooterGame/Enemy/cEnemy.Rock.h>
 #include <ScrollShooterGame_/ScrollShooterGame/Enemy/cEnemyGenerator.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cScrollShooterGame.h>
@@ -22,8 +23,10 @@ void ScrollShooterGame::cEnemyGenerator::Initialize(eae6320::Math::sVector i_pos
 {
 	// Initialize property
 	{
-		m_spawnCoolDown_rock = Math::Random::RandInRange(1.0f, 2.0f);
-		m_spawnCoolDown_alien = Math::Random::RandInRange(3.0f, 5.0f);
+		m_lastSpawnTime_rock = Time::ConvertTicksToSeconds(Time::GetCurrentSystemTimeTickCount());
+		m_lastSpawnTime_alien = Time::ConvertTicksToSeconds(Time::GetCurrentSystemTimeTickCount());
+		m_spawnCoolDown_rock = Math::Random::RandInRange(m_spawnCoolDownRange_rock.x, m_spawnCoolDownRange_rock.y);
+		m_spawnCoolDown_alien = Math::Random::RandInRange(m_spawnCoolDownRange_alien.x, m_spawnCoolDownRange_alien.y);
 	}
 
 	// Initialize rigid body
@@ -72,13 +75,14 @@ void ScrollShooterGame::cEnemyGenerator::UpdateBasedOnTime(const float i_elapsed
 	{
 		SpawnRock();
 		m_lastSpawnTime_rock = currentTime;
-		m_spawnCoolDown_rock = static_cast<double>(Math::Random::RandInRange(0.5f, 1.5f));
+		m_spawnCoolDown_rock = static_cast<double>(Math::Random::RandInRange(m_spawnCoolDownRange_rock.x, m_spawnCoolDownRange_rock.y));
 	}
 	if (currentTime - m_lastSpawnTime_alien >= m_spawnCoolDown_alien)
 	{
-		// TODO
+		SpawnAlien();
+		m_lastSpawnTime_alien = currentTime;
+		m_spawnCoolDown_alien = static_cast<double>(Math::Random::RandInRange(m_spawnCoolDownRange_alien.x, m_spawnCoolDownRange_alien.y));
 	}
-
 }
 
 
@@ -93,17 +97,33 @@ void ScrollShooterGame::cEnemyGenerator::SpawnRock()
 	rockPos.z = GetRigidBody().position.z;
 
 	Math::sVector rockSpeed;
-	rockSpeed.y = Math::Random::RandInRange(-2.0f, -1.0f);
+	rockSpeed.y = Math::Random::RandInRange(m_enemySpeedRange_rock.x, m_enemySpeedRange_rock.y);
 
 	cEnemy_Rock* rock = new cEnemy_Rock();
 	rock->Initialize(rockPos, rockSpeed);
-
 
 	Physics::Collision::RegisterCollider(rock->GetCollider());
 
 	auto game = cScrollShooterGame::Instance();
 	game->m_gameObjectList.push_back(rock);
 
+}
+
+
+void ScrollShooterGame::cEnemyGenerator::SpawnAlien()
+{
+	Math::sVector alienPos;
+	alienPos.x = GetRigidBody().position.x + Math::Random::RandInRange(m_width * -0.5f, m_width * 0.5f);
+	alienPos.y = GetRigidBody().position.y - 1.0f;
+	alienPos.z = GetRigidBody().position.z;
+
+	cEnemy_Alien* alien = new cEnemy_Alien();
+	alien->Initialize(alienPos);
+
+	Physics::Collision::RegisterCollider(alien->GetCollider());
+
+	auto game = cScrollShooterGame::Instance();
+	game->m_gameObjectList.push_back(alien);
 }
 
 

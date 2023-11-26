@@ -285,14 +285,6 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 		m_gameObjectList.push_back(m_player);
 	}
 
-	// TODO: temporary code for enemy_alien object
-	{
-		m_alien = new cEnemy_Alien();
-		m_alien->Initialize(Math::sVector(0.0f, 4.0f, -15.0f), Math::sVector(0.0f, 0.0f, 0.0f));
-
-		m_gameObjectList.push_back(m_alien);
-	}
-
 	// TODO: temporary code for enemy generator object
 	{
 		m_enemyGenerator = new cEnemyGenerator();
@@ -321,7 +313,6 @@ void ScrollShooterGame::cScrollShooterGame::InitializeCollisionSystem()
 	std::vector<Physics::cCollider*> colliderList;
 
 	colliderList.push_back(m_player->GetCollider());
-	colliderList.push_back(m_alien->GetCollider());
 	colliderList.push_back(m_enemyGenerator->GetCollider());
 
 	Physics::Collision::Initialize(colliderList, Physics::Collision::BroadPhase_BVH | Physics::Collision::NarrowPhase_Overlaps);
