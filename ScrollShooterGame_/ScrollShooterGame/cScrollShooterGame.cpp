@@ -280,7 +280,7 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 	// TODO: temporary code for player object
 	{
 		m_player = new cPlayer();
-		m_player->Initialize(Math::sVector(0.0f, 0.0f, -5.0f), Math::sVector());
+		m_player->Initialize(Math::sVector(0.0f, 0.0f, -15.0f), Math::sVector());
 
 		m_gameObjectList.push_back(m_player);
 	}
@@ -288,17 +288,17 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 	// TODO: temporary code for enemy_alien object
 	{
 		m_alien = new cEnemy_Alien();
-		m_alien->Initialize(Math::sVector(0.0f, 4.0f, -5.0f), Math::sVector(0.0f, 0.0f, 0.0f));
+		m_alien->Initialize(Math::sVector(0.0f, 4.0f, -15.0f), Math::sVector(0.0f, 0.0f, 0.0f));
 
 		m_gameObjectList.push_back(m_alien);
 	}
 
-	// TODO: temporary code for enemy_rock object
+	// TODO: temporary code for enemy generator object
 	{
-		m_rock = new cEnemy_Rock();
-		m_rock->Initialize(Math::sVector(2.0f, 4.0f, -5.0f), Math::sVector(0.0f, 0.0f, 0.0f));
+		m_enemyGenerator = new cEnemyGenerator();
+		m_enemyGenerator->Initialize(Math::sVector(0.0f, 9.0f, -15.0f), Math::sVector(0.0f, 0.0f, 0.0f));
 
-		m_gameObjectList.push_back(m_rock);
+		m_gameObjectList.push_back(m_enemyGenerator);
 	}
 }
 
@@ -322,7 +322,7 @@ void ScrollShooterGame::cScrollShooterGame::InitializeCollisionSystem()
 
 	colliderList.push_back(m_player->GetCollider());
 	colliderList.push_back(m_alien->GetCollider());
-	colliderList.push_back(m_rock->GetCollider());
+	colliderList.push_back(m_enemyGenerator->GetCollider());
 
 	Physics::Collision::Initialize(colliderList, Physics::Collision::BroadPhase_BVH | Physics::Collision::NarrowPhase_Overlaps);
 }

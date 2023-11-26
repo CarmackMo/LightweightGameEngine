@@ -50,7 +50,7 @@ namespace ScrollShooterGame
 
 	private:
 
-		double m_shootCoolDown = 0.5f;
+		double m_shootCoolDown = 0.4f;
 
 		double m_lastShoot_second = 0;
 

@@ -21,7 +21,7 @@ void ScrollShooterGame::cEnemy_Rock::Initialize(eae6320::Math::sVector i_positio
 {
 	// Initialize property
 	{
-		m_HP = 2;
+		m_HP = 1;
 	}
 
 	// Initialize rigid body

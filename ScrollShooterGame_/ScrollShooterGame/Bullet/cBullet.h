@@ -40,7 +40,7 @@ namespace ScrollShooterGame
 
 	private:
 
-		float m_boundary = 12.0f;
+		float m_boundary = 15.0f;
 
 
 

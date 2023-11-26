@@ -3,9 +3,11 @@
 // Includes
 //========
 
-#include <Engine/Math/sVector.h>
 #include <Engine/GameObject/cGameObject.h>
+#include <Engine/Math/sVector.h>
 
+// TODO
+#include <Engine/Graphics/cLine.h>
 
 
 namespace ScrollShooterGame
@@ -21,9 +23,12 @@ namespace ScrollShooterGame
 		// Initialization / Clean Up
 		//--------------------------
 
-		virtual void Initialize(
+		void Initialize(
 			eae6320::Math::sVector i_position = eae6320::Math::sVector(),
 			eae6320::Math::sVector i_velocity = eae6320::Math::sVector());
+
+		void CleanUp() override;
+
 
 		// Update
 		//--------------------------
@@ -31,10 +36,49 @@ namespace ScrollShooterGame
 		void UpdateBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate) override;
 
 
+		// Implementation
+		//=========================
+
+	private:
+
+		void SpawnRock();
+
+
+
 		// Data
 		//=========================
 
 	private:
+
+		float m_width = 10.0f;
+
+		double m_spawnCoolDown_rock = 0.0;
+		double m_spawnCoolDown_alien = 0.0;
+
+		double m_lastSpawnTime_rock = 0.0;
+		double m_lastSpawnTime_alien = 0.0;
+
+
+
+
+		// TODO: Debug
+		//=========================
+
+	public:
+
+		bool m_isCollide = false;
+		eae6320::Graphics::cLine* m_colliderLine = nullptr;
+		eae6320::Graphics::cLine* m_collisionLine = nullptr;
+
+		void InitializeColliderLine();
+
+		void SetIsCollide(bool isCollide)
+		{
+			m_isCollide = isCollide;
+		}
+
+		eae6320::Graphics::cLine* GetColliderLine() const;
+
 
 	};
 

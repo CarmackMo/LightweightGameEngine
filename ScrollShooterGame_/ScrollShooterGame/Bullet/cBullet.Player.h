@@ -34,7 +34,7 @@ namespace ScrollShooterGame
 
 	private:
 
-		eae6320::Math::sVector m_velocity = eae6320::Math::sVector(0, 1, 0);
+		eae6320::Math::sVector m_velocity = eae6320::Math::sVector(0, 4, 0);
 
 
 	};
