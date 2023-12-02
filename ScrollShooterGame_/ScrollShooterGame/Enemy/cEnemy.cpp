@@ -3,6 +3,7 @@
 //========
 
 #include <Engine/Graphics/Graphics.h>
+#include <Engine/Physics/Collision.h>
 
 #include <ScrollShooterGame_/ScrollShooterGame/Enemy/cEnemy.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cScrollShooterGame.h>
@@ -12,6 +13,21 @@ using namespace eae6320;
 
 // Interface
 //=========================
+
+void ScrollShooterGame::cEnemy::CleanUp()
+{
+	Physics::Collision::DeregisterCollider(this->GetCollider());
+
+	auto game = cScrollShooterGame::Instance();
+	auto objIter = std::find(game->m_gameObjectList_sp.begin(), game->m_gameObjectList_sp.end(), this->GetSelf());
+	if (objIter != game->m_gameObjectList_sp.end())
+	{
+		game->m_gameObjectList_sp.erase(objIter);
+	}
+
+	cGameObject::CleanUp();
+}
+
 
 void ScrollShooterGame::cEnemy::UpdateBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate)
 {

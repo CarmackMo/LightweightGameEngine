@@ -2,7 +2,6 @@
 // Includes
 //========
 
-#include <Engine/Physics/Collision.h>
 #include <Engine/UserOutput/UserOutput.h>
 
 #include <ScrollShooterGame_/ScrollShooterGame/Bullet/cBullet.Player.h>
@@ -52,8 +51,9 @@ void ScrollShooterGame::cEnemy_Rock::Initialize(
 		m_collider->OnCollisionEnter = [this](Physics::cCollider* self, Physics::cCollider* other) -> void
 			{
 				m_isCollide = true;
-				if (dynamic_cast<cBullet_Player*>(other->m_gameobject.lock().get()) != nullptr ||
-					dynamic_cast<cPlayer*>(other->m_gameobject.lock().get()) != nullptr)
+
+				if (std::dynamic_pointer_cast<cBullet_Player>(other->m_gameobject.lock()) != nullptr ||
+					std::dynamic_pointer_cast<cPlayer>(other->m_gameobject.lock()) != nullptr)
 				{
 					m_HP--;
 					if (m_HP == 0)
@@ -72,19 +72,4 @@ void ScrollShooterGame::cEnemy_Rock::Initialize(
 				m_isCollide = false;
 			};
 	}
-}
-
-
-void ScrollShooterGame::cEnemy_Rock::CleanUp()
-{
-	Physics::Collision::DeregisterCollider(this->GetCollider());
-
-	auto game = cScrollShooterGame::Instance();
-	auto objIter = std::find(game->m_gameObjectList_sp.begin(), game->m_gameObjectList_sp.end(), this->GetSelf());
-	if (objIter != game->m_gameObjectList_sp.end())
-	{
-		game->m_gameObjectList_sp.erase(objIter);
-	}
-
-	cGameObject::CleanUp();
 }
