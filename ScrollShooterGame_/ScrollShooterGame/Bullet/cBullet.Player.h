@@ -26,8 +26,6 @@ namespace ScrollShooterGame
 			eae6320::Math::sVector i_position = eae6320::Math::sVector(),
 			eae6320::Math::sVector i_velocity = eae6320::Math::sVector()) override;
 
-		void CleanUp() override;
-
 
 		// Data
 		//=========================

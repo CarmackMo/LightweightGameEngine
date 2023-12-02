@@ -3,7 +3,6 @@
 //========
 
 #include <Engine/Physics/cColliderBase.h>
-#include <Engine/Physics/Collision.h>
 #include <Engine/UserOutput/UserOutput.h>
 
 #include <ScrollShooterGame_/ScrollShooterGame/Bullet/cBullet.Enemy.h>
@@ -48,8 +47,8 @@ void ScrollShooterGame::cBullet_Player::Initialize(
 			{
 				m_isCollide = true;
 
-				if (dynamic_cast<cEnemy*>(other->m_gameobject.lock().get()) != nullptr ||
-					dynamic_cast<cBullet_Enemy*>(other->m_gameobject.lock().get()) != nullptr)
+				if (std::dynamic_pointer_cast<cEnemy>(other->m_gameobject.lock()) != nullptr ||
+					std::dynamic_pointer_cast<cBullet_Enemy>(other->m_gameobject.lock()) != nullptr)
 				{
 					UserOutput::ConsolePrint("Player bullet hit enemy!! \n");
 					cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(self->m_gameobject.lock());
@@ -61,28 +60,7 @@ void ScrollShooterGame::cBullet_Player::Initialize(
 
 		m_collider->OnCollisionExit = [this](Physics::cCollider* self, Physics::cCollider* other) -> void
 			{
-				dynamic_cast<cBullet*>(self->m_gameobject.lock().get())->m_isCollide = false;
+				std::dynamic_pointer_cast<cBullet>(self->m_gameobject.lock())->m_isCollide = false;
 			};
 	}
-}
-
-
-void ScrollShooterGame::cBullet_Player::CleanUp()
-{
-	Physics::Collision::DeregisterCollider(this->GetCollider());
-
-	auto game = cScrollShooterGame::Instance();
-	auto objIter = std::find(game->m_gameObjectList_sp.begin(), game->m_gameObjectList_sp.end(), this->m_self);
-	if (objIter != game->m_gameObjectList_sp.end())
-	{
-		game->m_gameObjectList_sp.erase(objIter);
-	}
-
-	auto bulletIter = std::find(game->m_bulletList.begin(), game->m_bulletList.end(), this);
-	if (bulletIter != game->m_bulletList.end())
-	{
-		game->m_bulletList.erase(bulletIter);
-	}
-
-	cGameObject::CleanUp();
 }

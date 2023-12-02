@@ -3,6 +3,7 @@
 //========
 
 #include <Engine/Graphics/Graphics.h>
+#include <Engine/Physics/Collision.h>
 
 #include <ScrollShooterGame_/ScrollShooterGame/Bullet/cBullet.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cScrollShooterGame.h>
@@ -12,6 +13,27 @@ using namespace eae6320;
 
 // Interface
 //=========================
+
+void ScrollShooterGame::cBullet::CleanUp()
+{
+	Physics::Collision::DeregisterCollider(this->GetCollider());
+
+	auto game = cScrollShooterGame::Instance();
+	auto objIter = std::find(game->m_gameObjectList_sp.begin(), game->m_gameObjectList_sp.end(), this->m_self);
+	if (objIter != game->m_gameObjectList_sp.end())
+	{
+		game->m_gameObjectList_sp.erase(objIter);
+	}
+
+	auto bulletIter = std::find(game->m_bulletList.begin(), game->m_bulletList.end(), this);
+	if (bulletIter != game->m_bulletList.end())
+	{
+		game->m_bulletList.erase(bulletIter);
+	}
+
+	cGameObject::CleanUp();
+}
+
 
 void ScrollShooterGame::cBullet::UpdateBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate)
 {

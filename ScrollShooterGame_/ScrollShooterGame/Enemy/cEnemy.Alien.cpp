@@ -2,6 +2,7 @@
 // Includes
 //========
 
+#include <Engine/Physics/Collision.h>
 #include <Engine/Time/Time.h>
 #include <Engine/UserOutput/UserOutput.h>
 
