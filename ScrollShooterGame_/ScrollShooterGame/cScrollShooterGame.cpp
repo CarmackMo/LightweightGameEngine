@@ -220,6 +220,11 @@ eae6320::cResult ScrollShooterGame::cScrollShooterGame::Initialize()
 	InitializeCollisionSystem();
 
 
+	m_smartPtrTest.SmartPtrUnitTest();
+
+	m_smartPtrTest.WeakPtrUnitTest();
+
+
 	return Results::Success;
 }
 

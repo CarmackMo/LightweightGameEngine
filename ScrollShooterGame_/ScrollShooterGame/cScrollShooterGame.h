@@ -14,10 +14,9 @@
 #include <Engine/Physics/cRigidBody.h>
 #include <Engine/Results/Results.h>
 #include <Engine/Utilities/cSingleton.h>
+#include <Engine/Utilities/SmartPtrs.h>
 
 #include <ScrollShooterGame_/ScrollShooterGame/Bullet/cBullet.h>
-//#include <ScrollShooterGame_/ScrollShooterGame/Enemy/cEnemy.Alien.h>
-//#include <ScrollShooterGame_/ScrollShooterGame/Enemy/cEnemy.Rock.h>
 #include <ScrollShooterGame_/ScrollShooterGame/Enemy/cEnemyGenerator.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cPhysicsDebugObject.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cPlayer.h>
@@ -155,6 +154,8 @@ namespace ScrollShooterGame
 		std::vector<eae6320::cGameObject*> m_gameObjectList;
 
 		std::queue<eae6320::cGameObject*> m_gameObjectCleanUpQueue;
+
+
 
 
 	public:
