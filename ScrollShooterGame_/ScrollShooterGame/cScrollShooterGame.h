@@ -33,7 +33,6 @@
 
 
 
-
 // Class Declaration
 //==================
 
@@ -154,6 +153,10 @@ namespace ScrollShooterGame
 		std::vector<eae6320::cGameObject*> m_gameObjectList;
 
 		std::queue<eae6320::cGameObject*> m_gameObjectCleanUpQueue;
+
+
+
+		eae6320::SmartPtrTest::SmartPtrTest m_smartPtrTest;
 
 
 
