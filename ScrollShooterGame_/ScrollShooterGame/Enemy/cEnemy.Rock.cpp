@@ -77,11 +77,20 @@ void ScrollShooterGame::cEnemy_Rock::CleanUp()
 {
 	auto game = cScrollShooterGame::Instance();
 
-	auto objIter = std::find(game->m_gameObjectList.begin(), game->m_gameObjectList.end(), this);
-	if (objIter != game->m_gameObjectList.end())
+	// TODO
+	//auto objIter = std::find(game->m_gameObjectList.begin(), game->m_gameObjectList.end(), this);
+	//if (objIter != game->m_gameObjectList.end())
+	//{
+	//	game->m_gameObjectList.erase(objIter);
+	//}
+
+
+	auto objIter = std::find(game->m_gameObjectList_sp.begin(), game->m_gameObjectList_sp.end(), this);
+	if (objIter != game->m_gameObjectList_sp.end())
 	{
-		game->m_gameObjectList.erase(objIter);
+		game->m_gameObjectList_sp.erase(objIter);
 	}
+
 
 	Physics::Collision::DeregisterCollider(this->GetCollider());
 }

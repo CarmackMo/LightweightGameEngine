@@ -6,6 +6,7 @@
 #include <Engine/Math/Random.h>
 #include <Engine/Physics/Collision.h>
 #include <Engine/Time/Time.h>
+#include <Engine/Utilities/SmartPtrs.h>
 
 #include <ScrollShooterGame_/ScrollShooterGame/Enemy/cEnemy.Alien.h>
 #include <ScrollShooterGame_/ScrollShooterGame/Enemy/cEnemy.Rock.h>
@@ -56,11 +57,20 @@ void ScrollShooterGame::cEnemyGenerator::CleanUp()
 {
 	auto game = cScrollShooterGame::Instance();
 
-	auto objIter = std::find(game->m_gameObjectList.begin(), game->m_gameObjectList.end(), this);
-	if (objIter != game->m_gameObjectList.end())
+	// TODO
+	//auto objIter = std::find(game->m_gameObjectList.begin(), game->m_gameObjectList.end(), this);
+	//if (objIter != game->m_gameObjectList.end())
+	//{
+	//	game->m_gameObjectList.erase(objIter);
+	//}
+
+
+	auto objIter = std::find(game->m_gameObjectList_sp.begin(), game->m_gameObjectList_sp.end(), this);
+	if (objIter != game->m_gameObjectList_sp.end())
 	{
-		game->m_gameObjectList.erase(objIter);
+		game->m_gameObjectList_sp.erase(objIter);
 	}
+
 
 	Physics::Collision::DeregisterCollider(this->GetCollider());
 }
@@ -105,7 +115,8 @@ void ScrollShooterGame::cEnemyGenerator::SpawnRock()
 	Physics::Collision::RegisterCollider(rock->GetCollider());
 
 	auto game = cScrollShooterGame::Instance();
-	game->m_gameObjectList.push_back(rock);
+	//game->m_gameObjectList.push_back(rock);
+	game->m_gameObjectList_sp.push_back(SmartPtr<cGameObject>(rock));
 
 }
 
@@ -123,7 +134,8 @@ void ScrollShooterGame::cEnemyGenerator::SpawnAlien()
 	Physics::Collision::RegisterCollider(alien->GetCollider());
 
 	auto game = cScrollShooterGame::Instance();
-	game->m_gameObjectList.push_back(alien);
+	//game->m_gameObjectList.push_back(alien);
+	game->m_gameObjectList_sp.push_back(SmartPtr<cGameObject>(alien));
 }
 
 

@@ -5,6 +5,7 @@
 #include <Engine/Physics/Collision.h>
 #include <Engine/Time/Time.h>
 #include <Engine/UserOutput/UserOutput.h>
+#include <Engine/Utilities/SmartPtrs.h>
 
 #include <ScrollShooterGame_/ScrollShooterGame/Bullet/cBullet.Enemy.h>
 #include <ScrollShooterGame_/ScrollShooterGame/Bullet/cBullet.Player.h>
@@ -80,11 +81,19 @@ void ScrollShooterGame::cEnemy_Alien::CleanUp()
 {
 	auto game = cScrollShooterGame::Instance();
 
-	auto objIter = std::find(game->m_gameObjectList.begin(), game->m_gameObjectList.end(), this);
-	if (objIter != game->m_gameObjectList.end())
+	// TODO
+	//auto objIter = std::find(game->m_gameObjectList.begin(), game->m_gameObjectList.end(), this);
+	//if (objIter != game->m_gameObjectList.end())
+	//{
+	//	game->m_gameObjectList.erase(objIter);
+	//}
+
+	auto objIter = std::find(game->m_gameObjectList_sp.begin(), game->m_gameObjectList_sp.end(), this);
+	if (objIter != game->m_gameObjectList_sp.end())
 	{
-		game->m_gameObjectList.erase(objIter);
+		game->m_gameObjectList_sp.erase(objIter);
 	}
+
 
 	Physics::Collision::DeregisterCollider(this->GetCollider());
 }
@@ -131,6 +140,7 @@ void ScrollShooterGame::cEnemy_Alien::ShootBullet()
 	Physics::Collision::RegisterCollider(newBullet->GetCollider());
 
 	auto game = cScrollShooterGame::Instance();
-	game->m_gameObjectList.push_back(newBullet);
+	//game->m_gameObjectList.push_back(newBullet);
+	game->m_gameObjectList_sp.push_back(SmartPtr<cGameObject>(newBullet));
 	game->m_bulletList.push_back(newBullet);
 }
