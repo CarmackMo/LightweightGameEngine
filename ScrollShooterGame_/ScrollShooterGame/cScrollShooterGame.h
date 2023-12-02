@@ -149,10 +149,9 @@ namespace ScrollShooterGame
 
 		std::vector<cBullet*> m_bulletList;
 
-		std::vector<std::shared_ptr<eae6320::cGameObject>> m_gameObjectList_sp;
+		std::vector<std::shared_ptr<eae6320::cGameObject>> m_gameObjectList;
 
-		std::queue<std::shared_ptr<eae6320::cGameObject>> m_gameObjectCleanUpQueue_sp;
-
+		std::queue<std::shared_ptr<eae6320::cGameObject>> m_gameObjectCleanUpQueue;
 
 
 

@@ -74,10 +74,10 @@ void ScrollShooterGame::cPlayer::CleanUp()
 	Physics::Collision::DeregisterCollider(this->GetCollider());
 
 	auto game = cScrollShooterGame::Instance();
-	auto objIter = std::find(game->m_gameObjectList_sp.begin(), game->m_gameObjectList_sp.end(), this->m_self);
-	if (objIter != game->m_gameObjectList_sp.end())
+	auto objIter = std::find(game->m_gameObjectList.begin(), game->m_gameObjectList.end(), this->m_self);
+	if (objIter != game->m_gameObjectList.end())
 	{
-		game->m_gameObjectList_sp.erase(objIter);
+		game->m_gameObjectList.erase(objIter);
 	}
 
 	cGameObject::CleanUp();
@@ -137,7 +137,7 @@ void ScrollShooterGame::cPlayer::ShootBullet()
 	Physics::Collision::RegisterCollider(newBullet->GetCollider());
 
 	auto game = cScrollShooterGame::Instance();
-	game->m_gameObjectList_sp.push_back(newBullet->GetSelf());
+	game->m_gameObjectList.push_back(newBullet->GetSelf());
 	game->m_bulletList.push_back(newBullet);
 }
 

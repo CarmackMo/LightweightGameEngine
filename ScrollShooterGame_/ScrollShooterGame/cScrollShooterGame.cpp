@@ -46,10 +46,10 @@ void ScrollShooterGame::cScrollShooterGame::UpdateSimulationBasedOnInput()
 {
 	m_camera->UpdateBasedOnInput();
 
-	size_t listSize = m_gameObjectList_sp.size();
+	size_t listSize = m_gameObjectList.size();
 	for (size_t i = 0; i < listSize; i++)
 	{
-		m_gameObjectList_sp[i]->UpdateBasedOnInput();
+		m_gameObjectList[i]->UpdateBasedOnInput();
 	}
 	
 }
@@ -59,10 +59,10 @@ void ScrollShooterGame::cScrollShooterGame::UpdateSimulationBasedOnTime(const fl
 {
 	m_camera->UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
 
-	size_t listSize = m_gameObjectList_sp.size();
+	size_t listSize = m_gameObjectList.size();
 	for (size_t i = 0; i < listSize; i++)
 	{
-		m_gameObjectList_sp[i]->UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
+		m_gameObjectList[i]->UpdateBasedOnTime(i_elapsedSecondCount_sinceLastUpdate);
 	}
 
 
@@ -96,22 +96,22 @@ void ScrollShooterGame::cScrollShooterGame::SubmitDataToBeRendered(
 
 	// Submit normal render data - smart pointers
 	{
-		size_t renderObjectNum = m_gameObjectList_sp.size();
-		size_t arraySize = m_gameObjectList_sp.size();
+		size_t renderObjectNum = m_gameObjectList.size();
+		size_t arraySize = m_gameObjectList.size();
 
 		Graphics::ConstantBufferFormats::sNormalRender* normalRenderDataArray = new Graphics::ConstantBufferFormats::sNormalRender[arraySize];
 		
 		// Render data of game objects
-		for (size_t i = 0; i < m_gameObjectList_sp.size(); i++)
+		for (size_t i = 0; i < m_gameObjectList.size(); i++)
 		{
-			if (m_gameObjectList_sp[i] == nullptr ||
-				m_gameObjectList_sp[i]->GetMesh() == nullptr ||
-				m_gameObjectList_sp[i]->GetEffect() == nullptr)
+			if (m_gameObjectList[i] == nullptr ||
+				m_gameObjectList[i]->GetMesh() == nullptr ||
+				m_gameObjectList[i]->GetEffect() == nullptr)
 				continue;
 
 			normalRenderDataArray[i].Initialize(
-				m_gameObjectList_sp[i]->GetMesh(), m_gameObjectList_sp[i]->GetEffect(),
-				m_gameObjectList_sp[i]->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
+				m_gameObjectList[i]->GetMesh(), m_gameObjectList[i]->GetEffect(),
+				m_gameObjectList[i]->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
 		}
 
 		Graphics::SubmitNormalRenderData(normalRenderDataArray, static_cast<uint32_t>(arraySize));
@@ -259,11 +259,11 @@ eae6320::cResult ScrollShooterGame::cScrollShooterGame::CleanUp()
 	m_camera->CleanUp();
 
 
-	for (std::shared_ptr<cGameObject> object : m_gameObjectList_sp)
+	for (std::shared_ptr<cGameObject> object : m_gameObjectList)
 	{
-		m_gameObjectCleanUpQueue_sp.push(object);
+		m_gameObjectCleanUpQueue.push(object);
 	}
-	m_gameObjectList_sp.clear();
+	m_gameObjectList.clear();
 
 
 	CleanUpGameObject();
@@ -290,7 +290,7 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 		m_player = new cPlayer();
 		m_player->Initialize(Math::sVector(0.0f, 0.0f, -15.0f), Math::sVector());
 
-		m_gameObjectList_sp.push_back(m_player->GetSelf());
+		m_gameObjectList.push_back(m_player->GetSelf());
 	}
 
 	// TODO: temporary code for enemy generator object
@@ -298,17 +298,17 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 		m_enemyGenerator = new cEnemyGenerator();
 		m_enemyGenerator->Initialize(Math::sVector(0.0f, 9.0f, -15.0f), Math::sVector(0.0f, 0.0f, 0.0f));
 
-		m_gameObjectList_sp.push_back(m_enemyGenerator->GetSelf());
+		m_gameObjectList.push_back(m_enemyGenerator->GetSelf());
 	}
 }
 
 
 void ScrollShooterGame::cScrollShooterGame::CleanUpGameObject()
 {
-	while (m_gameObjectCleanUpQueue_sp.empty() == false)
+	while (m_gameObjectCleanUpQueue.empty() == false)
 	{
-		std::shared_ptr<cGameObject> object = m_gameObjectCleanUpQueue_sp.front();
-		m_gameObjectCleanUpQueue_sp.pop();
+		std::shared_ptr<cGameObject> object = m_gameObjectCleanUpQueue.front();
+		m_gameObjectCleanUpQueue.pop();
 		
 		EAE6320_ASSERT(object != nullptr);
 		object->CleanUp();
@@ -330,7 +330,7 @@ void ScrollShooterGame::cScrollShooterGame::InitializeCollisionSystem()
 
 void ScrollShooterGame::cScrollShooterGame::AddGameObjectCleanUpTask(std::shared_ptr<cGameObject> i_gameObject)
 {
-	m_gameObjectCleanUpQueue_sp.push(i_gameObject);
+	m_gameObjectCleanUpQueue.push(i_gameObject);
 }
 
 

@@ -19,10 +19,10 @@ void ScrollShooterGame::cEnemy::CleanUp()
 	Physics::Collision::DeregisterCollider(this->GetCollider());
 
 	auto game = cScrollShooterGame::Instance();
-	auto objIter = std::find(game->m_gameObjectList_sp.begin(), game->m_gameObjectList_sp.end(), this->GetSelf());
-	if (objIter != game->m_gameObjectList_sp.end())
+	auto objIter = std::find(game->m_gameObjectList.begin(), game->m_gameObjectList.end(), this->GetSelf());
+	if (objIter != game->m_gameObjectList.end())
 	{
-		game->m_gameObjectList_sp.erase(objIter);
+		game->m_gameObjectList.erase(objIter);
 	}
 
 	cGameObject::CleanUp();
