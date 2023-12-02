@@ -57,14 +57,14 @@ void ScrollShooterGame::cEnemy_Alien::Initialize(
 		m_collider->OnCollisionEnter = [this](Physics::cCollider* self, Physics::cCollider* other) -> void
 			{
 				m_isCollide = true;
-				if (dynamic_cast<cBullet_Player*>(std::shared_ptr<cGameObject>(other->m_gameobject).get()) != nullptr ||
-					dynamic_cast<cPlayer*>(std::shared_ptr<cGameObject>(other->m_gameobject).get()) != nullptr)
+				if (dynamic_cast<cBullet_Player*>(other->m_gameobject.lock().get()) != nullptr ||
+					dynamic_cast<cPlayer*>(other->m_gameobject.lock().get()) != nullptr)
 				{
 					m_HP--;
 					if (m_HP == 0)
 					{
 						UserOutput::ConsolePrint("Enemy is Killed!! \n");
-						cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(std::shared_ptr<cGameObject>(self->m_gameobject));
+						cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(self->m_gameobject.lock());
 					}
 				}
 			};
@@ -85,14 +85,6 @@ void ScrollShooterGame::cEnemy_Alien::CleanUp()
 	Physics::Collision::DeregisterCollider(this->GetCollider());
 
 	auto game = cScrollShooterGame::Instance();
-
-	// TODO
-	//auto objIter = std::find(game->m_gameObjectList.begin(), game->m_gameObjectList.end(), this);
-	//if (objIter != game->m_gameObjectList.end())
-	//{
-	//	game->m_gameObjectList.erase(objIter);
-	//}
-
 	auto objIter = std::find(game->m_gameObjectList_sp.begin(), game->m_gameObjectList_sp.end(), this->m_self);
 	if (objIter != game->m_gameObjectList_sp.end())
 	{
@@ -144,7 +136,6 @@ void ScrollShooterGame::cEnemy_Alien::ShootBullet()
 	Physics::Collision::RegisterCollider(newBullet->GetCollider());
 
 	auto game = cScrollShooterGame::Instance();
-	//game->m_gameObjectList.push_back(newBullet);
 	game->m_gameObjectList_sp.push_back(newBullet->GetSelf());
 	game->m_bulletList.push_back(newBullet);
 }

@@ -126,7 +126,7 @@ namespace ScrollShooterGame
 		std::string m_ganyuMeshPath = "data/meshes/mesh_ganyu.mesh";
 
 
-		eae6320::Camera::cCamera m_camera;
+		eae6320::Camera::cCamera* m_camera = nullptr;
 
 
 		void InitializeCamera();
@@ -148,11 +148,6 @@ namespace ScrollShooterGame
 
 
 		std::vector<cBullet*> m_bulletList;
-
-		//std::vector<eae6320::cGameObject*> m_gameObjectList;
-
-		//std::queue<eae6320::cGameObject*> m_gameObjectCleanUpQueue;
-
 
 		std::vector<std::shared_ptr<eae6320::cGameObject>> m_gameObjectList_sp;
 

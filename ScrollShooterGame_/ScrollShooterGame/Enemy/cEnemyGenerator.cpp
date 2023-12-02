@@ -58,15 +58,6 @@ void ScrollShooterGame::cEnemyGenerator::CleanUp()
 	Physics::Collision::DeregisterCollider(this->GetCollider());
 
 	auto game = cScrollShooterGame::Instance();
-
-	// TODO
-	//auto objIter = std::find(game->m_gameObjectList.begin(), game->m_gameObjectList.end(), this);
-	//if (objIter != game->m_gameObjectList.end())
-	//{
-	//	game->m_gameObjectList.erase(objIter);
-	//}
-
-
 	auto objIter = std::find(game->m_gameObjectList_sp.begin(), game->m_gameObjectList_sp.end(), this->m_self);
 	if (objIter != game->m_gameObjectList_sp.end())
 	{
@@ -116,7 +107,6 @@ void ScrollShooterGame::cEnemyGenerator::SpawnRock()
 	Physics::Collision::RegisterCollider(rock->GetCollider());
 
 	auto game = cScrollShooterGame::Instance();
-	//game->m_gameObjectList.push_back(rock);
 	game->m_gameObjectList_sp.push_back(rock->GetSelf());
 
 }
@@ -135,7 +125,6 @@ void ScrollShooterGame::cEnemyGenerator::SpawnAlien()
 	Physics::Collision::RegisterCollider(alien->GetCollider());
 
 	auto game = cScrollShooterGame::Instance();
-	//game->m_gameObjectList.push_back(alien);
 	game->m_gameObjectList_sp.push_back(alien->GetSelf());
 }
 
