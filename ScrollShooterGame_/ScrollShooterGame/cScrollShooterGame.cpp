@@ -121,6 +121,37 @@ void ScrollShooterGame::cScrollShooterGame::SubmitDataToBeRendered(
 		delete[] normalRenderDataArray;
 	}
 
+	// Submit normal render data - smart pointers
+	{
+		size_t renderObjectNum = m_gameObjectList_sp.size();
+		size_t arraySize = m_gameObjectList_sp.size();
+
+		Graphics::ConstantBufferFormats::sNormalRender* normalRenderDataArray = new Graphics::ConstantBufferFormats::sNormalRender[arraySize];
+		
+		// Render data of game objects
+		for (size_t i = 0; i < m_gameObjectList_sp.size(); i++)
+		{
+			if (m_gameObjectList_sp[i] == nullptr ||
+				m_gameObjectList_sp[i]->GetMesh() == nullptr ||
+				m_gameObjectList_sp[i]->GetEffect() == nullptr)
+				continue;
+
+			normalRenderDataArray[i].Initialize(
+				m_gameObjectList_sp[i]->GetMesh(), m_gameObjectList_sp[i]->GetEffect(),
+				m_gameObjectList_sp[i]->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
+		}
+
+		Graphics::SubmitNormalRenderData(normalRenderDataArray, static_cast<uint32_t>(arraySize));
+
+		// clean up 
+		for (size_t i = 0; i < arraySize; i++)
+		{
+			normalRenderDataArray[i].CleanUp();
+		}
+
+		delete[] normalRenderDataArray;
+	}
+
 	// Submit debug render data (for colliders)
 	{
 		auto BVHRenderData = std::vector<std::pair<eae6320::Graphics::cLine*, eae6320::Math::cMatrix_transformation>>();
@@ -259,6 +290,14 @@ eae6320::cResult ScrollShooterGame::cScrollShooterGame::CleanUp()
 		m_gameObjectCleanUpQueue.push(object);
 	}
 
+
+	for (SmartPtr<cGameObject> object : m_gameObjectList_sp)
+	{
+		m_gameObjectCleanUpQueue_sp.push(object);
+	}
+	m_gameObjectList_sp.clear();
+
+
 	CleanUpGameObject();
 
 	return Results::Success;
@@ -283,6 +322,9 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 		m_player->Initialize(Math::sVector(0.0f, 0.0f, -15.0f), Math::sVector());
 
 		m_gameObjectList.push_back(m_player);
+
+
+		m_gameObjectList_sp.push_back(SmartPtr<cGameObject>(m_player));
 	}
 
 	// TODO: temporary code for enemy generator object
@@ -291,6 +333,8 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 		m_enemyGenerator->Initialize(Math::sVector(0.0f, 9.0f, -15.0f), Math::sVector(0.0f, 0.0f, 0.0f));
 
 		m_gameObjectList.push_back(m_enemyGenerator);
+
+		m_gameObjectList_sp.push_back(SmartPtr<cGameObject>(m_enemyGenerator));
 	}
 }
 
@@ -304,6 +348,18 @@ void ScrollShooterGame::cScrollShooterGame::CleanUpGameObject()
 
 		object->CleanUp();
 		delete object;
+	}
+
+
+	while (m_gameObjectCleanUpQueue_sp.empty() == false)
+	{
+		SmartPtr<cGameObject> object = m_gameObjectCleanUpQueue_sp.front();
+		m_gameObjectCleanUpQueue_sp.pop();
+
+		
+		EAE6320_ASSERT(object != nullptr);
+
+		object.~SmartPtr();
 	}
 }
 
@@ -322,6 +378,11 @@ void ScrollShooterGame::cScrollShooterGame::InitializeCollisionSystem()
 void ScrollShooterGame::cScrollShooterGame::AddGameObjectCleanUpTask(cGameObject* i_gameObject)
 {
 	m_gameObjectCleanUpQueue.push(i_gameObject);
+}
+
+void ScrollShooterGame::cScrollShooterGame::AddGameObjectCleanUpTask(SmartPtr<cGameObject> i_gameObject)
+{
+	m_gameObjectCleanUpQueue_sp.push(i_gameObject);
 }
 
 

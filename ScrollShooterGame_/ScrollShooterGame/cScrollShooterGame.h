@@ -155,8 +155,10 @@ namespace ScrollShooterGame
 		std::queue<eae6320::cGameObject*> m_gameObjectCleanUpQueue;
 
 
+		std::vector<eae6320::SmartPtr<eae6320::cGameObject>> m_gameObjectList_sp;
 
-		eae6320::SmartPtrTest::SmartPtrTest m_smartPtrTest;
+		std::queue<eae6320::SmartPtr<eae6320::cGameObject>> m_gameObjectCleanUpQueue_sp;
+
 
 
 
@@ -164,6 +166,8 @@ namespace ScrollShooterGame
 	public:
 
 		void AddGameObjectCleanUpTask(eae6320::cGameObject* i_gameObject);
+
+		void AddGameObjectCleanUpTask(eae6320::SmartPtr<eae6320::cGameObject> i_gameObject);
 	};
 }
 

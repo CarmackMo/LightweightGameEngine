@@ -166,6 +166,10 @@ void eae6320::Application::iApplication::UpdateUntilExit()
 		// Calculate the simulation time that has elapsed based on the simulation rate
 		const auto tickCount_toSimulate_elapsedSinceLastLoop =
 			static_cast<uint64_t>( static_cast<float>( tickCount_systemTime_elapsedSinceLastLoop ) * m_simulationRate );
+		// Clean up resource that are added to the clean up waiting list
+		{
+			RuntimeCleanUp();
+		}
 		// Update any application state that isn't part of the simulation
 		{
 			UpdateBasedOnTime( static_cast<float>( Time::ConvertTicksToSeconds( tickCount_systemTime_elapsedSinceLastLoop ) ) );
@@ -263,11 +267,6 @@ void eae6320::Application::iApplication::UpdateUntilExit()
 				const auto result = Graphics::SignalThatAllDataForAFrameHasBeenSubmitted();
 				EAE6320_ASSERT( result );
 			}
-		}
-
-		// Clean up resource that are added to the clean up waiting list
-		{
-			RuntimeCleanUp();
 		}
 	}
 }
