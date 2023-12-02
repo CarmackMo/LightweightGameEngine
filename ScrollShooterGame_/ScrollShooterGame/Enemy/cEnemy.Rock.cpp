@@ -17,7 +17,9 @@ using namespace eae6320;
 // Interface
 //=========================
 
-void ScrollShooterGame::cEnemy_Rock::Initialize(eae6320::Math::sVector i_position, eae6320::Math::sVector i_velocity)
+void ScrollShooterGame::cEnemy_Rock::Initialize(
+	eae6320::Math::sVector i_position, 
+	eae6320::Math::sVector i_velocity)
 {
 	// Initialize property
 	{
@@ -50,14 +52,14 @@ void ScrollShooterGame::cEnemy_Rock::Initialize(eae6320::Math::sVector i_positio
 		m_collider->OnCollisionEnter = [this](Physics::cCollider* self, Physics::cCollider* other) -> void
 			{
 				m_isCollide = true;
-				if (dynamic_cast<cBullet_Player*>(other->m_gameobject) != nullptr ||
-					dynamic_cast<cPlayer*>(other->m_gameobject) != nullptr)
+				if (dynamic_cast<cBullet_Player*>(std::shared_ptr<cGameObject>(other->m_gameobject).get()) != nullptr ||
+					dynamic_cast<cPlayer*>(std::shared_ptr<cGameObject>(other->m_gameobject).get()) != nullptr)
 				{
 					m_HP--;
 					if (m_HP == 0)
 					{
 						UserOutput::ConsolePrint("Enemy is Killed!! \n");
-						cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(self->m_gameobject);
+						cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(std::shared_ptr<cGameObject>(self->m_gameobject));
 					}
 				}
 			};
@@ -75,6 +77,8 @@ void ScrollShooterGame::cEnemy_Rock::Initialize(eae6320::Math::sVector i_positio
 
 void ScrollShooterGame::cEnemy_Rock::CleanUp()
 {
+	Physics::Collision::DeregisterCollider(this->GetCollider());
+
 	auto game = cScrollShooterGame::Instance();
 
 	// TODO
@@ -84,13 +88,11 @@ void ScrollShooterGame::cEnemy_Rock::CleanUp()
 	//	game->m_gameObjectList.erase(objIter);
 	//}
 
-
-	auto objIter = std::find(game->m_gameObjectList_sp.begin(), game->m_gameObjectList_sp.end(), this);
+	auto objIter = std::find(game->m_gameObjectList_sp.begin(), game->m_gameObjectList_sp.end(), this->GetSelf());
 	if (objIter != game->m_gameObjectList_sp.end())
 	{
 		game->m_gameObjectList_sp.erase(objIter);
 	}
 
-
-	Physics::Collision::DeregisterCollider(this->GetCollider());
+	cGameObject::CleanUp();
 }

@@ -31,7 +31,7 @@ void eae6320::Physics::sColliderSetting::SettingForAABB(Math::sVector i_min, Mat
 //==================
 
 
-eae6320::cResult eae6320::Physics::cCollider::Create(cCollider*& o_collider, const sColliderSetting& i_setting, cGameObject* i_ownerGameObject)
+eae6320::cResult eae6320::Physics::cCollider::Create(cCollider*& o_collider, const sColliderSetting& i_setting, std::weak_ptr<cGameObject> i_ownerGameObject)
 {
 	auto result = Results::Success;
 
@@ -44,7 +44,7 @@ eae6320::cResult eae6320::Physics::cCollider::Create(cCollider*& o_collider, con
 		// TODO
 		newCollider = dynamic_cast<cCollider*>(new cSphereCollider(i_setting.sphere_center, i_setting.sphere_radius));
 		newCollider->m_gameobject = i_ownerGameObject;
-		newCollider->m_objectRigidBody = &(i_ownerGameObject->GetRigidBody());
+		newCollider->m_objectRigidBody = &(std::shared_ptr<cGameObject>(i_ownerGameObject)->GetRigidBody());
 		break;
 	}
 	case eColliderType::AABB:
@@ -52,7 +52,7 @@ eae6320::cResult eae6320::Physics::cCollider::Create(cCollider*& o_collider, con
 		// TODO
 		newCollider = dynamic_cast<cCollider*>(new cAABBCollider(i_setting.AABB_min, i_setting.AABB_max));
 		newCollider->m_gameobject = i_ownerGameObject;
-		newCollider->m_objectRigidBody = &(i_ownerGameObject->GetRigidBody());
+		newCollider->m_objectRigidBody = &(std::shared_ptr<cGameObject>(i_ownerGameObject)->GetRigidBody());
 		break;
 	}
 	case eColliderType::None:

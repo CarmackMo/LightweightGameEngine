@@ -10,6 +10,7 @@
 #include <Engine/Physics/cColliderBase.h>
 #include <Engine/UserInput/UserInput.h>
 
+#include <memory>
 #include <string>
 
 
@@ -35,12 +36,15 @@ namespace eae6320
 
 		void InitializeCollider(const Physics::sColliderSetting& i_builder);
 
+		cGameObject();
 		~cGameObject();
 
 		// Property Getters
 		//--------------------------
 
 		bool IsActive();
+
+		std::shared_ptr<cGameObject> GetSelf() const;
 
 		Graphics::cMesh* GetMesh() const;
 
@@ -70,6 +74,8 @@ namespace eae6320
 	protected:
 
 		bool m_active = true;
+
+		std::shared_ptr<cGameObject> m_self;
 
 		Graphics::cMesh* m_mesh = nullptr;
 		Graphics::cEffect* m_effect = nullptr;

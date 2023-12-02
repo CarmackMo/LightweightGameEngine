@@ -305,7 +305,7 @@ eae6320::cResult ScrollShooterGame::cScrollShooterGame::CleanUp()
 	//}
 
 
-	for (SmartPtr<cGameObject> object : m_gameObjectList_sp)
+	for (std::shared_ptr<cGameObject> object : m_gameObjectList_sp)
 	{
 		m_gameObjectCleanUpQueue_sp.push(object);
 	}
@@ -338,7 +338,7 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 		//m_gameObjectList.push_back(m_player);
 
 
-		m_gameObjectList_sp.push_back(SmartPtr<cGameObject>(m_player));
+		m_gameObjectList_sp.push_back(std::shared_ptr<cGameObject>(m_player));
 	}
 
 	// TODO: temporary code for enemy generator object
@@ -348,7 +348,7 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 
 		//m_gameObjectList.push_back(m_enemyGenerator);
 
-		m_gameObjectList_sp.push_back(SmartPtr<cGameObject>(m_enemyGenerator));
+		m_gameObjectList_sp.push_back(std::shared_ptr<cGameObject>(m_enemyGenerator));
 	}
 }
 
@@ -367,14 +367,17 @@ void ScrollShooterGame::cScrollShooterGame::CleanUpGameObject()
 
 	while (m_gameObjectCleanUpQueue_sp.empty() == false)
 	{
-		SmartPtr<cGameObject> object = m_gameObjectCleanUpQueue_sp.front();
+		std::shared_ptr<cGameObject> object = m_gameObjectCleanUpQueue_sp.front();
 		m_gameObjectCleanUpQueue_sp.pop();
 
 		
 		EAE6320_ASSERT(object != nullptr);
 
+		auto temp = object.get();
 		object->CleanUp();
-		object.~SmartPtr();
+		object.reset();
+
+		auto a = 0;
 	}
 }
 
@@ -390,12 +393,12 @@ void ScrollShooterGame::cScrollShooterGame::InitializeCollisionSystem()
 }
 
 
-void ScrollShooterGame::cScrollShooterGame::AddGameObjectCleanUpTask(cGameObject* i_gameObject)
-{
-	//m_gameObjectCleanUpQueue.push(i_gameObject);
-}
+//void ScrollShooterGame::cScrollShooterGame::AddGameObjectCleanUpTask(cGameObject* i_gameObject)
+//{
+//	//m_gameObjectCleanUpQueue.push(i_gameObject);
+//}
 
-void ScrollShooterGame::cScrollShooterGame::AddGameObjectCleanUpTask(SmartPtr<cGameObject> i_gameObject)
+void ScrollShooterGame::cScrollShooterGame::AddGameObjectCleanUpTask(std::shared_ptr<cGameObject> i_gameObject)
 {
 	m_gameObjectCleanUpQueue_sp.push(i_gameObject);
 }

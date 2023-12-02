@@ -141,8 +141,12 @@ void eae6320::Physics::cBVHTree::Add(cCollider* i_collider)
 void eae6320::Physics::cBVHTree::Remove(cCollider* i_collider)
 {
 	sBVHNode* node = Search(i_collider);
-	node->collider = nullptr;
-	RemoveNode(node);
+
+	if (node != nullptr)
+	{
+		node->collider = nullptr;
+		RemoveNode(node);
+	}
 }
 
 

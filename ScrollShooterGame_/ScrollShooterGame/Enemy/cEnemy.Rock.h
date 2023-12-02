@@ -28,6 +28,12 @@ namespace ScrollShooterGame
 
 		void CleanUp() override;
 
+
+		// Implementation
+		//=========================
+
+	private:
+
 	};
 
 }

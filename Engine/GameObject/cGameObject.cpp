@@ -30,6 +30,8 @@ void eae6320::cGameObject::CleanUp()
 	}
 
 	if (m_collider != nullptr) { delete m_collider; m_collider = nullptr; }
+
+	m_self.reset();
 }
 
 
@@ -71,13 +73,19 @@ void eae6320::cGameObject::InitializeEffect(
 
 void eae6320::cGameObject::InitializeCollider(const Physics::sColliderSetting& i_builder)
 {
-	Physics::cCollider::Create(m_collider, i_builder, this);
+	Physics::cCollider::Create(m_collider, i_builder, m_self);
+}
+
+
+eae6320::cGameObject::cGameObject()
+{
+	m_self = std::shared_ptr<cGameObject>(this);
 }
 
 
 eae6320::cGameObject::~cGameObject()
 {
-	CleanUp();
+	//CleanUp();
 }
 
 
@@ -87,6 +95,12 @@ eae6320::cGameObject::~cGameObject()
 bool eae6320::cGameObject::IsActive()
 {
 	return m_active;
+}
+
+
+std::shared_ptr<eae6320::cGameObject> eae6320::cGameObject::GetSelf() const
+{
+	return m_self;
 }
 
 

@@ -361,28 +361,28 @@ namespace eae6320
 		
 		inline SmartPtr(T* ptr)
 		{
-			StandardConstruct(ptr);
+			this->StandardConstruct(ptr);
 		}
 		
 		/* @brief Allow users to specify a customized deleter for data types (e.g. array type) that
 		 		  cannot be deleted using regular "delete" expression. */
 		inline SmartPtr(T* ptr, std::function<void(T*)> deleter)
 		{
-			StandardConstruct(ptr, deleter);
+			this->StandardConstruct(ptr, deleter);
 		}
 
 		/* @brief Copy constructors. Constructs a SmartPtr which shares ownership of the object
-		 		  managed by "other". If "other" manages no object, this instance manages no object
-		 		  either. Using shallow copy to copy pointers only */
+				  managed by "other". If "other" manages no object, this instance manages no object
+				  either. Using shallow copy to copy pointers only */
 		inline SmartPtr(const SmartPtr<T>& other)
 		{
-			CopyConstruct(other);
+			this->CopyConstruct(other);
 		}
 
 		template <class U>
 		inline SmartPtr(const SmartPtr<U>& other)
 		{
-			CopyConstruct(other);
+			this->CopyConstruct(other);
 		}
 
 		/* @brief Aliasing constructor. Constructs a SmarPtr which shares ownership information with
@@ -392,13 +392,13 @@ namespace eae6320
 		template <class U>
 		inline SmartPtr(const SmartPtr<U>& other, T* ptr)
 		{
-			AliasConstruct(other, ptr);
+			this->AliasConstruct(other, ptr);
 		}
 		
 		template <class U>
 		inline SmartPtr(SmartPtr<U>&& other, T* ptr)
 		{
-			AliasMoveConstruct(std::move(other), ptr);
+			this->AliasMoveConstruct(std::move(other), ptr);
 		}
 
 		/* @brief Move constructors. Move-constructs a SmartPtr from "other". After the construction,
@@ -406,13 +406,13 @@ namespace eae6320
 		 *		  its stored pointer is null.  */
 		inline SmartPtr(SmartPtr<T>&& other) noexcept
 		{
-			MoveConstruct(std::move(other));
+			this->MoveConstruct(std::move(other));
 		}
-		
+
 		template <class U>
 		inline SmartPtr(SmartPtr<U>&& other)
 		{
-			MoveConstruct(std::move(other));
+			this->MoveConstruct(std::move(other));
 		}
 
 		/* @brief Constructs a SmartPtr which shares ownership of the object managed by "other". It is
@@ -421,28 +421,34 @@ namespace eae6320
 		template <class U>
 		inline SmartPtr(const WeakPtr<U>& other)
 		{
-			bool res = ConstructFromWeak(other);
+			bool res = this->ConstructFromWeak(other);
 			EAE6320_ASSERT(res == true);
 		}
 
 		inline ~SmartPtr()
 		{
-			DecSmartRef();
+			this->DecSmartRef();
 		}
 
 		// Operations
 		//--------------------------
 
+		/* @brief Returns the stored pointer */
+		inline T* GetPtr()
+		{
+			return this->m_ptr;
+		}
+
 		/* @brief Checks whether the managed object is managed only by the current SmartPtr instance. */
 		inline bool IsUnique() const
 		{
-			return GetSmartCount() == 1;
+			return this->GetSmartCount() == 1;
 		}
 
 		/* @brief Swaps the managed objects. */
 		inline void Swap(SmartPtr<T>& other)
 		{
-			SwapPtr(other);
+			this->SwapPtr(other);
 		}
 
 		/* @brief Release resource and convert this instance to empty SmartPtr object. */
@@ -486,20 +492,20 @@ namespace eae6320
 
 		inline bool operator==(std::nullptr_t)
 		{
-			return Get() == nullptr;
+			return this->Get() == nullptr;
 		}
 		inline bool operator!=(std::nullptr_t)
 		{
-			return Get() != nullptr;
+			return this->Get() != nullptr;
 		}
 
 		inline bool operator==(const SmartPtr<T>& other)
 		{
-			return Get() == other.Get();
+			return this->Get() == other.Get();
 		}
 		inline bool operator!=(const SmartPtr<T>& other)
 		{
-			return Get() != other.Get();
+			return this->Get() != other.Get();
 		}
 
 		/* Assignment operators */
@@ -561,37 +567,37 @@ namespace eae6320
 		 		  either. Using shallow copy to copy pointers. */
 		inline WeakPtr(const WeakPtr<T>& other)
 		{
-			WeakConstruct(other);
+			this->WeakConstruct(other);
 		}
-		
+
 		template <class U>
 		inline WeakPtr(const WeakPtr<U>& other)
 		{
-			WeakConstruct(other);
+			this->WeakConstruct(other);
 		}
-		
+
 		template <class U>
 		inline WeakPtr(const SmartPtr<U>& other)
 		{
-			WeakConstruct(other);
+			this->WeakConstruct(other);
 		}
 
 		/* @brief Move constructors. Move-constructs a WeakPtr instance from "Other". After this,
-		 		  "other" is empty */
+				  "other" is empty */
 		inline WeakPtr(WeakPtr<T>&& other) noexcept
 		{
-			MoveConstruct(std::move(other));
+			this->MoveConstruct(std::move(other));
 		}
-		
+
 		template <class U>
 		inline WeakPtr(WeakPtr<U>&& other)
 		{
-			MoveConstruct(std::move(other));
+			this->MoveConstruct(std::move(other));
 		}
 
 		inline ~WeakPtr()
 		{
-			DecWeakRef();
+			this->DecWeakRef();
 		}
 
 		// Operations
@@ -600,13 +606,13 @@ namespace eae6320
 		/* @brief Checks whether the referenced object was already deleted */
 		inline bool IsExpired() const
 		{
-			return GetSmartCount() == 0;
+			return this->GetSmartCount() == 0;
 		}
 
 		/* @brief Swaps the managed objects */
 		inline void Swap(WeakPtr<T>& other)
 		{
-			SwapPtr(other);
+			this->SwapPtr(other);
 		}
 
 		/* @brief Release resource, and convert this instance to empty WeakPtr object */
@@ -621,25 +627,25 @@ namespace eae6320
 		/* Comparision operators */
 		inline operator bool()
 		{
-			return Get() != nullptr;
+			return this->Get() != nullptr;
 		}
 
 		inline bool operator==(std::nullptr_t)
 		{
-			return Get() == nullptr;
+			return this->Get() == nullptr;
 		}
 		inline bool operator!=(std::nullptr_t)
 		{
-			return Get() != nullptr;
+			return this->Get() != nullptr;
 		}
 
 		inline bool operator==(const WeakPtr<T>& other)
 		{
-			return Get() == other.Get();
+			return this->Get() == other.Get();
 		}
 		inline bool operator!=(const WeakPtr<T>& other)
 		{
-			return Get() != other.Get();
+			return this->Get() != other.Get();
 		}
 
 		/* Assignment operators */

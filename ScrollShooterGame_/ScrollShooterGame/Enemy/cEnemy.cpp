@@ -19,7 +19,7 @@ void ScrollShooterGame::cEnemy::UpdateBasedOnTime(const float i_elapsedSecondCou
 
 	if (m_rigidBody.position.y <= m_boundary)
 	{
-		cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(this);
+		cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(this->GetSelf());
 	}
 }
 

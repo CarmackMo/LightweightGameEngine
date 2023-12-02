@@ -14,14 +14,13 @@
 #include <Engine/Physics/cRigidBody.h>
 #include <Engine/Results/Results.h>
 #include <Engine/Utilities/cSingleton.h>
-#include <Engine/Utilities/SmartPtrs.h>
 
 #include <ScrollShooterGame_/ScrollShooterGame/Bullet/cBullet.h>
 #include <ScrollShooterGame_/ScrollShooterGame/Enemy/cEnemyGenerator.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cPhysicsDebugObject.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cPlayer.h>
 
-
+#include <memory>
 #include <vector>
 #include <queue>
 
@@ -155,9 +154,9 @@ namespace ScrollShooterGame
 		//std::queue<eae6320::cGameObject*> m_gameObjectCleanUpQueue;
 
 
-		std::vector<eae6320::SmartPtr<eae6320::cGameObject>> m_gameObjectList_sp;
+		std::vector<std::shared_ptr<eae6320::cGameObject>> m_gameObjectList_sp;
 
-		std::queue<eae6320::SmartPtr<eae6320::cGameObject>> m_gameObjectCleanUpQueue_sp;
+		std::queue<std::shared_ptr<eae6320::cGameObject>> m_gameObjectCleanUpQueue_sp;
 
 
 
@@ -165,9 +164,9 @@ namespace ScrollShooterGame
 
 	public:
 
-		void AddGameObjectCleanUpTask(eae6320::cGameObject* i_gameObject);
+		//void AddGameObjectCleanUpTask(eae6320::cGameObject* i_gameObject);
 
-		void AddGameObjectCleanUpTask(eae6320::SmartPtr<eae6320::cGameObject> i_gameObject);
+		void AddGameObjectCleanUpTask(std::shared_ptr<eae6320::cGameObject> i_gameObject);
 	};
 }
 

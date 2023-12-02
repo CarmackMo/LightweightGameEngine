@@ -6,6 +6,8 @@
 #include <Engine/GameObject/cGameObject.h>
 #include <Engine/Math/sVector.h>
 
+#include <memory>
+
 // TODO
 #include <Engine/Graphics/cLine.h>
 

@@ -48,11 +48,11 @@ void ScrollShooterGame::cBullet_Player::Initialize(
 			{
 				m_isCollide = true;
 
-				if (dynamic_cast<cEnemy*>(other->m_gameobject) != nullptr ||
-					dynamic_cast<cBullet_Enemy*>(other->m_gameobject) != nullptr)
+				if (dynamic_cast<cEnemy*>(std::shared_ptr<cGameObject>(other->m_gameobject).get()) != nullptr ||
+					dynamic_cast<cBullet_Enemy*>(std::shared_ptr<cGameObject>(other->m_gameobject).get()) != nullptr)
 				{
 					UserOutput::ConsolePrint("Player bullet hit enemy!! \n");
-					cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(self->m_gameobject);
+					cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(std::shared_ptr<cGameObject>(self->m_gameobject));
 				}
 			};
 
@@ -61,7 +61,7 @@ void ScrollShooterGame::cBullet_Player::Initialize(
 
 		m_collider->OnCollisionExit = [this](Physics::cCollider* self, Physics::cCollider* other) -> void
 			{
-				dynamic_cast<cBullet*>(self->m_gameobject)->m_isCollide = false;
+				dynamic_cast<cBullet*>(std::shared_ptr<cGameObject>(self->m_gameobject).get())->m_isCollide = false;
 			};
 	}
 }
@@ -69,7 +69,6 @@ void ScrollShooterGame::cBullet_Player::Initialize(
 
 void ScrollShooterGame::cBullet_Player::CleanUp()
 {
-	auto game = cScrollShooterGame::Instance();
 
 	// TODO
 	//auto objIter = std::find(game->m_gameObjectList.begin(), game->m_gameObjectList.end(), this);
@@ -78,8 +77,11 @@ void ScrollShooterGame::cBullet_Player::CleanUp()
 	//	game->m_gameObjectList.erase(objIter);
 	//}
 
+	Physics::Collision::DeregisterCollider(this->GetCollider());
 
-	auto objIter = std::find(game->m_gameObjectList_sp.begin(), game->m_gameObjectList_sp.end(), this);
+	auto game = cScrollShooterGame::Instance();
+
+	auto objIter = std::find(game->m_gameObjectList_sp.begin(), game->m_gameObjectList_sp.end(), this->m_self);
 	if (objIter != game->m_gameObjectList_sp.end())
 	{
 		game->m_gameObjectList_sp.erase(objIter);
@@ -91,5 +93,5 @@ void ScrollShooterGame::cBullet_Player::CleanUp()
 		game->m_bulletList.erase(bulletIter);
 	}
 
-	Physics::Collision::DeregisterCollider(this->GetCollider());
+	cGameObject::CleanUp();
 }

@@ -9,6 +9,7 @@
 
 #include <cstdint>
 #include <functional>
+#include <memory>
 #include <vector>
 
 // TODO: temporary code for initialize colldier object
@@ -97,7 +98,7 @@ namespace Physics
 		// Initialization / Clean Up
 		//--------------------------
 
-		static cResult Create(cCollider*& o_collider, const sColliderSetting& i_setting, cGameObject* i_ownerGameObject);
+		static cResult Create(cCollider*& o_collider, const sColliderSetting& i_setting, std::weak_ptr<cGameObject> i_ownerGameObject);
 
 		// Property Getters
 		//--------------------------
@@ -148,7 +149,10 @@ namespace Physics
 
 		sRigidBodyState* m_objectRigidBody = nullptr;
 
-		cGameObject* m_gameobject = nullptr;
+		//cGameObject* m_gameobject = nullptr;
+
+		std::weak_ptr<cGameObject> m_gameobject = std::weak_ptr<cGameObject>();
+
 
 		std::function<void(cCollider*, cCollider*)> OnCollisionEnter = nullptr;
 		std::function<void(cCollider*, cCollider*)> OnCollisionStay = nullptr;
