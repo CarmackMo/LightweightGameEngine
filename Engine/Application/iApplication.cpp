@@ -3,6 +3,7 @@
 
 #include <Engine/Application/iApplication.h>
 #include <Engine/Asserts/Asserts.h>
+#include <Engine/Audio/Audio.h>
 #include <Engine/Graphics/Graphics.h>
 #include <Engine/Logging/Logging.h>
 #include <Engine/Math/Random.h>
@@ -304,11 +305,6 @@ eae6320::cResult eae6320::Application::iApplication::Initialize_all( const sEntr
 		EAE6320_ASSERTF( false, "Application can't be initialized without Time" );
 		return result;
 	}
-	// Initialize Math::Random
-	if (!(result = Math::Random::Initialize()))
-	{
-		Logging::OutputError("Application initialized Random failed");
-	}
 	// Initialize the new application instance with entry point parameters
 	if ( !( result = Initialize_base( i_entryPointParameters ) ) )
 	{
@@ -375,6 +371,23 @@ eae6320::cResult eae6320::Application::iApplication::Initialize_engine()
 		else
 		{
 			EAE6320_ASSERTF( false, "Application can't be initialized without Graphics initialization parameters" );
+			return result;
+		}
+	}
+	// Audio
+	{
+		if (!(result = Audio::Initialize()))
+		{
+			Logging::OutputError("Application initialized Audio failed");
+			EAE6320_ASSERTF(false, "Application can't be initialized without Audio");
+			return result;
+		}
+	}
+	// Math::Random
+	{
+		if (!(result = Math::Random::Initialize()))
+		{
+			Logging::OutputError("Application initialized Math::Random failed");
 			return result;
 		}
 	}
@@ -478,10 +491,16 @@ eae6320::cResult eae6320::Application::iApplication::CleanUp_engine()
 		if ( !result_graphics )
 		{
 			EAE6320_ASSERTF( false, "Graphics wasn't successfully cleaned up" );
-			if ( result )
-			{
-				result = result_graphics;
-			}
+			if ( result ) { result = result_graphics; }
+		}
+	}
+	// Audio
+	{
+		const auto result_audio = Audio::CleanUp();
+		if (!result_audio)
+		{
+			EAE6320_ASSERTF(false, "Audio wasn't successfully cleaned up");
+			if (result) { result = result_audio; }
 		}
 	}
 	// User Output
@@ -489,10 +508,7 @@ eae6320::cResult eae6320::Application::iApplication::CleanUp_engine()
 		const auto result_userOutput = UserOutput::CleanUp();
 		if ( !result_userOutput )
 		{
-			if ( result )
-			{
-				result = result_userOutput;
-			}
+			if ( result ) { result = result_userOutput; }
 		}
 	}
 
