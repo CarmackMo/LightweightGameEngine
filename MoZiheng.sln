@@ -90,6 +90,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Utilities", "Engine\Utiliti
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AudioBuilder", "Tools\AudioBuilder\AudioBuilder.vcxproj", "{0EEE50DD-9109-4253-A3A8-08DA0D23E05A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Audio", "Engine\Audio\Audio.vcxproj", "{4BDE8532-8703-450A-8D41-DE4CEE9F6684}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -377,6 +379,14 @@ Global
 		{0EEE50DD-9109-4253-A3A8-08DA0D23E05A}.Release|x64.Build.0 = Release|x64
 		{0EEE50DD-9109-4253-A3A8-08DA0D23E05A}.Release|x86.ActiveCfg = Release|Win32
 		{0EEE50DD-9109-4253-A3A8-08DA0D23E05A}.Release|x86.Build.0 = Release|Win32
+		{4BDE8532-8703-450A-8D41-DE4CEE9F6684}.Debug|x64.ActiveCfg = Debug|x64
+		{4BDE8532-8703-450A-8D41-DE4CEE9F6684}.Debug|x64.Build.0 = Debug|x64
+		{4BDE8532-8703-450A-8D41-DE4CEE9F6684}.Debug|x86.ActiveCfg = Debug|Win32
+		{4BDE8532-8703-450A-8D41-DE4CEE9F6684}.Debug|x86.Build.0 = Debug|Win32
+		{4BDE8532-8703-450A-8D41-DE4CEE9F6684}.Release|x64.ActiveCfg = Release|x64
+		{4BDE8532-8703-450A-8D41-DE4CEE9F6684}.Release|x64.Build.0 = Release|x64
+		{4BDE8532-8703-450A-8D41-DE4CEE9F6684}.Release|x86.ActiveCfg = Release|Win32
+		{4BDE8532-8703-450A-8D41-DE4CEE9F6684}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -418,6 +428,7 @@ Global
 		{DFB3A233-13A2-4EF1-9872-9CBB331E560A} = {AC0EBDC3-8723-4A43-9112-DB863C2C3694}
 		{C9C5507C-4B42-4ECC-8BF2-0A254637B814} = {E5C51EF7-81D3-4030-A4CE-0D2D666CEF4F}
 		{0EEE50DD-9109-4253-A3A8-08DA0D23E05A} = {31B05C03-4BB2-4A0D-B621-B41DA6B0F57E}
+		{4BDE8532-8703-450A-8D41-DE4CEE9F6684} = {E5C51EF7-81D3-4030-A4CE-0D2D666CEF4F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A89F366F-0B7F-464F-90A8-A4828B273298}
