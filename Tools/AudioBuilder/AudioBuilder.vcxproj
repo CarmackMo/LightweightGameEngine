@@ -18,11 +18,29 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="cAudioBuilder.cpp" />
+    <ClCompile Include="EntryPoint.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cAudioBuilder.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Engine\Asserts\Asserts.vcxproj">
+      <Project>{464a6551-fca9-4027-bd9e-2b26914782ab}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Engine\Platform\Platform.vcxproj">
+      <Project>{7462d3a7-9936-442e-877c-89efda754596}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\AssetBuildLibrary\AssetBuildLibrary.vcxproj">
+      <Project>{4438bc28-0c79-4907-bd5c-abad0dd78aec}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <VCProjectVersion>16.0</VCProjectVersion>
+    <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{4c622cae-d1c2-4909-94a9-6bdb6e4ce0d6}</ProjectGuid>
-    <RootNamespace>MeshBuilder</RootNamespace>
+    <ProjectGuid>{0eee50dd-9109-4253-a3a8-08da0d23e05a}</ProjectGuid>
+    <RootNamespace>AudioBuilder</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -78,18 +96,6 @@
     <Import Project="..\..\Engine\Direct3D.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -146,24 +152,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="cMeshBuilder.cpp" />
-    <ClCompile Include="EntryPoint.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="cMeshBuilder.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Engine\Asserts\Asserts.vcxproj">
-      <Project>{464a6551-fca9-4027-bd9e-2b26914782ab}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Engine\Platform\Platform.vcxproj">
-      <Project>{7462d3a7-9936-442e-877c-89efda754596}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\AssetBuildLibrary\AssetBuildLibrary.vcxproj">
-      <Project>{4438bc28-0c79-4907-bd5c-abad0dd78aec}</Project>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
