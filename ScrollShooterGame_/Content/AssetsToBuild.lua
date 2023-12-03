@@ -24,4 +24,9 @@ return
 		{ path = "Meshes/mesh_keqing_skin.lua" },
 		{ path = "Meshes/mesh_ganyu.lua" },
 	},
+
+	audios = 
+	{
+		{ path = "Audios/MainTheme.mp3" },
+	},
 }
