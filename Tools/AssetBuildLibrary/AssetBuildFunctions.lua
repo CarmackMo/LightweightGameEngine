@@ -308,7 +308,7 @@ NewAssetTypeInfo( "audios",
 			-- but you could change this to customize the way that you build assets
 			-- (you could, for example, use a different extension for binary shaders)
 			-- return relativeDirectory .. fileName .. extensionWithPeriod
-			return relativeDirectory .. fileName .. ".mp3"
+			return relativeDirectory .. fileName .. ".wav"
 		end,
 		GetBuilderRelativePath = function()
 			return "AudioBuilder.exe"

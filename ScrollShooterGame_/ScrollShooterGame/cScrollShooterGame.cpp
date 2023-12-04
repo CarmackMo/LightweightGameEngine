@@ -6,6 +6,7 @@
 #include "cScrollShooterGame.h"
 
 #include <Engine/Asserts/Asserts.h>
+#include <Engine/Audio/Audio.h>
 #include <Engine/Graphics/Graphics.h>
 #include <Engine/Graphics/ConstantBufferFormats.h>
 #include <Engine/Logging/Logging.h>
@@ -222,6 +223,8 @@ eae6320::cResult ScrollShooterGame::cScrollShooterGame::Initialize()
 
 	// TODO: temporary code for initialize collision system
 	InitializeCollisionSystem();
+
+	Audio::Play("");
 
 
 	return Results::Success;
