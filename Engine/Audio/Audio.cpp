@@ -90,7 +90,6 @@ eae6320::cResult eae6320::Audio::CleanUp()
 		s_XAudio2->Release();
 	}
 
-
 	return Results::Success;
 }
 
@@ -100,7 +99,11 @@ void eae6320::Audio::Play(const char* fileName)
     WAVEFORMATEXTENSIBLE wfx = { 0 };
     XAUDIO2_BUFFER buffer = { 0 };
 
-    const TCHAR* strFileName = TEXT("data/audios/maintheme.wav");
+
+    size_t strSize = strlen(fileName) + 1;
+    size_t convertedChars = 0;
+    wchar_t* strFileName = new wchar_t[strSize];
+    mbstowcs_s(&convertedChars, strFileName, strSize, fileName, _TRUNCATE);
 
     HANDLE hFile = CreateFile(
         strFileName,
@@ -110,6 +113,8 @@ void eae6320::Audio::Play(const char* fileName)
         OPEN_EXISTING,
         0,
         NULL);
+
+    delete[]strFileName;
 
     if (INVALID_HANDLE_VALUE == hFile)
     {

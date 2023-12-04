@@ -27,6 +27,7 @@ return
 
 	audios = 
 	{
-		{ path = "Audios/MainTheme.wav" },
+		{ path = "Audios/audio_Main.wav" },
+		{ path = "Audios/audio_Shoot.wav" },
 	},
 }
