@@ -336,6 +336,7 @@ eae6320::cResult eae6320::Application::iApplication::Initialize_all( const sEntr
 	return result;
 }
 
+
 eae6320::cResult eae6320::Application::iApplication::Initialize_engine()
 {
 	auto result = Results::Success;
@@ -394,6 +395,7 @@ eae6320::cResult eae6320::Application::iApplication::Initialize_engine()
 
 	return result;
 }
+
 
 eae6320::cResult eae6320::Application::iApplication::CleanUp_all()
 {
@@ -481,6 +483,7 @@ eae6320::cResult eae6320::Application::iApplication::CleanUp_all()
 	return result;
 }
 
+
 eae6320::cResult eae6320::Application::iApplication::CleanUp_engine()
 {
 	auto result = Results::Success;
@@ -494,15 +497,15 @@ eae6320::cResult eae6320::Application::iApplication::CleanUp_engine()
 			if ( result ) { result = result_graphics; }
 		}
 	}
-	// Audio
-	{
-		const auto result_audio = Audio::CleanUp();
-		if (!result_audio)
-		{
-			EAE6320_ASSERTF(false, "Audio wasn't successfully cleaned up");
-			if (result) { result = result_audio; }
-		}
-	}
+	//// Audio
+	//{
+	//	const auto result_audio = Audio::CleanUp();
+	//	if (!result_audio)
+	//	{
+	//		EAE6320_ASSERTF(false, "Audio wasn't successfully cleaned up");
+	//		if (result) { result = result_audio; }
+	//	}
+	//}
 	// User Output
 	{
 		const auto result_userOutput = UserOutput::CleanUp();

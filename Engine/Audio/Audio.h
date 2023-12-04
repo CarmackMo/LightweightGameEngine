@@ -18,8 +18,9 @@ namespace Audio
 
 	cResult CleanUp();
 
-	void Play(const char* fileName);
+	//void Play(const char* fileName);
 
+	cResult Play(const char* i_audioId);
 
 }// Namespace Audio
 }// Namespace eae6320

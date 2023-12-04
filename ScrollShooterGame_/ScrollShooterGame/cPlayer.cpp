@@ -2,6 +2,7 @@
 // Includes
 //========
 
+#include <Engine/Audio/Audio.h>
 #include <Engine/Graphics/Graphics.h>
 #include <Engine/Physics/cColliderBase.h>
 #include <Engine/Physics/Collision.h>
@@ -117,6 +118,8 @@ void ScrollShooterGame::cPlayer::UpdateBasedOnInput()
 			auto currentTime = Time::ConvertTicksToSeconds(Time::GetCurrentSystemTimeTickCount());
 			if (currentTime - m_lastShoot_second >= m_shootCoolDown)
 			{
+				//Audio::Play("shoot");
+
 				ShootBullet();
 				m_lastShoot_second = currentTime;
 			}
