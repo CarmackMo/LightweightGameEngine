@@ -8,7 +8,6 @@
 #include <Engine/Physics/Collision.h>
 #include <Engine/Time/Time.h>
 #include <Engine/UserInput/UserInput.h>
-#include <Engine/UserOutput/UserOutput.h>
 #include <Engine/Utilities/SmartPtrs.h>
 
 #include <ScrollShooterGame_/ScrollShooterGame/Bullet/cBullet.Player.h>
@@ -25,6 +24,16 @@ using namespace eae6320;
 
 void ScrollShooterGame::cPlayer::Initialize(eae6320::Math::sVector i_position, eae6320::Math::sVector i_velocity)
 {
+
+	// Initialize property
+	{
+		m_HP = 3;
+		m_shootCoolDown = 0.6f;
+		m_lastShoot_second = 0;
+		m_maxBoundary = eae6320::Math::sVector(5.5f, 9.0f, 0.0f);
+		m_minBoundary = eae6320::Math::sVector(-5.5f, -12.0f, 0.0f);
+	}
+
 	// Initialize rigid body
 	{
 		m_rigidBody.position = i_position;
@@ -54,8 +63,12 @@ void ScrollShooterGame::cPlayer::Initialize(eae6320::Math::sVector i_position, e
 				if (dynamic_cast<cEnemy*>(other->m_gameobject.lock().get()) != nullptr ||
 					dynamic_cast<cBullet_Enemy*>(other->m_gameobject.lock().get()) != nullptr)
 				{
-					UserOutput::ConsolePrint("Player is killed by enemy!! \n");
-					cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(self->m_gameobject.lock());
+					m_HP--;
+					if (m_HP == 0)
+					{
+						SetActive(false);
+						cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(GetSelf());
+					}
 				}
 			};
 
@@ -89,26 +102,19 @@ void ScrollShooterGame::cPlayer::UpdateBasedOnInput()
 {
 	// Basic movement update
 	{
-		if (UserInput::IsKeyPressed('A'))
+		if (UserInput::IsKeyPressed('A') && m_rigidBody.position.x > m_minBoundary.x)
 			m_rigidBody.velocity.x = -3.0f;
-		else if (UserInput::IsKeyPressed('D'))
+		else if (UserInput::IsKeyPressed('D') && m_rigidBody.position.x < m_maxBoundary.x)
 			m_rigidBody.velocity.x = 3.0f;
 		else
 			m_rigidBody.velocity.x = 0.0f;
 
-		if (UserInput::IsKeyPressed('S'))
+		if (UserInput::IsKeyPressed('S') && m_rigidBody.position.y > m_minBoundary.y)
 			m_rigidBody.velocity.y = -3.0f;
-		else if (UserInput::IsKeyPressed('W'))
+		else if (UserInput::IsKeyPressed('W') && m_rigidBody.position.y < m_maxBoundary.y)
 			m_rigidBody.velocity.y = 3.0f;
 		else
 			m_rigidBody.velocity.y = 0.0f;
-
-		if (UserInput::IsKeyPressed('R'))
-			m_rigidBody.velocity.z = -3.0f;
-		else if (UserInput::IsKeyPressed('F'))
-			m_rigidBody.velocity.z = 3.0f;
-		else
-			m_rigidBody.velocity.z = 0.0f;
 	}
 
 	// Attack update

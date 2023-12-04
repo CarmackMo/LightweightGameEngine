@@ -52,8 +52,8 @@ void ScrollShooterGame::cBullet_Player::Initialize(
 				if (std::dynamic_pointer_cast<cEnemy>(other->m_gameobject.lock()) != nullptr ||
 					std::dynamic_pointer_cast<cBullet_Enemy>(other->m_gameobject.lock()) != nullptr)
 				{
-					self->m_gameobject.lock()->SetActive(false);
-					cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(self->m_gameobject.lock());
+					SetActive(false);
+					cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(GetSelf());
 				}
 			};
 
@@ -62,7 +62,7 @@ void ScrollShooterGame::cBullet_Player::Initialize(
 
 		m_collider->OnCollisionExit = [this](Physics::cCollider* self, Physics::cCollider* other) -> void
 			{
-				std::dynamic_pointer_cast<cBullet>(self->m_gameobject.lock())->m_isCollide = false;
+				m_isCollide = false;
 			};
 	}
 }

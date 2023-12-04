@@ -50,9 +50,13 @@ namespace ScrollShooterGame
 
 	private:
 
-		double m_shootCoolDown = 0.4f;
+		uint16_t m_HP;
 
-		double m_lastShoot_second = 0;
+		double m_shootCoolDown;
+		double m_lastShoot_second;
+
+		eae6320::Math::sVector m_maxBoundary;
+		eae6320::Math::sVector m_minBoundary;
 
 
 		// TODO: Debug

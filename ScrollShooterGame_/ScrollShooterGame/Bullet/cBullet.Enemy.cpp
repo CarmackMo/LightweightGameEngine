@@ -53,8 +53,8 @@ void ScrollShooterGame::cBullet_Enemy::Initialize(
 					std::dynamic_pointer_cast<cBullet_Player>(other->m_gameobject.lock()) != nullptr)
 				{
 					Audio::Play("hit_enemy");
-					self->m_gameobject.lock()->SetActive(false);
-					cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(self->m_gameobject.lock());
+					SetActive(false);
+					cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(GetSelf());
 				}
 				else if (std::dynamic_pointer_cast<cEnemy_Rock>(other->m_gameobject.lock()) != nullptr)
 				{

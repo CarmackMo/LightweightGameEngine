@@ -68,8 +68,8 @@ void ScrollShooterGame::cEnemy_Alien::Initialize(
 					if (m_HP == 0)
 					{
 						Audio::Play("boom_enemy");
-						self->m_gameobject.lock()->SetActive(false);
-						cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(self->m_gameobject.lock());
+						SetActive(false);
+						cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(GetSelf());
 					}
 					else
 					{

@@ -259,7 +259,7 @@ void ScrollShooterGame::cScrollShooterGame::InitializeCamera()
 {
 	m_camera = new Camera::cCamera();
 	m_camera->Initialize(
-		0.0f, 0.0f, 5.0f,
+		0.0f, -2.0f, 12.0f,
 		Math::ConvertDegreesToRadians(45.0f),
 		0.1f,
 		100.0f);
@@ -271,7 +271,7 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 	// TODO: temporary code for player object
 	{
 		m_player = new cPlayer();
-		m_player->Initialize(Math::sVector(0.0f, 0.0f, -15.0f), Math::sVector());
+		m_player->Initialize(Math::sVector(0.0f, -10.0f, -15.0f), Math::sVector());
 
 		m_gameObjectList.push_back(m_player->GetSelf());
 	}

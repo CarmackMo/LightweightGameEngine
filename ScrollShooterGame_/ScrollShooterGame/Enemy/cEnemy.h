@@ -51,7 +51,7 @@ namespace ScrollShooterGame
 
 		uint16_t m_HP = 0;
 
-		float m_boundary = -9.0f;
+		float m_boundary = -15.0f;
 
 
 		// TODO: Debug
