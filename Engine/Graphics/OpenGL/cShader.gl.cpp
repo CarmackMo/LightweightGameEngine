@@ -1,10 +1,10 @@
 // Includes
 //=========
 
-#include "../cShader.h"
 
 #include <cstdlib>
 #include <Engine/Asserts/Asserts.h>
+#include <Engine/Graphics/cShader.h>
 #include <Engine/Logging/Logging.h>
 #include <Engine/Platform/Platform.h>
 #include <Engine/ScopeGuard/cScopeGuard.h>
@@ -192,6 +192,7 @@ eae6320::cResult eae6320::Graphics::cShader::Initialize( const std::string& i_pa
 
 	return result;
 }
+
 
 eae6320::cResult eae6320::Graphics::cShader::CleanUp()
 {

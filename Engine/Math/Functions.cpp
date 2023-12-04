@@ -10,6 +10,7 @@
 // Interface
 //==========
 
+
 uint16_t eae6320::Math::ConvertFloatToHalf( const float i_value )
 {
 	// Get the individual bits of the floating point value
@@ -101,6 +102,7 @@ uint16_t eae6320::Math::ConvertFloatToHalf( const float i_value )
 		}
 	}
 }
+
 
 float eae6320::Math::ConvertHorizontalFieldOfViewToVerticalFieldOfView( const float i_horizontalFieldOfView_inRadians,
 	const float i_aspectRatio )

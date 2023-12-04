@@ -2,9 +2,8 @@
 //=========
 
 #include <Engine/Asserts/Asserts.h>
+#include <Engine/Graphics/cMesh.h>
 #include <Engine/Logging/Logging.h>
-#include "../cMesh.h"
-
 
 
 
@@ -20,7 +19,6 @@ eae6320::cResult eae6320::Graphics::cMesh::Initialize(
 	m_indexOfFirstIndexToUse = i_indexOfFirstIndexToUse;
 	m_offsetToAddToEachIndex = i_offsetToAddToEachIndex;
 	m_indexCountToRender = i_indexCountToRender;
-
 
 	auto result = eae6320::Results::Success;
 
@@ -317,4 +315,4 @@ void eae6320::Graphics::cMesh::Draw()
 		glDrawElements(mode, static_cast<GLsizei>(m_indexCountToRender), GL_UNSIGNED_SHORT, offset);
 		EAE6320_ASSERT(glGetError() == GL_NO_ERROR);
 	}
-}
+} 

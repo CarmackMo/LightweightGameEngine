@@ -1,18 +1,21 @@
 // Includes
 //=========
 
-#include "Graphics.h"
-
-#include "cConstantBuffer.h"
-#include "cEffect.h"
-#include "cMesh.h"
-#include "ConstantBufferFormats.h"
-#include "cView.h"
-#include "sContext.h"
+#include <Engine/Graphics/Graphics.h>
 
 #include <Engine/Concurrency/cEvent.h>
+#include <Engine/Concurrency/cMutex.h>
+#include <Engine/Graphics/cConstantBuffer.h>
+#include <Engine/Graphics/cEffect.h>
+#include <Engine/Graphics/cMesh.h>
+#include <Engine/Graphics/ConstantBufferFormats.h>
+#include <Engine/Graphics/cView.h>
+#include <Engine/Graphics/sContext.h>
 #include <Engine/Logging/Logging.h>
 #include <Engine/UserOutput/UserOutput.h>
+
+#include <string>
+#include <queue>
 
 
 
@@ -22,8 +25,8 @@
 namespace
 {
 	// Memory Budget
-	//-------------
-	constexpr uint32_t s_memoryBudget = 30;
+	//-------------------------
+	constexpr uint32_t s_memoryBudget = 100;
 
 
 	// Constant buffer object
@@ -32,7 +35,7 @@ namespace
 	
 
 	// Submission Data
-	//----------------
+	//-------------------------
 
 	// This struct's data is populated at submission time;
 	// it must cache whatever is necessary in order to render a frame or perform a draw call
@@ -40,11 +43,9 @@ namespace
 	{
 		eae6320::Graphics::ConstantBufferFormats::sFrame constantData_frame;
 
-		eae6320::Graphics::ConstantBufferFormats::sMeshEffectPair constantData_meshEffectPair[s_memoryBudget];
+		eae6320::Graphics::ConstantBufferFormats::sNormalRender constantData_normalRender[s_memoryBudget];
 
-		eae6320::Graphics::ConstantBufferFormats::sDrawCall constantData_drawCall[s_memoryBudget];
-
-		eae6320::Graphics::ConstantBufferFormats::sDebug constantData_debug[s_memoryBudget];
+		eae6320::Graphics::ConstantBufferFormats::sDebugRender constantData_debugRender[s_memoryBudget];
 
 		// Color data to clear the last frame (set background color for this frame)
 		// Black is usually used
@@ -71,8 +72,51 @@ namespace
 	eae6320::Concurrency::cEvent s_whenDataForANewFrameCanBeSubmittedFromApplicationThread;
 
 
+	// Render Object Builder
+	//-------------------------
+
+	struct sMeshBuilder
+	{
+		eae6320::Graphics::cMesh** meshPtr = nullptr;
+		std::string meshPath;
+	};
+
+	struct sEffectBuilder
+	{
+		eae6320::Graphics::cEffect** effectPtr = nullptr;
+		std::string vertexShaderPath;
+		std::string fragmentShaderPath;
+	};
+
+	struct sLineBuilder
+	{
+		eae6320::Graphics::cLine** linePtr = nullptr;
+		eae6320::Graphics::VertexFormats::sVertex_line* vertexData = nullptr;
+		uint32_t vertexCount = 0;
+		uint16_t* indexData = nullptr;
+		uint32_t indexCount = 0;
+	};
+
+
+	// Rendering Object Initialization / Clean Up Queue
+	//-------------------------
+
+	std::queue<sMeshBuilder> s_meshInitializeQueue;
+	std::queue<sEffectBuilder> s_effectInitializeQueue;
+	std::queue<sLineBuilder> s_lineInitializeQueue;
+
+
+	std::queue<std::pair<eae6320::Graphics::cMesh*, eae6320::Graphics::cMesh**>> s_meshCleanUpQueue;
+	std::queue<std::pair<eae6320::Graphics::cEffect*, eae6320::Graphics::cEffect**>> s_effectCleanUpQueue;
+	std::queue<std::pair<eae6320::Graphics::cLine*, eae6320::Graphics::cLine**>> s_lineCleanUpQueue;
+
+
+	eae6320::Concurrency::cMutex s_renderObjectInitializeMutex;
+	eae6320::Concurrency::cMutex s_renderObjectCleanUpMutex;
+
+
 	// View Data
-	//-------------
+	//-------------------------
 
 	eae6320::Graphics::cView s_view;
 
@@ -127,12 +171,11 @@ void eae6320::Graphics::SubmitCameraMatrices(
 }
 
 
-eae6320::cResult eae6320::Graphics::SubmitMeshEffectData(
-	ConstantBufferFormats::sMeshEffectPair i_meshEffectPairArray[], 
-	Math::cMatrix_transformation i_transformMatrix[],
-	uint32_t i_meshEffectPairCount = s_memoryBudget)
+eae6320::cResult eae6320::Graphics::SubmitNormalRenderData(
+	ConstantBufferFormats::sNormalRender i_normalDataArray[],
+	uint32_t i_normalDataCount = s_memoryBudget)
 {
-	if (i_meshEffectPairCount < 0 || s_memoryBudget < i_meshEffectPairCount)
+	if (i_normalDataCount < 0 || s_memoryBudget < i_normalDataCount)
 	{
 		EAE6320_ASSERTF(false, "Mesh-effect data number exceeds memory budget limit: (%u)", s_memoryBudget);
 		Logging::OutputError("Mesh-effect data number exceeds memory budget limit: (%u)", s_memoryBudget);
@@ -143,13 +186,16 @@ eae6320::cResult eae6320::Graphics::SubmitMeshEffectData(
 	else
 	{
 		EAE6320_ASSERT(s_dataBeingSubmittedByApplicationThread_frame);
-		auto& constantData_meshEffectPair = s_dataBeingSubmittedByApplicationThread_frame->constantData_meshEffectPair;
-		auto& constantData_drawCall = s_dataBeingSubmittedByApplicationThread_frame->constantData_drawCall;
+		auto& constantData_normalRender = s_dataBeingSubmittedByApplicationThread_frame->constantData_normalRender;
 
-		for (uint32_t i = 0; i < i_meshEffectPairCount; i++)
+		for (uint32_t i = 0; i < i_normalDataCount; i++)
 		{
-			constantData_meshEffectPair[i].Initialize(i_meshEffectPairArray[i].mesh, i_meshEffectPairArray[i].effect);
-			std::swap(constantData_drawCall[i].g_transform_localToWorld, i_transformMatrix[i]);
+			if (i_normalDataArray[i].IsValid())
+			{
+				constantData_normalRender[i].Initialize(
+					i_normalDataArray[i].mesh, i_normalDataArray[i].effect,
+					i_normalDataArray[i].transform_localToWorld);
+			}
 		}
 
 		return Results::Success;
@@ -157,8 +203,8 @@ eae6320::cResult eae6320::Graphics::SubmitMeshEffectData(
 }
 
 
-eae6320::cResult eae6320::Graphics::SubmitDebugData(
-	ConstantBufferFormats::sDebug i_debugDataArray[],
+eae6320::cResult eae6320::Graphics::SubmitDebugRenderData(
+	ConstantBufferFormats::sDebugRender i_debugDataArray[],
 	uint32_t i_debugDataCount = s_memoryBudget)
 {
 	if (i_debugDataCount < 0 || s_memoryBudget < i_debugDataCount)
@@ -172,20 +218,19 @@ eae6320::cResult eae6320::Graphics::SubmitDebugData(
 	else
 	{
 		EAE6320_ASSERT(s_dataBeingSubmittedByApplicationThread_frame);
-		auto& constantData_debug = s_dataBeingSubmittedByApplicationThread_frame->constantData_debug;
+		auto& constantData_debugRender = s_dataBeingSubmittedByApplicationThread_frame->constantData_debugRender;
 
 		for (uint32_t i = 0; i < i_debugDataCount; i++)
 		{
 			if (i_debugDataArray[i].IsValid())
 			{
-				constantData_debug[i].Initialize(i_debugDataArray[i].line, i_debugDataArray[i].transform);
+				constantData_debugRender[i].Initialize(i_debugDataArray[i].line, i_debugDataArray[i].transform);
 			}
 		}
 
 		return Results::Success;
 	}
 }
-
 
 
 eae6320::cResult eae6320::Graphics::WaitUntilDataForANewFrameCanBeSubmitted(const unsigned int i_timeToWait_inMilliseconds)
@@ -200,11 +245,186 @@ eae6320::cResult eae6320::Graphics::SignalThatAllDataForAFrameHasBeenSubmitted()
 }
 
 
+// Render Objects Initialize / Clean Up
+//-------
+
+void eae6320::Graphics::InitializeRenderObjects()
+{
+	if (AcquireRenderObjectInitMutex() == WAIT_OBJECT_0)
+	{
+		// Initialize mesh objects
+		{
+			while (s_meshInitializeQueue.empty() == false)
+			{
+				sMeshBuilder builder = s_meshInitializeQueue.front();
+				s_meshInitializeQueue.pop();
+
+				cMesh::Create(*(builder.meshPtr), builder.meshPath);
+			}
+		}
+		// Initialize effect objects
+		{
+			while (s_effectInitializeQueue.empty() == false)
+			{
+				sEffectBuilder builder = s_effectInitializeQueue.front();
+				s_effectInitializeQueue.pop();
+
+				cEffect::Create(*(builder.effectPtr), builder.vertexShaderPath, builder.fragmentShaderPath);
+			}
+		}
+		// Initialize line objects
+		{
+			while (s_lineInitializeQueue.empty() == false)
+			{
+				sLineBuilder builder = s_lineInitializeQueue.front();
+				s_lineInitializeQueue.pop();
+
+				cLine::Create(*(builder.linePtr), builder.vertexData, builder.vertexCount, builder.indexData, builder.indexCount);
+
+				delete[] builder.vertexData;
+				delete[] builder.indexData;
+			}
+		}
+
+		ReleaseRenderObjectInitMutex();
+	}
+	else
+	{
+		EAE6320_ASSERTF(false, "Waiting for the application thread submit render object initialize tasks failed");
+		Logging::OutputError("Waiting for the application thread submit render object initialize tasks failed");
+	}
+}
+
+
+void eae6320::Graphics::CleanUpRenderObjects()
+{
+	if (AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
+	{
+		// Clean up mesh objects
+		{
+			while (s_meshCleanUpQueue.empty() == false)
+			{
+				auto task = s_meshCleanUpQueue.front();
+				s_meshCleanUpQueue.pop();
+
+				if (task.first != nullptr)
+					task.first->DecrementReferenceCount();
+				(*task.second) = nullptr;
+			}
+		}
+		// Clean up effect objects
+		{
+			while (s_effectCleanUpQueue.empty() == false)
+			{
+				auto task = s_effectCleanUpQueue.front();
+				s_effectCleanUpQueue.pop();
+
+				if (task.first != nullptr)
+					task.first->DecrementReferenceCount();
+				(*task.second) = nullptr;
+			}
+		}
+		// Clean up line objects
+		{
+			while (s_lineCleanUpQueue.empty() == false)
+			{
+				auto task = s_lineCleanUpQueue.front();
+				s_lineCleanUpQueue.pop();
+
+				if (task.first != nullptr)
+					task.first->DecrementReferenceCount();
+				(*task.second) = nullptr;
+			}
+		}
+
+		ReleaseRenderObjectCleanUpMutex();
+	}
+	else
+	{
+		EAE6320_ASSERTF(false, "Waiting for the application thread submit render object clean up tasks failed");
+		Logging::OutputError("Waiting for the application thread submit render object clean up tasks failed");
+	}
+
+}
+
+
+DWORD eae6320::Graphics::AcquireRenderObjectInitMutex(DWORD i_waitTime_MS)
+{
+	return s_renderObjectInitializeMutex.Acquire(i_waitTime_MS);
+}
+
+
+void eae6320::Graphics::ReleaseRenderObjectInitMutex()
+{
+	s_renderObjectInitializeMutex.Release();
+}
+
+
+DWORD eae6320::Graphics::AcquireRenderObjectCleanUpMutex(DWORD i_waitTime_MS)
+{
+	return s_renderObjectCleanUpMutex.Acquire(i_waitTime_MS);
+}
+
+
+void eae6320::Graphics::ReleaseRenderObjectCleanUpMutex()
+{
+	s_renderObjectCleanUpMutex.Release();
+}
+
+
+void eae6320::Graphics::AddMeshInitializeTask(cMesh** i_meshPtr, std::string i_meshPath)
+{
+	s_meshInitializeQueue.push({ i_meshPtr, i_meshPath });
+}
+
+
+void eae6320::Graphics::AddEffectInitializeTask(cEffect** i_effectPtr, std::string i_vertexShaderPath, std::string i_fragmentShaderPath)
+{
+	s_effectInitializeQueue.push({ i_effectPtr, i_vertexShaderPath , i_fragmentShaderPath });
+}
+
+
+void eae6320::Graphics::AddLineInitializeTask(cLine** i_linePtr, VertexFormats::sVertex_line i_vertexData[], const uint32_t i_vertexCount, uint16_t i_indexData[], const uint32_t i_indexCount)
+{
+	VertexFormats::sVertex_line* vertexData = new VertexFormats::sVertex_line[i_vertexCount];
+	for (uint32_t i = 0; i < i_vertexCount; i++)
+	{
+		vertexData[i] = i_vertexData[i];
+	}
+	uint16_t* indexData = new uint16_t[i_indexCount];
+	for (uint32_t i = 0; i < i_indexCount; i++)
+	{
+		indexData[i] = i_indexData[i];
+	}
+
+	s_lineInitializeQueue.push({ i_linePtr, vertexData, i_vertexCount, indexData, i_indexCount });
+}
+
+
+void eae6320::Graphics::AddMeshCleanUpTask(cMesh* i_mesh, cMesh** i_meshPtr)
+{
+	s_meshCleanUpQueue.push({ i_mesh, i_meshPtr });
+}
+
+
+void eae6320::Graphics::AddEffectCleanUpTask(cEffect* i_effect, cEffect** i_effectPtr)
+{
+	s_effectCleanUpQueue.push({ i_effect, i_effectPtr });
+}
+
+
+void eae6320::Graphics::AddLineCleanUpTask(cLine* i_line, cLine** i_linePtr)
+{
+	s_lineCleanUpQueue.push({ i_line, i_linePtr });
+}
+
+
 // Render
 //-------
 
 void eae6320::Graphics::RenderFrame()
 {
+
 	// Wait for the application loop to submit data to be rendered
 	{
 		if (Concurrency::WaitForEvent(s_whenAllDataHasBeenSubmittedFromApplicationThread))
@@ -235,9 +455,8 @@ void eae6320::Graphics::RenderFrame()
 
 	EAE6320_ASSERT(s_dataBeingRenderedByRenderThread_frame);
 	auto& constantData_frame = s_dataBeingRenderedByRenderThread_frame->constantData_frame;
-	auto& constantData_drawCall = s_dataBeingRenderedByRenderThread_frame->constantData_drawCall;
-	auto& constantData_meshEffectPair = s_dataBeingRenderedByRenderThread_frame->constantData_meshEffectPair;
-	auto& constantData_debug = s_dataBeingRenderedByRenderThread_frame->constantData_debug;
+	auto& constantData_normalRender = s_dataBeingRenderedByRenderThread_frame->constantData_normalRender;
+	auto& constantData_debugRender = s_dataBeingRenderedByRenderThread_frame->constantData_debugRender;
 
 	// Clear back buffer
 	{
@@ -253,34 +472,30 @@ void eae6320::Graphics::RenderFrame()
 	{
 		for (int i = 0; i < s_memoryBudget; i++)
 		{
-			if (constantData_meshEffectPair[i].IsValid())
+			if (constantData_normalRender[i].IsValid())
 			{
-				s_constantBuffer_drawCall.Update(&constantData_drawCall[i]);
+				s_constantBuffer_drawCall.Update(&constantData_normalRender[i].transform_localToWorld);
 
-				constantData_meshEffectPair[i].effect->Bind();
-				constantData_meshEffectPair[i].mesh->Draw();
+				constantData_normalRender[i].effect->Bind();
+				constantData_normalRender[i].mesh->Draw();
 			}
 		}
 	}
 
-
-	// TODO: temporary code for drawing debug lines of colliders
+	// Drawing debug lines of colliders
 	{
 		Math::cMatrix_transformation transform = Math::cMatrix_transformation();
 
 		for (int i = 0; i < s_memoryBudget; i++)
 		{
-			if (constantData_debug[i].IsValid())
+			if (constantData_debugRender[i].IsValid())
 			{
-				//s_constantBuffer_drawCall.Update(&transform);
-				s_constantBuffer_drawCall.Update(&constantData_debug[i].transform);
+				s_constantBuffer_drawCall.Update(&constantData_debugRender[i].transform);
 
-				constantData_debug[i].line->Draw();
+				constantData_debugRender[i].line->Draw();
 			}
 		}
 	}
-
-
 
 	// Swap buffer
 	{
@@ -297,12 +512,11 @@ void eae6320::Graphics::RenderFrame()
 	{
 		for (int i = 0; i < s_memoryBudget; i++)
 		{
-			constantData_meshEffectPair[i].CleanUp();
-			constantData_debug[i].CleanUp();
+			constantData_normalRender[i].CleanUp();
+			constantData_debugRender[i].CleanUp();
 		}
-
-
 	}
+
 }
 
 
@@ -348,7 +562,8 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 	}
 	// Initialize the events
 	{
-		if (!(result = s_whenAllDataHasBeenSubmittedFromApplicationThread.Initialize(Concurrency::EventType::ResetAutomaticallyAfterBeingSignaled)))
+		if (!(result = s_whenAllDataHasBeenSubmittedFromApplicationThread.Initialize(Concurrency::EventType::ResetAutomaticallyAfterBeingSignaled,
+			Concurrency::EventState::Signaled)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without event for when data has been submitted from the application thread");
 			return result;
@@ -357,6 +572,19 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 			Concurrency::EventState::Signaled)))
 		{
 			EAE6320_ASSERTF(false, "Can't initialize Graphics without event for when data can be submitted from the application thread");
+			return result;
+		}
+	}
+	// Initialize the mutexes
+	{
+		if (!(result = s_renderObjectInitializeMutex.Initialize()))
+		{
+			EAE6320_ASSERTF(false, "Can't initialize Graphics without mutex for protecting render object initialization");
+			return result;
+		}
+		if (!(result = s_renderObjectCleanUpMutex.Initialize()))
+		{
+			EAE6320_ASSERTF(false, "Can't initialize Graphics without mutex for protecting render object clean up");
 			return result;
 		}
 	}
@@ -369,13 +597,17 @@ eae6320::cResult eae6320::Graphics::Initialize(const sInitializationParameters& 
 		}
 	}
 
-
 	return result;
 }
+
 
 eae6320::cResult eae6320::Graphics::CleanUp()
 {
 	auto result = Results::Success;
+
+	{
+		CleanUpRenderObjects();
+	}
 
 	// view clean up
 	{
@@ -387,25 +619,25 @@ eae6320::cResult eae6320::Graphics::CleanUp()
 		// Submitted data clean up
 		{
 			EAE6320_ASSERT(s_dataBeingSubmittedByApplicationThread_frame);
-			auto& submitted_meshEffectPair = s_dataBeingSubmittedByApplicationThread_frame->constantData_meshEffectPair;
-			auto& submitted_debug = s_dataBeingSubmittedByApplicationThread_frame->constantData_debug;
+			auto& submitted_normalRender = s_dataBeingSubmittedByApplicationThread_frame->constantData_normalRender;
+			auto& submitted_debugRender = s_dataBeingSubmittedByApplicationThread_frame->constantData_debugRender;
 
 			for (int i = 0; i < s_memoryBudget; i++)
 			{
-				submitted_meshEffectPair[i].CleanUp();
-				submitted_debug[i].CleanUp();
+				submitted_normalRender[i].CleanUp();
+				submitted_debugRender[i].CleanUp();
 			}
 		}
 		//	Render data clean up 
 		{
 			EAE6320_ASSERT(s_dataBeingRenderedByRenderThread_frame);
-			auto& renderData_meshEffectPair = s_dataBeingRenderedByRenderThread_frame->constantData_meshEffectPair;
-			auto& renderData_debug = s_dataBeingRenderedByRenderThread_frame->constantData_debug;
+			auto& renderData_normalRender = s_dataBeingRenderedByRenderThread_frame->constantData_normalRender;
+			auto& renderData_debugRender = s_dataBeingRenderedByRenderThread_frame->constantData_debugRender;
 
 			for (int i = 0; i < s_memoryBudget; i++)
 			{
-				renderData_meshEffectPair[i].CleanUp();
-				renderData_debug[i].CleanUp();
+				renderData_normalRender[i].CleanUp();
+				renderData_debugRender[i].CleanUp();
 			}
 		}
 
@@ -446,7 +678,6 @@ eae6320::cResult eae6320::Graphics::CleanUp()
 
 	return result;
 }
-
 
 
 // Helper Definitions

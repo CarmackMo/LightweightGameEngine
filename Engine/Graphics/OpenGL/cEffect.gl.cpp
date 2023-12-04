@@ -2,9 +2,9 @@
 //=========
 
 #include <Engine/Asserts/Asserts.h>
+#include <Engine/Graphics/cEffect.h>
 #include <Engine/Logging/Logging.h>
 #include <Engine/ScopeGuard/cScopeGuard.h>
-#include "../cEffect.h"
 
 
 void eae6320::Graphics::cEffect::Bind()
@@ -23,15 +23,12 @@ void eae6320::Graphics::cEffect::Bind()
 
 eae6320::cResult eae6320::Graphics::cEffect::Initialize(const std::string& i_vertexShaderPath, const std::string& i_fragmentShaderPath)
 {
-	auto result = eae6320::Results::Success;
-
+	auto result = Results::Success;
 	result = InitializeShader(i_vertexShaderPath, i_fragmentShaderPath);
 
 	// If initialization fails, clean up the OpenGL program that is already
 	// been registered.
-	// This logic needs to be executed at the end of the initialization process
-	// ScopeGuard will make sure it must be executed before exiting current function scope.
-	eae6320::cScopeGuard scopeGuard_program([&result, this]
+	cScopeGuard scopeGuard_program([&result, this]
 		{
 			if (!result)
 			{
@@ -43,11 +40,11 @@ eae6320::cResult eae6320::Graphics::cEffect::Initialize(const std::string& i_ver
 					{
 						if (result)
 						{
-							result = eae6320::Results::Failure;
+							result = Results::Failure;
 						}
 
 						EAE6320_ASSERTF(false, reinterpret_cast<const char*>(gluErrorString(errorCode)));
-						eae6320::Logging::OutputError("OpenGL failed to delete the program: %s",
+						Logging::OutputError("OpenGL failed to delete the program: %s",
 							reinterpret_cast<const char*>(gluErrorString(errorCode)));
 					}
 					m_programId = 0;

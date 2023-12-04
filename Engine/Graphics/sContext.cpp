@@ -21,3 +21,4 @@ eae6320::Graphics::sContext::~sContext()
 	const auto result = CleanUp();
 	EAE6320_ASSERT( result );
 }
+

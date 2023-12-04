@@ -1,12 +1,12 @@
 // Includes
 //=========
 
-#include "../sContext.h"
-
 #include <Engine/Asserts/Asserts.h>
+#include <Engine/Graphics/sContext.h>
 #include <Engine/Logging/Logging.h>
 #include <Engine/Windows/Functions.h>
 #include <External/OpenGlExtensions/OpenGlExtensions.h>
+
 #include <sstream>
 #include <string>
 
@@ -47,8 +47,11 @@ eae6320::cResult eae6320::Graphics::sContext::Initialize( const sInitializationP
 		return result;
 	}
 
+	ownerThreadId = GetCurrentThreadId();
+
 	return result;
 }
+
 
 eae6320::cResult eae6320::Graphics::sContext::CleanUp()
 {
@@ -93,6 +96,7 @@ eae6320::cResult eae6320::Graphics::sContext::CleanUp()
 
 	return result;
 }
+
 
 // Helper Declarations
 //====================

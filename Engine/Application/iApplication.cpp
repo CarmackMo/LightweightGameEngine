@@ -1,16 +1,20 @@
 // Includes
 //=========
 
-#include "iApplication.h"
-
-#include <algorithm>
-#include <cstdlib>
+#include <Engine/Application/iApplication.h>
 #include <Engine/Asserts/Asserts.h>
+#include <Engine/Audio/Audio.h>
 #include <Engine/Graphics/Graphics.h>
 #include <Engine/Logging/Logging.h>
+#include <Engine/Math/Random.h>
 #include <Engine/ScopeGuard/cScopeGuard.h>
 #include <Engine/Time/Time.h>
 #include <Engine/UserOutput/UserOutput.h>
+
+#include <algorithm>
+#include <cstdlib>
+
+
 
 // Interface
 //==========
@@ -163,6 +167,10 @@ void eae6320::Application::iApplication::UpdateUntilExit()
 		// Calculate the simulation time that has elapsed based on the simulation rate
 		const auto tickCount_toSimulate_elapsedSinceLastLoop =
 			static_cast<uint64_t>( static_cast<float>( tickCount_systemTime_elapsedSinceLastLoop ) * m_simulationRate );
+		// Clean up resource that are added to the clean up waiting list
+		{
+			RuntimeCleanUp();
+		}
 		// Update any application state that isn't part of the simulation
 		{
 			UpdateBasedOnTime( static_cast<float>( Time::ConvertTicksToSeconds( tickCount_systemTime_elapsedSinceLastLoop ) ) );
@@ -268,7 +276,10 @@ void eae6320::Application::iApplication::EntryPoint_applicationLoopThread( void*
 {
 	auto *const application = static_cast<iApplication*>( io_application );
 	EAE6320_ASSERT( application );
-	return application->UpdateUntilExit();
+	
+	application->UpdateUntilExit();
+
+	return;
 }
 
 // Initialize / Clean Up
@@ -319,8 +330,12 @@ eae6320::cResult eae6320::Application::iApplication::Initialize_all( const sEntr
 		return result;
 	}
 
+	m_applicationThreadID = GetThreadId(m_applicationLoopThread.GetThreadHandle());
+	m_renderThreadID = GetCurrentThreadId();
+
 	return result;
 }
+
 
 eae6320::cResult eae6320::Application::iApplication::Initialize_engine()
 {
@@ -360,9 +375,27 @@ eae6320::cResult eae6320::Application::iApplication::Initialize_engine()
 			return result;
 		}
 	}
+	// Audio
+	{
+		if (!(result = Audio::Initialize()))
+		{
+			Logging::OutputError("Application initialized Audio failed");
+			EAE6320_ASSERTF(false, "Application can't be initialized without Audio");
+			return result;
+		}
+	}
+	// Math::Random
+	{
+		if (!(result = Math::Random::Initialize()))
+		{
+			Logging::OutputError("Application initialized Math::Random failed");
+			return result;
+		}
+	}
 
 	return result;
 }
+
 
 eae6320::cResult eae6320::Application::iApplication::CleanUp_all()
 {
@@ -374,7 +407,7 @@ eae6320::cResult eae6320::Application::iApplication::CleanUp_all()
 		m_shouldApplicationLoopExit = true;
 		// Wait for the thread to exit
 		{
-			constexpr unsigned int timeToWait_inMilliseconds = 5 * 1000;
+			constexpr unsigned int timeToWait_inMilliseconds = 6 * 1000;
 			const auto result_threadStop = Concurrency::WaitForThreadToStop( m_applicationLoopThread, timeToWait_inMilliseconds );
 			if ( !result_threadStop )
 			{
@@ -450,6 +483,7 @@ eae6320::cResult eae6320::Application::iApplication::CleanUp_all()
 	return result;
 }
 
+
 eae6320::cResult eae6320::Application::iApplication::CleanUp_engine()
 {
 	auto result = Results::Success;
@@ -460,10 +494,16 @@ eae6320::cResult eae6320::Application::iApplication::CleanUp_engine()
 		if ( !result_graphics )
 		{
 			EAE6320_ASSERTF( false, "Graphics wasn't successfully cleaned up" );
-			if ( result )
-			{
-				result = result_graphics;
-			}
+			if ( result ) { result = result_graphics; }
+		}
+	}
+	// Audio
+	{
+		const auto result_audio = Audio::CleanUp();
+		if (!result_audio)
+		{
+			EAE6320_ASSERTF(false, "Audio wasn't successfully cleaned up");
+			if (result) { result = result_audio; }
 		}
 	}
 	// User Output
@@ -471,10 +511,7 @@ eae6320::cResult eae6320::Application::iApplication::CleanUp_engine()
 		const auto result_userOutput = UserOutput::CleanUp();
 		if ( !result_userOutput )
 		{
-			if ( result )
-			{
-				result = result_userOutput;
-			}
+			if ( result ) { result = result_userOutput; }
 		}
 	}
 

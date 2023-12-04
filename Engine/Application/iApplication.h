@@ -59,10 +59,16 @@ namespace Application
 			i_thisInstanceOfTheApplication, i_commandLineArguments, i_initialWindowDisplayState
 #endif
 		};
-		// Create an instance of the applciation
-		tApplication newApplicationInstance;
+
+		//// Create an instance of the applciation
+		//tApplication newApplicationInstance;
+		//// Run it
+		//return newApplicationInstance.ParseEntryPointParametersAndRun( entryPointParameters );
+
+		// Create an singleton instance of the application
+		tApplication::Instance();
 		// Run it
-		return newApplicationInstance.ParseEntryPointParametersAndRun( entryPointParameters );
+		return tApplication::Instance()->ParseEntryPointParametersAndRun(entryPointParameters);
 	}
 
 
@@ -185,6 +191,8 @@ namespace Application
 		// to instuct the Graphics system what to render for the next frame
 		virtual void SubmitDataToBeRendered( const float i_elapsedSecondCount_systemTime, const float i_elapsedSecondCount_sinceLastSimulationUpdate ) {}
 
+		virtual void RuntimeCleanUp() {};
+
 		// Initialize / Clean Up
 		//----------------------
 
@@ -233,6 +241,10 @@ namespace Application
 		// The application loop thread checks this variable every iteration
 		// so that it knows if the main thread requires it to exit
 		bool m_shouldApplicationLoopExit = false;
+
+		DWORD m_renderThreadID;
+		DWORD m_applicationThreadID;
+
 
 		// Implementation
 		//===============

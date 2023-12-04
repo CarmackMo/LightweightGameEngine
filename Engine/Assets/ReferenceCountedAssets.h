@@ -74,7 +74,7 @@
 			EAE6320_ASSERT( ( reinterpret_cast<uintptr_t>( &m_referenceCount ) % 2 ) == 0 );	\
 			auto* const referenceCount_asSigned = reinterpret_cast<short*>( &m_referenceCount );	\
 			const auto newReferenceCount = InterlockedDecrement16( referenceCount_asSigned );	\
-			if ( newReferenceCount == 0 ) delete this;	\
+			if ( newReferenceCount == 0 ) { delete this; }	\
 			return newReferenceCount;	\
 		}
 

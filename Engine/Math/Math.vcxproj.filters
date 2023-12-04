@@ -5,6 +5,7 @@
     <ClCompile Include="cQuaternion.cpp" />
     <ClCompile Include="Functions.cpp" />
     <ClCompile Include="sVector.cpp" />
+    <ClCompile Include="Random.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cMatrix_transformation.h" />
@@ -12,6 +13,7 @@
     <ClInclude Include="cQuaternion.h" />
     <ClInclude Include="Functions.h" />
     <ClInclude Include="sVector.h" />
+    <ClInclude Include="Random.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Functions.inl" />

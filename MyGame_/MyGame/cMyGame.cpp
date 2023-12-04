@@ -113,26 +113,28 @@ void eae6320::cMyGame::SubmitDataToBeRendered(
 	{
 		size_t arraySize = m_renderObjectList.size();
 
-		Graphics::ConstantBufferFormats::sMeshEffectPair* meshEffectPairArray = new Graphics::ConstantBufferFormats::sMeshEffectPair[arraySize];
-		Math::cMatrix_transformation* transformMatrixArray = new Math::cMatrix_transformation[arraySize];
+		Graphics::ConstantBufferFormats::sNormalRender* normalRenderDataArray = new Graphics::ConstantBufferFormats::sNormalRender[arraySize];
 
 		// Render data of render objects 
 		for (size_t i = 0; i < arraySize; i++)
 		{
-			meshEffectPairArray[i].Initialize(m_renderObjectList[i]->GetMesh(), m_renderObjectList[i]->GetEffect());
-			transformMatrixArray[i] = m_renderObjectList[i]->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate);
+			if (m_renderObjectList[i]->GetMesh() == nullptr || m_renderObjectList[i]->GetEffect() == nullptr)
+				continue;
+
+			normalRenderDataArray[i].Initialize(
+				m_renderObjectList[i]->GetMesh(), m_renderObjectList[i]->GetEffect(),
+				m_renderObjectList[i]->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
 		}
 
-		Graphics::SubmitMeshEffectData(meshEffectPairArray, transformMatrixArray, static_cast<uint32_t>(arraySize));
+		Graphics::SubmitNormalRenderData(normalRenderDataArray, static_cast<uint32_t>(arraySize));
 
 		// clean up 
 		for (size_t i = 0; i < arraySize; i++)
 		{
-			meshEffectPairArray[i].CleanUp();
+			normalRenderDataArray[i].CleanUp();
 		}
 
-		delete[] meshEffectPairArray;
-		delete[] transformMatrixArray;
+		delete[] normalRenderDataArray;
 	}
 
 
@@ -141,28 +143,35 @@ void eae6320::cMyGame::SubmitDataToBeRendered(
 		auto BVHRenderData = std::vector<std::pair<eae6320::Graphics::cLine*, eae6320::Math::cMatrix_transformation>>();
 		BVHRenderData = Physics::Collision::GetBVHRenderData();
 
-		size_t staticSize = m_colliderObjectList.size();
-		size_t arraySize = BVHRenderData.size() + staticSize;
+		size_t colliderListSize = m_colliderObjectList.size();
+		size_t totalArraySize = BVHRenderData.size() + colliderListSize;
 
-		Graphics::ConstantBufferFormats::sDebug* debugDataArray = new Graphics::ConstantBufferFormats::sDebug[arraySize];
+		Graphics::ConstantBufferFormats::sDebugRender* debugDataArray = new Graphics::ConstantBufferFormats::sDebugRender[totalArraySize];
 
 		// Render data of hard-coded collider
 		for (size_t i = 0 ; i < m_colliderObjectList.size(); i++)
 		{
 			auto collider = m_colliderObjectList[i];
+
+			if (collider->GetColliderLine() == nullptr)
+				continue;
+
 			debugDataArray[i].Initialize(collider->GetColliderLine(), collider->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
 		}
 
 		// Render data of BVH tree
-		for (size_t i = staticSize; i < arraySize; i++)
+		for (size_t i = colliderListSize; i < totalArraySize; i++)
 		{
-			debugDataArray[i].Initialize(BVHRenderData[i - staticSize].first, BVHRenderData[i - staticSize].second);
+			if (BVHRenderData[i - colliderListSize].first == nullptr)
+				continue;
+
+			debugDataArray[i].Initialize(BVHRenderData[i - colliderListSize].first, BVHRenderData[i - colliderListSize].second);
 		}
 
-		Graphics::SubmitDebugData(debugDataArray, static_cast<uint32_t>(arraySize));
+		Graphics::SubmitDebugRenderData(debugDataArray, static_cast<uint32_t>(totalArraySize));
 
 		// Clean up
-		for (size_t i = 0; i < arraySize; i++)
+		for (size_t i = 0; i < totalArraySize; i++)
 		{
 			debugDataArray[i].CleanUp();
 		}
@@ -444,7 +453,7 @@ void eae6320::cMyGame::CleanUpGameObject()
 
 
 	// TODO: temporary code for clean up colldier object
-	for (cGameObject* colliderObject : m_colliderObjectList)
+	for (cPhysicDebugObject* colliderObject : m_colliderObjectList)
 	{
 		colliderObject->CleanUp();
 	}
@@ -456,7 +465,7 @@ void eae6320::cMyGame::InitializeCollisionSystem()
 {
 	std::vector<Physics::cCollider*> colliderList;
 
-	for (cGameObject* colliderObject : m_colliderObjectList)
+	for (cPhysicDebugObject* colliderObject : m_colliderObjectList)
 	{
 		colliderList.push_back(colliderObject->GetCollider());
 	}

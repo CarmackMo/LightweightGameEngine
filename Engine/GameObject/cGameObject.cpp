@@ -1,34 +1,39 @@
 // Includes
 //=========
 
+#include <Engine/Concurrency/cEvent.h>
 #include <Engine/GameObject/cGameObject.h>
+#include <Engine/Graphics/Graphics.h>
 
 #include <vector>
+#include <functional>
 
 
-void eae6320::cGameObject::InitializeMesh(
-	eae6320::Graphics::VertexFormats::sVertex_mesh* i_vertexData,
-	const uint32_t i_vertexCount,
-	uint16_t* i_indexData,
-	const uint32_t i_indexCount,
-	const uint32_t i_indexCountToRender,
-	const uint32_t i_indexOfFirstIndexToUse,
-	const uint32_t i_offsetToAddToEachIndex)
+// Initialization / Clean Up
+//--------------------------
+
+void eae6320::cGameObject::CleanUp()
 {
-	if (m_mesh != nullptr)
+	// This function might be called when cLine is not yet initialized by the
+	// rendering thread. Add the cLine clean up task to rendering thread anyway
+	// and do null pointer safety check in rendering thread
+	if (Graphics::AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
 	{
-		m_mesh->DecrementReferenceCount();
-		m_mesh = nullptr;
+		Graphics::AddMeshCleanUpTask(m_mesh, &m_mesh);
+		Graphics::ReleaseRenderObjectCleanUpMutex();
 	}
 
-	Graphics::cMesh::Create(
-		m_mesh,
-		i_vertexData, i_vertexCount,
-		i_indexData, i_indexCount, 
-		i_indexCountToRender,
-		i_indexOfFirstIndexToUse, 
-		i_offsetToAddToEachIndex);
+	if (Graphics::AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
+	{
+		Graphics::AddEffectCleanUpTask(m_effect, &m_effect);
+		Graphics::ReleaseRenderObjectCleanUpMutex();
+	}
+
+	if (m_collider != nullptr) { delete m_collider; m_collider = nullptr; }
+
+	m_self.reset();
 }
+
 
 void eae6320::cGameObject::InitializeMesh(const std::string& i_meshPath)
 {
@@ -38,7 +43,12 @@ void eae6320::cGameObject::InitializeMesh(const std::string& i_meshPath)
 		m_mesh = nullptr;
 	}
 
-	Graphics::cMesh::Create(m_mesh, i_meshPath);
+	// Send cMesh data to rendering thread for initialzation
+	if (Graphics::AcquireRenderObjectInitMutex() == WAIT_OBJECT_0)
+	{
+		Graphics::AddMeshInitializeTask(&m_mesh, i_meshPath);
+		Graphics::ReleaseRenderObjectInitMutex();
+	}
 }
 
 
@@ -52,27 +62,45 @@ void eae6320::cGameObject::InitializeEffect(
 		m_effect = nullptr;
 	}
 
-	Graphics::cEffect::Create(
-		m_effect, i_vertexShaderPath, i_fragmentShaderPath);
+	// Send cEffect data to rendering thread for initialzation
+	if (Graphics::AcquireRenderObjectInitMutex() == WAIT_OBJECT_0)
+	{
+		Graphics::AddEffectInitializeTask(&m_effect, i_vertexShaderPath, i_fragmentShaderPath);
+		Graphics::ReleaseRenderObjectInitMutex();
+	}
 }
 
 
-void eae6320::cGameObject::CleanUp()
+void eae6320::cGameObject::InitializeCollider(const Physics::sColliderSetting& i_builder)
 {
-	if (m_mesh != nullptr) { m_mesh->DecrementReferenceCount(); }
-	if (m_effect != nullptr) { m_effect->DecrementReferenceCount(); }
-
-
-	// TODO: Temporary code for collider debug
-
-	if (m_colliderLine != nullptr) { m_colliderLine->DecrementReferenceCount(); }
-	if (m_collider != nullptr) { delete m_collider; }
+	Physics::cCollider::Create(m_collider, i_builder, m_self);
 }
 
 
-eae6320::Physics::sRigidBodyState& eae6320::cGameObject::GetRigidBody()
+eae6320::cGameObject::cGameObject()
 {
-	return m_rigidBody;
+	m_self = std::shared_ptr<cGameObject>(this);
+}
+
+
+eae6320::cGameObject::~cGameObject()
+{
+	//CleanUp();
+}
+
+
+// Property Getters
+//--------------------------
+
+bool eae6320::cGameObject::IsActive()
+{
+	return m_active;
+}
+
+
+std::shared_ptr<eae6320::cGameObject> eae6320::cGameObject::GetSelf() const
+{
+	return m_self;
 }
 
 
@@ -88,6 +116,18 @@ eae6320::Graphics::cEffect* eae6320::cGameObject::GetEffect() const
 }
 
 
+eae6320::Physics::sRigidBodyState& eae6320::cGameObject::GetRigidBody()
+{
+	return m_rigidBody;
+}
+
+
+eae6320::Physics::cCollider* eae6320::cGameObject::GetCollider() const
+{
+	return m_collider;
+}
+
+
 eae6320::Math::cMatrix_transformation eae6320::cGameObject::GetCurrentTransform() const
 {
 	return Math::cMatrix_transformation(m_rigidBody.orientation, m_rigidBody.position);
@@ -100,137 +140,22 @@ eae6320::Math::cMatrix_transformation eae6320::cGameObject::GetPredictedTransfor
 }
 
 
+// Update
+//--------------------------
+
 void eae6320::cGameObject::UpdateBasedOnTime(const float i_elapsedSecondCount_sinceLastUpdate)
 {
 	// Update rigid body 
 	m_rigidBody.Update(i_elapsedSecondCount_sinceLastUpdate);
-
-
-	// TODO: temporary code for collider debug
-
-	//if (m_collider != nullptr)
-	//{
-	//	m_collider->Update(m_rigidBody);
-	//}
 }
 
 
 void eae6320::cGameObject::UpdateBasedOnInput()
+{ }
+
+
+void eae6320::cGameObject::SetActive(bool i_active)
 {
-	// TODO 
-	if (UserInput::IsKeyPressed('A'))
-		m_rigidBody.velocity.x = -3.0f;
-	else if (UserInput::IsKeyPressed('D'))
-		m_rigidBody.velocity.x = 3.0f;
-	else
-		m_rigidBody.velocity.x = 0.0f;
-
-	if (UserInput::IsKeyPressed('S'))
-		m_rigidBody.velocity.y = -3.0f;
-	else if (UserInput::IsKeyPressed('W'))
-		m_rigidBody.velocity.y = 3.0f;
-	else
-		m_rigidBody.velocity.y = 0.0f;
-
-	if (UserInput::IsKeyPressed('R'))
-		m_rigidBody.velocity.z = -3.0f;
-	else if (UserInput::IsKeyPressed('F'))
-		m_rigidBody.velocity.z = 3.0f;
-	else
-		m_rigidBody.velocity.z = 0.0f;
-}
-
-
-
-
-
-// TODO: Tempory code for rendering collider box and debug collider
-
-#include <Engine/Math/sVector.h>
-
-
-void eae6320::cGameObject::InitializeColliderLine()
-{
-	if (m_colliderLine != nullptr)
-	{
-		m_colliderLine->DecrementReferenceCount();
-		m_colliderLine = nullptr;
-	}
-
-	uint32_t vertexCount = 0;
-	auto vertexVec = std::vector<Math::sVector>();
-	uint32_t indexCount = 0;
-	auto indexVec = std::vector<uint16_t>();
-	m_collider->GenerateRenderData(vertexCount, vertexVec, indexCount, indexVec);
-
-	// Initialize collider outline
-	{
-		Graphics::VertexFormats::sVertex_line* vertexData = new Graphics::VertexFormats::sVertex_line[vertexCount];
-		for (uint32_t i = 0; i < vertexCount; i++)
-		{
-			if (m_rigidBody.isTrigger == true)
-				vertexData[i] = Graphics::VertexFormats::sVertex_line(vertexVec[i].x, vertexVec[i].y, vertexVec[i].z, 1.0f, 0.75f, 0.796f, 1.0f);
-			else if (m_rigidBody.isStatic == true)
-				vertexData[i] = Graphics::VertexFormats::sVertex_line(vertexVec[i].x, vertexVec[i].y, vertexVec[i].z, 1.0f, 0.8f, 0.0f, 1.0f);
-			else
-				vertexData[i] = Graphics::VertexFormats::sVertex_line(vertexVec[i].x, vertexVec[i].y, vertexVec[i].z, 0.0f, 1.0f, 0.0f, 1.0f);
-		}
-		uint16_t* indexData = new uint16_t[indexCount];
-		for (uint32_t i = 0; i < indexCount; i++)
-		{
-			indexData[i] = indexVec[i];
-		}
-
-		Graphics::cLine::Create(
-			m_colliderLine,
-			vertexData, vertexCount,
-			indexData, indexCount);
-
-		delete[] vertexData;
-		delete[] indexData;
-	}
-
-	// Initialize collision outline
-	{
-		Graphics::VertexFormats::sVertex_line* vertexData = new Graphics::VertexFormats::sVertex_line[vertexCount];
-		for (uint32_t i = 0; i < vertexCount; i++)
-		{
-			vertexData[i] = Graphics::VertexFormats::sVertex_line(vertexVec[i].x, vertexVec[i].y, vertexVec[i].z, 1, 0, 0, 1);
-		}
-		uint16_t* indexData = new uint16_t[indexCount];
-		for (uint32_t i = 0; i < indexCount; i++)
-		{
-			indexData[i] = indexVec[i];
-		}
-
-		Graphics::cLine::Create(
-			m_collisionLine,
-			vertexData, vertexCount,
-			indexData, indexCount);
-
-		delete[] vertexData;
-		delete[] indexData;
-	}
-}
-
-
-void eae6320::cGameObject::InitializeCollider(const Physics::sColliderSetting& i_builder)
-{
-	Physics::cCollider::Create(m_collider, i_builder, &m_rigidBody);
-}
-
-
-eae6320::Graphics::cLine* eae6320::cGameObject::GetColliderLine() const
-{
-	if (m_isCollide)
-		return m_collisionLine;
-	else
-		return m_colliderLine;
-}
-
-
-eae6320::Physics::cCollider* eae6320::cGameObject::GetCollider() const
-{
-	return m_collider;
+	m_active = i_active;
 }
 

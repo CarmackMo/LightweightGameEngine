@@ -142,9 +142,6 @@
     <ProjectReference Include="..\Asserts\Asserts.vcxproj">
       <Project>{464a6551-fca9-4027-bd9e-2b26914782ab}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Camera\Camera.vcxproj">
-      <Project>{e97a35a2-8798-4c91-9543-9ff8bf098c76}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\Concurrency\Concurrency.vcxproj">
       <Project>{60ff1b7f-04ec-40ae-bded-5fe1742da10e}</Project>
     </ProjectReference>

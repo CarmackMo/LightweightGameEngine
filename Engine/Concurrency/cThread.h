@@ -57,6 +57,8 @@ namespace eae6320
 			cThread();
 			~cThread();
 
+			HANDLE GetThreadHandle() { return m_handle; }
+
 			// Data
 			//=====
 

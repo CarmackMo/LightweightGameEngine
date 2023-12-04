@@ -1,0 +1,265 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resource Files\eaeAlien.ico" />
+    <Image Include="Resource Files\eaeGamePad.ico" />
+    <Image Include="Resource Files\vsDefault_large.ico" />
+    <Image Include="Resource Files\vsDefault_small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource Files\ScrollShooterGame.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Bullet\cBullet.Enemy.h" />
+    <ClInclude Include="Bullet\cBullet.h" />
+    <ClInclude Include="Bullet\cBullet.Player.h" />
+    <ClInclude Include="cPhysicsDebugObject.h" />
+    <ClInclude Include="cPlayer.h" />
+    <ClInclude Include="cScrollShooterGame.h" />
+    <ClInclude Include="Enemy\cEnemy.Alien.h" />
+    <ClInclude Include="Enemy\cEnemy.h" />
+    <ClInclude Include="Enemy\cEnemy.Rock.h" />
+    <ClInclude Include="Enemy\cEnemyGenerator.h" />
+    <ClInclude Include="Resource Files\Resource.h" />
+    <ClInclude Include="Resource Files\targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Bullet\cBullet.cpp" />
+    <ClCompile Include="Bullet\cBullet.Enemy.cpp" />
+    <ClCompile Include="Bullet\cBullet.Player.cpp" />
+    <ClCompile Include="cPhysicsDebugObject.cpp" />
+    <ClCompile Include="cPlayer.cpp" />
+    <ClCompile Include="cScrollShooterGame.cpp" />
+    <ClCompile Include="Enemy\cEnemy.Alien.cpp" />
+    <ClCompile Include="Enemy\cEnemy.cpp" />
+    <ClCompile Include="Enemy\cEnemy.Rock.cpp" />
+    <ClCompile Include="Enemy\cEnemyGenerator.cpp" />
+    <ClCompile Include="EntryPoint.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Engine\Application\Application.vcxproj">
+      <Project>{e9a1c1db-d622-4fb4-8cf0-c76df6a8cb1b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Engine\Asserts\Asserts.vcxproj">
+      <Project>{464a6551-fca9-4027-bd9e-2b26914782ab}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Engine\Audio\Audio.vcxproj">
+      <Project>{4bde8532-8703-450a-8d41-de4cee9f6684}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Engine\GameObject\GameObject.vcxproj">
+      <Project>{16e33daa-7734-4082-b347-6ff140d7891a}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Engine\Logging\Logging.vcxproj">
+      <Project>{a5c152ad-26a3-4835-bb10-ef292daf94ac}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Engine\Math\Math.vcxproj">
+      <Project>{999c3d5f-7f79-4bd7-ae21-92eeed0c5962}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Engine\Physics\Physics.vcxproj">
+      <Project>{30e6bb9f-138d-4b44-9733-869263f7bad5}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Engine\Results\Results.vcxproj">
+      <Project>{5003f315-b5d5-48ab-ba3f-1cb0dec8c213}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Engine\UserInput\UserInput.vcxproj">
+      <Project>{193bb096-cd2c-48e8-8a28-99ecc2d019ad}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{9545b8a6-a104-4ca2-bc56-a8f7b6b17e32}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>ScrollShooterGame</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\Engine\EngineDefaults.props" />
+    <Import Project="..\..\Engine\OpenGL.props" />
+    <Import Project="..\ScrollShooterGame.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\Engine\EngineDefaults.props" />
+    <Import Project="..\..\Engine\OpenGL.props" />
+    <Import Project="..\ScrollShooterGame.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\Engine\EngineDefaults.props" />
+    <Import Project="..\..\Engine\Direct3D.props" />
+    <Import Project="..\ScrollShooterGame.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\Engine\EngineDefaults.props" />
+    <Import Project="..\..\Engine\Direct3D.props" />
+    <Import Project="..\ScrollShooterGame.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <CustomBuildStep>
+      <Command>copy "$(TargetPath)" "$(GameInstallDir)$(TargetFileName)" /y</Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Message>Copying $(GameName) Executable</Message>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>$(GameInstallDir)$(TargetFileName)</Outputs>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Inputs>$(TargetPath)</Inputs>
+    </CustomBuildStep>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <CustomBuildStep>
+      <Command>copy "$(TargetPath)" "$(GameInstallDir)$(TargetFileName)" /y</Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Message>Copying $(GameName) Executable</Message>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>$(GameInstallDir)$(TargetFileName)</Outputs>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Inputs>$(TargetPath)</Inputs>
+    </CustomBuildStep>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <CustomBuildStep>
+      <Command>copy "$(TargetPath)" "$(GameInstallDir)$(TargetFileName)" /y</Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Message>Copying $(GameName) Executable</Message>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>$(GameInstallDir)$(TargetFileName)</Outputs>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Inputs>$(TargetPath)</Inputs>
+    </CustomBuildStep>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <CustomBuildStep>
+      <Command>copy "$(TargetPath)" "$(GameInstallDir)$(TargetFileName)" /y</Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Message>Copying $(GameName) Executable</Message>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>$(GameInstallDir)$(TargetFileName)</Outputs>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Inputs>$(TargetPath)</Inputs>
+    </CustomBuildStep>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

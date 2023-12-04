@@ -1,13 +1,14 @@
 // Includes
 //=========
 
-#include "cMesh.h"
-
 #include <Engine/Asserts/Asserts.h>
+#include <Engine/Graphics/cMesh.h>
 #include <Engine/Logging/Logging.h>
 #include <Engine/Platform/Platform.h>
 #include <Engine/ScopeGuard/cScopeGuard.h>
+#include <Engine/UserOutput/UserOutput.h>
 #include <External/Lua/Includes.h>
+
 #include <iostream>
 #include <new>
 
@@ -39,8 +40,7 @@ eae6320::cResult eae6320::Graphics::cMesh::Create(
 	const uint32_t i_indexOfFirstIndexToUse,
 	const uint32_t i_offsetToAddToEachIndex)
 {
-	auto result = eae6320::Results::Success;
-
+	auto result = Results::Success;
 	cMesh* newMesh = nullptr;
 
 	// If a new mesh instance is successfully created, pass it out from 
@@ -98,7 +98,6 @@ eae6320::cResult eae6320::Graphics::cMesh::Create(
 	const std::string& i_meshPath)
 {
 	auto result = eae6320::Results::Success;
-
 	cMesh* newMesh = nullptr;
 
 	// If a new mesh instance is successfully created, pass it out from 
@@ -511,15 +510,6 @@ eae6320::cResult LoadLuaArray_Vertex(lua_State& io_luaState, const std::string& 
 		}
 	}
 
-
-	for (uint32_t i = 0; i < o_arrayLen; i++)
-	{
-		auto temp1 = o_array[i];
-		auto temp2 = 0;
-	}
-
-
-
 	return result;
 }
 
@@ -594,7 +584,6 @@ eae6320::cResult LoadLuaArray_Index(lua_State& io_luaState, const std::string& i
 			value = lua_tonumber(&io_luaState, -1);
 			*target = static_cast<uint16_t>(value);
 		}
-
 	}
 
 	return result;

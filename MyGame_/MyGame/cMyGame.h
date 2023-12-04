@@ -9,23 +9,24 @@
 //=========
 
 #include <Engine/Application/iApplication.h>
-#include <Engine/Camera/cCamera.h>
+#include <Engine/GameObject/cCamera.h>
 #include <Engine/GameObject/cGameObject.h>
 #include <Engine/Physics/cRigidBody.h>
 #include <Engine/Results/Results.h>
+#include <Engine/Utilities/cSingleton.h>
+
+#include <MyGame_/MyGame/cPhysicsDebugObject.h>
+
+
+#include <Engine/Graphics/cMesh.h>
+#include <Engine/Graphics/cEffect.h>
+// TODO: Tempory code for collider testing
+#include <Engine/Physics/cColliderBase.h>
 
 
 #if defined( EAE6320_PLATFORM_WINDOWS )
 	#include "Resource Files/Resource.h"
 #endif
-
-
-
-// TODO: Tempory code for collider testing
-#include <Engine/Graphics/cMesh.h>
-#include <Engine/Graphics/cEffect.h>
-#include <Engine/Physics/cColliderBase.h>
-#include <Engine/Physics/cSphereCollider.h>
 
 
 
@@ -36,7 +37,7 @@
 
 namespace eae6320
 {
-	class cMyGame final : public Application::iApplication
+	class cMyGame final : public Application::iApplication, public eae6320::cSingleton<cMyGame>
 	{
 		// Inherited Implementation
 		//=========================
@@ -162,16 +163,16 @@ namespace eae6320
 
 		// TODO: temporary colldier object
 
-		cGameObject m_colliderObject_AABB1;
-		cGameObject m_colliderObject_AABB2;
-		cGameObject m_colliderObject_AABB3;
-		cGameObject m_colliderObject_AABB4;
+		cPhysicDebugObject m_colliderObject_AABB1;
+		cPhysicDebugObject m_colliderObject_AABB2;
+		cPhysicDebugObject m_colliderObject_AABB3;
+		cPhysicDebugObject m_colliderObject_AABB4;
 
-		cGameObject m_colliderObject_sphere1;
-		cGameObject m_colliderObject_sphere2;
-		cGameObject m_colliderObject_sphere3;
+		cPhysicDebugObject m_colliderObject_sphere1;
+		cPhysicDebugObject m_colliderObject_sphere2;
+		cPhysicDebugObject m_colliderObject_sphere3;
 
-		std::vector<cGameObject*> m_colliderObjectList;
+		std::vector<cPhysicDebugObject*> m_colliderObjectList;
 
 		void InitializeCollisionSystem();
 

@@ -23,7 +23,9 @@
     <ClInclude Include="cMutex.h" />
     <ClInclude Include="cMutex_recursive.h" />
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="cSemaphore.h" />
     <ClInclude Include="cThread.h" />
+    <ClInclude Include="cWaitableObject.h" />
     <ClInclude Include="Windows\ExternalLibraries.win.h" />
   </ItemGroup>
   <ItemGroup>
@@ -32,6 +34,7 @@
     <ClCompile Include="Windows\cEvent.win.cpp" />
     <ClCompile Include="Windows\cMutex.win.cpp" />
     <ClCompile Include="Windows\cMutex_recursive.win.cpp" />
+    <ClCompile Include="Windows\cSemaphore.win.cpp" />
     <ClCompile Include="Windows\cThread.win.cpp" />
   </ItemGroup>
   <ItemGroup>

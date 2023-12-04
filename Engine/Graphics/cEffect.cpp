@@ -1,24 +1,21 @@
 // Includes
 //=========
 
-#include "cEffect.h"
-
 #include <Engine/Asserts/Asserts.h>
+#include <Engine/Graphics/cEffect.h>
 #include <Engine/Logging/Logging.h>
 #include <Engine/ScopeGuard/cScopeGuard.h>
+
 #include <new>
 
 
 eae6320::cResult eae6320::Graphics::cEffect::Create(cEffect*& o_effect, const std::string& i_vertexShaderPath, const std::string& i_fragmentShaderPath)
 {
 	auto result = eae6320::Results::Success;
-
 	cEffect* newEffect = nullptr;
 
 	// If a new effect instance is successfully created, pass it out from 
 	// the function. Otherwise, clean up the instance.
-	// This logic needs to be executed at the end of the initialization process
-	// ScopeGuard will make sure it must be executed before exiting current function scope.
 	eae6320::cScopeGuard scopeGuard([&o_effect, &result, &newEffect]
 		{
 			if (result)

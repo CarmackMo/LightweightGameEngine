@@ -256,6 +256,7 @@ void eae6320::Assets::cManager<tAsset, tKey>::UnsafeDecrementReferenceCount( con
 	template <class tAsset, class tKey>
 eae6320::cResult eae6320::Assets::cManager<tAsset, tKey>::Initialize()
 {
+	m_mutex.Initialize(false);
 	return Results::Success;
 }
 

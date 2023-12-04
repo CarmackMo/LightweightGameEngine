@@ -29,11 +29,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cMyGame.h" />
+    <ClInclude Include="cPhysicsDebugObject.h" />
     <ClInclude Include="Resource Files\Resource.h" />
     <ClInclude Include="Resource Files\targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cMyGame.cpp" />
+    <ClCompile Include="cPhysicsDebugObject.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -43,8 +45,8 @@
     <ProjectReference Include="..\..\Engine\Asserts\Asserts.vcxproj">
       <Project>{464a6551-fca9-4027-bd9e-2b26914782ab}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\Engine\Camera\Camera.vcxproj">
-      <Project>{e97a35a2-8798-4c91-9543-9ff8bf098c76}</Project>
+    <ProjectReference Include="..\..\Engine\Audio\Audio.vcxproj">
+      <Project>{4bde8532-8703-450a-8d41-de4cee9f6684}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\Engine\GameObject\GameObject.vcxproj">
       <Project>{16e33daa-7734-4082-b347-6ff140d7891a}</Project>

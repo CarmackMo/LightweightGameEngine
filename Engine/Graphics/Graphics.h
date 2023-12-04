@@ -8,18 +8,19 @@
 // Includes
 //=========
 
-#include "cEffect.h"
-#include "cMesh.h"
-#include "ConstantBufferFormats.h"
-#include "Configuration.h"
+#include <Engine/Graphics/ConstantBufferFormats.h>
+#include <Engine/Graphics/Configuration.h>
+#include <Engine/Results/Results.h>
+
 
 #include <cstdint>
-#include <Engine/Camera/cCamera.h>
-#include <Engine/Results/Results.h>
+#include <functional>
 
 #if defined( EAE6320_PLATFORM_WINDOWS )
 	#include <Engine/Windows/Includes.h>
 #endif
+
+
 
 // Interface
 //==========
@@ -51,14 +52,13 @@ namespace Graphics
 		Math::cMatrix_transformation i_transform_cameraToProjectedMatrix);
 
 
-	eae6320::cResult SubmitMeshEffectData(
-		ConstantBufferFormats::sMeshEffectPair i_meshEffectPairArray[], 
-		Math::cMatrix_transformation i_transformMatrix[],
-		uint32_t i_meshEffectPairCount);
+	eae6320::cResult SubmitNormalRenderData(
+		ConstantBufferFormats::sNormalRender i_normalDataArray[],
+		uint32_t i_normalDataCount);
 
 
-	eae6320::cResult SubmitDebugData(
-		ConstantBufferFormats::sDebug i_debugDataArray[],
+	eae6320::cResult SubmitDebugRenderData(
+		ConstantBufferFormats::sDebugRender i_debugDataArray[],
 		uint32_t i_debugDataCount);
 
 
@@ -70,6 +70,39 @@ namespace Graphics
 	// When the application has finished submitting data for a frame
 	// it must call this function
 	cResult SignalThatAllDataForAFrameHasBeenSubmitted();
+	
+
+	// Render Objects Initialization / Clean Up
+	//-------
+
+	DWORD AcquireRenderObjectInitMutex(DWORD i_waitTime_MS = INFINITE);
+
+	void ReleaseRenderObjectInitMutex();
+
+	DWORD AcquireRenderObjectCleanUpMutex(DWORD i_waitTime_MS = INFINITE);
+
+	void ReleaseRenderObjectCleanUpMutex();
+
+
+	void InitializeRenderObjects();
+
+	void AddMeshInitializeTask(cMesh** i_meshPtr, std::string i_meshPath);
+
+	void AddEffectInitializeTask(cEffect** i_effectPtr, std::string i_vertexShaderPath, std::string i_fragmentShaderPath);
+
+	void AddLineInitializeTask(cLine** i_linePtr, 
+		VertexFormats::sVertex_line i_vertexData[], const uint32_t i_vertexCount, 
+		uint16_t i_indexData[], const uint32_t i_indexCount);
+
+
+	void CleanUpRenderObjects();
+
+	void AddMeshCleanUpTask(cMesh* i_mesh, cMesh** i_meshPtr);
+
+	void AddEffectCleanUpTask(cEffect* i_effect, cEffect** i_effectPtr);
+
+	void AddLineCleanUpTask(cLine* i_line, cLine** i_linePtr);
+
 
 	// Render
 	//-------

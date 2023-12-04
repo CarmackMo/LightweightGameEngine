@@ -9,6 +9,8 @@
     <ClInclude Include="Windows\ExternalLibraries.win.h">
       <Filter>Windows</Filter>
     </ClInclude>
+    <ClInclude Include="cSemaphore.h" />
+    <ClInclude Include="cWaitableObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cThread.cpp" />
@@ -25,6 +27,9 @@
       <Filter>Windows</Filter>
     </ClCompile>
     <ClCompile Include="cEvent.cpp" />
+    <ClCompile Include="Windows\cSemaphore.win.cpp">
+      <Filter>Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Windows">
