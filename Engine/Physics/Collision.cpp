@@ -1,6 +1,7 @@
 // Includes
 //=========
 
+#include <Engine/GameObject/cGameObject.h>
 #include <Engine/Logging/Logging.h>
 #include <Engine/Physics/Collision.h>
 #include <Engine/Physics/cAABBCollider.h>
@@ -183,10 +184,15 @@ void eae6320::Physics::Collision::Update_CollisionResolution()
 {
 	for (auto item : s_collisionMap)
 	{
+		// If the owner of the collider is not active, do nothing
+		if (item.first->m_gameobject.lock()->IsActive() == false)
+			continue;
+
 		cCollider* collider_lhs = item.first;
 		for (auto collider_rhs : item.second)
 		{
-			CollisionResolution(collider_lhs, collider_rhs);
+			if (collider_lhs->m_gameobject.lock()->IsActive())
+				CollisionResolution(collider_lhs, collider_rhs);
 		}
 	}
 }
@@ -512,6 +518,10 @@ void eae6320::Physics::Collision::CollisionDetection_BroadPhase_BVH()
 	std::unordered_map<cCollider*, std::vector<cCollider*>> collisionMap_broadPhase;
 	for (const auto& item : s_collisionMap)
 	{
+		// If the owner of the collider is not active, do nothing
+		if (item.first->m_gameobject.lock()->IsActive() == false)
+			continue;
+
 		collisionMap_broadPhase[item.first] = std::vector<cCollider*>(0);
 
 		std::vector<cCollider*> collisionList = s_BVHTree.Query(item.first);
@@ -519,7 +529,8 @@ void eae6320::Physics::Collision::CollisionDetection_BroadPhase_BVH()
 		// Ignore duplicate collision
 		for (cCollider* collider : collisionList)
 		{
-			if (collisionMap_broadPhase.find(collider) == collisionMap_broadPhase.end())
+			if (collisionMap_broadPhase.find(collider) == collisionMap_broadPhase.end() &&
+				collider->m_gameobject.lock()->IsActive())
 				collisionMap_broadPhase[item.first].push_back(collider);
 		}
 	}
@@ -584,9 +595,9 @@ void eae6320::Physics::Collision::InvokeCollisionCallback(std::unordered_map<cCo
 					(i_newCollisionMap.find(collider_rhs) == i_newCollisionMap.end() || 
 						std::find(i_newCollisionMap[collider_rhs].begin(), i_newCollisionMap[collider_rhs].end(), collider_lhs) == i_newCollisionMap[collider_rhs].end()))
 				{
-					if (collider_lhs->OnCollisionExit != nullptr)
+					if (collider_lhs->OnCollisionExit != nullptr && collider_lhs->m_gameobject.lock()->IsActive())
 						collider_lhs->OnCollisionExit(collider_lhs, collider_rhs);
-					if (collider_rhs->OnCollisionExit != nullptr)
+					if (collider_rhs->OnCollisionExit != nullptr && collider_rhs->m_gameobject.lock()->IsActive())
 						collider_rhs->OnCollisionExit(collider_rhs, collider_lhs);
 				}
 			}
@@ -606,16 +617,16 @@ void eae6320::Physics::Collision::InvokeCollisionCallback(std::unordered_map<cCo
 					(s_collisionMap.find(collider_rhs) == s_collisionMap.end() || 
 						std::find(s_collisionMap[collider_rhs].begin(), s_collisionMap[collider_rhs].end(), collider_lhs) == s_collisionMap[collider_rhs].end()))
 				{
-					if (collider_lhs->OnCollisionEnter != nullptr)
+					if (collider_lhs->OnCollisionEnter != nullptr && collider_lhs->m_gameobject.lock()->IsActive())
 						collider_lhs->OnCollisionEnter(collider_lhs, collider_rhs);
-					if (collider_rhs->OnCollisionEnter != nullptr)
+					if (collider_rhs->OnCollisionEnter != nullptr && collider_rhs->m_gameobject.lock()->IsActive())
 						collider_rhs->OnCollisionEnter(collider_rhs, collider_lhs);
 				}
 				else
 				{
-					if (collider_lhs->OnCollisionStay != nullptr)
+					if (collider_lhs->OnCollisionStay != nullptr && collider_lhs->m_gameobject.lock()->IsActive())
 						collider_lhs->OnCollisionStay(collider_lhs, collider_rhs);
-					if (collider_rhs->OnCollisionStay != nullptr)
+					if (collider_rhs->OnCollisionStay != nullptr && collider_rhs->m_gameobject.lock()->IsActive())
 						collider_rhs->OnCollisionStay(collider_rhs, collider_lhs);
 				}
 			}

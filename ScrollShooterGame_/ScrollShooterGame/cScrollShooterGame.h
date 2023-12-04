@@ -158,8 +158,6 @@ namespace ScrollShooterGame
 
 	public:
 
-		//void AddGameObjectCleanUpTask(eae6320::cGameObject* i_gameObject);
-
 		void AddGameObjectCleanUpTask(std::shared_ptr<eae6320::cGameObject> i_gameObject);
 	};
 }

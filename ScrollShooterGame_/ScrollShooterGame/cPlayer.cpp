@@ -35,7 +35,7 @@ void ScrollShooterGame::cPlayer::Initialize(eae6320::Math::sVector i_position, e
 	// Initialize collider
 	{
 		Physics::sColliderSetting setting_AABB1;
-		setting_AABB1.SettingForAABB(Math::sVector(-1.0f, -1.0f, -1.0f), Math::sVector(1.0f, 1.0f, 1.0f));
+		setting_AABB1.SettingForAABB(Math::sVector(-0.9f, -0.9f, -0.9f), Math::sVector(0.9f, 0.9f, 0.9f));
 		InitializeCollider(setting_AABB1);
 		InitializeColliderLine();
 	}

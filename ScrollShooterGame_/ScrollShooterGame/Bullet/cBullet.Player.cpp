@@ -29,7 +29,7 @@ void ScrollShooterGame::cBullet_Player::Initialize(
 	// Initialize collider
 	{
 		Physics::sColliderSetting setting_sphere;
-		setting_sphere.SettingForSphere(Math::sVector(0, 0, 0), 0.5f);
+		setting_sphere.SettingForSphere(Math::sVector(0, 0, 0), 0.45f);
 		InitializeCollider(setting_sphere);
 		InitializeColliderLine();
 	}
@@ -49,6 +49,7 @@ void ScrollShooterGame::cBullet_Player::Initialize(
 				if (std::dynamic_pointer_cast<cEnemy>(other->m_gameobject.lock()) != nullptr ||
 					std::dynamic_pointer_cast<cBullet_Enemy>(other->m_gameobject.lock()) != nullptr)
 				{
+					self->m_gameobject.lock()->SetActive(false);
 					cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(self->m_gameobject.lock());
 				}
 			};

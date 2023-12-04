@@ -42,6 +42,7 @@ void ScrollShooterGame::cBullet::UpdateBasedOnTime(const float i_elapsedSecondCo
 	if (m_rigidBody.position.y >= m_boundary ||
 		m_rigidBody.position.y <= m_boundary * -1)
 	{
+		this->SetActive(false);
 		cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(this->GetSelf());
 	}
 }
