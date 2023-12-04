@@ -24,6 +24,9 @@ void ScrollShooterGame::cBullet_Player::Initialize(
 		m_rigidBody.position = i_position;
 		m_rigidBody.velocity = m_velocity;
 		m_rigidBody.isTrigger = true;
+
+		m_rigidBody.angularSpeed = 10.0f;
+		m_rigidBody.angularVelocity_axis_local = Math::sVector(0, 1, 0);
 	}
 
 	// Initialize collider

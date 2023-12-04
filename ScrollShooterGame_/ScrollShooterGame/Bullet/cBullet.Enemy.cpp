@@ -10,6 +10,7 @@
 #include <ScrollShooterGame_/ScrollShooterGame/Bullet/cBullet.Player.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cPlayer.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cScrollShooterGame.h>
+#include <ScrollShooterGame_/ScrollShooterGame/Enemy/cEnemy.Rock.h>
 
 using namespace eae6320;
 
@@ -24,7 +25,7 @@ void ScrollShooterGame::cBullet_Enemy::Initialize(
 	// Initialize rigid body
 	{
 		m_rigidBody.position = i_position;
-		m_rigidBody.velocity = m_velocity;
+		m_rigidBody.velocity = i_velocity;
 		m_rigidBody.isTrigger = true;
 	}
 
@@ -55,6 +56,10 @@ void ScrollShooterGame::cBullet_Enemy::Initialize(
 					self->m_gameobject.lock()->SetActive(false);
 					cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(self->m_gameobject.lock());
 				}
+				else if (std::dynamic_pointer_cast<cEnemy_Rock>(other->m_gameobject.lock()) != nullptr)
+				{
+					GetRigidBody().velocity.x *= -1;
+				}
 			};
 
 		m_collider->OnCollisionStay = [this](Physics::cCollider* self, Physics::cCollider* other) -> void
@@ -62,7 +67,7 @@ void ScrollShooterGame::cBullet_Enemy::Initialize(
 
 		m_collider->OnCollisionExit = [this](Physics::cCollider* self, Physics::cCollider* other) -> void
 			{
-				std::dynamic_pointer_cast<cBullet>(self->m_gameobject.lock())->m_isCollide = false;
+				m_isCollide = false;
 			};
 	}
 }

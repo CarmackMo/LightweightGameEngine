@@ -138,6 +138,7 @@ namespace ScrollShooterGame
 		void InitializeCollisionSystem();
 
 
+
 	public:
 
 		// TODO: temporary player object
@@ -149,6 +150,8 @@ namespace ScrollShooterGame
 		std::queue<std::shared_ptr<eae6320::cGameObject>> m_gameObjectCleanUpQueue;
 
 	public:
+
+		eae6320::cGameObject* GetPlayer();
 
 		void AddGameObjectCleanUpTask(std::shared_ptr<eae6320::cGameObject> i_gameObject);
 	};

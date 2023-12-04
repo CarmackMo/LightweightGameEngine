@@ -36,6 +36,9 @@ void ScrollShooterGame::cEnemy_Alien::Initialize(
 		m_rigidBody.position = i_position;
 		m_rigidBody.velocity = m_velocity;
 		m_rigidBody.isTrigger = true;
+
+		m_rigidBody.angularSpeed = 2.5f;
+		m_rigidBody.angularVelocity_axis_local = Math::sVector(0, 1, 0);
 	}
 
 	// Initialize collider
@@ -120,12 +123,16 @@ void ScrollShooterGame::cEnemy_Alien::UpdateBasedOnTime(const float i_elapsedSec
 
 void ScrollShooterGame::cEnemy_Alien::ShootBullet()
 {
+	auto game = cScrollShooterGame::Instance();
+
+	Math::sVector playerPos = game->GetPlayer()->GetRigidBody().position;
 	Math::sVector selfPos = GetRigidBody().position;
+	Math::sVector velocity = (playerPos - selfPos).GetNormalized() * 1.5f;
+
 	cBullet_Enemy* newBullet = new cBullet_Enemy();
-	newBullet->Initialize(Math::sVector(selfPos.x, selfPos.y - 1.0f, selfPos.z));
+	newBullet->Initialize(Math::sVector(selfPos.x, selfPos.y - 1.0f, selfPos.z), velocity);
 
 	Physics::Collision::RegisterCollider(newBullet->GetCollider());
 
-	auto game = cScrollShooterGame::Instance();
 	game->m_gameObjectList.push_back(newBullet->GetSelf());
 }

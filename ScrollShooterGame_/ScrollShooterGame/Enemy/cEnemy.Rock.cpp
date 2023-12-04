@@ -30,6 +30,9 @@ void ScrollShooterGame::cEnemy_Rock::Initialize(
 		m_rigidBody.position = i_position;
 		m_rigidBody.velocity = i_velocity;
 		m_rigidBody.isTrigger = true;
+
+		m_rigidBody.angularSpeed = 1.0f;
+		m_rigidBody.angularVelocity_axis_local = Math::sVector(1, 1, 1);
 	}
 
 	// Initialize collider

@@ -313,6 +313,12 @@ void ScrollShooterGame::cScrollShooterGame::InitializeCollisionSystem()
 }
 
 
+cGameObject* ScrollShooterGame::cScrollShooterGame::GetPlayer()
+{
+	return m_player;
+}
+
+
 void ScrollShooterGame::cScrollShooterGame::AddGameObjectCleanUpTask(std::shared_ptr<cGameObject> i_gameObject)
 {
 	m_gameObjectCleanUpQueue.push(i_gameObject);
