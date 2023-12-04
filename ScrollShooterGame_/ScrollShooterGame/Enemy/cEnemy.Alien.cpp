@@ -128,5 +128,4 @@ void ScrollShooterGame::cEnemy_Alien::ShootBullet()
 
 	auto game = cScrollShooterGame::Instance();
 	game->m_gameObjectList.push_back(newBullet->GetSelf());
-	game->m_bulletList.push_back(newBullet);
 }

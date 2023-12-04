@@ -25,12 +25,6 @@ void ScrollShooterGame::cBullet::CleanUp()
 		game->m_gameObjectList.erase(objIter);
 	}
 
-	auto bulletIter = std::find(game->m_bulletList.begin(), game->m_bulletList.end(), this);
-	if (bulletIter != game->m_bulletList.end())
-	{
-		game->m_bulletList.erase(bulletIter);
-	}
-
 	cGameObject::CleanUp();
 }
 

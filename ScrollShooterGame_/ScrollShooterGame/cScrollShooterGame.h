@@ -138,23 +138,15 @@ namespace ScrollShooterGame
 		void InitializeCollisionSystem();
 
 
-
-
 	public:
 
 		// TODO: temporary player object
 		cPlayer* m_player = nullptr;
 		cEnemyGenerator* m_enemyGenerator = nullptr;
 
-
-		std::vector<cBullet*> m_bulletList;
-
 		std::vector<std::shared_ptr<eae6320::cGameObject>> m_gameObjectList;
 
 		std::queue<std::shared_ptr<eae6320::cGameObject>> m_gameObjectCleanUpQueue;
-
-
-
 
 	public:
 

@@ -132,9 +132,7 @@ void ScrollShooterGame::cScrollShooterGame::SubmitDataToBeRendered(
 		BVHRenderData = Physics::Collision::GetBVHRenderData();
 
 		size_t BVHTreeSize = BVHRenderData.size();
-		size_t bulletSize = m_bulletList.size() + BVHTreeSize;
-		size_t enemySize = 1;
-		size_t totalArraySize = bulletSize + enemySize;
+		size_t totalArraySize = BVHTreeSize;
 
 		Graphics::ConstantBufferFormats::sDebugRender* debugDataArray = new Graphics::ConstantBufferFormats::sDebugRender[totalArraySize];
 
@@ -148,24 +146,6 @@ void ScrollShooterGame::cScrollShooterGame::SubmitDataToBeRendered(
 			debugDataArray[i].Initialize(BVHRenderData[i].first, BVHRenderData[i].second);
 		}
 
-		// Render data of bullets
-		for (size_t i = BVHTreeSize; i < bulletSize; i++)
-		{
-			auto bullet = m_bulletList[i - BVHTreeSize];
-
-			if (bullet == nullptr || bullet->GetColliderLine() == nullptr)
-				continue;
-
-			debugDataArray[i].Initialize(bullet->GetColliderLine(), bullet->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
-		}
-
-		//// Render data of enemy
-		//{
-		//	if (m_enemy != nullptr && m_enemy->GetColliderLine() != nullptr)
-		//	{
-		//		debugDataArray[totalArraySize - 1].Initialize(m_enemy->GetColliderLine(), m_enemy->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
-		//	}
-		//}
 
 		Graphics::SubmitDebugRenderData(debugDataArray, static_cast<uint32_t>(totalArraySize));
 
@@ -221,7 +201,6 @@ eae6320::cResult ScrollShooterGame::cScrollShooterGame::Initialize()
 
 	InitializeGameObject();
 
-	// TODO: temporary code for initialize collision system
 	InitializeCollisionSystem();
 
 	Audio::Play("main");
@@ -264,6 +243,7 @@ eae6320::cResult ScrollShooterGame::cScrollShooterGame::CleanUp()
 
 	for (std::shared_ptr<cGameObject> object : m_gameObjectList)
 	{
+		object->SetActive(false);
 		m_gameObjectCleanUpQueue.push(object);
 	}
 	m_gameObjectList.clear();
@@ -314,7 +294,6 @@ void ScrollShooterGame::cScrollShooterGame::CleanUpGameObject()
 		m_gameObjectCleanUpQueue.pop();
 		
 		EAE6320_ASSERT(object != nullptr);
-		EAE6320_ASSERTF(object.use_count() == 3, "share_ptr reference count is not correct: %l", object.use_count());
 		object->CleanUp();
 
 		EAE6320_ASSERTF(object.use_count() == 1, "share_ptr reference count is not correct: %l", object.use_count());
