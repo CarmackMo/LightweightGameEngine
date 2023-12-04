@@ -314,6 +314,7 @@ void ScrollShooterGame::cScrollShooterGame::CleanUpGameObject()
 		m_gameObjectCleanUpQueue.pop();
 		
 		EAE6320_ASSERT(object != nullptr);
+		EAE6320_ASSERTF(object.use_count() == 3, "share_ptr reference count is not correct: %l", object.use_count());
 		object->CleanUp();
 
 		EAE6320_ASSERTF(object.use_count() == 1, "share_ptr reference count is not correct: %l", object.use_count());

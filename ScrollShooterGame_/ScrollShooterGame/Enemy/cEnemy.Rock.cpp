@@ -42,7 +42,7 @@ void ScrollShooterGame::cEnemy_Rock::Initialize(
 
 	// Initialize mesh & effect
 	{
-		InitializeMesh("data/meshes/mesh_rectangle.mesh");
+		InitializeMesh("data/meshes/mesh_enemy_rock.mesh");
 		InitializeEffect("data/Shaders/Vertex/standard.shader", "data/Shaders/Fragment/standard.shader");
 	}
 
@@ -60,6 +60,10 @@ void ScrollShooterGame::cEnemy_Rock::Initialize(
 					{
 						Audio::Play("boom_enemy");
 						cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(self->m_gameobject.lock());
+					}
+					else
+					{
+						Audio::Play("hit_enemy");
 					}
 				}
 			};

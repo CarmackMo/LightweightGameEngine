@@ -48,7 +48,7 @@ void ScrollShooterGame::cEnemy_Alien::Initialize(
 
 	// Initialize mesh & effect
 	{
-		InitializeMesh("data/meshes/mesh_triangle.mesh");
+		InitializeMesh("data/meshes/mesh_enemy_alien.mesh");
 		InitializeEffect("data/Shaders/Vertex/standard.shader", "data/Shaders/Fragment/standard.shader");
 	}
 
@@ -66,6 +66,10 @@ void ScrollShooterGame::cEnemy_Alien::Initialize(
 					{
 						Audio::Play("boom_enemy");
 						cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(self->m_gameobject.lock());
+					}
+					else
+					{
+						Audio::Play("hit_enemy");
 					}
 				}
 			};

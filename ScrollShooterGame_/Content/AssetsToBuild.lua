@@ -23,6 +23,11 @@ return
 		{ path = "Meshes/mesh_keqing.lua" },
 		{ path = "Meshes/mesh_keqing_skin.lua" },
 		{ path = "Meshes/mesh_ganyu.lua" },
+
+		{ path = "Meshes/mesh_bullet_enemy.lua" },
+		{ path = "Meshes/mesh_bullet_player.lua" },
+		{ path = "Meshes/mesh_enemy_alien.lua" },
+		{ path = "Meshes/mesh_enemy_rock.lua" },
 	},
 
 	audios = 

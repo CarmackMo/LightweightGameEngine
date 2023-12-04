@@ -2,6 +2,7 @@
 // Includes
 //========
 
+#include <Engine/Audio/Audio.h>
 #include <Engine/Physics/cColliderBase.h>
 #include <Engine/UserOutput/UserOutput.h>
 
@@ -37,7 +38,7 @@ void ScrollShooterGame::cBullet_Enemy::Initialize(
 
 	// Initialize mesh & effect
 	{
-		InitializeMesh("data/meshes/mesh_rectangle.mesh");
+		InitializeMesh("data/meshes/mesh_bullet_enemy.mesh");
 		InitializeEffect("data/Shaders/Vertex/standard.shader", "data/Shaders/Fragment/standard.shader");
 	}
 
@@ -50,7 +51,7 @@ void ScrollShooterGame::cBullet_Enemy::Initialize(
 				if (std::dynamic_pointer_cast<cPlayer>(other->m_gameobject.lock()) != nullptr ||
 					std::dynamic_pointer_cast<cBullet_Player>(other->m_gameobject.lock()) != nullptr)
 				{
-					UserOutput::ConsolePrint("Enemy bullet hit player!! \n");
+					Audio::Play("hit_enemy");
 					cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(self->m_gameobject.lock());
 				}
 			};
