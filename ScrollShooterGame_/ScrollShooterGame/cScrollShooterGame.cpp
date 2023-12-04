@@ -283,26 +283,6 @@ void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 
 		m_gameObjectList.push_back(m_enemyGenerator->GetSelf());
 	}
-	// Initialize decorations
-	{
-		cEnemy_Rock* rock;
-
-		for (int i = 0; i < 5; i++)
-		{
-			rock = new cEnemy_Rock();
-			rock->Initialize(Math::sVector(Math::Random::RandInRange(-20.0f, -8.0f), Math::Random::RandInRange(-12.0f, 10.0f), Math::Random::RandInRange(-40.0f, -5.0f)));
-			rock->GetRigidBody().angularSpeed = Math::Random::RandInRange(-2.0f, 2.0f);
-			m_gameObjectList.push_back(rock->GetSelf());
-		}
-
-		for (int i = 0; i < 5; i++)
-		{
-			rock = new cEnemy_Rock();
-			rock->Initialize(Math::sVector(Math::Random::RandInRange(8.0f, 20.0f), Math::Random::RandInRange(-12.0f, 10.0f), Math::Random::RandInRange(-40.0f, -5.0f)));
-			rock->GetRigidBody().angularSpeed = Math::Random::RandInRange(-2.0f, 2.0f);
-			m_gameObjectList.push_back(rock->GetSelf());
-		}
-	}
 }
 
 

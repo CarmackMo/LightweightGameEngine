@@ -5,6 +5,7 @@
 #include <Engine/Audio/Audio.h>
 
 #include <ScrollShooterGame_/ScrollShooterGame/Bullet/cBullet.Player.h>
+#include <ScrollShooterGame_/ScrollShooterGame/Enemy/cEnemy.Alien.h>
 #include <ScrollShooterGame_/ScrollShooterGame/Enemy/cEnemy.Rock.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cPlayer.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cScrollShooterGame.h>
@@ -69,6 +70,12 @@ void ScrollShooterGame::cEnemy_Rock::Initialize(
 					{
 						Audio::Play("hit_enemy");
 					}
+				}
+				else if (std::dynamic_pointer_cast<cEnemy_Alien>(other->m_gameobject.lock()) != nullptr ||
+						 std::dynamic_pointer_cast<cEnemy_Rock>(other->m_gameobject.lock()) != nullptr)
+				{
+					Math::sVector direction = (m_rigidBody.position - other->m_objectRigidBody->position).GetNormalized();
+					m_rigidBody.velocity.x = direction.x;
 				}
 			};
 
