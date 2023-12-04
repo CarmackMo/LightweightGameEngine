@@ -118,7 +118,7 @@ void ScrollShooterGame::cPlayer::UpdateBasedOnInput()
 			auto currentTime = Time::ConvertTicksToSeconds(Time::GetCurrentSystemTimeTickCount());
 			if (currentTime - m_lastShoot_second >= m_shootCoolDown)
 			{
-				//Audio::Play("shoot");
+				Audio::Play("shoot");
 
 				ShootBullet();
 				m_lastShoot_second = currentTime;

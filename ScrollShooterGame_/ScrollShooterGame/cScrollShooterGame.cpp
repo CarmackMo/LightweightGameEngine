@@ -224,7 +224,7 @@ eae6320::cResult ScrollShooterGame::cScrollShooterGame::Initialize()
 	// TODO: temporary code for initialize collision system
 	InitializeCollisionSystem();
 
-	//Audio::Play("main");
+	Audio::Play("main");
 
 
 	return Results::Success;

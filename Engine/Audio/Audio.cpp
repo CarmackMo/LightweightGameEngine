@@ -41,8 +41,8 @@
 
 namespace
 {
-	std::shared_ptr<IXAudio2> s_XAudio2;
-	std::shared_ptr<IXAudio2MasteringVoice> s_masterVoice;
+    IXAudio2* s_XAudio2;
+    IXAudio2MasteringVoice* s_masterVoice;
 
     struct sAudioFormat
     {
@@ -79,21 +79,15 @@ eae6320::cResult eae6320::Audio::Initialize()
 {
 	cResult result = Results::Success;
 
-	HRESULT hr;
-	IXAudio2* XAudio2 = nullptr;
-	IXAudio2MasteringVoice* masterVoice = nullptr;
-	
-	if (FAILED(hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED)))
-		return Results::Failure;
+    HRESULT hr;
+    if (FAILED(hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED)))
+        return Results::Failure;
 
-	if (FAILED(hr = XAudio2Create(&XAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR)))
-		return Results::Failure;
+    if (FAILED(hr = XAudio2Create(&s_XAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR)))
+        return Results::Failure;
 
-	if (FAILED(hr = XAudio2->CreateMasteringVoice(&masterVoice)))
-		return Results::Failure;
-
-	s_XAudio2 = std::shared_ptr<IXAudio2>(XAudio2);
-	s_masterVoice = std::shared_ptr<IXAudio2MasteringVoice>(masterVoice);
+    if (FAILED(hr = s_XAudio2->CreateMasteringVoice(&s_masterVoice)))
+        return Results::Failure;
 
     if ((hr = InitializeAudioData()) != S_OK)
         return Results::Failure;
@@ -104,6 +98,11 @@ eae6320::cResult eae6320::Audio::Initialize()
 
 eae6320::cResult eae6320::Audio::CleanUp()
 {
+    for (auto audio : s_audioMap)
+    {
+        audio.second.sourceVoice->Stop();
+        audio.second.sourceVoice->FlushSourceBuffers();
+    }
 
 	if (s_XAudio2 != nullptr)
 	{
@@ -201,8 +200,6 @@ eae6320::cResult eae6320::Audio::Play(const char* i_audioId)
 
     return Results::Success;
 }
-
-
 
 
 // Helper Definitions
