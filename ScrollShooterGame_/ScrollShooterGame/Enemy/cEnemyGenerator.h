@@ -53,16 +53,16 @@ namespace ScrollShooterGame
 
 	private:
 
-		float m_width = 10.0f;
+		float m_width = 0.0f;
 
 		double m_lastSpawnTime_rock = 0.0;
 		double m_lastSpawnTime_alien = 0.0;
 		double m_spawnCoolDown_rock = 0.0;
 		double m_spawnCoolDown_alien = 0.0;
-		eae6320::Math::sVector m_spawnCoolDownRange_rock = eae6320::Math::sVector(1.0f, 2.0f, 0.0f);
-		eae6320::Math::sVector m_spawnCoolDownRange_alien = eae6320::Math::sVector(7.0f, 13.0f, 0.0f);
+		eae6320::Math::sVector m_spawnCoolDownRange_rock;
+		eae6320::Math::sVector m_spawnCoolDownRange_alien;
 
-		eae6320::Math::sVector m_enemySpeedRange_rock = eae6320::Math::sVector(-2.0f, -1.0f, 0.0f);
+		eae6320::Math::sVector m_enemySpeedRange_rock;
 
 
 		// TODO: Debug

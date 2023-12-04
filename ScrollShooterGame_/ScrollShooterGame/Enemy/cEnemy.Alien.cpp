@@ -3,6 +3,7 @@
 //========
 
 #include <Engine/Audio/Audio.h>
+#include <Engine/Math/Random.h>
 #include <Engine/Physics/Collision.h>
 #include <Engine/Time/Time.h>
 
@@ -28,7 +29,13 @@ void ScrollShooterGame::cEnemy_Alien::Initialize(
 	// Initialize property
 	{
 		m_HP = 3;
+		m_Boundary = 7.0f;
+
 		m_lastShoot_second = Time::ConvertTicksToSeconds(Time::GetCurrentSystemTimeTickCount());
+		m_shootCoolDownRange = eae6320::Math::sVector(3.0f, 6.5f, 0.0f);
+		m_shootCoolDown = static_cast<double>(Math::Random::RandInRange(m_shootCoolDownRange.x, m_shootCoolDownRange.y));
+
+		m_velocity = eae6320::Math::sVector(-2.0f, -0.25f, 0.0f);
 	}
 
 	// Initialize rigid body
@@ -112,6 +119,7 @@ void ScrollShooterGame::cEnemy_Alien::UpdateBasedOnTime(const float i_elapsedSec
 		if (currentTime - m_lastShoot_second >= m_shootCoolDown)
 		{
 			ShootBullet();
+			m_shootCoolDown = static_cast<double>(Math::Random::RandInRange(m_shootCoolDownRange.x, m_shootCoolDownRange.y));
 			m_lastShoot_second = currentTime;
 		}
 	}

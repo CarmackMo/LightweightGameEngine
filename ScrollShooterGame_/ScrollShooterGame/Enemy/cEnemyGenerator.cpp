@@ -24,6 +24,13 @@ void ScrollShooterGame::cEnemyGenerator::Initialize(eae6320::Math::sVector i_pos
 {
 	// Initialize property
 	{
+		m_width = 10.0f;
+
+		m_spawnCoolDownRange_rock = eae6320::Math::sVector(1.0f, 2.0f, 0.0f);
+		m_spawnCoolDownRange_alien = eae6320::Math::sVector(9.0f, 14.0f, 0.0f);
+
+		m_enemySpeedRange_rock = eae6320::Math::sVector(-2.0f, -1.0f, 0.0f);
+
 		m_lastSpawnTime_rock = Time::ConvertTicksToSeconds(Time::GetCurrentSystemTimeTickCount());
 		m_lastSpawnTime_alien = Time::ConvertTicksToSeconds(Time::GetCurrentSystemTimeTickCount());
 		m_spawnCoolDown_rock = Math::Random::RandInRange(m_spawnCoolDownRange_rock.x, m_spawnCoolDownRange_rock.y);

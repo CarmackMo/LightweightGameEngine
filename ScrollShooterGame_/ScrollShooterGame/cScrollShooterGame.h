@@ -15,9 +15,8 @@
 #include <Engine/Results/Results.h>
 #include <Engine/Utilities/cSingleton.h>
 
-#include <ScrollShooterGame_/ScrollShooterGame/Bullet/cBullet.h>
 #include <ScrollShooterGame_/ScrollShooterGame/Enemy/cEnemyGenerator.h>
-#include <ScrollShooterGame_/ScrollShooterGame/cPhysicsDebugObject.h>
+#include <ScrollShooterGame_/ScrollShooterGame/Enemy/cEnemy.Rock.h>
 #include <ScrollShooterGame_/ScrollShooterGame/cPlayer.h>
 
 #include <memory>

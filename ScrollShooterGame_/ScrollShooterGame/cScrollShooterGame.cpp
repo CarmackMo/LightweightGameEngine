@@ -1,10 +1,6 @@
 // Includes
 //=========
 
-#include <iostream>
-
-#include "cScrollShooterGame.h"
-
 #include <Engine/Asserts/Asserts.h>
 #include <Engine/Audio/Audio.h>
 #include <Engine/Graphics/Graphics.h>
@@ -12,16 +8,21 @@
 #include <Engine/Logging/Logging.h>
 #include <Engine/Math/cMatrix_transformation.h>
 #include <Engine/Math/Functions.h>
+#include <Engine/Math/Random.h>
 #include <Engine/Math/sVector.h>
 #include <Engine/UserInput/UserInput.h>
 
 
 // TODO: Tempory code for collider testing
 #include <Engine/UserOutput/UserOutput.h>
-#include <Engine/Physics/cAABBCollider.h>
 #include <Engine/Physics/Collision.h>
+
+#include <ScrollShooterGame_/ScrollShooterGame/cScrollShooterGame.h>
+
 #include <vector>
 #include <iostream>
+
+
 
 using namespace eae6320;
 
@@ -268,20 +269,39 @@ void ScrollShooterGame::cScrollShooterGame::InitializeCamera()
 
 void ScrollShooterGame::cScrollShooterGame::InitializeGameObject()
 {
-	// TODO: temporary code for player object
+	// Initialize player object
 	{
 		m_player = new cPlayer();
 		m_player->Initialize(Math::sVector(0.0f, -10.0f, -15.0f), Math::sVector());
 
 		m_gameObjectList.push_back(m_player->GetSelf());
 	}
-
-	// TODO: temporary code for enemy generator object
+	// Initialize enemy generator object
 	{
 		m_enemyGenerator = new cEnemyGenerator();
 		m_enemyGenerator->Initialize(Math::sVector(0.0f, 9.0f, -15.0f), Math::sVector(0.0f, 0.0f, 0.0f));
 
 		m_gameObjectList.push_back(m_enemyGenerator->GetSelf());
+	}
+	// Initialize decorations
+	{
+		cEnemy_Rock* rock;
+
+		for (int i = 0; i < 5; i++)
+		{
+			rock = new cEnemy_Rock();
+			rock->Initialize(Math::sVector(Math::Random::RandInRange(-20.0f, -8.0f), Math::Random::RandInRange(-12.0f, 10.0f), Math::Random::RandInRange(-40.0f, -5.0f)));
+			rock->GetRigidBody().angularSpeed = Math::Random::RandInRange(-2.0f, 2.0f);
+			m_gameObjectList.push_back(rock->GetSelf());
+		}
+
+		for (int i = 0; i < 5; i++)
+		{
+			rock = new cEnemy_Rock();
+			rock->Initialize(Math::sVector(Math::Random::RandInRange(8.0f, 20.0f), Math::Random::RandInRange(-12.0f, 10.0f), Math::Random::RandInRange(-40.0f, -5.0f)));
+			rock->GetRigidBody().angularSpeed = Math::Random::RandInRange(-2.0f, 2.0f);
+			m_gameObjectList.push_back(rock->GetSelf());
+		}
 	}
 }
 
