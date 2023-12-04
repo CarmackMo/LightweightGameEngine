@@ -2,7 +2,7 @@
 // Includes
 //========
 
-#include <Engine/UserOutput/UserOutput.h>
+#include <Engine/Audio/Audio.h>
 
 #include <ScrollShooterGame_/ScrollShooterGame/Bullet/cBullet.Player.h>
 #include <ScrollShooterGame_/ScrollShooterGame/Enemy/cEnemy.Rock.h>
@@ -58,7 +58,7 @@ void ScrollShooterGame::cEnemy_Rock::Initialize(
 					m_HP--;
 					if (m_HP == 0)
 					{
-						UserOutput::ConsolePrint("Enemy is Killed!! \n");
+						Audio::Play("boom_enemy");
 						cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(self->m_gameobject.lock());
 					}
 				}

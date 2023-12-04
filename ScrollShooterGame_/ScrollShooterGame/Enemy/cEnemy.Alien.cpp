@@ -2,9 +2,9 @@
 // Includes
 //========
 
+#include <Engine/Audio/Audio.h>
 #include <Engine/Physics/Collision.h>
 #include <Engine/Time/Time.h>
-#include <Engine/UserOutput/UserOutput.h>
 
 #include <ScrollShooterGame_/ScrollShooterGame/Bullet/cBullet.Enemy.h>
 #include <ScrollShooterGame_/ScrollShooterGame/Bullet/cBullet.Player.h>
@@ -64,7 +64,7 @@ void ScrollShooterGame::cEnemy_Alien::Initialize(
 					m_HP--;
 					if (m_HP == 0)
 					{
-						UserOutput::ConsolePrint("Enemy is Killed!! \n");
+						Audio::Play("boom_enemy");
 						cScrollShooterGame::Instance()->AddGameObjectCleanUpTask(self->m_gameobject.lock());
 					}
 				}

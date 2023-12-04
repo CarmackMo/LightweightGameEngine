@@ -55,6 +55,8 @@ namespace
     {
         {"main", {"data/audios/audio_main.wav", nullptr} },
         {"shoot", {"data/audios/audio_shoot.wav", nullptr} },
+        {"boom_enemy", {"data/audios/audio_boom_enemy.wav", nullptr} },
+        {"hit_enemy", {"data/audios/audio_hit_enemy.wav", nullptr} },
     };
 }
 
