@@ -127,37 +127,37 @@ void ScrollShooterGame::cScrollShooterGame::SubmitDataToBeRendered(
 		delete[] normalRenderDataArray;
 	}
 
-	// Submit debug render data (for colliders)
-	{
-		auto BVHRenderData = std::vector<std::pair<eae6320::Graphics::cLine*, eae6320::Math::cMatrix_transformation>>();
-		BVHRenderData = Physics::Collision::GetBVHRenderData();
+	//// Submit debug render data (for colliders)
+	//{
+	//	auto BVHRenderData = std::vector<std::pair<eae6320::Graphics::cLine*, eae6320::Math::cMatrix_transformation>>();
+	//	BVHRenderData = Physics::Collision::GetBVHRenderData();
 
-		size_t BVHTreeSize = BVHRenderData.size();
-		size_t totalArraySize = BVHTreeSize;
+	//	size_t BVHTreeSize = BVHRenderData.size();
+	//	size_t totalArraySize = BVHTreeSize;
 
-		Graphics::ConstantBufferFormats::sDebugRender* debugDataArray = new Graphics::ConstantBufferFormats::sDebugRender[totalArraySize];
-
-
-		// Render data of BVH tree
-		for (size_t i = 0; i < BVHTreeSize; i++)
-		{
-			if (BVHRenderData[i].first == nullptr)
-				continue;
-
-			debugDataArray[i].Initialize(BVHRenderData[i].first, BVHRenderData[i].second);
-		}
+	//	Graphics::ConstantBufferFormats::sDebugRender* debugDataArray = new Graphics::ConstantBufferFormats::sDebugRender[totalArraySize];
 
 
-		Graphics::SubmitDebugRenderData(debugDataArray, static_cast<uint32_t>(totalArraySize));
+	//	// Render data of BVH tree
+	//	for (size_t i = 0; i < BVHTreeSize; i++)
+	//	{
+	//		if (BVHRenderData[i].first == nullptr)
+	//			continue;
 
-		// Clean up
-		for (size_t i = 0; i < totalArraySize; i++)
-		{
-			debugDataArray[i].CleanUp();
-		}
+	//		debugDataArray[i].Initialize(BVHRenderData[i].first, BVHRenderData[i].second);
+	//	}
 
-		delete[] debugDataArray;
-	}
+
+	//	Graphics::SubmitDebugRenderData(debugDataArray, static_cast<uint32_t>(totalArraySize));
+
+	//	// Clean up
+	//	for (size_t i = 0; i < totalArraySize; i++)
+	//	{
+	//		debugDataArray[i].CleanUp();
+	//	}
+
+	//	delete[] debugDataArray;
+	//}
 }
 
 
