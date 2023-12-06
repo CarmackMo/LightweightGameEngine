@@ -44,7 +44,7 @@ void eae6320::cGameObject::InitializeMesh(const std::string& i_meshPath)
 	// Send cMesh data to rendering thread for initialzation
 	if (Graphics::AcquireRenderObjectInitMutex() == WAIT_OBJECT_0)
 	{
-		Graphics::AddMeshInitializeTask(&m_mesh, i_meshPath);
+		Graphics::AddMeshInitializeTask(m_mesh, i_meshPath);
 		Graphics::ReleaseRenderObjectInitMutex();
 	}
 }

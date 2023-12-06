@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <Engine/Assets/ReferenceCountedAssets.h>
 #include <Engine/Graphics/VertexFormats.h>
 #include <Engine/Results/Results.h>
 
@@ -41,20 +40,6 @@ namespace Graphics
 		// Initialization / Clean Up
 		//--------------------------
 
-		//static cResult Create(
-		//	cMesh*& o_mesh,
-		//	VertexFormats::sVertex_mesh i_vertexData[], 
-		//	const uint32_t i_vertexCount, 
-		//	uint16_t i_indexData[], 
-		//	const uint32_t i_indexCount,
-		//	const uint32_t i_indexCountToRender,
-		//	const uint32_t i_indexOfFirstIndexToUse = 0,
-		//	const uint32_t i_offsetToAddToEachIndex = 0);
-
-		//static cResult Create(
-		//	cMesh*& o_mesh, 
-		//	const std::string& i_meshPath);
-
 		static cResult Create(
 			std::shared_ptr<cMesh>& o_mesh,
 			VertexFormats::sVertex_mesh i_vertexData[],
@@ -68,14 +53,6 @@ namespace Graphics
 		static cResult Create(
 			std::shared_ptr<cMesh>& o_mesh,
 			const std::string& i_meshPath);
-
-		//EAE6320_ASSETS_DECLAREDELETEDREFERENCECOUNTEDFUNCTIONS( cMesh );
-
-		// Reference Counting
-		//--------------------------
-
-		//EAE6320_ASSETS_DECLAREREFERENCECOUNTINGFUNCTIONS();
-
 
 		// Render
 		//--------------------------
@@ -113,8 +90,6 @@ namespace Graphics
 		//=====================
 
 	private:
-
-		//EAE6320_ASSETS_DECLAREREFERENCECOUNT();
 
 		uint32_t m_indexOfFirstIndexToUse = 0;
 		uint32_t m_offsetToAddToEachIndex = 0;

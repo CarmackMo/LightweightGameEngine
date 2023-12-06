@@ -86,7 +86,7 @@ namespace Graphics
 
 	void InitializeRenderObjects();
 
-	void AddMeshInitializeTask(std::shared_ptr<cMesh>* i_meshPtr, std::string i_meshPath);
+	void AddMeshInitializeTask(std::shared_ptr<cMesh>& i_meshPtr, std::string i_meshPath);
 
 	void AddEffectInitializeTask(cEffect** i_effectPtr, std::string i_vertexShaderPath, std::string i_fragmentShaderPath);
 

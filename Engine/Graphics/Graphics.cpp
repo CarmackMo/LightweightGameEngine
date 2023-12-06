@@ -77,7 +77,7 @@ namespace
 
 	struct sMeshBuilder
 	{
-		std::shared_ptr<eae6320::Graphics::cMesh>* meshPtr;
+		std::shared_ptr<eae6320::Graphics::cMesh>& meshPtr;
 		std::string meshPath;
 	};
 
@@ -259,9 +259,7 @@ void eae6320::Graphics::InitializeRenderObjects()
 				sMeshBuilder builder = s_meshInitializeQueue.front();
 				s_meshInitializeQueue.pop();
 
-				cMesh::Create(*(builder.meshPtr), builder.meshPath);
-
-				int temp = 0;
+				cMesh::Create(builder.meshPtr, builder.meshPath);
 			}
 		}
 		// Initialize effect objects
@@ -373,7 +371,7 @@ void eae6320::Graphics::ReleaseRenderObjectCleanUpMutex()
 }
 
 
-void eae6320::Graphics::AddMeshInitializeTask(std::shared_ptr<cMesh>* i_meshPtr, std::string i_meshPath)
+void eae6320::Graphics::AddMeshInitializeTask(std::shared_ptr<cMesh>& i_meshPtr, std::string i_meshPath)
 {
 	s_meshInitializeQueue.push({ i_meshPtr, i_meshPath });
 }
