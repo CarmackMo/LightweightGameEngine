@@ -370,13 +370,13 @@ void eae6320::Graphics::ReleaseRenderObjectCleanUpMutex()
 }
 
 
-void eae6320::Graphics::AddMeshInitializeTask(std::shared_ptr<cMesh>& i_meshPtr, std::string i_meshPath)
+void eae6320::Graphics::AddMeshInitializeTask(std::shared_ptr<cMesh>& i_meshPtr, const std::string& i_meshPath)
 {
 	s_meshInitializeQueue.push({ i_meshPtr, i_meshPath });
 }
 
 
-void eae6320::Graphics::AddEffectInitializeTask(std::shared_ptr<cEffect>& i_effectPtr, std::string i_vertexShaderPath, std::string i_fragmentShaderPath)
+void eae6320::Graphics::AddEffectInitializeTask(std::shared_ptr<cEffect>& i_effectPtr, const std::string& i_vertexShaderPath, const std::string& i_fragmentShaderPath)
 {
 	s_effectInitializeQueue.push({ i_effectPtr, i_vertexShaderPath , i_fragmentShaderPath });
 }

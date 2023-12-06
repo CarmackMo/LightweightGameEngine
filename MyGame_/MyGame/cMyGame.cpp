@@ -118,7 +118,7 @@ void eae6320::cMyGame::SubmitDataToBeRendered(
 		// Render data of render objects 
 		for (size_t i = 0; i < arraySize; i++)
 		{
-			if (m_renderObjectList[i]->GetMesh() == nullptr || m_renderObjectList[i]->GetEffect() == nullptr)
+			if (m_renderObjectList[i]->GetMesh().expired() || m_renderObjectList[i]->GetEffect().expired())
 				continue;
 
 			normalRenderDataArray[i].Initialize(

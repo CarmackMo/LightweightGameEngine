@@ -46,9 +46,9 @@ namespace eae6320
 
 		std::shared_ptr<cGameObject> GetSelf() const;
 
-		std::shared_ptr<Graphics::cMesh> GetMesh() const;
+		std::weak_ptr<Graphics::cMesh> GetMesh() const;
 
-		std::shared_ptr<Graphics::cEffect> GetEffect() const;
+		std::weak_ptr<Graphics::cEffect> GetEffect() const;
 
 		Physics::sRigidBodyState& GetRigidBody();
 

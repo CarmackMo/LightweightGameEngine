@@ -95,13 +95,13 @@ std::shared_ptr<eae6320::cGameObject> eae6320::cGameObject::GetSelf() const
 }
 
 
-std::shared_ptr<eae6320::Graphics::cMesh> eae6320::cGameObject::GetMesh() const
+std::weak_ptr<eae6320::Graphics::cMesh> eae6320::cGameObject::GetMesh() const
 {
 	return m_mesh;
 }
 
 
-std::shared_ptr<eae6320::Graphics::cEffect> eae6320::cGameObject::GetEffect() const
+std::weak_ptr<eae6320::Graphics::cEffect> eae6320::cGameObject::GetEffect() const
 {
 	return m_effect;
 }

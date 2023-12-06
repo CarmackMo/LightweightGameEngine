@@ -107,8 +107,8 @@ void ScrollShooterGame::cScrollShooterGame::SubmitDataToBeRendered(
 		for (size_t i = 0; i < m_gameObjectList.size(); i++)
 		{
 			if (m_gameObjectList[i] == nullptr ||
-				m_gameObjectList[i]->GetMesh() == nullptr ||
-				m_gameObjectList[i]->GetEffect() == nullptr)
+				m_gameObjectList[i]->GetMesh().expired() ||
+				m_gameObjectList[i]->GetEffect().expired())
 				continue;
 
 			normalRenderDataArray[i].Initialize(
