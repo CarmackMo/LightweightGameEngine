@@ -1,8 +1,9 @@
 #pragma once
 
-#include <Engine/Assets/ReferenceCountedAssets.h>
 #include <Engine/Graphics/VertexFormats.h>
 #include <Engine/Results/Results.h>
+
+#include <memory>
 
 #if defined (EAE6320_PLATFORM_D3D)
 	#include <Engine/Graphics/cVertexFormat.h>
@@ -37,17 +38,17 @@ namespace Graphics
 			uint16_t i_indexData[],
 			const uint32_t i_indexCount);
 
+		static cResult Create(
+			std::shared_ptr<cLine>& o_line,
+			VertexFormats::sVertex_line i_vertexData[],
+			const uint32_t i_vertexCount,
+			uint16_t i_indexData[],
+			const uint32_t i_indexCount);
+
 		// Render
 		//--------------------------
 
 		void Draw();
-
-		// Reference Counting
-		//--------------------------
-
-		EAE6320_ASSETS_DECLAREDELETEDREFERENCECOUNTEDFUNCTIONS(cLine);
-
-		EAE6320_ASSETS_DECLAREREFERENCECOUNTINGFUNCTIONS();
 
 
 		// Implementation
@@ -71,8 +72,6 @@ namespace Graphics
 		//=====================
 
 	private:
-
-		EAE6320_ASSETS_DECLAREREFERENCECOUNT();
 
 		uint32_t m_indexCountToRender = 0;
 

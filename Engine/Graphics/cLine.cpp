@@ -9,30 +9,24 @@
 #include <new>
 
 
-eae6320::cResult eae6320::Graphics::cLine::Create(
-	cLine*& o_line,
-	VertexFormats::sVertex_line i_vertexData[],
-	const uint32_t i_vertexCount,
-	uint16_t i_indexData[],
-	const uint32_t i_indexCount)
+eae6320::cResult eae6320::Graphics::cLine::Create(std::shared_ptr<cLine>& o_line, VertexFormats::sVertex_line i_vertexData[], const uint32_t i_vertexCount, uint16_t i_indexData[], const uint32_t i_indexCount)
 {
 	auto result = Results::Success;
 
-	cLine* newLine = nullptr;
+	std::shared_ptr<cLine> newLine;
 
 	cScopeGuard scopeGuard([&o_line, &result, &newLine]
 		{
 			if (result)
 			{
 				EAE6320_ASSERT(newLine != nullptr);
-				o_line = newLine;
+				o_line.swap(newLine);
 			}
 			else
 			{
 				if (newLine)
 				{
-					newLine->DecrementReferenceCount();
-					newLine = nullptr;
+					newLine.reset();
 				}
 				o_line = nullptr;
 			}
@@ -41,7 +35,7 @@ eae6320::cResult eae6320::Graphics::cLine::Create(
 	// Allocate a new line
 	{
 		// Prevent program crash if not enough memory
-		newLine = new (std::nothrow) cLine();
+		newLine = std::shared_ptr<cLine>(new (std::nothrow) cLine(), [](cLine* const i_line) { delete i_line; });
 		if (!newLine)
 		{
 			EAE6320_ASSERTF(false, "Couldn't allocate memory for the line");
@@ -51,7 +45,7 @@ eae6320::cResult eae6320::Graphics::cLine::Create(
 	}
 	// Initialize the platform-specific graphics API mesh object
 	if (!(result = newLine->Initialize(
-		i_vertexData, i_vertexCount, 
+		i_vertexData, i_vertexCount,
 		i_indexData, i_indexCount)))
 	{
 		EAE6320_ASSERTF(false, "Initialization of new line failed");
@@ -64,7 +58,6 @@ eae6320::cResult eae6320::Graphics::cLine::Create(
 
 eae6320::Graphics::cLine::~cLine()
 {
-	EAE6320_ASSERT(m_referenceCount == 0);
 	const auto result = CleanUp();
 	EAE6320_ASSERT(result);
 }

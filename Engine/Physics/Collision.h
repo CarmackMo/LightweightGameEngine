@@ -7,7 +7,7 @@
 #include <Engine/Physics/cColliderBase.h>
 #include <Engine/Results/Results.h>
 
-
+#include <memory>
 #include <unordered_map>
 #include <vector>
 
@@ -62,7 +62,7 @@ namespace Collision
 
 	cResult DeregisterCollider(cCollider* i_collider);
 
-	std::vector<std::pair<Graphics::cLine*, Math::cMatrix_transformation>>& GetBVHRenderData();
+	std::vector<std::pair<std::shared_ptr<Graphics::cLine>, Math::cMatrix_transformation>>& GetBVHRenderData();
 
 
 }// Namespace Collision

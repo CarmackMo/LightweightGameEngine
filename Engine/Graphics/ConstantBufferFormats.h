@@ -97,7 +97,7 @@ namespace ConstantBufferFormats
 	// Data for rendering debug information
 	struct sDebugRender
 	{
-		cLine* line = nullptr;
+		std::weak_ptr<cLine> line;
 		Math::cMatrix_transformation transform;
 
 		// Initialize / Clean Up
@@ -109,31 +109,23 @@ namespace ConstantBufferFormats
 		sDebugRender& operator= (sDebugRender& other)
 		{
 			line = other.line;
-			line->IncrementReferenceCount();
 			transform = other.transform;
 			return *this;
 		}
 
-		sDebugRender(cLine* i_line, Math::cMatrix_transformation i_transform) : 
+		sDebugRender(std::weak_ptr<cLine> i_line, Math::cMatrix_transformation i_transform) :
 			line(i_line), transform(i_transform)
-		{
-			line->IncrementReferenceCount();
-		}
+		{ }
 
-		void Initialize(cLine* i_line, Math::cMatrix_transformation i_transform)
+		void Initialize(std::weak_ptr<cLine> i_line, Math::cMatrix_transformation i_transform)
 		{
 			line = i_line;
-			line->IncrementReferenceCount();
 			transform = i_transform;
 		}
 
 		void CleanUp()
 		{
-			if (line != nullptr)
-			{
-				line->DecrementReferenceCount();
-				line = nullptr;
-			}
+			line.reset();
 		}
 
 		// Implementation 
@@ -141,7 +133,7 @@ namespace ConstantBufferFormats
 
 		bool IsValid()
 		{
-			return line != nullptr;
+			return line.expired() == false;
 		}
 	};
 

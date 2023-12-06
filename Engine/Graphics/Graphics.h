@@ -90,7 +90,7 @@ namespace Graphics
 
 	void AddEffectInitializeTask(std::shared_ptr<cEffect>& i_effectPtr, const std::string& i_vertexShaderPath, const std::string& i_fragmentShaderPath);
 
-	void AddLineInitializeTask(cLine** i_linePtr, 
+	void AddLineInitializeTask(std::shared_ptr<cLine>& i_linePtr, 
 		VertexFormats::sVertex_line i_vertexData[], const uint32_t i_vertexCount, 
 		uint16_t i_indexData[], const uint32_t i_indexCount);
 
@@ -101,7 +101,7 @@ namespace Graphics
 
 	void AddEffectCleanUpTask(std::shared_ptr<cEffect> i_effect);
 
-	void AddLineCleanUpTask(cLine* i_line, cLine** i_linePtr);
+	void AddLineCleanUpTask(std::shared_ptr<cLine> i_line);
 
 
 	// Render

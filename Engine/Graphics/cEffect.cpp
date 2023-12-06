@@ -22,7 +22,7 @@ eae6320::cResult eae6320::Graphics::cEffect::Create(std::shared_ptr<cEffect>& o_
 			if (result)
 			{
 				EAE6320_ASSERT(newEffect != nullptr);
-				o_effect = newEffect;
+				o_effect.swap(newEffect);
 			}
 			else
 			{

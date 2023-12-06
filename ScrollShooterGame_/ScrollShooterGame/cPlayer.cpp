@@ -94,6 +94,18 @@ void ScrollShooterGame::cPlayer::CleanUp()
 		game->m_gameObjectList.erase(objIter);
 	}
 
+	if (Graphics::AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
+	{
+		Graphics::AddLineCleanUpTask(m_colliderLine);
+		Graphics::ReleaseRenderObjectCleanUpMutex();
+	}
+
+	if (Graphics::AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
+	{
+		Graphics::AddLineCleanUpTask(m_collisionLine);
+		Graphics::ReleaseRenderObjectCleanUpMutex();
+	}
+
 	cGameObject::CleanUp();
 }
 
@@ -153,14 +165,14 @@ void ScrollShooterGame::cPlayer::ShootBullet()
 // TODO: Debug
 //=========================
 
+void ScrollShooterGame::cPlayer::SetIsCollide(bool isCollide)
+{
+	m_isCollide = isCollide;
+}
+
+
 void ScrollShooterGame::cPlayer::InitializeColliderLine()
 {
-	if (m_colliderLine != nullptr)
-	{
-		m_colliderLine->DecrementReferenceCount();
-		m_colliderLine = nullptr;
-	}
-
 	uint32_t vertexCount = 0;
 	auto vertexVec = std::vector<Math::sVector>();
 	uint32_t indexCount = 0;
@@ -188,7 +200,7 @@ void ScrollShooterGame::cPlayer::InitializeColliderLine()
 		// Send cLine data to rendering thread for initialization
 		if (Graphics::AcquireRenderObjectInitMutex() == WAIT_OBJECT_0)
 		{
-			Graphics::AddLineInitializeTask(&m_colliderLine, vertexData, vertexCount, indexData, indexCount);
+			Graphics::AddLineInitializeTask(m_colliderLine, vertexData, vertexCount, indexData, indexCount);
 			Graphics::ReleaseRenderObjectInitMutex();
 		}
 
@@ -212,7 +224,7 @@ void ScrollShooterGame::cPlayer::InitializeColliderLine()
 		// Send cLine data to rendering thread for initialization
 		if (Graphics::AcquireRenderObjectInitMutex() == WAIT_OBJECT_0)
 		{
-			Graphics::AddLineInitializeTask(&m_collisionLine, vertexData, vertexCount, indexData, indexCount);
+			Graphics::AddLineInitializeTask(m_collisionLine, vertexData, vertexCount, indexData, indexCount);
 			Graphics::ReleaseRenderObjectInitMutex();
 		}
 
@@ -222,7 +234,7 @@ void ScrollShooterGame::cPlayer::InitializeColliderLine()
 }
 
 
-eae6320::Graphics::cLine* ScrollShooterGame::cPlayer::GetColliderLine() const
+std::weak_ptr<eae6320::Graphics::cLine> ScrollShooterGame::cPlayer::GetColliderLine() const
 {
 	if (m_isCollide)
 		return m_collisionLine;

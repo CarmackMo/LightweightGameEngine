@@ -140,7 +140,7 @@ void eae6320::cMyGame::SubmitDataToBeRendered(
 
 	// TODO: Submit debug for box collider
 	{
-		auto BVHRenderData = std::vector<std::pair<eae6320::Graphics::cLine*, eae6320::Math::cMatrix_transformation>>();
+		auto BVHRenderData = std::vector<std::pair<std::shared_ptr<Graphics::cLine>, Math::cMatrix_transformation>>();
 		BVHRenderData = Physics::Collision::GetBVHRenderData();
 
 		size_t colliderListSize = m_colliderObjectList.size();
@@ -153,7 +153,7 @@ void eae6320::cMyGame::SubmitDataToBeRendered(
 		{
 			auto collider = m_colliderObjectList[i];
 
-			if (collider->GetColliderLine() == nullptr)
+			if (collider->GetColliderLine().expired())
 				continue;
 
 			debugDataArray[i].Initialize(collider->GetColliderLine(), collider->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));

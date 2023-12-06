@@ -116,10 +116,10 @@ void eae6320::Physics::cBVHTree::Add(cCollider* i_collider)
 		// Create two new debug cLine object, one for new node, the other for branch node
 		{
 			m_renderData.push_back({ nullptr, Math::cMatrix_transformation() });
-			RenderInitializeHelper(&(m_renderData.back().first));
+			RenderInitializeHelper(m_renderData.back().first);
 
 			m_renderData.push_back({ nullptr, Math::cMatrix_transformation() });
-			RenderInitializeHelper(&(m_renderData.back().first));
+			RenderInitializeHelper(m_renderData.back().first);
 		}
 	}
 	else
@@ -132,7 +132,7 @@ void eae6320::Physics::cBVHTree::Add(cCollider* i_collider)
 		// Create one new debug cLine objec for the new node
 		{
 			m_renderData.push_back({ nullptr, Math::cMatrix_transformation() });
-			RenderInitializeHelper(&(m_renderData.back().first));
+			RenderInitializeHelper(m_renderData.back().first);
 		}
 	}
 }
@@ -264,7 +264,7 @@ void eae6320::Physics::cBVHTree::InitialzieRenderData()
 		container.pop();
 
 		m_renderData.push_back({ nullptr, Math::cMatrix_transformation() });
-		RenderInitializeHelper(&(m_renderData.back().first));
+		RenderInitializeHelper(m_renderData.back().first);
 
 		if (current->IsLeaf() == false)
 		{
@@ -275,7 +275,7 @@ void eae6320::Physics::cBVHTree::InitialzieRenderData()
 }
 
 
-std::vector<std::pair<eae6320::Graphics::cLine*, eae6320::Math::cMatrix_transformation>>& eae6320::Physics::cBVHTree::GetRenderData()
+std::vector<std::pair<std::shared_ptr<eae6320::Graphics::cLine>, eae6320::Math::cMatrix_transformation>>& eae6320::Physics::cBVHTree::GetRenderData()
 {
 	return m_renderData;
 }
@@ -456,7 +456,7 @@ void eae6320::Physics::cBVHTree::CrossChildren(sBVHNode* i_node)
 }
 
 
-void eae6320::Physics::cBVHTree::RenderInitializeHelper(Graphics::cLine** io_AABBLine)
+void eae6320::Physics::cBVHTree::RenderInitializeHelper(std::shared_ptr<Graphics::cLine>& io_AABBLine)
 {
 	// Vertex data
 	constexpr uint32_t vertexCount = 24;

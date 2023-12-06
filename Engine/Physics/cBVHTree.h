@@ -10,6 +10,7 @@
 #include <Engine/Physics/cColliderBase.h>
 
 #include <list>
+#include <memory>
 #include <vector>
 
 
@@ -105,7 +106,7 @@ namespace Physics
 
 		void InitialzieRenderData();
 		
-		std::vector<std::pair<Graphics::cLine*, Math::cMatrix_transformation>>& GetRenderData();
+		std::vector<std::pair<std::shared_ptr<Graphics::cLine>, Math::cMatrix_transformation>>& GetRenderData();
 
 		// TODO
 		//virtual cCollider* Pick(const Math::sVector& i_point) const;
@@ -125,7 +126,7 @@ namespace Physics
 		void ComputePairsHelper(sBVHNode* i_node0, sBVHNode* i_node1);
 		void ClearChildrenCrossFlagHelper(sBVHNode* i_node);
 		void CrossChildren(sBVHNode* i_node);
-		void RenderInitializeHelper(Graphics::cLine** io_AABBLine);
+		void RenderInitializeHelper(std::shared_ptr<Graphics::cLine>& io_AABBLine);
 		void RenderUpdateHelper();
 
 		// Data
@@ -137,7 +138,7 @@ namespace Physics
 		sBVHNode* m_root;
 		std::list<std::pair<cCollider*, cCollider*>> m_pairs;
 		std::vector<sBVHNode*> m_invalidNodes;
-		std::vector<std::pair<Graphics::cLine*, Math::cMatrix_transformation>> m_renderData;
+		std::vector<std::pair<std::shared_ptr<Graphics::cLine>, Math::cMatrix_transformation>> m_renderData;
 	};
 
 }// Namespace Physics

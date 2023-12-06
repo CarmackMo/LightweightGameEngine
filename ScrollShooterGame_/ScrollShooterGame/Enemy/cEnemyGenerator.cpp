@@ -82,13 +82,13 @@ void ScrollShooterGame::cEnemyGenerator::UpdateBasedOnTime(const float i_elapsed
 	double currentTime = Time::ConvertTicksToSeconds(Time::GetCurrentSystemTimeTickCount());
 	if (currentTime - m_lastSpawnTime_rock >= m_spawnCoolDown_rock)
 	{
-		SpawnRock();
+		//SpawnRock();
 		m_lastSpawnTime_rock = currentTime;
 		m_spawnCoolDown_rock = static_cast<double>(Math::Random::RandInRange(m_spawnCoolDownRange_rock.x, m_spawnCoolDownRange_rock.y));
 	}
 	if (currentTime - m_lastSpawnTime_alien >= m_spawnCoolDown_alien)
 	{
-		SpawnAlien();
+		//SpawnAlien();
 		m_lastSpawnTime_alien = currentTime;
 		m_spawnCoolDown_alien = static_cast<double>(Math::Random::RandInRange(m_spawnCoolDownRange_alien.x, m_spawnCoolDownRange_alien.y));
 	}
@@ -139,14 +139,14 @@ void ScrollShooterGame::cEnemyGenerator::SpawnAlien()
 // TODO: Debug
 //=========================
 
+void ScrollShooterGame::cEnemyGenerator::SetIsCollide(bool isCollide)
+{
+	m_isCollide = isCollide;
+}
+
+
 void ScrollShooterGame::cEnemyGenerator::InitializeColliderLine()
 {
-	if (m_colliderLine != nullptr)
-	{
-		m_colliderLine->DecrementReferenceCount();
-		m_colliderLine = nullptr;
-	}
-
 	uint32_t vertexCount = 0;
 	auto vertexVec = std::vector<Math::sVector>();
 	uint32_t indexCount = 0;
@@ -174,7 +174,7 @@ void ScrollShooterGame::cEnemyGenerator::InitializeColliderLine()
 		// Send cLine data to rendering thread for initialization
 		if (Graphics::AcquireRenderObjectInitMutex() == WAIT_OBJECT_0)
 		{
-			Graphics::AddLineInitializeTask(&m_colliderLine, vertexData, vertexCount, indexData, indexCount);
+			Graphics::AddLineInitializeTask(m_colliderLine, vertexData, vertexCount, indexData, indexCount);
 			Graphics::ReleaseRenderObjectInitMutex();
 		}
 
@@ -198,7 +198,7 @@ void ScrollShooterGame::cEnemyGenerator::InitializeColliderLine()
 		// Send cLine data to rendering thread for initialization
 		if (Graphics::AcquireRenderObjectInitMutex() == WAIT_OBJECT_0)
 		{
-			Graphics::AddLineInitializeTask(&m_collisionLine, vertexData, vertexCount, indexData, indexCount);
+			Graphics::AddLineInitializeTask(m_collisionLine, vertexData, vertexCount, indexData, indexCount);
 			Graphics::ReleaseRenderObjectInitMutex();
 		}
 
@@ -208,7 +208,7 @@ void ScrollShooterGame::cEnemyGenerator::InitializeColliderLine()
 }
 
 
-eae6320::Graphics::cLine* ScrollShooterGame::cEnemyGenerator::GetColliderLine() const
+std::weak_ptr<eae6320::Graphics::cLine> ScrollShooterGame::cEnemyGenerator::GetColliderLine() const
 {
 	if (m_isCollide)
 		return m_collisionLine;

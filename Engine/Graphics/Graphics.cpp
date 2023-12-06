@@ -90,7 +90,7 @@ namespace
 
 	struct sLineBuilder
 	{
-		eae6320::Graphics::cLine** linePtr = nullptr;
+		std::shared_ptr<eae6320::Graphics::cLine>& linePtr;
 		eae6320::Graphics::VertexFormats::sVertex_line* vertexData = nullptr;
 		uint32_t vertexCount = 0;
 		uint16_t* indexData = nullptr;
@@ -108,7 +108,7 @@ namespace
 
 	std::queue<std::shared_ptr<eae6320::Graphics::cMesh>> s_meshCleanUpQueue;
 	std::queue<std::shared_ptr<eae6320::Graphics::cEffect>> s_effectCleanUpQueue;
-	std::queue<std::pair<eae6320::Graphics::cLine*, eae6320::Graphics::cLine**>> s_lineCleanUpQueue;
+	std::queue<std::shared_ptr<eae6320::Graphics::cLine>> s_lineCleanUpQueue;
 
 
 	eae6320::Concurrency::cMutex s_renderObjectInitializeMutex;
@@ -279,7 +279,7 @@ void eae6320::Graphics::InitializeRenderObjects()
 				sLineBuilder builder = s_lineInitializeQueue.front();
 				s_lineInitializeQueue.pop();
 
-				cLine::Create(*(builder.linePtr), builder.vertexData, builder.vertexCount, builder.indexData, builder.indexCount);
+				cLine::Create(builder.linePtr, builder.vertexData, builder.vertexCount, builder.indexData, builder.indexCount);
 
 				delete[] builder.vertexData;
 				delete[] builder.indexData;
@@ -304,7 +304,7 @@ void eae6320::Graphics::CleanUpRenderObjects()
 		{
 			while (s_meshCleanUpQueue.empty() == false)
 			{
-				auto task = s_meshCleanUpQueue.front();
+				std::shared_ptr<cMesh> task = s_meshCleanUpQueue.front();
 				s_meshCleanUpQueue.pop();
 
 				EAE6320_ASSERT(task.use_count() <= 1);
@@ -315,7 +315,7 @@ void eae6320::Graphics::CleanUpRenderObjects()
 		{
 			while (s_effectCleanUpQueue.empty() == false)
 			{
-				auto task = s_effectCleanUpQueue.front();
+				std::shared_ptr<cEffect> task = s_effectCleanUpQueue.front();
 				s_effectCleanUpQueue.pop();
 
 				EAE6320_ASSERT(task.use_count() <= 1);
@@ -326,12 +326,11 @@ void eae6320::Graphics::CleanUpRenderObjects()
 		{
 			while (s_lineCleanUpQueue.empty() == false)
 			{
-				auto task = s_lineCleanUpQueue.front();
+				std::shared_ptr<cLine> task = s_lineCleanUpQueue.front();
 				s_lineCleanUpQueue.pop();
 
-				if (task.first != nullptr)
-					task.first->DecrementReferenceCount();
-				(*task.second) = nullptr;
+				EAE6320_ASSERT(task.use_count() <= 1);
+				task.reset();
 			}
 		}
 
@@ -382,7 +381,7 @@ void eae6320::Graphics::AddEffectInitializeTask(std::shared_ptr<cEffect>& i_effe
 }
 
 
-void eae6320::Graphics::AddLineInitializeTask(cLine** i_linePtr, VertexFormats::sVertex_line i_vertexData[], const uint32_t i_vertexCount, uint16_t i_indexData[], const uint32_t i_indexCount)
+void eae6320::Graphics::AddLineInitializeTask(std::shared_ptr<cLine>& i_linePtr, VertexFormats::sVertex_line i_vertexData[], const uint32_t i_vertexCount, uint16_t i_indexData[], const uint32_t i_indexCount)
 {
 	VertexFormats::sVertex_line* vertexData = new VertexFormats::sVertex_line[i_vertexCount];
 	for (uint32_t i = 0; i < i_vertexCount; i++)
@@ -411,9 +410,9 @@ void eae6320::Graphics::AddEffectCleanUpTask(std::shared_ptr<cEffect> i_effect)
 }
 
 
-void eae6320::Graphics::AddLineCleanUpTask(cLine* i_line, cLine** i_linePtr)
+void eae6320::Graphics::AddLineCleanUpTask(std::shared_ptr<cLine> i_line)
 {
-	s_lineCleanUpQueue.push({ i_line, i_linePtr });
+	s_lineCleanUpQueue.push(i_line);
 }
 
 
@@ -493,7 +492,8 @@ void eae6320::Graphics::RenderFrame()
 			{
 				s_constantBuffer_drawCall.Update(&constantData_debugRender[i].transform);
 
-				constantData_debugRender[i].line->Draw();
+				if (constantData_debugRender[i].line.expired() == false)
+					constantData_debugRender[i].line.lock()->Draw();
 			}
 		}
 	}
