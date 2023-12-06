@@ -59,7 +59,7 @@ eae6320::cResult eae6320::Graphics::cMesh::Create(std::shared_ptr<cMesh>& o_mesh
 	// Allocate a new mesh
 	{
 		// Prevent program crash if not enough memory
-		newMesh = std::shared_ptr<cMesh>(new cMesh(), [](cMesh* const i_mesh) { delete i_mesh; });
+		newMesh = std::shared_ptr<cMesh>(new (std::nothrow) cMesh(), [](cMesh* const i_mesh) { delete i_mesh; });
 		if (!newMesh)
 		{
 			result = Results::OutOfMemory;
@@ -113,7 +113,7 @@ eae6320::cResult eae6320::Graphics::cMesh::Create(std::shared_ptr<cMesh>& o_mesh
 	// Allocate a new mesh
 	{
 		// Prevent program crash if not enough memory
-		newMesh = std::shared_ptr<cMesh>(new cMesh(), [](cMesh* const i_mesh) { delete i_mesh; });
+		newMesh = std::shared_ptr<cMesh>(new (std::nothrow) cMesh(), [](cMesh* const i_mesh) { delete i_mesh; });
 		if (!newMesh)
 		{
 			EAE6320_ASSERTF(false, "Couldn't allocate memory for the mesh");

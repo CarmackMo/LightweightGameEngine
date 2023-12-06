@@ -48,7 +48,7 @@ namespace eae6320
 
 		std::shared_ptr<Graphics::cMesh> GetMesh() const;
 
-		Graphics::cEffect* GetEffect() const;
+		std::shared_ptr<Graphics::cEffect> GetEffect() const;
 
 		Physics::sRigidBodyState& GetRigidBody();
 
@@ -78,10 +78,7 @@ namespace eae6320
 		std::shared_ptr<cGameObject> m_self;
 
 		std::shared_ptr<Graphics::cMesh> m_mesh;
-
-		//Graphics::cMesh* m_mesh = nullptr;
-
-		Graphics::cEffect* m_effect = nullptr;
+		std::shared_ptr<Graphics::cEffect> m_effect;
 
 		Physics::sRigidBodyState m_rigidBody;
 		Physics::cCollider* m_collider = nullptr;

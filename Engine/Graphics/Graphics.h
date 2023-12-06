@@ -88,7 +88,7 @@ namespace Graphics
 
 	void AddMeshInitializeTask(std::shared_ptr<cMesh>& i_meshPtr, std::string i_meshPath);
 
-	void AddEffectInitializeTask(cEffect** i_effectPtr, std::string i_vertexShaderPath, std::string i_fragmentShaderPath);
+	void AddEffectInitializeTask(std::shared_ptr<cEffect>& i_effectPtr, std::string i_vertexShaderPath, std::string i_fragmentShaderPath);
 
 	void AddLineInitializeTask(cLine** i_linePtr, 
 		VertexFormats::sVertex_line i_vertexData[], const uint32_t i_vertexCount, 
@@ -97,9 +97,9 @@ namespace Graphics
 
 	void CleanUpRenderObjects();
 
-	void AddMeshCleanUpTask(std::shared_ptr<eae6320::Graphics::cMesh> i_mesh);
+	void AddMeshCleanUpTask(std::shared_ptr<cMesh> i_mesh);
 
-	void AddEffectCleanUpTask(cEffect* i_effect, cEffect** i_effectPtr);
+	void AddEffectCleanUpTask(std::shared_ptr<cEffect> i_effect);
 
 	void AddLineCleanUpTask(cLine* i_line, cLine** i_linePtr);
 

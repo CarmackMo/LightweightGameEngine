@@ -24,6 +24,8 @@
 #include <Engine/Physics/cColliderBase.h>
 
 
+#include <memory>
+
 #if defined( EAE6320_PLATFORM_WINDOWS )
 	#include "Resource Files/Resource.h"
 #endif
@@ -131,8 +133,8 @@ namespace eae6320
 		//std::string m_keqing_SkinMeshPath = "data/meshes/mesh_keqing_skin.lua";
 		//std::string m_ganyuMeshPath = "data/meshes/mesh_ganyu.lua";
 
-		Graphics::cEffect* m_effect_animate = nullptr;
-		Graphics::cEffect* m_effect_standard = nullptr;
+		std::shared_ptr<Graphics::cEffect> m_effect_animate;
+		std::shared_ptr<Graphics::cEffect> m_effect_standard;
 
 		Camera::cCamera m_camera;
 

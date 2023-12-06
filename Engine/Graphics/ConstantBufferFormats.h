@@ -50,7 +50,7 @@ namespace ConstantBufferFormats
 	struct sNormalRender
 	{
 		std::weak_ptr<cMesh> mesh;
-		cEffect* effect = nullptr;
+		std::weak_ptr<cEffect> effect;
 		Math::cMatrix_transformation transform_localToWorld;
 
 		// Initialize / Clean Up
@@ -59,38 +59,29 @@ namespace ConstantBufferFormats
 		sNormalRender() = default;
 		~sNormalRender() = default;
 
+		sNormalRender(std::weak_ptr<cMesh> i_mesh, std::weak_ptr<cEffect> i_effect, Math::cMatrix_transformation i_transform) :
+			mesh(i_mesh), effect(i_effect), transform_localToWorld(i_transform)
+		{ }
+
 		sNormalRender& operator= (sNormalRender& other)
 		{
 			mesh = other.mesh;
 			effect = other.effect;
-			effect->IncrementReferenceCount();
 			transform_localToWorld = other.transform_localToWorld;
 			return *this;
 		}
 
-		sNormalRender(std::weak_ptr<cMesh> i_mesh, cEffect* i_effect, Math::cMatrix_transformation i_transform) :
-			mesh(i_mesh), effect(i_effect), transform_localToWorld(i_transform)
-		{
-			effect->IncrementReferenceCount();
-		}
-
-		void Initialize(std::weak_ptr<cMesh> i_mesh, cEffect* i_effect, Math::cMatrix_transformation i_transform)
+		void Initialize(std::weak_ptr<cMesh> i_mesh, std::weak_ptr<cEffect> i_effect, Math::cMatrix_transformation i_transform)
 		{
 			mesh = i_mesh;
 			effect = i_effect;
-			effect->IncrementReferenceCount();
 			transform_localToWorld = i_transform;
 		}
 
 		void CleanUp()
 		{
 			mesh.reset();
-
-			if (effect != nullptr)
-			{
-				effect->DecrementReferenceCount();
-				effect = nullptr;				
-			}
+			effect.reset();
 		}
 
 		// Implementation 
@@ -98,7 +89,7 @@ namespace ConstantBufferFormats
 
 		bool IsValid()
 		{
-			return mesh.expired() == false && effect != nullptr;
+			return mesh.expired() == false && effect.expired() == false;
 		}
 	};
 

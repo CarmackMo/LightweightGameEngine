@@ -448,8 +448,8 @@ void eae6320::cMyGame::CleanUpGameObject()
 
 	m_camera.CleanUp();
 
-	m_effect_animate->DecrementReferenceCount();
-	m_effect_standard->DecrementReferenceCount();
+	m_effect_animate.reset();
+	m_effect_standard.reset();
 
 
 	// TODO: temporary code for clean up colldier object

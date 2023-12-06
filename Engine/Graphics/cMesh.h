@@ -15,10 +15,10 @@
 #include <string>
 
 #if defined ( EAE6320_PLATFORM_D3D )
-	#include <Engine/Graphics/cVertexFormat.h>
-	#include <Engine/Graphics/Direct3D/Includes.h>
+#include <Engine/Graphics/cVertexFormat.h>
+#include <Engine/Graphics/Direct3D/Includes.h>
 #elif defined ( EAE6320_PLATFORM_GL )
-	#include "Engine/Graphics/OpenGL/Includes.h"
+#include <Engine/Graphics/OpenGL/Includes.h>
 #endif
 
 
