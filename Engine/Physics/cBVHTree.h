@@ -106,7 +106,7 @@ namespace Physics
 
 		void InitialzieRenderData();
 		
-		std::vector<std::pair<std::shared_ptr<Graphics::cLine>, Math::cMatrix_transformation>>& GetRenderData();
+		std::list<std::pair<std::weak_ptr<Graphics::cLine>, Math::cMatrix_transformation>> GetRenderData();
 
 		// TODO
 		//virtual cCollider* Pick(const Math::sVector& i_point) const;
@@ -138,7 +138,7 @@ namespace Physics
 		sBVHNode* m_root;
 		std::list<std::pair<cCollider*, cCollider*>> m_pairs;
 		std::vector<sBVHNode*> m_invalidNodes;
-		std::vector<std::pair<std::shared_ptr<Graphics::cLine>, Math::cMatrix_transformation>> m_renderData;
+		std::list<std::pair<std::shared_ptr<Graphics::cLine>, Math::cMatrix_transformation>> m_renderData;
 	};
 
 }// Namespace Physics

@@ -71,6 +71,20 @@ void ScrollShooterGame::cEnemyGenerator::CleanUp()
 		game->m_gameObjectList.erase(objIter);
 	}
 
+	if (Graphics::AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
+	{
+		Graphics::AddLineCleanUpTask(m_colliderLine);
+		Graphics::ReleaseRenderObjectCleanUpMutex();
+		m_colliderLine.reset();
+	}
+
+	if (Graphics::AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
+	{
+		Graphics::AddLineCleanUpTask(m_collisionLine);
+		Graphics::ReleaseRenderObjectCleanUpMutex();
+		m_collisionLine.reset();
+	}
+
 	cGameObject::CleanUp();
 }
 
@@ -82,13 +96,13 @@ void ScrollShooterGame::cEnemyGenerator::UpdateBasedOnTime(const float i_elapsed
 	double currentTime = Time::ConvertTicksToSeconds(Time::GetCurrentSystemTimeTickCount());
 	if (currentTime - m_lastSpawnTime_rock >= m_spawnCoolDown_rock)
 	{
-		//SpawnRock();
+		SpawnRock();
 		m_lastSpawnTime_rock = currentTime;
 		m_spawnCoolDown_rock = static_cast<double>(Math::Random::RandInRange(m_spawnCoolDownRange_rock.x, m_spawnCoolDownRange_rock.y));
 	}
 	if (currentTime - m_lastSpawnTime_alien >= m_spawnCoolDown_alien)
 	{
-		//SpawnAlien();
+		SpawnAlien();
 		m_lastSpawnTime_alien = currentTime;
 		m_spawnCoolDown_alien = static_cast<double>(Math::Random::RandInRange(m_spawnCoolDownRange_alien.x, m_spawnCoolDownRange_alien.y));
 	}

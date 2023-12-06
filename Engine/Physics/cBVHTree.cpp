@@ -275,9 +275,15 @@ void eae6320::Physics::cBVHTree::InitialzieRenderData()
 }
 
 
-std::vector<std::pair<std::shared_ptr<eae6320::Graphics::cLine>, eae6320::Math::cMatrix_transformation>>& eae6320::Physics::cBVHTree::GetRenderData()
+std::list<std::pair<std::weak_ptr<eae6320::Graphics::cLine>, eae6320::Math::cMatrix_transformation>> eae6320::Physics::cBVHTree::GetRenderData()
 {
-	return m_renderData;
+	std::list<std::pair<std::weak_ptr<Graphics::cLine>, Math::cMatrix_transformation>> result;
+	for (auto iter = m_renderData.begin(); iter != m_renderData.end(); iter++)
+	{
+		result.push_back({ iter->first, iter->second });
+	}
+
+	return result;
 }
 
 
@@ -342,8 +348,19 @@ void eae6320::Physics::cBVHTree::RemoveNode(sBVHNode* i_node)
 		delete i_node;
 		delete parent;
 
-		m_renderData.pop_back();
-		m_renderData.pop_back();
+		// Release the cLine instance for both leaf node and branch node
+		if (Graphics::AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
+		{
+			Graphics::AddLineCleanUpTask(m_renderData.back().first);
+			Graphics::ReleaseRenderObjectCleanUpMutex();
+			m_renderData.pop_back();
+		}
+		if (Graphics::AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
+		{
+			Graphics::AddLineCleanUpTask(m_renderData.back().first);
+			Graphics::ReleaseRenderObjectCleanUpMutex();
+			m_renderData.pop_back();
+		}
 	}
 	// if current node is root
 	else
@@ -351,7 +368,12 @@ void eae6320::Physics::cBVHTree::RemoveNode(sBVHNode* i_node)
 		m_root = nullptr;
 		delete parent;
 
-		m_renderData.pop_back();
+		if (Graphics::AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
+		{
+			Graphics::AddLineCleanUpTask(m_renderData.back().first);
+			Graphics::ReleaseRenderObjectCleanUpMutex();
+			m_renderData.pop_back();
+		}
 	}
 }
 
@@ -526,7 +548,7 @@ void eae6320::Physics::cBVHTree::RenderUpdateHelper()
 
 	std::queue<sBVHNode*> container;
 	container.push(m_root);
-	int index = 0;
+	auto index = m_renderData.begin();
 
 	while (container.empty() == false)
 	{
@@ -536,7 +558,7 @@ void eae6320::Physics::cBVHTree::RenderUpdateHelper()
 		// Update aabb line transformation matrix
 		Math::sVector scale = current->fatAABB.GetMaxExtent_local() - current->fatAABB.GetMinExtent_local();
 		Math::sVector worldPos = current->fatAABB.GetCentroid_world();
-		m_renderData[index].second = Math::cMatrix_transformation(scale, worldPos);
+		index->second = Math::cMatrix_transformation(scale, worldPos);
 
 		index++;
 

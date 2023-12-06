@@ -23,12 +23,14 @@ void ScrollShooterGame::cPhysicDebugObject::CleanUp()
 	{
 		Graphics::AddLineCleanUpTask(m_colliderLine);
 		Graphics::ReleaseRenderObjectCleanUpMutex();
+		m_colliderLine.reset();
 	}
 
 	if (Graphics::AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
 	{
 		Graphics::AddLineCleanUpTask(m_collisionLine);
 		Graphics::ReleaseRenderObjectCleanUpMutex();
+		m_collisionLine.reset();
 	}
 }
 

@@ -129,8 +129,7 @@ void ScrollShooterGame::cScrollShooterGame::SubmitDataToBeRendered(
 
 	// Submit debug render data (for colliders)
 	{
-		auto BVHRenderData = std::vector<std::pair<std::shared_ptr<Graphics::cLine>, Math::cMatrix_transformation>>();
-		BVHRenderData = Physics::Collision::GetBVHRenderData();
+		auto BVHRenderData = Physics::Collision::GetBVHRenderData();
 
 		size_t BVHTreeSize = BVHRenderData.size();
 		size_t totalArraySize = BVHTreeSize;
@@ -139,14 +138,15 @@ void ScrollShooterGame::cScrollShooterGame::SubmitDataToBeRendered(
 
 
 		// Render data of BVH tree
-		for (size_t i = 0; i < BVHTreeSize; i++)
+		int idx = 0;
+		for (auto iter = BVHRenderData.begin(); iter != BVHRenderData.end(); iter++)
 		{
-			if (BVHRenderData[i].first == nullptr)
+			if (iter->first.expired())
 				continue;
 
-			debugDataArray[i].Initialize(BVHRenderData[i].first, BVHRenderData[i].second);
+			debugDataArray[idx].Initialize(iter->first, iter->second);
+			idx++;
 		}
-
 
 		Graphics::SubmitDebugRenderData(debugDataArray, static_cast<uint32_t>(totalArraySize));
 
