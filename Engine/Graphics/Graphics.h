@@ -12,9 +12,9 @@
 #include <Engine/Graphics/Configuration.h>
 #include <Engine/Results/Results.h>
 
-
 #include <cstdint>
 #include <functional>
+#include <memory>
 
 #if defined( EAE6320_PLATFORM_WINDOWS )
 	#include <Engine/Windows/Includes.h>
@@ -86,7 +86,7 @@ namespace Graphics
 
 	void InitializeRenderObjects();
 
-	void AddMeshInitializeTask(cMesh** i_meshPtr, std::string i_meshPath);
+	void AddMeshInitializeTask(std::shared_ptr<cMesh>* i_meshPtr, std::string i_meshPath);
 
 	void AddEffectInitializeTask(cEffect** i_effectPtr, std::string i_vertexShaderPath, std::string i_fragmentShaderPath);
 
@@ -97,7 +97,7 @@ namespace Graphics
 
 	void CleanUpRenderObjects();
 
-	void AddMeshCleanUpTask(cMesh* i_mesh, cMesh** i_meshPtr);
+	void AddMeshCleanUpTask(std::shared_ptr<eae6320::Graphics::cMesh> i_mesh);
 
 	void AddEffectCleanUpTask(cEffect* i_effect, cEffect** i_effectPtr);
 

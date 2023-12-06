@@ -77,7 +77,7 @@ namespace
 
 	struct sMeshBuilder
 	{
-		eae6320::Graphics::cMesh** meshPtr = nullptr;
+		std::shared_ptr<eae6320::Graphics::cMesh>* meshPtr;
 		std::string meshPath;
 	};
 
@@ -106,7 +106,7 @@ namespace
 	std::queue<sLineBuilder> s_lineInitializeQueue;
 
 
-	std::queue<std::pair<eae6320::Graphics::cMesh*, eae6320::Graphics::cMesh**>> s_meshCleanUpQueue;
+	std::queue<std::shared_ptr<eae6320::Graphics::cMesh>> s_meshCleanUpQueue;
 	std::queue<std::pair<eae6320::Graphics::cEffect*, eae6320::Graphics::cEffect**>> s_effectCleanUpQueue;
 	std::queue<std::pair<eae6320::Graphics::cLine*, eae6320::Graphics::cLine**>> s_lineCleanUpQueue;
 
@@ -260,6 +260,8 @@ void eae6320::Graphics::InitializeRenderObjects()
 				s_meshInitializeQueue.pop();
 
 				cMesh::Create(*(builder.meshPtr), builder.meshPath);
+
+				int temp = 0;
 			}
 		}
 		// Initialize effect objects
@@ -307,9 +309,8 @@ void eae6320::Graphics::CleanUpRenderObjects()
 				auto task = s_meshCleanUpQueue.front();
 				s_meshCleanUpQueue.pop();
 
-				if (task.first != nullptr)
-					task.first->DecrementReferenceCount();
-				(*task.second) = nullptr;
+				EAE6320_ASSERT(task.use_count() == 1);
+				task.reset();
 			}
 		}
 		// Clean up effect objects
@@ -372,7 +373,7 @@ void eae6320::Graphics::ReleaseRenderObjectCleanUpMutex()
 }
 
 
-void eae6320::Graphics::AddMeshInitializeTask(cMesh** i_meshPtr, std::string i_meshPath)
+void eae6320::Graphics::AddMeshInitializeTask(std::shared_ptr<cMesh>* i_meshPtr, std::string i_meshPath)
 {
 	s_meshInitializeQueue.push({ i_meshPtr, i_meshPath });
 }
@@ -401,9 +402,9 @@ void eae6320::Graphics::AddLineInitializeTask(cLine** i_linePtr, VertexFormats::
 }
 
 
-void eae6320::Graphics::AddMeshCleanUpTask(cMesh* i_mesh, cMesh** i_meshPtr)
+void eae6320::Graphics::AddMeshCleanUpTask(std::shared_ptr<eae6320::Graphics::cMesh> i_mesh)
 {
-	s_meshCleanUpQueue.push({ i_mesh, i_meshPtr });
+	s_meshCleanUpQueue.push(i_mesh);
 }
 
 
@@ -477,7 +478,9 @@ void eae6320::Graphics::RenderFrame()
 				s_constantBuffer_drawCall.Update(&constantData_normalRender[i].transform_localToWorld);
 
 				constantData_normalRender[i].effect->Bind();
-				constantData_normalRender[i].mesh->Draw();
+
+				if (constantData_normalRender[i].mesh.expired() == false)
+					constantData_normalRender[i].mesh.lock()->Draw();
 			}
 		}
 	}

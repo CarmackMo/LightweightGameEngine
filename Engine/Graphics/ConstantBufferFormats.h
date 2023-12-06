@@ -11,13 +11,14 @@
 // Includes
 //=========
 
-#include "cEffect.h"
-#include "cLine.h"
-#include "cMesh.h"
-#include "Configuration.h"
-
-
+#include <Engine/Asserts/Asserts.h>
+#include <Engine/Graphics/cEffect.h>
+#include <Engine/Graphics/cLine.h>
+#include <Engine/Graphics/cMesh.h>
+#include <Engine/Graphics/Configuration.h>
 #include <Engine/Math/cMatrix_transformation.h>
+
+#include <memory>
 #include <string>
 #include <utility>
 
@@ -48,7 +49,7 @@ namespace ConstantBufferFormats
 	// Data for rendering an object 
 	struct sNormalRender
 	{
-		cMesh* mesh = nullptr;
+		std::weak_ptr<cMesh> mesh;
 		cEffect* effect = nullptr;
 		Math::cMatrix_transformation transform_localToWorld;
 
@@ -61,24 +62,21 @@ namespace ConstantBufferFormats
 		sNormalRender& operator= (sNormalRender& other)
 		{
 			mesh = other.mesh;
-			mesh->IncrementReferenceCount();
 			effect = other.effect;
 			effect->IncrementReferenceCount();
 			transform_localToWorld = other.transform_localToWorld;
 			return *this;
 		}
 
-		sNormalRender(cMesh* i_mesh, cEffect* i_effect, Math::cMatrix_transformation i_transform) :
+		sNormalRender(std::weak_ptr<cMesh> i_mesh, cEffect* i_effect, Math::cMatrix_transformation i_transform) :
 			mesh(i_mesh), effect(i_effect), transform_localToWorld(i_transform)
 		{
-			mesh->IncrementReferenceCount();
 			effect->IncrementReferenceCount();
 		}
 
-		void Initialize(cMesh* i_mesh, cEffect* i_effect, Math::cMatrix_transformation i_transform)
+		void Initialize(std::weak_ptr<cMesh> i_mesh, cEffect* i_effect, Math::cMatrix_transformation i_transform)
 		{
 			mesh = i_mesh;
-			mesh->IncrementReferenceCount();
 			effect = i_effect;
 			effect->IncrementReferenceCount();
 			transform_localToWorld = i_transform;
@@ -86,11 +84,8 @@ namespace ConstantBufferFormats
 
 		void CleanUp()
 		{
-			if (mesh != nullptr)
-			{
-				mesh->DecrementReferenceCount();
-				mesh = nullptr;
-			}
+			mesh.reset();
+
 			if (effect != nullptr)
 			{
 				effect->DecrementReferenceCount();
@@ -103,7 +98,7 @@ namespace ConstantBufferFormats
 
 		bool IsValid()
 		{
-			return mesh != nullptr && effect != nullptr;
+			return mesh.expired() == false && effect != nullptr;
 		}
 	};
 

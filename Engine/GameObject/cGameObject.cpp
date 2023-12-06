@@ -1,6 +1,7 @@
 // Includes
 //=========
 
+#include <Engine/Asserts/Asserts.h>
 #include <Engine/Concurrency/cEvent.h>
 #include <Engine/GameObject/cGameObject.h>
 #include <Engine/Graphics/Graphics.h>
@@ -19,8 +20,9 @@ void eae6320::cGameObject::CleanUp()
 	// and do null pointer safety check in rendering thread
 	if (Graphics::AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
 	{
-		Graphics::AddMeshCleanUpTask(m_mesh, &m_mesh);
+		Graphics::AddMeshCleanUpTask(m_mesh);
 		Graphics::ReleaseRenderObjectCleanUpMutex();
+		m_mesh.reset();
 	}
 
 	if (Graphics::AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
@@ -37,11 +39,7 @@ void eae6320::cGameObject::CleanUp()
 
 void eae6320::cGameObject::InitializeMesh(const std::string& i_meshPath)
 {
-	if (m_mesh != nullptr)
-	{
-		m_mesh->DecrementReferenceCount();
-		m_mesh = nullptr;
-	}
+	EAE6320_ASSERT(m_mesh == nullptr);
 
 	// Send cMesh data to rendering thread for initialzation
 	if (Graphics::AcquireRenderObjectInitMutex() == WAIT_OBJECT_0)
@@ -104,7 +102,7 @@ std::shared_ptr<eae6320::cGameObject> eae6320::cGameObject::GetSelf() const
 }
 
 
-eae6320::Graphics::cMesh* eae6320::cGameObject::GetMesh() const
+std::shared_ptr<eae6320::Graphics::cMesh> eae6320::cGameObject::GetMesh() const
 {
 	return m_mesh;
 }
