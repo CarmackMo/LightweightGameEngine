@@ -8,16 +8,17 @@
 
 #pragma once
 
-#include <Engine/Assets/ReferenceCountedAssets.h>
+#include <Engine/Graphics/cRenderState.h>
+#include <Engine/Graphics/cShader.h>
 #include <Engine/Results/Results.h>
-#include "cRenderState.h"
-#include "cShader.h"
+
+#include <memory>
 #include <string>
 
 #if defined ( EAE6320_PLATFORM_D3D )
-#include "Direct3D/Includes.h"
+#include <Engine/Graphics/Direct3D/Includes.h>
 #elif defined ( EAE6320_PLATFORM_GL )
-#include "OpenGL/Includes.h"
+#include <Engine/Graphics/OpenGL/Includes.h>
 #endif
 
 
@@ -39,14 +40,15 @@ namespace Graphics
 		// Initialization / Clean Up
 		//--------------------------
 
-		static cResult Create(cEffect*& o_effect, const std::string& i_vertexShaderPath, const std::string& i_fragmentShaderPath);
+		static cResult Create(
+			cEffect*& o_effect, 
+			const std::string& i_vertexShaderPath, 
+			const std::string& i_fragmentShaderPath);
 
-		EAE6320_ASSETS_DECLAREDELETEDREFERENCECOUNTEDFUNCTIONS(cEffect);
-
-		// Reference Counting
-		//--------------------------
-
-		EAE6320_ASSETS_DECLAREREFERENCECOUNTINGFUNCTIONS();
+		static cResult Create(
+			std::shared_ptr<cEffect>& o_effect, 
+			const std::string& i_vertexShaderPath, 
+			const std::string& i_fragmentShaderPath);
 
 		// Render
 		//--------------------------
@@ -75,8 +77,6 @@ namespace Graphics
 		//=====================
 
 	private:
-
-		EAE6320_ASSETS_DECLAREREFERENCECOUNT();
 
 		cShader* m_vertexShader = nullptr;
 		cShader* m_fragmentShader = nullptr;

@@ -220,7 +220,7 @@ eae6320::cResult eae6320::Physics::Collision::DeregisterCollider(cCollider* i_co
 }
 
 
-std::vector<std::pair<eae6320::Graphics::cLine*, eae6320::Math::cMatrix_transformation>>& eae6320::Physics::Collision::GetBVHRenderData()
+std::list<std::pair<std::weak_ptr<eae6320::Graphics::cLine>, eae6320::Math::cMatrix_transformation>> eae6320::Physics::Collision::GetBVHRenderData()
 {
 	return s_BVHTree.GetRenderData();
 }
@@ -466,7 +466,7 @@ void eae6320::Physics::Collision::Initialize_BVH(const std::vector<cCollider*>& 
 	}
 
 	// Initialize BVH tree rendering data
-	s_BVHTree.InitialzieRenderData();
+	//s_BVHTree.InitialzieRenderData();
 
 	// Initial collision detection
 	CollisionDetection_BroadPhase_BVH();

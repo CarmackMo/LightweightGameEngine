@@ -7,6 +7,8 @@
 #include <Engine/Graphics/cLine.h>
 #include <Engine/UserInput/UserInput.h>
 
+#include <memory>
+
 
 namespace ScrollShooterGame
 {
@@ -21,7 +23,7 @@ namespace ScrollShooterGame
 
 		void InitializeColliderLine();
 
-		eae6320::Graphics::cLine* GetColliderLine() const;
+		std::weak_ptr<eae6320::Graphics::cLine> GetColliderLine() const;
 
 		void SetIsCollide(bool isCollide)
 		{
@@ -39,9 +41,9 @@ namespace ScrollShooterGame
 
 		bool m_isCollide = false;
 
-		eae6320::Graphics::cLine* m_colliderLine = nullptr;
+		std::shared_ptr<eae6320::Graphics::cLine> m_colliderLine;
 
-		eae6320::Graphics::cLine* m_collisionLine = nullptr;
+		std::shared_ptr<eae6320::Graphics::cLine> m_collisionLine;
 
 	};
 

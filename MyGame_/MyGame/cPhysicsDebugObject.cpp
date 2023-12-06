@@ -18,14 +18,16 @@ void eae6320::cPhysicDebugObject::CleanUp()
 	// and do null pointer safety check in rendering thread
 	if (Graphics::AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
 	{
-		Graphics::AddLineCleanUpTask(m_colliderLine, &m_colliderLine);
+		Graphics::AddLineCleanUpTask(m_colliderLine);
 		Graphics::ReleaseRenderObjectCleanUpMutex();
+		m_colliderLine.reset();
 	}
 
 	if (Graphics::AcquireRenderObjectCleanUpMutex() == WAIT_OBJECT_0)
 	{
-		Graphics::AddLineCleanUpTask(m_collisionLine, &m_collisionLine);
+		Graphics::AddLineCleanUpTask(m_collisionLine);
 		Graphics::ReleaseRenderObjectCleanUpMutex();
+		m_collisionLine.reset();
 	}
 }
 
@@ -58,12 +60,6 @@ void eae6320::cPhysicDebugObject::UpdateBasedOnInput()
 
 void eae6320::cPhysicDebugObject::InitializeColliderLine()
 {
-	if (m_colliderLine != nullptr)
-	{
-		m_colliderLine->DecrementReferenceCount();
-		m_colliderLine = nullptr;
-	}
-
 	uint32_t vertexCount = 0;
 	auto vertexVec = std::vector<Math::sVector>();
 	uint32_t indexCount = 0;
@@ -91,7 +87,7 @@ void eae6320::cPhysicDebugObject::InitializeColliderLine()
 		// Send cLine data to rendering thread for initialization
 		if (Graphics::AcquireRenderObjectInitMutex() == WAIT_OBJECT_0)
 		{
-			Graphics::AddLineInitializeTask(&m_colliderLine, vertexData, vertexCount, indexData, indexCount);
+			Graphics::AddLineInitializeTask(m_colliderLine, vertexData, vertexCount, indexData, indexCount);
 			Graphics::ReleaseRenderObjectInitMutex();
 		}
 
@@ -115,7 +111,7 @@ void eae6320::cPhysicDebugObject::InitializeColliderLine()
 		// Send cLine data to rendering thread for initialization
 		if (Graphics::AcquireRenderObjectInitMutex() == WAIT_OBJECT_0)
 		{
-			Graphics::AddLineInitializeTask(&m_collisionLine, vertexData, vertexCount, indexData, indexCount);
+			Graphics::AddLineInitializeTask(m_collisionLine, vertexData, vertexCount, indexData, indexCount);
 			Graphics::ReleaseRenderObjectInitMutex();
 		}
 
@@ -125,7 +121,7 @@ void eae6320::cPhysicDebugObject::InitializeColliderLine()
 }
 
 
-eae6320::Graphics::cLine* eae6320::cPhysicDebugObject::GetColliderLine() const
+std::weak_ptr<eae6320::Graphics::cLine> eae6320::cPhysicDebugObject::GetColliderLine() const
 {
 	if (m_isCollide)
 		return m_collisionLine;

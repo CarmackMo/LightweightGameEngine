@@ -118,7 +118,7 @@ void eae6320::cMyGame::SubmitDataToBeRendered(
 		// Render data of render objects 
 		for (size_t i = 0; i < arraySize; i++)
 		{
-			if (m_renderObjectList[i]->GetMesh() == nullptr || m_renderObjectList[i]->GetEffect() == nullptr)
+			if (m_renderObjectList[i]->GetMesh().expired() || m_renderObjectList[i]->GetEffect().expired())
 				continue;
 
 			normalRenderDataArray[i].Initialize(
@@ -140,8 +140,7 @@ void eae6320::cMyGame::SubmitDataToBeRendered(
 
 	// TODO: Submit debug for box collider
 	{
-		auto BVHRenderData = std::vector<std::pair<eae6320::Graphics::cLine*, eae6320::Math::cMatrix_transformation>>();
-		BVHRenderData = Physics::Collision::GetBVHRenderData();
+		auto BVHRenderData = Physics::Collision::GetBVHRenderData();
 
 		size_t colliderListSize = m_colliderObjectList.size();
 		size_t totalArraySize = BVHRenderData.size() + colliderListSize;
@@ -153,19 +152,21 @@ void eae6320::cMyGame::SubmitDataToBeRendered(
 		{
 			auto collider = m_colliderObjectList[i];
 
-			if (collider->GetColliderLine() == nullptr)
+			if (collider->GetColliderLine().expired())
 				continue;
 
 			debugDataArray[i].Initialize(collider->GetColliderLine(), collider->GetPredictedTransform(i_elapsedSecondCount_sinceLastSimulationUpdate));
 		}
 
 		// Render data of BVH tree
-		for (size_t i = colliderListSize; i < totalArraySize; i++)
+		int idx = 0;
+		for (auto iter = BVHRenderData.begin(); iter != BVHRenderData.end(); iter++)
 		{
-			if (BVHRenderData[i - colliderListSize].first == nullptr)
+			if (iter->first.expired())
 				continue;
 
-			debugDataArray[i].Initialize(BVHRenderData[i - colliderListSize].first, BVHRenderData[i - colliderListSize].second);
+			debugDataArray[idx].Initialize(iter->first, iter->second);
+			idx++;
 		}
 
 		Graphics::SubmitDebugRenderData(debugDataArray, static_cast<uint32_t>(totalArraySize));
@@ -448,8 +449,8 @@ void eae6320::cMyGame::CleanUpGameObject()
 
 	m_camera.CleanUp();
 
-	m_effect_animate->DecrementReferenceCount();
-	m_effect_standard->DecrementReferenceCount();
+	m_effect_animate.reset();
+	m_effect_standard.reset();
 
 
 	// TODO: temporary code for clean up colldier object

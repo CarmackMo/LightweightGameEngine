@@ -10,6 +10,7 @@
 
 // TODO
 #include <Engine/Graphics/cLine.h>
+#include <memory>
 
 
 
@@ -60,17 +61,14 @@ namespace ScrollShooterGame
 	public:
 
 		bool m_isCollide = false;
-		eae6320::Graphics::cLine* m_colliderLine = nullptr;
-		eae6320::Graphics::cLine* m_collisionLine = nullptr;
+		std::shared_ptr<eae6320::Graphics::cLine> m_colliderLine;
+		std::shared_ptr<eae6320::Graphics::cLine> m_collisionLine;
+
+		void SetIsCollide(bool isCollide);
 
 		void InitializeColliderLine();
 
-		void SetIsCollide(bool isCollide)
-		{
-			m_isCollide = isCollide;
-		}
-
-		eae6320::Graphics::cLine* GetColliderLine() const;
+		std::weak_ptr<eae6320::Graphics::cLine> GetColliderLine() const;
 
 	};
 

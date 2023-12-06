@@ -7,6 +7,8 @@
 #include <Engine/Graphics/cLine.h>
 #include <Engine/UserInput/UserInput.h>
 
+#include <memory>
+
 
 namespace eae6320
 {
@@ -21,7 +23,7 @@ namespace eae6320
 
 		void InitializeColliderLine();
 
-		Graphics::cLine* GetColliderLine() const;
+		std::weak_ptr<eae6320::Graphics::cLine> GetColliderLine() const;
 
 		void SetIsCollide(bool isCollide)
 		{
@@ -39,9 +41,9 @@ namespace eae6320
 
 		bool m_isCollide = false;
 
-		Graphics::cLine* m_colliderLine = nullptr;
+		std::shared_ptr<eae6320::Graphics::cLine> m_colliderLine;
 
-		Graphics::cLine* m_collisionLine = nullptr;
+		std::shared_ptr<eae6320::Graphics::cLine> m_collisionLine;
 
 	};
 

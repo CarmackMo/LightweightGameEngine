@@ -30,18 +30,10 @@ namespace
 // Member Function Definitions
 //=============================
 
-eae6320::cResult eae6320::Graphics::cMesh::Create(
-	cMesh*& o_mesh,
-	VertexFormats::sVertex_mesh i_vertexData[],
-	const uint32_t i_vertexCount,
-	uint16_t i_indexData[],
-	const uint32_t i_indexCount,
-	const uint32_t i_indexCountToRender,
-	const uint32_t i_indexOfFirstIndexToUse,
-	const uint32_t i_offsetToAddToEachIndex)
+eae6320::cResult eae6320::Graphics::cMesh::Create(std::shared_ptr<cMesh>& o_mesh, VertexFormats::sVertex_mesh i_vertexData[], const uint32_t i_vertexCount, uint16_t i_indexData[], const uint32_t i_indexCount, const uint32_t i_indexCountToRender, const uint32_t i_indexOfFirstIndexToUse, const uint32_t i_offsetToAddToEachIndex)
 {
 	auto result = Results::Success;
-	cMesh* newMesh = nullptr;
+	std::shared_ptr<cMesh> newMesh;
 
 	// If a new mesh instance is successfully created, pass it out from 
 	// the function. Otherwise, clean up the instance.
@@ -52,14 +44,13 @@ eae6320::cResult eae6320::Graphics::cMesh::Create(
 			if (result)
 			{
 				EAE6320_ASSERT(newMesh != nullptr);
-				o_mesh = newMesh;
+				o_mesh.swap(newMesh);
 			}
 			else
 			{
 				if (newMesh)
 				{
-					newMesh->DecrementReferenceCount();
-					newMesh = nullptr;
+					newMesh.reset();
 				}
 				o_mesh = nullptr;
 			}
@@ -68,21 +59,21 @@ eae6320::cResult eae6320::Graphics::cMesh::Create(
 	// Allocate a new mesh
 	{
 		// Prevent program crash if not enough memory
-		newMesh = new (std::nothrow) cMesh();
+		newMesh = std::shared_ptr<cMesh>(new (std::nothrow) cMesh(), [](cMesh* const i_mesh) { delete i_mesh; });
 		if (!newMesh)
 		{
-			result = eae6320::Results::OutOfMemory;
+			result = Results::OutOfMemory;
 			EAE6320_ASSERTF(false, "Couldn't allocate memory for the mesh");
 			Logging::OutputError("Failed to allocate memory for the mesh");
 			return result;
 		}
 	}
 	// Initialize the platform-specific graphics API mesh object
-	if ( !(result = newMesh->Initialize(
-		i_vertexData, i_vertexCount, 
+	if (!(result = newMesh->Initialize(
+		i_vertexData, i_vertexCount,
 		i_indexData, i_indexCount,
 		i_indexCountToRender,
-		i_indexOfFirstIndexToUse, 
+		i_indexOfFirstIndexToUse,
 		i_offsetToAddToEachIndex)))
 	{
 		EAE6320_ASSERTF(false, "Initialization of new mesh failed");
@@ -93,12 +84,10 @@ eae6320::cResult eae6320::Graphics::cMesh::Create(
 }
 
 
-eae6320::cResult eae6320::Graphics::cMesh::Create(
-	cMesh*& o_mesh, 
-	const std::string& i_meshPath)
+eae6320::cResult eae6320::Graphics::cMesh::Create(std::shared_ptr<cMesh>& o_mesh, const std::string& i_meshPath)
 {
 	auto result = eae6320::Results::Success;
-	cMesh* newMesh = nullptr;
+	std::shared_ptr<cMesh> newMesh;
 
 	// If a new mesh instance is successfully created, pass it out from 
 	// the function. Otherwise, clean up the instance.
@@ -109,14 +98,13 @@ eae6320::cResult eae6320::Graphics::cMesh::Create(
 			if (result)
 			{
 				EAE6320_ASSERT(newMesh != nullptr);
-				o_mesh = newMesh;
+				o_mesh.swap(newMesh);
 			}
 			else
 			{
 				if (newMesh)
 				{
-					newMesh->DecrementReferenceCount();
-					newMesh = nullptr;
+					newMesh.reset();
 				}
 				o_mesh = nullptr;
 			}
@@ -125,7 +113,7 @@ eae6320::cResult eae6320::Graphics::cMesh::Create(
 	// Allocate a new mesh
 	{
 		// Prevent program crash if not enough memory
-		newMesh = new (std::nothrow) cMesh();
+		newMesh = std::shared_ptr<cMesh>(new (std::nothrow) cMesh(), [](cMesh* const i_mesh) { delete i_mesh; });
 		if (!newMesh)
 		{
 			EAE6320_ASSERTF(false, "Couldn't allocate memory for the mesh");
@@ -334,7 +322,6 @@ eae6320::cResult eae6320::Graphics::cMesh::LoadBinaryAsset(const char* const i_p
 
 eae6320::Graphics::cMesh::~cMesh()
 {
-	EAE6320_ASSERT(m_referenceCount == 0);
 	const auto result = CleanUp();
 	EAE6320_ASSERT(result);
 }
@@ -588,5 +575,6 @@ eae6320::cResult LoadLuaArray_Index(lua_State& io_luaState, const std::string& i
 
 	return result;
 }
+
 
 }

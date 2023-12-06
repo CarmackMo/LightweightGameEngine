@@ -107,8 +107,8 @@ void ScrollShooterGame::cScrollShooterGame::SubmitDataToBeRendered(
 		for (size_t i = 0; i < m_gameObjectList.size(); i++)
 		{
 			if (m_gameObjectList[i] == nullptr ||
-				m_gameObjectList[i]->GetMesh() == nullptr ||
-				m_gameObjectList[i]->GetEffect() == nullptr)
+				m_gameObjectList[i]->GetMesh().expired() ||
+				m_gameObjectList[i]->GetEffect().expired())
 				continue;
 
 			normalRenderDataArray[i].Initialize(
@@ -127,37 +127,37 @@ void ScrollShooterGame::cScrollShooterGame::SubmitDataToBeRendered(
 		delete[] normalRenderDataArray;
 	}
 
-	//// Submit debug render data (for colliders)
-	//{
-	//	auto BVHRenderData = std::vector<std::pair<eae6320::Graphics::cLine*, eae6320::Math::cMatrix_transformation>>();
-	//	BVHRenderData = Physics::Collision::GetBVHRenderData();
+	// Submit debug render data (for colliders)
+	{
+		auto BVHRenderData = Physics::Collision::GetBVHRenderData();
 
-	//	size_t BVHTreeSize = BVHRenderData.size();
-	//	size_t totalArraySize = BVHTreeSize;
+		size_t BVHTreeSize = BVHRenderData.size();
+		size_t totalArraySize = BVHTreeSize;
 
-	//	Graphics::ConstantBufferFormats::sDebugRender* debugDataArray = new Graphics::ConstantBufferFormats::sDebugRender[totalArraySize];
-
-
-	//	// Render data of BVH tree
-	//	for (size_t i = 0; i < BVHTreeSize; i++)
-	//	{
-	//		if (BVHRenderData[i].first == nullptr)
-	//			continue;
-
-	//		debugDataArray[i].Initialize(BVHRenderData[i].first, BVHRenderData[i].second);
-	//	}
+		Graphics::ConstantBufferFormats::sDebugRender* debugDataArray = new Graphics::ConstantBufferFormats::sDebugRender[totalArraySize];
 
 
-	//	Graphics::SubmitDebugRenderData(debugDataArray, static_cast<uint32_t>(totalArraySize));
+		// Render data of BVH tree
+		int idx = 0;
+		for (auto iter = BVHRenderData.begin(); iter != BVHRenderData.end(); iter++)
+		{
+			if (iter->first.expired())
+				continue;
 
-	//	// Clean up
-	//	for (size_t i = 0; i < totalArraySize; i++)
-	//	{
-	//		debugDataArray[i].CleanUp();
-	//	}
+			debugDataArray[idx].Initialize(iter->first, iter->second);
+			idx++;
+		}
 
-	//	delete[] debugDataArray;
-	//}
+		Graphics::SubmitDebugRenderData(debugDataArray, static_cast<uint32_t>(totalArraySize));
+
+		// Clean up
+		for (size_t i = 0; i < totalArraySize; i++)
+		{
+			debugDataArray[i].CleanUp();
+		}
+
+		delete[] debugDataArray;
+	}
 }
 
 

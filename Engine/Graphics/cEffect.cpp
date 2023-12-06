@@ -9,10 +9,11 @@
 #include <new>
 
 
-eae6320::cResult eae6320::Graphics::cEffect::Create(cEffect*& o_effect, const std::string& i_vertexShaderPath, const std::string& i_fragmentShaderPath)
+eae6320::cResult eae6320::Graphics::cEffect::Create(std::shared_ptr<cEffect>& o_effect, const std::string& i_vertexShaderPath, const std::string& i_fragmentShaderPath)
 {
 	auto result = eae6320::Results::Success;
-	cEffect* newEffect = nullptr;
+
+	std::shared_ptr<cEffect> newEffect;
 
 	// If a new effect instance is successfully created, pass it out from 
 	// the function. Otherwise, clean up the instance.
@@ -21,23 +22,21 @@ eae6320::cResult eae6320::Graphics::cEffect::Create(cEffect*& o_effect, const st
 			if (result)
 			{
 				EAE6320_ASSERT(newEffect != nullptr);
-				o_effect = newEffect;
+				o_effect.swap(newEffect);
 			}
 			else
 			{
 				if (newEffect != nullptr)
 				{
-					newEffect->DecrementReferenceCount();
-					newEffect = nullptr;
+					newEffect.reset();
 				}
 				o_effect = nullptr;
 			}
-		}
-	);
+		});
 
 	// Allocate a new effect
 	{
-		newEffect = new (std::nothrow) cEffect();
+		newEffect = std::shared_ptr<cEffect>(new (std::nothrow) cEffect(), [](cEffect* const i_effect) { delete i_effect; });
 		if (!newEffect)
 		{
 			result = eae6320::Results::OutOfMemory;
@@ -61,7 +60,6 @@ eae6320::cResult eae6320::Graphics::cEffect::Create(cEffect*& o_effect, const st
 
 eae6320::Graphics::cEffect::~cEffect()
 {
-	EAE6320_ASSERT(m_referenceCount == 0);
 	const auto result = CleanUp();
 	EAE6320_ASSERT(result);
 }
