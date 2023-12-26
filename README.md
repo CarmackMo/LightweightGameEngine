@@ -22,7 +22,7 @@ Read this in other languages:
 | **Mini Game Demo - Raiden II** |
 |           :---              |
 | The video below shows a vertical scroll shooter game developed using this game engine. The gameplay is inspired by *"Raiden II"*. The player is represented by the colorful block in the video, and they need to avoid falling rocks, aliens, and enemy bullets. <br> The development of this mini-game utilized various engine features such as the rendering pipeline, the physics system, and the audio system. The build of this mini-game can be dowloaded [here](Documents/Builds/) |
-| <img src="Documents/Videos/Video-Gameplay.mp4" width="810px" height="455px"> |
+| <video src="Documents/Videos/Video-Gameplay.mp4" width="810px" height="455px"> |
 
 
 | **Rendering Pipeline Demo** |
