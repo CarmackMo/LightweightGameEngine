@@ -43,7 +43,7 @@ Read this in other languages:
 |  <img src="Documents/Gifs/CollisionDemo.gif" width="810px" height="455px"> |
 
 
-| **Lightweight Game Engine Release** |
+| **Game Engine System Release** |
 |               :---                  | 
 |  The build of this game engine can be downloaded [here](Documents/Builds/EngineDemo). The file named *"MyGame.exe"* is the executable for the game engine. |
 |  To run the engine, use the following controls: <br> For controlling one of the AABB colliders: "A," "W," "S," "D," "R," "F". <br> For camera control: "Left Arrow," "Right Arrow," "Up Arrow," "Down Arrow," "Delete," "Home," "End," "Page Down"  |
