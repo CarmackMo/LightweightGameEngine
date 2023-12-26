@@ -1,6 +1,5 @@
 # Lightweight Game Engine - Tech Doc
 
-Read this in other languages: [简体中文](TechDoc.zh-CN.md)
 
 ## Catalog
 
@@ -124,6 +123,30 @@ For a comprehensive understanding, the workflow diagram of the physics system is
 
 
 The detail descrition of the physics engine is still in progress
+
+
+## APIs
+```cpp
+
+/* Initialize the physicis system */
+void Initialize( const std::vector<cCollider*>&, uint8_t );
+
+/* Detect if two collider overlap with each other */
+bool IsOverlaps(cCollider* i_lhs, cCollider* i_rhs);
+
+/* Update the collision detection status of the physics system */
+void Update_CollisionDetection();
+
+/* Update the collision resolution status of the physics system */
+void Update_CollisionResolution();
+
+/* Add a new collider to the physics system */
+void RegisterCollider( cCollider* );
+
+/* Remove a existing collider from the physics system */
+cResult DeregisterCollider( cCollider* );
+
+```
 
 
 
@@ -476,7 +499,7 @@ This file implements smart pointers that are commonly used in dynamic memory res
 	void WeakConstruct(const PtrBase<U>& other);
 
     /* API for copy constructor of SmartPtr that converts a WeakPtr to SmartPtr,
-     * considering class inheritance */
+       considering class inheritance */
     template <class U>
 	bool ConstructFromWeak(const WeakPtr<U>& other);
 
