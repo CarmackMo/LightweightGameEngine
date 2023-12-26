@@ -73,8 +73,28 @@ Furthermore, as aforementioned, the engine's rendering pipeline adheres to a "pr
 
 ## APIs
 ```cpp
+
 /* Initialize the rendering pipeline and graphics library */
 cResult Initialize( const sInitializationParameters& );
+
+/* Subtmit system tick and simulation tick for rendering */
+void SubmitElapsedTime( float, float );
+
+/* Submit the color data to clear the last frame (also set the background for this frame) */
+void SubmitBackgroundColor( float, float, float, float = 1.0f );
+
+/* Submit the transform matrix of camera of this frame */
+void SubmitCameraMatrices( Math::cMatrix_transformation, Math::cMatrix_transformation );
+
+/* Submit rendering data of this frame */
+cResult SubmitNormalRenderData(ConstantBufferFormats::sNormalRender[], uint32_t );
+
+/* Submit rendering data for debug of this frame */
+cResult SubmitDebugRenderData(ConstantBufferFormats::sDebugRender[], uint32_t );
+
+/* This is called (automatically) from the main/render thread. 
+   It will render a submitted frame as soon as it is ready */
+void RenderFrame();
 
 ```
 
@@ -282,36 +302,36 @@ The current automatic workload adjustment mechanism provides a simple approach t
 void Init();
 
 /* Create a new job queue with the given name and return the hashed job queue name. If a job 
- * queue with the same hashed name already exists, return the hashed name directly instead. 
- * A job queue must have at least one job runner. If the user creates a job queue with a 
- * "runnerNum" value of 0, this function will automatically create a job runner. */
+   queue with the same hashed name already exists, return the hashed name directly instead. 
+   A job queue must have at least one job runner. If the user creates a job queue with a 
+   "runnerNum" value of 0, this function will automatically create a job runner. */
 HashedString CreateQueue(const string& queueName, unsigned int runnerNum = 1, bool autoFlowControl = false);
 
 /* Add a job runner thread to the specified job queue. */
 void AddRunnerToQueue(JobQueueManager* manager);
 
 /* Add a job runner thread to the specified job queue. Return true if the job queue exists and
- * the adding is successful. Otherwise, return false. */
+   the adding is successful. Otherwise, return false. */
 bool AddRunnerToQueue(const HashedString& queueName);
 
 /* Register a job to the specified job queue. Returen true if the job queue exists and the
- * adding is successful. Otherwise, return false. */
+   adding is successful. Otherwise, return false. */
 bool AddJobToQueue(const HashedString& queueName, function<void()> jobFunction, const string& jobName = std::string());
 
 /* Remove the first job runner from the specified job queue. The job queue must have at least
- * one job runner; otherwise, the removal will have no effect and return false. */
+   one job runner; otherwise, the removal will have no effect and return false. */
 bool RemoveRunnerFromQueue(JobQueueManager* manager);
 
 /* Remove the first job runner from the specified job queue. The job queue must have at least
- * one job runner; otherwise, the removal will have no effect and return false. */
+   one job runner; otherwise, the removal will have no effect and return false. */
 bool RemoveRunnerFromQueue(const HashedString& queueName);
 
 /* Remove the specified job queue from the job system. Return true if the job queue exists and
- * the removal is successful. Otherwise, return false. */
+   the removal is successful. Otherwise, return false. */
 bool RemoveQueue(const HashedString& queueName);
 
 /* Get the specified job queue with given queue hashed name. Return a null pointer if the job
- * queue does not exist. */
+   queue does not exist. */
 JobQueueManager* GetQueue(const HashedString& queueName);
 
 /* Check if the specified job queue exists and has unfinished jobs. */
@@ -626,20 +646,20 @@ This file implements various mathematical operations that are commonly used in c
 + ### Value Comparison
     Current implementation provides 3 comparison functions with different features and a entry function:
     ```cpp
-    /** Compare by checking if the absolute difference exceed threashold "maxDiff". Fastest
-     *  performance but lowest accuracy. */
+    /* Compare by checking if the absolute difference exceed threashold "maxDiff". Fastest
+       performance but lowest accuracy. */
     bool AreEqualEps(float lhs, float rhs, float maxDiff);
 
-    /** Compare by checking if the relative difference exceed threashold "maxDiff". More reliable
-     *  than "AreEqualEps()" when inputs are small. Good balance between efficiency and accuracy. */
+    /* Compare by checking if the relative difference exceed threashold "maxDiff". More reliable
+       than "AreEqualEps()" when inputs are small. Good balance between efficiency and accuracy. */
     bool AreEqualRel(float lhs, float rhs, float maxDiff);
 
-    /** Compare by checking the difference of units in the last place of memory. It will first
-     *  try direct comparison and abs-diff comparison, and then try Unit in the Last Place (ULPs)
-     *  comparison. Lowest performance but highest accuracy. */
+    /* Compare by checking the difference of units in the last place of memory. It will first
+       try direct comparison and abs-diff comparison, and then try Unit in the Last Place (ULPs)
+       comparison. Lowest performance but highest accuracy. */
     bool AreEqualAccurate(float lhs, float rhs, float maxDiff, unsigned int maxULPS);
 
-    /** General entry function of above comparison functions */
+    /* General entry function of above comparison functions */
     bool AreEqual(float lhs, float rhs, float maxDiff);
     ```
 
@@ -648,10 +668,10 @@ This file implements various mathematical operations that are commonly used in c
 + ### Random Value Generation
     Current implementation provides 2 random value generation functions:
     ```cpp
-    /** Generate a random integer value within range [lowerBound, upperBound). */
+    /* Generate a random integer value within range [lowerBound, upperBound). */
     int RandInRange(int lowerBound, int upperBound);
 
-    /** Generate a random float value within range [lowerBound, upperBound]. */
+    /* Generate a random float value within range [lowerBound, upperBound]. */
     float RandInRange(float lowerBound, float upperBound);
     ```
 
@@ -764,8 +784,8 @@ This file contains the definitions and implementations of data structures known 
     - Indexing operations
         ```cpp
         /* User can access matrix elements by using following syntex: val = Mat[row][col]
-         * The first "[]" is a direct call to this operator, it returns a pointer to the starting
-         * address of the specified row array. The second "[]" is a noraml indexing to the array */
+           The first "[]" is a direct call to this operator, it returns a pointer to the starting
+           address of the specified row array. The second "[]" is a noraml indexing to the array */
         T* operator[] (int row);
 
         Vector<T> GetRow(int row);
