@@ -19,6 +19,12 @@ Read this in other languages:
 
 ## Demos
 
+| **Mini Game Demo - Raiden II** |
+|           :---              |
+| The video below shows a vertical scroll shooter game developed using this game engine. The gameplay is inspired by *"Raiden II"*. The player is represented by the colorful block in the video, and they need to avoid falling rocks, aliens, and enemy bullets. <br> The development of this mini-game utilized various engine features such as the rendering pipeline, the physics system, and the audio system. The build of this mini-game can be dowloaded [here](Documents/Builds/) |
+| <img src="Documents/Videos/Video-Gameplay.mp4" width="810px" height="455px"> |
+
+
 | **Rendering Pipeline Demo** |
 |           :---              |
 | The GIF below demostrates the functionality of the renderind pipeline, such as mesh rendering, mesh transforms, vertex color, animate shaders. <br> The two white-box character models are exported using the *"Maya Exporter"* plugin provided by this game engine (See [Asset Pipeline](#AssetPipeline) session for more detail). <br> The development of lighting, shardowing and texturing is in progress. |
