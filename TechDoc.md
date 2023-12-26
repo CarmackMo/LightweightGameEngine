@@ -1,56 +1,6 @@
-# Lightweight Game Engine
+# Lightweight Game Engine - Tech Doc
 
-## Introduction
-
-A lightweight game engine that is developed by C/C++. The systems and components of this game engine include:
-
-- **Rendering pipeline**
-- **Physics System**
-- **Asset pipeline**
-- **Job system**
-- **Utility components (singleton, smart pointer, etc.)**
-- **Math library**
-
-
-Read this in other languages:
-[简体中文](README.zh-CN.md)
-
-
-
-## Demos
-
-| **Mini Game Demo - Raiden II** |
-|           :---              |
-| The video below shows a vertical scroll shooter game developed using this game engine. The gameplay is inspired by *"Raiden II"*. The player is represented by the colorful block in the video, and they need to avoid falling rocks, aliens, and enemy bullets. <br> The development of this mini-game utilized various engine features such as the rendering pipeline, the physics system, and the audio system. The build of this mini-game can be dowloaded [here](Documents/Builds/ScrollShooterDemo) |
-| [<img src="Documents/Images/MiniGameDemo.png" width="800px">](https://www.youtube.com/watch?v=xEG6YPtX860) |
-
-
-| **Rendering Pipeline Demo** |
-|           :---              |
-| The GIF below demostrates the functionality of the renderind pipeline, such as mesh rendering, mesh transforms, vertex color, animate shaders. <br> The two white-box character models are exported using the *"Maya Exporter"* plugin provided by this game engine (See [Asset Pipeline](#AssetPipeline) session for more detail). <br> The development of lighting, shardowing and texturing is in progress. |
-| <img src="Documents/Gifs/RenderingPipelineDemo.gif" width="800px" height="455px"> |
-
-
-| **Physics System Demo - BVH Tree** |
-|               :---                 | 
-| The GIF below demonstrates the usage of the BVH (Bounding Volume Hierarchy) tree for managing colliders in the game world, and illustrates how the BVH tree updates. <br> In the visualization, the BVH tree is represented by blue frames, while the colliders are represented by frames in various colors.  |
-|  <img src="Documents/Gifs/BVHTreeDemo.gif" width="800px" height="455px"> |
-
-
-| **Physics System Demo - Collision Detection and Resolution** |
-|                           :---                               | 
-| The GIF below illustrates the collision detection and collision resolution processes within the games runtime. <br> In the visualization, cube frames represent AABB (Axis-Aligned Bounding Box) colliders and diamon frames represent sphere colliders. <br> The color code is as follows: green denotes normal colliders, yellow denotes static colliders, pink denotes trigger colliders and red indicates that collider is colliding with other colliders. <br> Note that both static colliders and trigger colliders are not involved in collision resolution.  |
-|  <img src="Documents/Gifs/CollisionDemo.gif" width="800px" height="455px"> |
-
-
-| **Game Engine System Release** |
-|               :---                  | 
-|  The build of this game engine can be downloaded [here](Documents/Builds/EngineDemo). The file named *"MyGame.exe"* is the executable for the game engine. |
-|  To run the engine, use the following controls: <br> For controlling one of the AABB colliders: "A," "W," "S," "D," "R," "F". <br> For camera control: "Left Arrow," "Right Arrow," "Up Arrow," "Down Arrow," "Delete," "Home," "End," "Page Down"  |
-
-
-
-<br></br>
+Read this in other languages: [简体中文](TechDoc.zh-CN.md)
 
 ## Catalog
 
@@ -70,10 +20,6 @@ Read this in other languages:
     - [Mathf](#Mathf)
     - [Vector](#Vector)
     - [Matrix](#Matrix)
-    
-+ [Work In Progress](#WorkInProgress)
-
-+ [Future Plan](#FuturePlan)
 
 
 
@@ -123,6 +69,14 @@ For a comprehensive understanding, the architecture diagram of the rendering pip
 To bolster the functioning of the rendering pipeline, the game engine implements the representations of rendering data, such as mesh, effect, and constant buffer. With the rendering pipeline being cross-platform, these components also employs a cross-platform implementation, encapsulating platform-specific underlying logics and presenting a platform-independent interface for invocations.
 
 Furthermore, as aforementioned, the engine's rendering pipeline adheres to a "producer-consumer" design, involving extensive data migrations. To better manage the creation, duplication, migration, and clean up of rendering data, rendering data representations are implemented using **Observer design pattern**. 
+
+
+## APIs
+```cpp
+/* Initialize the rendering pipeline and graphics library */
+cResult Initialize( const sInitializationParameters& );
+
+```
 
 
 
@@ -322,6 +276,54 @@ The number of jobs that a job queue needs to execute may vary over time. On one 
 The current automatic workload adjustment mechanism provides a simple approach to address the aforementioned problem. Each job queue is equipped with a `WorkloadManager` object for the workload adjustment. The `WorkloadManager` keeps track of the workload status of the associated job queue. Two flags, *"isTooMany"* and *"isTooFew"*, are used by the `WorkloadManager` to indicate the workload status: whether there are too many or too few jobs in the queue. These flags are triggered based on a comparison between the number of waiting jobs and the corresponding threshold values. The default job queue in the job system maintains a routine to continuously check the status of these flags for each WorkloadManager and dynamically adjusts the number of job runners accordingly, adding or removing them as needed.
 
 
+## APIs
+```cpp
+/* Initialize the job system and create a default job queue */
+void Init();
+
+/* Create a new job queue with the given name and return the hashed job queue name. If a job 
+ * queue with the same hashed name already exists, return the hashed name directly instead. 
+ * A job queue must have at least one job runner. If the user creates a job queue with a 
+ * "runnerNum" value of 0, this function will automatically create a job runner. */
+HashedString CreateQueue(const string& queueName, unsigned int runnerNum = 1, bool autoFlowControl = false);
+
+/* Add a job runner thread to the specified job queue. */
+void AddRunnerToQueue(JobQueueManager* manager);
+
+/* Add a job runner thread to the specified job queue. Return true if the job queue exists and
+ * the adding is successful. Otherwise, return false. */
+bool AddRunnerToQueue(const HashedString& queueName);
+
+/* Register a job to the specified job queue. Returen true if the job queue exists and the
+ * adding is successful. Otherwise, return false. */
+bool AddJobToQueue(const HashedString& queueName, function<void()> jobFunction, const string& jobName = std::string());
+
+/* Remove the first job runner from the specified job queue. The job queue must have at least
+ * one job runner; otherwise, the removal will have no effect and return false. */
+bool RemoveRunnerFromQueue(JobQueueManager* manager);
+
+/* Remove the first job runner from the specified job queue. The job queue must have at least
+ * one job runner; otherwise, the removal will have no effect and return false. */
+bool RemoveRunnerFromQueue(const HashedString& queueName);
+
+/* Remove the specified job queue from the job system. Return true if the job queue exists and
+ * the removal is successful. Otherwise, return false. */
+bool RemoveQueue(const HashedString& queueName);
+
+/* Get the specified job queue with given queue hashed name. Return a null pointer if the job
+ * queue does not exist. */
+JobQueueManager* GetQueue(const HashedString& queueName);
+
+/* Check if the specified job queue exists and has unfinished jobs. */
+bool IsQueueHasJobs(const HashedString& queueName);
+
+/* Request the job system to terminate. */
+void RequestStop();
+
+bool IsStopped();
+```
+
+
 
 
 <br></br>
@@ -332,7 +334,7 @@ The current automatic workload adjustment mechanism provides a simple approach t
 
 <a id="Singleton"></a>
 
-## Singleton.h
+## Singleton
 
 + ### Introduction
 
@@ -374,7 +376,7 @@ The current automatic workload adjustment mechanism provides a simple approach t
 
 <a id="SmartPointers"></a>
 
-## SmartPtrs.h
+## SmartPointers
 
 This file implements smart pointers that are commonly used in dynamic memory resource management, and their necessary components. These components include `RefCount`, `PtrBase`, `SmartPtr`, and `WeakPtr`.
 
@@ -607,7 +609,7 @@ This file implements smart pointers that are commonly used in dynamic memory res
     template <class U> WeakPtr<T>& operator=(const SmartPtr<U>& other);
     ```
 
-
+    
 
 
 <br></br>
@@ -802,46 +804,3 @@ This file contains the definitions and implementations of data structures known 
     /* Calculate vec = vec * Mtx; (i.e. row vector) */
     Vector<T> operator* (Vector<T> vec, Matrix<T> mtx);
     ```
-
-
-
-
-<br></br>
-<br></br>
-<a id="WorkInProgress"></a>
-
-# Work In Progress
-
-+ ## Light Rendering
-
-+ ## Texturing
-
-
-
-
-<br></br>
-<br></br>
-<a id="FuturePlan"></a>
-
-# Future Plan
-
-+ ## Rendering Pipeline
-
-    1. **Multi-threading Optimization:** there is a plan to explore advanced thread synchronization methods to streamline the rendering process and ensure better synchronization between threads.
-
-    2. **Extending Platform and Backend Support:** there is an intention to broaden the platform support, including Linux, MacOS, and mobile platforms. Additionally, expanding graphic API support is under consideration, with APIs such as Vulkan and Metal being potential candidates.
-
-    3. **Post-processing Effects:** there is a plan to integrate various of post-processing effects to elevate the visual aesthetics. Potential inclusions encompass tone mapping, blurring, and Screen Space Ambient Occlusion (SSAO), among others.
-
-    4. **Physically Based Rendering (PBR):** there is an intention to integrate rendering techniques related to physics. Techniques such as real-time shadows, global illumination, and Physically Based Rendering (PBR) are subjects of interest for future development.
-
-
-+ ## Asset Pipeline
-
-    1. **Automation:** Presently, many processes within the asset pipeline are contingent on manual interventions by users. For instance, the installation of plugins, such as the one used for Maya, requires user-initiated actions. To improve this, there's a plan to infuse greater automation into the pipeline's operations.
-
-    2. **Asset Editor:** As of now, any edits to the asset files necessitate users to manipulate the source code directly. This can be cumbersome and prone to errors, especially for those not well-acquainted with code-based manipulations. Future development blueprint encompasses the creation of a asset editor that offers graphical user interface (GUI). 
-
-
-    3. **Enhanced Error Detection:** The existing error detection within the asset pipeline, particularly during data deserialization and conversion, is somewhat rudimentary. While it addresses basic error scenarios, there's room for improvement in terms of comprehensiveness. The future development intends to introduce a more robust and comprehensive error detection mechanism.
-
