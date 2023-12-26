@@ -19,27 +19,33 @@
 
 ## 引擎展示
 
+| **小游戏展示 - 雷电II** |
+|         :---           |
+| 下面的视频展示了一款基于该游戏引擎开发的竖版射击小游戏，该小游戏的玩法参考了 *"雷电II"*。玩家是视频中彩色方块，需要躲避下落的岩石、外星人和敌人的子弹。 <br> 小游戏的开发使用了渲染管线，物理系统，音频系统等引擎功能。该小游戏可以通过[此链接](Documents/Builds/ScrollShooterDemo)下载并运行。|
+| [<img src="Documents/Images/MiniGameDemo.png" width="800px">](https://www.youtube.com/watch?v=xEG6YPtX860) |
+
+
 | **渲染管线展示** |
 |       :---      |
 | 下面的GIF演示了渲染管线的功能，例如网格渲染、网格变换、顶点颜色渲染、特效着色器等。<br> GIF中的两个白盒人物是使用本引擎提供的Maya插件导出的第三方模型。（详见[资产管线章节]((#AssetPipeline))） <br> 光照、阴影和纹理渲染等功能的开发正在进行中。 |
-| <img src="Documents/Gifs/RenderingPipelineDemo.gif" width="810px" height="455px"> |
+| <img src="Documents/Gifs/RenderingPipelineDemo.gif" width="800px" height="455px"> |
 
 
 | **物理系统展示 - BVH树** |
 |          :---           | 
 | 下面的GIF演示了在游戏中使用BVH树（包围体积层次数）来管理碰撞体，并且展示了BVH树在运行期的实时更新。<br> 在实际渲染中，BVH树由蓝色框架表示，而碰撞体则由各种颜色的框架表示。 |
-|  <img src="Documents/Gifs/BVHTreeDemo.gif" width="810px" height="455px"> |
+|  <img src="Documents/Gifs/BVHTreeDemo.gif" width="800px" height="455px"> |
 
 
 | **物理系统展示 - 碰撞检测和碰撞解决** |
 |                 :---               | 
 | 下面的GIF展示了游戏运行时的碰撞检测和碰撞解决过程。<br> 在实际渲染中，立方体框架代表 AABB（轴对齐包围盒）碰撞器；菱形框架代表球体碰撞器。 <br> 框架颜色的含义如下：绿色表示普通碰撞器，黄色表示静态碰撞器，粉红色表示触发器碰撞器，红色则表示碰撞器当前正在与其他碰撞器发生碰撞。 <br> 需要注意的是，静态碰撞器和触发器碰撞器都不参与碰撞解决。 |
-|  <img src="Documents/Gifs/CollisionDemo.gif" width="810px" height="455px"> |
+|  <img src="Documents/Gifs/CollisionDemo.gif" width="800px" height="455px"> |
 
 
 | **游戏引擎 Release** |
 |       :---          | 
-| 此游戏引擎可以通过[该链接](Documents/Builds/EngineDemo)下载并运行。其中 *"MyGame.exe"* 文件是游戏引擎的运行文件。 |
+| 该游戏引擎可以通过[此链接](Documents/Builds/EngineDemo)下载并运行。其中 *"MyGame.exe"* 文件是游戏引擎的运行文件。 |
 | 引擎运行时，请使用以下控制方案： <br> 控制其中一个AABB碰撞器："A"键、"W"键、"S"键、"D"键、"R"键、"F"键。 <br> 控制摄像机："左箭头"键、"右箭头"键、"上箭头"键、"下箭头"键、"Delete"键、"Home"键、"End"键、"Page Down"键。 |
 
 
