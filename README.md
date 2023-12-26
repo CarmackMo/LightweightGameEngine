@@ -8,12 +8,15 @@ A lightweight game engine that is developed by C/C++. The systems and components
 - **Physics System**
 - **Asset pipeline**
 - **Job system**
+- **Audio System**
 - **Utility components (singleton, smart pointer, etc.)**
 - **Math library**
 
 
 Read this in other languages:
 [简体中文](README.zh-CN.md)
+
+For more detail of each components of the game engine, please refer to the [game engine tech-doc](TechDoc.md).
 
 
 

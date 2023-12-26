@@ -1,5 +1,8 @@
 # Lightweight Game Engine - Tech Doc
 
+Read this in other languages:
+[简体中文](TechDoc.zh-CN.md)
+
 
 ## Catalog
 
@@ -321,6 +324,7 @@ The current automatic workload adjustment mechanism provides a simple approach t
 
 ## APIs
 ```cpp
+
 /* Initialize the job system and create a default job queue */
 void Init();
 
@@ -364,6 +368,7 @@ bool IsQueueHasJobs(const HashedString& queueName);
 void RequestStop();
 
 bool IsStopped();
+
 ```
 
 
