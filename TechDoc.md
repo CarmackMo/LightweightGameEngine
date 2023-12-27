@@ -267,7 +267,7 @@ The job system is implemented using following components. Note that certain unde
 
 <a id="JobQueue"></a>
 
-+ ### JobQueue
++ ### Job Queue
     A `JobQueue` object is a data structure that responsible for storing and managing jobs. The jobs within the job queue object are executed in a first-in, first-out (FIFO) order.
 
     The job queue object is designed to be a shared resource for job runners. To facilitate synchronization between job runners working on the same job queue, the job queue object maintains a `CONDITION_VARIABLE` object and a `CRITICAL_SECTION` object. These ensure that jobs are added to and retrieved from the queue in a synchronized manner.
@@ -277,7 +277,7 @@ The job system is implemented using following components. Note that certain unde
 
 <a id="JobRunner"></a>
 
-+ ### JobRunner
++ ### Job Runner
     A `JobRunner` object is an elementary job executer of the specific job queue it assigned to. 
 
     The job runner object serves as the control module for the thread that performs the job execution. Each job runner object stores essential data of the thread, including the handler to the threa, thread ID, and a pointer to the associated job queue. 
@@ -291,9 +291,9 @@ The job system is implemented using following components. Note that certain unde
     `JobQueueManager` serves as a comprehensive manager of a job queue. The job queue manager object oversees the essential components required for the operation of a job queue, including the `JobQueue` object, a `JobStatus` object, a list of `JobRunner` objects, and a `WorkloadManager` object.
 
 
-<a id="JobQueueManager"></a>
+<a id="WorkloadManager"></a>
 
-+ ### WorkloadManager
++ ### Workload Manager
     `WorkloadManager` serves as a workload management module for each job queue within the job system. When users enable the *"Automatic Workload Adjustment"* functionality, the workload manager dynamically assigns or removes job runners from the job queue based on the real-time workload of the game engine. his optimization enhances the performance of the game engine.
 
 

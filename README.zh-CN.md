@@ -103,11 +103,11 @@
 ![Rendering Pipeline Architecture](Documents/Images/RenderingPipeline.png)
 
 
-+ ## 渲染组件
+## 渲染组件
 
-    为了支持渲染管线的运作，该游戏引擎实现了渲染数据类，例如网格类（mesh class），效果类（effect class），常缓冲区类（constant buffer class）。由于渲染管线是跨平台的，因此这些渲染组件的底层逻辑也采用了跨平台实现并进行了封装，只对外暴露了平台独立（platform-independent）的接口以供调用。
+为了支持渲染管线的运作，该游戏引擎实现了渲染数据类，例如网格类（mesh class），效果类（effect class），常缓冲区类（constant buffer class）。由于渲染管线是跨平台的，因此这些渲染组件的底层逻辑也采用了跨平台实现并进行了封装，只对外暴露了平台独立（platform-independent）的接口以供调用。
 
-    此外，如前所述渲染管线采用了 “生产者-消费者” 设计模式，因而渲染数据在渲染管线的运行过程中涉及了大量的迁移。为了更好地管理渲染数据的创建、拷贝、迁移和清理，渲染数据使用了 **观察者设计模式（Observer Design Pattern）** 进行开发。
+此外，如前所述渲染管线采用了 “生产者-消费者” 设计模式，因而渲染数据在渲染管线的运行过程中涉及了大量的迁移。为了更好地管理渲染数据的创建、拷贝、迁移和清理，渲染数据使用了 **观察者设计模式（Observer Design Pattern）** 进行开发。
 
 
 
