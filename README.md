@@ -12,13 +12,15 @@ A lightweight game engine that is developed by C/C++. The systems and components
 - **Utility components (singleton, smart pointer, etc.)**
 - **Math library**
 
-For more detail of the above components of the game engine, please refer to the [game engine tech-doc](TechDoc.md).
+For more detail of the above components, please refer to the [game engine tech-doc](TechDoc.md).
 
 
 Read this in other languages:
 [简体中文](README.zh-CN.md)
 
 
+
+<br>
 
 ## Demos
 
@@ -205,7 +207,7 @@ This file implements `Singleton` class that serves as a base class designed to c
 Ensuring that only one instance exists in the entire application is a key requirement for a class that is also a singleton. To achieve this, the constructor of the `Singleton` class is set to private, priventing users from directly instantiating a class instance. Additionally, certain class members such as the copy constructor and assignment operator are explicitly deleted to prevent implicit instantiation of the class. It is important to enforce these rules consistently in all classes derived from the `Singleton` base class, to maintain the rule of "one instance globally".
 
 For more detail of the singleton, please refer to the [Singleton](./TechDoc.md#Singleton) section in the tech-doc.
-    
+
 
 <br>
 <a id="SmartPointers"></a>
