@@ -16,6 +16,8 @@
 [English](README.md)
 
 
+关于游戏引擎各个组件的具体描述，请参考该引擎的[技术文档](TechDoc.zh-CN.md).
+
 
 ## 引擎展示
 
