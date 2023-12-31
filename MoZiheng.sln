@@ -92,6 +92,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AudioBuilder", "Tools\Audio
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Audio", "Engine\Audio\Audio.vcxproj", "{4BDE8532-8703-450A-8D41-DE4CEE9F6684}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MultiplayerGame", "MultiplayerGame", "{D666C200-A435-491C-996D-BEFFABF145CE}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MultiplayerGame", "MultiplayerGame_\MultiplayerGame\MultiplayerGame.vcxproj", "{67893911-47DE-47B3-B56E-9771E997B57E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -387,6 +391,14 @@ Global
 		{4BDE8532-8703-450A-8D41-DE4CEE9F6684}.Release|x64.Build.0 = Release|x64
 		{4BDE8532-8703-450A-8D41-DE4CEE9F6684}.Release|x86.ActiveCfg = Release|Win32
 		{4BDE8532-8703-450A-8D41-DE4CEE9F6684}.Release|x86.Build.0 = Release|Win32
+		{67893911-47DE-47B3-B56E-9771E997B57E}.Debug|x64.ActiveCfg = Debug|x64
+		{67893911-47DE-47B3-B56E-9771E997B57E}.Debug|x64.Build.0 = Debug|x64
+		{67893911-47DE-47B3-B56E-9771E997B57E}.Debug|x86.ActiveCfg = Debug|Win32
+		{67893911-47DE-47B3-B56E-9771E997B57E}.Debug|x86.Build.0 = Debug|Win32
+		{67893911-47DE-47B3-B56E-9771E997B57E}.Release|x64.ActiveCfg = Release|x64
+		{67893911-47DE-47B3-B56E-9771E997B57E}.Release|x64.Build.0 = Release|x64
+		{67893911-47DE-47B3-B56E-9771E997B57E}.Release|x86.ActiveCfg = Release|Win32
+		{67893911-47DE-47B3-B56E-9771E997B57E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -429,6 +441,7 @@ Global
 		{C9C5507C-4B42-4ECC-8BF2-0A254637B814} = {E5C51EF7-81D3-4030-A4CE-0D2D666CEF4F}
 		{0EEE50DD-9109-4253-A3A8-08DA0D23E05A} = {31B05C03-4BB2-4A0D-B621-B41DA6B0F57E}
 		{4BDE8532-8703-450A-8D41-DE4CEE9F6684} = {E5C51EF7-81D3-4030-A4CE-0D2D666CEF4F}
+		{67893911-47DE-47B3-B56E-9771E997B57E} = {D666C200-A435-491C-996D-BEFFABF145CE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A89F366F-0B7F-464F-90A8-A4828B273298}
