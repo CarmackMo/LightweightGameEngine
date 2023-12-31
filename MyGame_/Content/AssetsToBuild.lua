@@ -24,4 +24,12 @@ return
 		{ path = "Meshes/mesh_keqing_skin.lua" },
 		{ path = "Meshes/mesh_ganyu.lua" },
 	},
+
+	audios = 
+	{
+		{ path = "Audios/audio_Main.wav" },
+		{ path = "Audios/audio_Shoot.wav" },
+		{ path = "Audios/audio_Boom_Enemy.wav" },
+		{ path = "Audios/audio_Hit_Enemy.wav" },
+	},
 }
