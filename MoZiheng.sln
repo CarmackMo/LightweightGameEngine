@@ -92,6 +92,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MultiplayerGame", "Multipla
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BuildMultiplayerGameAssets", "MultiplayerGame_\BuildMultiplayerGameAssets\BuildMultiplayerGameAssets.vcxproj", "{DB4AA59D-4626-4211-A123-6ABD58F5FDC6}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Network", "Engine\Network\Network.vcxproj", "{26690D3C-982D-4C3A-B49C-CECE5DDB0C4C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -387,6 +389,14 @@ Global
 		{DB4AA59D-4626-4211-A123-6ABD58F5FDC6}.Release|x64.Build.0 = Release|x64
 		{DB4AA59D-4626-4211-A123-6ABD58F5FDC6}.Release|x86.ActiveCfg = Release|Win32
 		{DB4AA59D-4626-4211-A123-6ABD58F5FDC6}.Release|x86.Build.0 = Release|Win32
+		{26690D3C-982D-4C3A-B49C-CECE5DDB0C4C}.Debug|x64.ActiveCfg = Debug|x64
+		{26690D3C-982D-4C3A-B49C-CECE5DDB0C4C}.Debug|x64.Build.0 = Debug|x64
+		{26690D3C-982D-4C3A-B49C-CECE5DDB0C4C}.Debug|x86.ActiveCfg = Debug|Win32
+		{26690D3C-982D-4C3A-B49C-CECE5DDB0C4C}.Debug|x86.Build.0 = Debug|Win32
+		{26690D3C-982D-4C3A-B49C-CECE5DDB0C4C}.Release|x64.ActiveCfg = Release|x64
+		{26690D3C-982D-4C3A-B49C-CECE5DDB0C4C}.Release|x64.Build.0 = Release|x64
+		{26690D3C-982D-4C3A-B49C-CECE5DDB0C4C}.Release|x86.ActiveCfg = Release|Win32
+		{26690D3C-982D-4C3A-B49C-CECE5DDB0C4C}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -429,6 +439,7 @@ Global
 		{4BDE8532-8703-450A-8D41-DE4CEE9F6684} = {E5C51EF7-81D3-4030-A4CE-0D2D666CEF4F}
 		{67893911-47DE-47B3-B56E-9771E997B57E} = {D666C200-A435-491C-996D-BEFFABF145CE}
 		{DB4AA59D-4626-4211-A123-6ABD58F5FDC6} = {D666C200-A435-491C-996D-BEFFABF145CE}
+		{26690D3C-982D-4C3A-B49C-CECE5DDB0C4C} = {E5C51EF7-81D3-4030-A4CE-0D2D666CEF4F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A89F366F-0B7F-464F-90A8-A4828B273298}
