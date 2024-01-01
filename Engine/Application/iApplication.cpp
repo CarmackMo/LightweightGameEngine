@@ -497,7 +497,16 @@ eae6320::cResult eae6320::Application::iApplication::CleanUp_all()
 eae6320::cResult eae6320::Application::iApplication::CleanUp_engine()
 {
 	auto result = Results::Success;
-
+	
+	// Audio
+	{
+		const auto result_audio = Audio::CleanUp();
+		if (!result_audio)
+		{
+			EAE6320_ASSERTF(false, "Audio wasn't successfully cleaned up");
+			if (result) { result = result_audio; }
+		}
+	}
 	// Graphics
 	{
 		const auto result_graphics = Graphics::CleanUp();
@@ -507,13 +516,13 @@ eae6320::cResult eae6320::Application::iApplication::CleanUp_engine()
 			if ( result ) { result = result_graphics; }
 		}
 	}
-	// Audio
+	// Network
 	{
-		const auto result_audio = Audio::CleanUp();
-		if (!result_audio)
+		const auto result_network = Network::CleanUp();
+		if (!result_network)
 		{
-			EAE6320_ASSERTF(false, "Audio wasn't successfully cleaned up");
-			if (result) { result = result_audio; }
+			EAE6320_ASSERTF(false, "Network wasn't successfully cleaned up");
+			if (result) { result = result_network; }
 		}
 	}
 	// User Output
