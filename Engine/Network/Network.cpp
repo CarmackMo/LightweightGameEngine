@@ -43,7 +43,6 @@ namespace
 
 	WSADATA s_wsaData;
 	
-	SOCKET s_ClientSocket = INVALID_SOCKET;
 	SOCKET s_connectSocket = INVALID_SOCKET;
 
 }
@@ -89,6 +88,17 @@ eae6320::cResult eae6320::Network::Initialize(HINSTANCE i_hInstance)
 		if (!RegisterClassW(&wc))
 			return Results::Failure;
 	}
+
+	return Results::Success;
+}
+
+
+eae6320::cResult eae6320::Network::CleanUp()
+{
+	if (s_connectSocket != INVALID_SOCKET)
+		closesocket(s_connectSocket);
+
+	WSACleanup();
 
 	return Results::Success;
 }
@@ -201,8 +211,8 @@ eae6320::cResult eae6320::Network::Initialize_Host()
 
 	// Accept a client socket
 	{
-		s_ClientSocket = accept(listenSocket, NULL, NULL);
-		if (s_ClientSocket == INVALID_SOCKET) 
+		s_connectSocket = accept(listenSocket, NULL, NULL);
+		if (s_connectSocket == INVALID_SOCKET)
 		{
 			Logging::OutputError("accept failed with error: %ld\n", WSAGetLastError());
 			UserOutput::ConsolePrint(std::string("accept failed with error: " + WSAGetLastError()).c_str());
