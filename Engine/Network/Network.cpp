@@ -41,6 +41,8 @@ namespace
 	// Network
 	//----------------------
 
+	eae6320::Network::eNetworkType s_networkType = eae6320::Network::eNetworkType::None;
+
 	WSADATA s_wsaData;
 	
 	SOCKET s_connectSocket = INVALID_SOCKET;
@@ -125,6 +127,36 @@ eae6320::cResult eae6320::Network::Connect()
 
 	DestroyWindow(s_dialogWindow);
 	return Results::Success;
+}
+
+
+eae6320::cResult eae6320::Network::SendData(const char* i_sendBuffer)
+{
+	if (GetNetworkTypeOfThisComputer() == eNetworkType::None)
+	{
+		UserOutput::ConsolePrint("Cannot send data without network connection \n");
+		return Results::Failure;
+	}
+	else
+	{
+		int iResult = send(s_connectSocket, i_sendBuffer, (int)strlen(i_sendBuffer), 0);
+		if (iResult == SOCKET_ERROR) 
+		{
+			Logging::OutputError("send failed with error: %d\n", WSAGetLastError());
+			UserOutput::ConsolePrint(std::string("send failed with error: " + WSAGetLastError()).c_str());
+			closesocket(s_connectSocket);
+			WSACleanup();
+			return Results::Failure;
+		}
+	}
+
+	return Results::Success;
+}
+
+
+eae6320::Network::eNetworkType eae6320::Network::GetNetworkTypeOfThisComputer()
+{
+	return s_networkType;
 }
 
 
@@ -322,10 +354,12 @@ namespace
 				if (ipAddr == "")
 				{
 					eae6320::Network::Initialize_Host();
+					s_networkType = eae6320::Network::Server;
 					s_networkStatus = true;
 				}
 				else if (eae6320::Network::Initialize_Client(ipAddr) == eae6320::Results::Success)
 				{
+					s_networkType = eae6320::Network::Client;
 					s_networkStatus = true;
 				}
 				else
@@ -366,4 +400,5 @@ namespace
 
 		return DefWindowProcW(i_hWnd, i_msg, i_wp, i_lp);
 	}
+
 }

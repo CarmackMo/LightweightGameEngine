@@ -8,6 +8,29 @@
 #include <Windows.h>
 
 
+
+// Collision Type Bits
+//==================
+
+namespace eae6320
+{
+namespace Network
+{
+
+	// The values below are used as bit masks
+	enum eNetworkType : uint8_t
+	{
+		None = 0,
+
+		Server = 1,
+
+		Client = 2,
+	};
+
+}// Namespace Network
+}// Namespace eae6320
+
+
 // Interface
 //==========
 
@@ -22,6 +45,8 @@ namespace Network
 
 	cResult Connect();
 	
+	cResult SendData();
 
+	eNetworkType GetNetworkTypeOfThisComputer();
 }
 }
