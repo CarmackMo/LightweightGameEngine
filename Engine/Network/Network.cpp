@@ -1,9 +1,24 @@
 // Includes
 //=========
 
+#define WIN32_LEAN_AND_MEAN
+
+#include <Engine/Logging/Logging.h>
 #include <Engine/Network/Network.h>
+#include <Engine/UserOutput/UserOutput.h>
 
 #include <string>
+#include <winsock2.h>
+#include <ws2tcpip.h>
+
+// Need to link with Ws2_32.lib, Mswsock.lib, and Advapi32.lib
+#pragma comment (lib, "Ws2_32.lib")
+#pragma comment (lib, "Mswsock.lib")
+#pragma comment (lib, "AdvApi32.lib")
+
+#define DEFAULT_BUFLEN 512
+#define DEFAULT_PORT "27015"
+
 
 
 // Static Data
@@ -11,6 +26,10 @@
 
 namespace
 {
+
+	// Input Window
+	//----------------------
+
 	bool s_networkStatus = false;
 
 	wchar_t s_className_input[] = L"InputWindow";
@@ -18,22 +37,33 @@ namespace
 	HWND s_dialogWindow = NULL;
 	HWND s_inputWindow = NULL;
 	WPARAM s_onClickFlag = 0;
+
+	// Network
+	//----------------------
+
+	WSADATA s_wsaData;
+	
+	SOCKET s_ClientSocket = INVALID_SOCKET;
+	SOCKET s_connectSocket = INVALID_SOCKET;
+
 }
 
 
 // Helper Funcitons Forward Declaraction
 //============
 
-namespace
+namespace eae6320
 {
-
+namespace Network
+{
 	eae6320::cResult Initialize_Host();
 
-	eae6320::cResult Initialize_Client();
+	eae6320::cResult Initialize_Client(std::string& i_hostIP);
+}
+}
 
-	eae6320::cResult ConnectToHost();
-
-
+namespace
+{
 
 	LRESULT CALLBACK WIndowProcedure(HWND, UINT, WPARAM, LPARAM);
 
@@ -92,14 +122,174 @@ eae6320::cResult eae6320::Network::Connect()
 // Helper Funcitons Implementation
 //==================================
 
-namespace
+eae6320::cResult eae6320::Network::Initialize_Host()
 {
+	int iResult;
 
-	eae6320::cResult ConnectToHost()
+	struct addrinfo hints;
+	struct addrinfo* result = NULL;
+	
+	SOCKET listenSocket = INVALID_SOCKET;
+
+	// Initialize Winsock
 	{
-		return eae6320::Results::Success;
+		iResult = WSAStartup(MAKEWORD(2, 2), &s_wsaData);
+		if (iResult != 0) 
+		{
+			Logging::OutputError("WSAStartup failed with error: %d\n", iResult);
+			UserOutput::ConsolePrint(std::string("WSAStartup failed with error: " + iResult).c_str());
+			return Results::Failure;
+		}
 	}
 
+	// Resolve the server address and port
+	{
+		ZeroMemory(&hints, sizeof(hints));
+		hints.ai_family = AF_INET;
+		hints.ai_socktype = SOCK_STREAM;
+		hints.ai_protocol = IPPROTO_TCP;
+		hints.ai_flags = AI_PASSIVE;
+
+		iResult = getaddrinfo(NULL, DEFAULT_PORT, &hints, &result);
+		if (iResult != 0) 
+		{
+			Logging::OutputError("getaddrinfo failed with error: %d\n", iResult);
+			UserOutput::ConsolePrint(std::string("getaddrinfo failed with error: " + iResult).c_str());
+			WSACleanup();
+			return Results::Failure;
+		}
+	}
+
+	// Create a SOCKET for the server to listen for client connections.
+	{
+		listenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+		if (listenSocket == INVALID_SOCKET)
+		{
+			Logging::OutputError("socket failed with error: %ld\n", WSAGetLastError());
+			UserOutput::ConsolePrint(std::string("socket failed with error: " + WSAGetLastError()).c_str());
+			freeaddrinfo(result);
+			WSACleanup();
+			return Results::Failure;
+		}
+	}
+
+	// Setup the TCP listening socket
+	{
+		iResult = bind(listenSocket, result->ai_addr, (int)result->ai_addrlen);
+		if (iResult == SOCKET_ERROR) 
+		{
+			Logging::OutputError("bind failed with error: %ld\n", WSAGetLastError());
+			UserOutput::ConsolePrint(std::string("bind failed with error: " + WSAGetLastError()).c_str());
+			freeaddrinfo(result);
+			closesocket(listenSocket);
+			WSACleanup();
+			return Results::Failure;
+		}
+
+		freeaddrinfo(result);
+
+		iResult = listen(listenSocket, SOMAXCONN);
+		if (iResult == SOCKET_ERROR) 
+		{
+			Logging::OutputError("listen failed with error: %ld\n", WSAGetLastError());
+			UserOutput::ConsolePrint(std::string("listen failed with error: " + WSAGetLastError()).c_str());
+			closesocket(listenSocket);
+			WSACleanup();
+			return Results::Failure;
+		}
+	}
+
+	// Accept a client socket
+	{
+		s_ClientSocket = accept(listenSocket, NULL, NULL);
+		if (s_ClientSocket == INVALID_SOCKET) 
+		{
+			Logging::OutputError("accept failed with error: %ld\n", WSAGetLastError());
+			UserOutput::ConsolePrint(std::string("accept failed with error: " + WSAGetLastError()).c_str());
+			closesocket(listenSocket);
+			WSACleanup();
+			return Results::Failure;
+		}
+	}
+
+	// No longer need server socket
+	closesocket(listenSocket);
+
+	return Results::Success;
+}
+
+
+eae6320::cResult eae6320::Network::Initialize_Client(std::string& i_hostIP)
+{
+	int iResult;
+
+	struct addrinfo hints;
+	struct addrinfo* result = NULL;
+
+	// Initialize Winsock
+	iResult = WSAStartup(MAKEWORD(2, 2), &s_wsaData);
+	if (iResult != 0) 
+	{
+		Logging::OutputError("WSAStartup failed with error: %d\n", iResult);
+		UserOutput::ConsolePrint(std::string("WSAStartup failed with error: " + iResult).c_str());
+		return Results::Failure;
+	}
+
+	ZeroMemory(&hints, sizeof(hints));
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_protocol = IPPROTO_TCP;
+
+	// Resolve the server address and port
+	iResult = getaddrinfo(i_hostIP.c_str(), DEFAULT_PORT, &hints, &result);
+	if (iResult != 0) 
+	{
+		Logging::OutputError("getaddrinfo failed with error: %d\n", iResult);
+		UserOutput::ConsolePrint(std::string("getaddrinfo failed with error: " + iResult).c_str());
+		WSACleanup();
+		return Results::Failure;
+	}
+
+	// Attempt to connect to an address until one succeeds
+	for (struct addrinfo* ptr = result; ptr != NULL; ptr = ptr->ai_next) {
+
+		// Create a SOCKET for connecting to server
+		s_connectSocket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
+		if (s_connectSocket == INVALID_SOCKET) 
+		{
+			Logging::OutputError("socket failed with error: %ld\n", WSAGetLastError());
+			UserOutput::ConsolePrint(std::string("socket failed with error: " + WSAGetLastError()).c_str());
+			WSACleanup();
+			return Results::Failure;
+		}
+
+		// Connect to server.
+		iResult = connect(s_connectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
+		if (iResult == SOCKET_ERROR) 
+		{
+			closesocket(s_connectSocket);
+			s_connectSocket = INVALID_SOCKET;
+			continue;
+		}
+		break;
+	}
+
+	freeaddrinfo(result);
+
+	if (s_connectSocket == INVALID_SOCKET) 
+	{
+		Logging::OutputError("Unable to connect to server!\n");
+		UserOutput::ConsolePrint("Unable to connect to server!\n");
+		WSACleanup();
+		return Results::Failure;
+	}
+
+	return Results::Success;
+}
+
+
+namespace
+{
 
 	LRESULT CALLBACK WIndowProcedure(HWND i_hWnd, UINT i_msg, WPARAM i_wp, LPARAM i_lp)
 	{
@@ -118,16 +308,19 @@ namespace
 					ipAddr.push_back(static_cast<char>(ch));
 				}
 
-
+				// Establish network connection
 				if (ipAddr == "")
 				{
-					//Initialize_Host();
+					eae6320::Network::Initialize_Host();
+					s_networkStatus = true;
+				}
+				else if (eae6320::Network::Initialize_Client(ipAddr) == eae6320::Results::Success)
+				{
 					s_networkStatus = true;
 				}
 				else
 				{
-					//Initialize_Client();
-					s_networkStatus = true;
+					MessageBox(NULL, L"Connect to sever failed!", L"Connection Error", MB_OK);
 				}
 
 			}
