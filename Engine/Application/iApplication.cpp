@@ -6,6 +6,7 @@
 #include <Engine/Audio/Audio.h>
 #include <Engine/Graphics/Graphics.h>
 #include <Engine/Logging/Logging.h>
+#include <Engine/Network/Network.h>
 #include <Engine/Math/Random.h>
 #include <Engine/ScopeGuard/cScopeGuard.h>
 #include <Engine/Time/Time.h>
@@ -341,6 +342,32 @@ eae6320::cResult eae6320::Application::iApplication::Initialize_engine()
 {
 	auto result = Results::Success;
 
+	// Audio
+	{
+		if (!(result = Audio::Initialize()))
+		{
+			Logging::OutputError("Application initialized Audio failed");
+			EAE6320_ASSERTF(false, "Application can't be initialized without Audio");
+			return result;
+		}
+	}
+	// Network
+	{
+		if (!(result = Network::Initialize(m_thisInstanceOfTheApplication)))
+		{
+			Logging::OutputError("Application initialized Network failed");
+			EAE6320_ASSERTF(false, "Application can't be initialized without Network");
+			return result;
+		}
+	}
+	// Math::Random
+	{
+		if (!(result = Math::Random::Initialize()))
+		{
+			Logging::OutputError("Application initialized Math::Random failed");
+			return result;
+		}
+	}
 	// User Output
 	{
 		UserOutput::sInitializationParameters initializationParameters;
@@ -361,34 +388,17 @@ eae6320::cResult eae6320::Application::iApplication::Initialize_engine()
 	// Graphics
 	{
 		Graphics::sInitializationParameters initializationParameters;
-		if ( result = PopulateGraphicsInitializationParameters( initializationParameters ) )
+		if (result = PopulateGraphicsInitializationParameters(initializationParameters))
 		{
-			if ( !( result = Graphics::Initialize( initializationParameters ) ) )
+			if (!(result = Graphics::Initialize(initializationParameters)))
 			{
-				EAE6320_ASSERTF( false, "Application can't be initialized without Graphics" );
+				EAE6320_ASSERTF(false, "Application can't be initialized without Graphics");
 				return result;
 			}
 		}
 		else
 		{
-			EAE6320_ASSERTF( false, "Application can't be initialized without Graphics initialization parameters" );
-			return result;
-		}
-	}
-	// Audio
-	{
-		if (!(result = Audio::Initialize()))
-		{
-			Logging::OutputError("Application initialized Audio failed");
-			EAE6320_ASSERTF(false, "Application can't be initialized without Audio");
-			return result;
-		}
-	}
-	// Math::Random
-	{
-		if (!(result = Math::Random::Initialize()))
-		{
-			Logging::OutputError("Application initialized Math::Random failed");
+			EAE6320_ASSERTF(false, "Application can't be initialized without Graphics initialization parameters");
 			return result;
 		}
 	}

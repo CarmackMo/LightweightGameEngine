@@ -43,6 +43,9 @@
     <ProjectReference Include="..\Logging\Logging.vcxproj">
       <Project>{a5c152ad-26a3-4835-bb10-ef292daf94ac}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Network\Network.vcxproj">
+      <Project>{26690d3c-982d-4c3a-b49c-cece5ddb0c4c}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Results\Results.vcxproj">
       <Project>{5003f315-b5d5-48ab-ba3f-1cb0dec8c213}</Project>
     </ProjectReference>

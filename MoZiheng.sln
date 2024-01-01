@@ -93,6 +93,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BuildMultiplayerGameAssets", "MultiplayerGame_\BuildMultiplayerGameAssets\BuildMultiplayerGameAssets.vcxproj", "{DB4AA59D-4626-4211-A123-6ABD58F5FDC6}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Network", "Engine\Network\Network.vcxproj", "{26690D3C-982D-4C3A-B49C-CECE5DDB0C4C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5003F315-B5D5-48AB-BA3F-1CB0DEC8C213} = {5003F315-B5D5-48AB-BA3F-1CB0DEC8C213}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

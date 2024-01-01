@@ -1,9 +1,11 @@
 // Includes
 //=========
 
-#include "../UserInput.h"
+#include <Engine/UserInput/UserInput.h>
 
 #include <Engine/Windows/Includes.h>
+
+
 
 // Interface
 //==========
@@ -14,3 +16,4 @@ bool eae6320::UserInput::IsKeyPressed( const uint_fast8_t i_keyCode )
 	constexpr short isKeyDownMask = ~1;
 	return ( keyState & isKeyDownMask ) != 0;
 }
+

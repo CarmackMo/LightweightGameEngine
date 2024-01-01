@@ -23,6 +23,11 @@
 #include <iostream>
 
 
+// TODO: Temporary code for network system
+#include <Engine/Network/Network.h>
+
+
+
 using namespace eae6320;
 
 
@@ -220,6 +225,10 @@ eae6320::cResult MultiplayerGame::cMultiplayerGame::Initialize()
 
 	// TODO: temporary code for initialize collision system
 	InitializeCollisionSystem();
+
+
+	// TODO: temporary code for network system
+	Network::Connect();
 
 
 	return Results::Success;
