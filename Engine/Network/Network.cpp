@@ -17,7 +17,7 @@ namespace
 
 	HWND s_dialogWindow = NULL;
 	HWND s_inputWindow = NULL;
-	WPARAM s_inputFlag = 0;
+	WPARAM s_onClickFlag = 0;
 }
 
 
@@ -35,8 +35,6 @@ namespace
 
 
 
-	void CreateInputWindow();
-
 	LRESULT CALLBACK WIndowProcedure(HWND, UINT, WPARAM, LPARAM);
 
 }
@@ -48,7 +46,7 @@ namespace
 
 eae6320::cResult eae6320::Network::Initialize(HINSTANCE i_hInstance)
 {
-
+	// Register a new class for input window
 	{
 		WNDCLASSW wc = { 0 };
 
@@ -60,11 +58,7 @@ eae6320::cResult eae6320::Network::Initialize(HINSTANCE i_hInstance)
 
 		if (!RegisterClassW(&wc))
 			return Results::Failure;
-
-
 	}
-
-
 
 	return Results::Success;
 }
@@ -72,9 +66,15 @@ eae6320::cResult eae6320::Network::Initialize(HINSTANCE i_hInstance)
 
 eae6320::cResult eae6320::Network::Connect()
 {
-	MSG msg = { 0 };
+	s_dialogWindow = CreateWindowW(
+		s_className_input,
+		L"My Window",
+		WS_OVERLAPPEDWINDOW | WS_VISIBLE,
+		100, 100,
+		500, 500,
+		NULL, NULL, NULL, NULL);
 
-	CreateInputWindow();
+	MSG msg = { 0 };
 
 	while (GetMessage(&msg, NULL, NULL, NULL) && s_networkStatus == false)
 	{
@@ -82,6 +82,8 @@ eae6320::cResult eae6320::Network::Connect()
 		DispatchMessage(&msg);
 	}
 
+
+	DestroyWindow(s_dialogWindow);
 	return Results::Success;
 }
 
@@ -99,42 +101,35 @@ namespace
 	}
 
 
-	void CreateInputWindow()
-	{
-		s_dialogWindow = CreateWindowW(
-			s_className_input,
-			L"My Window",
-			WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-			100, 100,
-			500, 500,
-			NULL, NULL, NULL, NULL);
-	}
-
-
 	LRESULT CALLBACK WIndowProcedure(HWND i_hWnd, UINT i_msg, WPARAM i_wp, LPARAM i_lp)
 	{
 		if (i_msg == WM_COMMAND)
 		{
-			if (i_wp == s_inputFlag)
+			if (i_wp == s_onClickFlag)
 			{
 				wchar_t text[100];
 				GetWindowTextW(s_inputWindow, text, 100);
 
-				//std::wstring temp(text);
-				//std::string ipAddr = std::string(temp.begin(), temp.end());
+				std::string ipAddr;
+				for (wchar_t ch : text)
+				{
+					if (ch == '\0') { break; }
 
-				//if (ipAddr == "")
-				//{
-				//	s_networkStatus = true;
-				//}
-				//else
-				//{
-				//	ConnectToHost();
-				//}
+					ipAddr.push_back(static_cast<char>(ch));
+				}
 
 
-				s_networkStatus = true;
-				DestroyWindow(i_hWnd);
+				if (ipAddr == "")
+				{
+					//Initialize_Host();
+					s_networkStatus = true;
+				}
+				else
+				{
+					//Initialize_Client();
+					s_networkStatus = true;
+				}
+
 			}
 		}
 		else if (i_msg == WM_CREATE)
@@ -143,32 +138,28 @@ namespace
 			CreateWindowW(
 				L"Static", L"Enter host's IP address if your are client, leave blank if you are server:",
 				WS_VISIBLE | WS_CHILD,
-				200, 100,
-				100, 50,
+				100, 100,
+				300, 50,
 				i_hWnd, NULL, NULL, NULL);
 
 			// User input box
 			s_inputWindow = CreateWindowW(
 				L"Edit", L"",
 				WS_VISIBLE | WS_CHILD | WS_BORDER | ES_MULTILINE | ES_AUTOVSCROLL,
-				200, 150,
-				100, 50,
+				100, 150,
+				300, 50,
 				i_hWnd, NULL, NULL, NULL);
 
 			// Button
 			CreateWindowW(
 				L"Button", L"Connect",
 				WS_VISIBLE | WS_CHILD,
-				200, 210,
+				100, 210,
 				100, 50,
-				i_hWnd, (HMENU)s_inputFlag, NULL, NULL);
+				i_hWnd, (HMENU)s_onClickFlag, NULL, NULL);
 		}
-		else if (i_msg == WM_DESTROY)
-		{
-		}
-		else if (i_msg == WM_CLOSE)
-		{
-		}
+		else if (i_msg == WM_DESTROY) { }
+		else if (i_msg == WM_CLOSE) { }
 
 		return DefWindowProcW(i_hWnd, i_msg, i_wp, i_lp);
 	}
