@@ -203,8 +203,14 @@ void MultiplayerGame::cMultiplayerGame::UpdateNetworkBasedOnSimulation()
 		char recvBuffer[512];
 		auto result = Network::ReceiveData(recvBuffer);
 
+		std::string str;
+		for (char ch : recvBuffer)
+		{
+			if (ch == '\0') { break; }
+			str.push_back(ch);
+		}
 
-		UserOutput::ConsolePrint("Message from clien: ", recvBuffer);
+		UserOutput::ConsolePrint("Message from clien: ", str.c_str());
 	}
 }
 
