@@ -70,6 +70,16 @@ void MultiplayerGame::cMultiplayerGame::UpdateSimulationBasedOnInput()
 	m_colliderObject_AABB1.UpdateBasedOnInput();
 	//m_colliderObject_sphere2.UpdateBasedOnInput();
 
+	// TODO: temporary code for network
+	if (UserInput::IsKeyPressed(UserInput::KeyCodes::End))
+	{
+		if (Network::GetNetworkTypeOfThisComputer() == Network::Client)
+		{
+			const char* sendBuffer = "Client press key! \n";
+			auto result = Network::SendData(sendBuffer);
+		}
+	}
+
 }
 
 
@@ -210,7 +220,10 @@ void MultiplayerGame::cMultiplayerGame::UpdateNetworkBasedOnSimulation()
 			str[i] = recvBuffer[i];
 		}
 
-		UserOutput::ConsolePrint("Message from clien: ", str.c_str());
+		if (str.empty() == false)
+		{
+			UserOutput::ConsolePrint("Message from clien: ", str.c_str());
+		}
 	}
 }
 

@@ -135,7 +135,7 @@ eae6320::cResult eae6320::Network::Disconnect()
 	if (iResult == SOCKET_ERROR) 
 	{
 		Logging::OutputError("shutdown failed with error: %d\n", WSAGetLastError());
-		UserOutput::ConsolePrint(std::string("shutdown failed with error: " + WSAGetLastError()).c_str());
+		UserOutput::ConsolePrint("shutdown failed with error: ", std::to_string(WSAGetLastError()).c_str());
 		closesocket(s_connectSocket);
 		WSACleanup();
 		return Results::Failure;
@@ -158,7 +158,7 @@ eae6320::cResult eae6320::Network::SendData(const char* i_sendBuffer)
 		if (iResult == SOCKET_ERROR) 
 		{
 			Logging::OutputError("send failed with error: %d\n", WSAGetLastError());
-			UserOutput::ConsolePrint(std::string("send failed with error: " + WSAGetLastError()).c_str());
+			UserOutput::ConsolePrint("send failed with error: ", std::to_string(WSAGetLastError()).c_str());
 			closesocket(s_connectSocket);
 			WSACleanup();
 			return Results::Failure;
@@ -183,11 +183,13 @@ eae6320::cResult eae6320::Network::ReceiveData(char* io_receiveBuffer, int& io_b
 		UserOutput::ConsolePrint("Connection closed\n");
 		return Results::Success;
 	}
-	else
+	else if (WSAGetLastError() != WSAEWOULDBLOCK)
 	{
-		UserOutput::ConsolePrint(std::string("recv failed with error: " + WSAGetLastError()).c_str());
+		UserOutput::ConsolePrint("recv failed with error: ", std::to_string(WSAGetLastError()).c_str());
 		return Results::Failure;
 	}
+
+	return Results::Success;
 }
 
 
@@ -216,7 +218,7 @@ eae6320::cResult eae6320::Network::Initialize_Host()
 		if (iResult != 0) 
 		{
 			Logging::OutputError("WSAStartup failed with error: %d\n", iResult);
-			UserOutput::ConsolePrint(std::string("WSAStartup failed with error: " + iResult).c_str());
+			UserOutput::ConsolePrint("WSAStartup failed with error: ", std::to_string(iResult).c_str());
 			return Results::Failure;
 		}
 	}
@@ -233,7 +235,7 @@ eae6320::cResult eae6320::Network::Initialize_Host()
 		if (iResult != 0) 
 		{
 			Logging::OutputError("getaddrinfo failed with error: %d\n", iResult);
-			UserOutput::ConsolePrint(std::string("getaddrinfo failed with error: " + iResult).c_str());
+			UserOutput::ConsolePrint("getaddrinfo failed with error: ", std::to_string(iResult).c_str());
 			WSACleanup();
 			return Results::Failure;
 		}
@@ -250,8 +252,6 @@ eae6320::cResult eae6320::Network::Initialize_Host()
 			WSACleanup();
 			return Results::Failure;
 		}
-
-
 	}
 
 	// Setup the TCP listening socket
@@ -328,7 +328,7 @@ eae6320::cResult eae6320::Network::Initialize_Client(std::string& i_hostIP)
 		if (iResult != 0) 
 		{
 			Logging::OutputError("WSAStartup failed with error: %d\n", iResult);
-			UserOutput::ConsolePrint(std::string("WSAStartup failed with error: " + iResult).c_str());
+			UserOutput::ConsolePrint("WSAStartup failed with error: ", std::to_string(iResult).c_str());
 			return Results::Failure;
 		}
 	}
@@ -344,7 +344,7 @@ eae6320::cResult eae6320::Network::Initialize_Client(std::string& i_hostIP)
 		if (iResult != 0) 
 		{
 			Logging::OutputError("getaddrinfo failed with error: %d\n", iResult);
-			UserOutput::ConsolePrint(std::string("getaddrinfo failed with error: " + iResult).c_str());
+			UserOutput::ConsolePrint("getaddrinfo failed with error: ", std::to_string(iResult).c_str());
 			WSACleanup();
 			return Results::Failure;
 		}
