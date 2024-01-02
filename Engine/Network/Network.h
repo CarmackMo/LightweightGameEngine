@@ -45,7 +45,9 @@ namespace Network
 
 	cResult Connect();
 	
-	cResult SendData();
+	cResult SendData(const char* i_sendBuffer);
+
+	cResult ReceiveData(char* i_receiveBuffer);
 
 	eNetworkType GetNetworkTypeOfThisComputer();
 }

@@ -154,6 +154,28 @@ eae6320::cResult eae6320::Network::SendData(const char* i_sendBuffer)
 }
 
 
+eae6320::cResult eae6320::Network::ReceiveData(char* i_receiveBuffer)
+{
+	int iResult = recv(s_connectSocket, i_receiveBuffer, DEFAULT_BUFLEN, 0);
+
+	if (iResult > 0)
+	{
+		UserOutput::ConsolePrint(std::string("Bytes received: " + iResult).c_str());
+		return Results::Success;
+	}
+	else if (iResult == 0)
+	{
+		UserOutput::ConsolePrint("Connection closed\n");
+		return Results::Success;
+	}
+	else
+	{
+		UserOutput::ConsolePrint(std::string("recv failed with error: " + WSAGetLastError()).c_str());
+		return Results::Failure;
+	}
+}
+
+
 eae6320::Network::eNetworkType eae6320::Network::GetNetworkTypeOfThisComputer()
 {
 	return s_networkType;
