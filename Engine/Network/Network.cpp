@@ -16,7 +16,7 @@
 #pragma comment (lib, "Mswsock.lib")
 #pragma comment (lib, "AdvApi32.lib")
 
-#define DEFAULT_BUFLEN 512
+#define DEFAULT_BUFLEN 2048
 #define DEFAULT_PORT "27015"
 
 
@@ -169,13 +169,13 @@ eae6320::cResult eae6320::Network::SendData(const char* i_sendBuffer)
 }
 
 
-eae6320::cResult eae6320::Network::ReceiveData(char* i_receiveBuffer)
+eae6320::cResult eae6320::Network::ReceiveData(char* io_receiveBuffer, int& io_bufferSize)
 {
-	int iResult = recv(s_connectSocket, i_receiveBuffer, DEFAULT_BUFLEN, 0);
+	int iResult = recv(s_connectSocket, io_receiveBuffer, DEFAULT_BUFLEN, 0);
 
 	if (iResult > 0)
 	{
-		UserOutput::ConsolePrint(std::string("Bytes received: " + iResult).c_str());
+		io_bufferSize = iResult;
 		return Results::Success;
 	}
 	else if (iResult == 0)
@@ -245,11 +245,13 @@ eae6320::cResult eae6320::Network::Initialize_Host()
 		if (listenSocket == INVALID_SOCKET)
 		{
 			Logging::OutputError("socket failed with error: %ld\n", WSAGetLastError());
-			UserOutput::ConsolePrint(std::string("socket failed with error: " + WSAGetLastError()).c_str());
+			UserOutput::ConsolePrint("socket failed with error: ", std::to_string(WSAGetLastError()).c_str());
 			freeaddrinfo(result);
 			WSACleanup();
 			return Results::Failure;
 		}
+
+
 	}
 
 	// Setup the TCP listening socket
@@ -258,7 +260,7 @@ eae6320::cResult eae6320::Network::Initialize_Host()
 		if (iResult == SOCKET_ERROR) 
 		{
 			Logging::OutputError("bind failed with error: %ld\n", WSAGetLastError());
-			UserOutput::ConsolePrint(std::string("bind failed with error: " + WSAGetLastError()).c_str());
+			UserOutput::ConsolePrint("bind failed with error: ", std::to_string(WSAGetLastError()).c_str());
 			freeaddrinfo(result);
 			closesocket(listenSocket);
 			WSACleanup();
@@ -271,7 +273,7 @@ eae6320::cResult eae6320::Network::Initialize_Host()
 		if (iResult == SOCKET_ERROR) 
 		{
 			Logging::OutputError("listen failed with error: %ld\n", WSAGetLastError());
-			UserOutput::ConsolePrint(std::string("listen failed with error: " + WSAGetLastError()).c_str());
+			UserOutput::ConsolePrint("listen failed with error: ", std::to_string(WSAGetLastError()).c_str());
 			closesocket(listenSocket);
 			WSACleanup();
 			return Results::Failure;
@@ -284,8 +286,23 @@ eae6320::cResult eae6320::Network::Initialize_Host()
 		if (s_connectSocket == INVALID_SOCKET)
 		{
 			Logging::OutputError("accept failed with error: %ld\n", WSAGetLastError());
-			UserOutput::ConsolePrint(std::string("accept failed with error: " + WSAGetLastError()).c_str());
+			UserOutput::ConsolePrint("accept failed with error: ", std::to_string(WSAGetLastError()).c_str());
 			closesocket(listenSocket);
+			WSACleanup();
+			return Results::Failure;
+		}
+	}
+
+	// Set the socket to non-blocking mode
+	{
+		unsigned long mode = 1;
+		int iResult = ioctlsocket(s_connectSocket, FIONBIO, &mode);
+		if (iResult == SOCKET_ERROR)
+		{
+			Logging::OutputError("set socket to non-blockint mode failed with error: %ld\n", WSAGetLastError());
+			UserOutput::ConsolePrint("set socket to non-blockint mode failed with error:: ", std::to_string(WSAGetLastError()).c_str());
+			freeaddrinfo(result);
+			closesocket(s_connectSocket);
 			WSACleanup();
 			return Results::Failure;
 		}
@@ -306,51 +323,58 @@ eae6320::cResult eae6320::Network::Initialize_Client(std::string& i_hostIP)
 	struct addrinfo* result = NULL;
 
 	// Initialize Winsock
-	iResult = WSAStartup(MAKEWORD(2, 2), &s_wsaData);
-	if (iResult != 0) 
 	{
-		Logging::OutputError("WSAStartup failed with error: %d\n", iResult);
-		UserOutput::ConsolePrint(std::string("WSAStartup failed with error: " + iResult).c_str());
-		return Results::Failure;
+		iResult = WSAStartup(MAKEWORD(2, 2), &s_wsaData);
+		if (iResult != 0) 
+		{
+			Logging::OutputError("WSAStartup failed with error: %d\n", iResult);
+			UserOutput::ConsolePrint(std::string("WSAStartup failed with error: " + iResult).c_str());
+			return Results::Failure;
+		}
 	}
-
-	ZeroMemory(&hints, sizeof(hints));
-	hints.ai_family = AF_UNSPEC;
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_protocol = IPPROTO_TCP;
 
 	// Resolve the server address and port
-	iResult = getaddrinfo(i_hostIP.c_str(), DEFAULT_PORT, &hints, &result);
-	if (iResult != 0) 
 	{
-		Logging::OutputError("getaddrinfo failed with error: %d\n", iResult);
-		UserOutput::ConsolePrint(std::string("getaddrinfo failed with error: " + iResult).c_str());
-		WSACleanup();
-		return Results::Failure;
-	}
+		ZeroMemory(&hints, sizeof(hints));
+		hints.ai_family = AF_UNSPEC;
+		hints.ai_socktype = SOCK_STREAM;
+		hints.ai_protocol = IPPROTO_TCP;
 
-	// Attempt to connect to an address until one succeeds
-	for (struct addrinfo* ptr = result; ptr != NULL; ptr = ptr->ai_next) {
-
-		// Create a SOCKET for connecting to server
-		s_connectSocket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
-		if (s_connectSocket == INVALID_SOCKET) 
+		iResult = getaddrinfo(i_hostIP.c_str(), DEFAULT_PORT, &hints, &result);
+		if (iResult != 0) 
 		{
-			Logging::OutputError("socket failed with error: %ld\n", WSAGetLastError());
-			UserOutput::ConsolePrint(std::string("socket failed with error: " + WSAGetLastError()).c_str());
+			Logging::OutputError("getaddrinfo failed with error: %d\n", iResult);
+			UserOutput::ConsolePrint(std::string("getaddrinfo failed with error: " + iResult).c_str());
 			WSACleanup();
 			return Results::Failure;
 		}
+	}
 
-		// Connect to server.
-		iResult = connect(s_connectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
-		if (iResult == SOCKET_ERROR) 
+	// Attempt to connect to an address until one succeeds
+	{
+		for (struct addrinfo* ptr = result; ptr != NULL; ptr = ptr->ai_next) 
 		{
-			closesocket(s_connectSocket);
-			s_connectSocket = INVALID_SOCKET;
-			continue;
+
+			// Create a SOCKET for connecting to server
+			s_connectSocket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
+			if (s_connectSocket == INVALID_SOCKET) 
+			{
+				Logging::OutputError("socket failed with error: %ld\n", WSAGetLastError());
+				UserOutput::ConsolePrint("socket failed with error: ", std::to_string(WSAGetLastError()).c_str());
+				WSACleanup();
+				return Results::Failure;
+			}
+
+			// Connect to server.
+			iResult = connect(s_connectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
+			if (iResult == SOCKET_ERROR) 
+			{
+				closesocket(s_connectSocket);
+				s_connectSocket = INVALID_SOCKET;
+				continue;
+			}
+			break;
 		}
-		break;
 	}
 
 	freeaddrinfo(result);
@@ -361,6 +385,21 @@ eae6320::cResult eae6320::Network::Initialize_Client(std::string& i_hostIP)
 		UserOutput::ConsolePrint("Unable to connect to server!\n");
 		WSACleanup();
 		return Results::Failure;
+	}
+
+	// Set the socket to non-blocking mode
+	{
+		unsigned long mode = 1;
+		iResult = ioctlsocket(s_connectSocket, FIONBIO, &mode);
+		if (iResult == SOCKET_ERROR)
+		{
+			Logging::OutputError("set socket to non-blockint mode failed with error: %ld\n", WSAGetLastError());
+			UserOutput::ConsolePrint("set socket to non-blockint mode failed with error:: ", std::to_string(WSAGetLastError()).c_str());
+			freeaddrinfo(result);
+			closesocket(s_connectSocket);
+			WSACleanup();
+			return Results::Failure;
+		}
 	}
 
 	return Results::Success;

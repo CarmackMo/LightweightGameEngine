@@ -196,18 +196,18 @@ void MultiplayerGame::cMultiplayerGame::UpdateNetworkBasedOnSimulation()
 	if (networkType == Network::Client)
 	{
 		const char* sendBuffer = "A hello from client";
-		auto result = Network::SendData(sendBuffer);
+		//auto result = Network::SendData(sendBuffer);
 	}
 	else if (networkType == Network::Server)
 	{
-		char recvBuffer[512];
-		auto result = Network::ReceiveData(recvBuffer);
+		char recvBuffer[2048];
+		int recvBufferSize = 0;
+		auto result = Network::ReceiveData(recvBuffer, recvBufferSize);
 
-		std::string str;
-		for (char ch : recvBuffer)
+		std::string str = std::string(recvBufferSize, ' ');
+		for (int i = 0 ; i < recvBufferSize; i++)
 		{
-			if (ch == '\0') { break; }
-			str.push_back(ch);
+			str[i] = recvBuffer[i];
 		}
 
 		UserOutput::ConsolePrint("Message from clien: ", str.c_str());

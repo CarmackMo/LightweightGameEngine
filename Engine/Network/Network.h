@@ -49,7 +49,7 @@ namespace Network
 	
 	cResult SendData(const char* i_sendBuffer);
 
-	cResult ReceiveData(char* i_receiveBuffer);
+	cResult ReceiveData(char* io_receiveBuffer, int& io_bufferSize);
 
 	eNetworkType GetNetworkTypeOfThisComputer();
 
