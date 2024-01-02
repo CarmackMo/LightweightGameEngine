@@ -50,6 +50,7 @@ namespace
 }
 
 
+
 // Helper Funcitons Forward Declaraction
 //============
 
@@ -65,9 +66,7 @@ namespace Network
 
 namespace
 {
-
 	LRESULT CALLBACK WIndowProcedure(HWND, UINT, WPARAM, LPARAM);
-
 }
 
 
@@ -126,6 +125,22 @@ eae6320::cResult eae6320::Network::Connect()
 
 
 	DestroyWindow(s_dialogWindow);
+	return Results::Success;
+}
+
+
+eae6320::cResult eae6320::Network::Disconnect()
+{
+	int iResult = shutdown(s_connectSocket, SD_SEND);
+	if (iResult == SOCKET_ERROR) 
+	{
+		Logging::OutputError("shutdown failed with error: %d\n", WSAGetLastError());
+		UserOutput::ConsolePrint(std::string("shutdown failed with error: " + WSAGetLastError()).c_str());
+		closesocket(s_connectSocket);
+		WSACleanup();
+		return Results::Failure;
+	}
+
 	return Results::Success;
 }
 
@@ -354,7 +369,6 @@ eae6320::cResult eae6320::Network::Initialize_Client(std::string& i_hostIP)
 
 namespace
 {
-
 	LRESULT CALLBACK WIndowProcedure(HWND i_hWnd, UINT i_msg, WPARAM i_wp, LPARAM i_lp)
 	{
 		if (i_msg == WM_COMMAND)
@@ -422,5 +436,4 @@ namespace
 
 		return DefWindowProcW(i_hWnd, i_msg, i_wp, i_lp);
 	}
-
 }

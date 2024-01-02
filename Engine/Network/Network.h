@@ -44,6 +44,8 @@ namespace Network
 	cResult CleanUp();
 
 	cResult Connect();
+
+	cResult Disconnect();
 	
 	cResult SendData(const char* i_sendBuffer);
 
