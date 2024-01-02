@@ -192,6 +192,8 @@ void eae6320::Application::iApplication::UpdateUntilExit()
 				// or the application will stop responding
 				&& ( simulationUpdateCount_thisIteration < maxSimulationUpdateCountWithoutRendering ) )
 			{
+				UpdateNetworkBasedOnSimulation();
+
 				UpdateSimulationBasedOnTime( secondCount_perSimulationUpdate );
 				++simulationUpdateCount_thisIteration;
 				tickCount_simulationTime_totalElapsed += tickCount_perSimulationUpdate;

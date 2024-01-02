@@ -187,6 +187,8 @@ namespace Application
 		virtual void UpdateSimulationBasedOnInput() {}
 		virtual void UpdateSimulationBasedOnTime( const float i_elapsedSecondCount_sinceLastUpdate ) {}
 
+		virtual void UpdateNetworkBasedOnSimulation() {}
+
 		// Your application should override the following function
 		// to instuct the Graphics system what to render for the next frame
 		virtual void SubmitDataToBeRendered( const float i_elapsedSecondCount_systemTime, const float i_elapsedSecondCount_sinceLastSimulationUpdate ) {}

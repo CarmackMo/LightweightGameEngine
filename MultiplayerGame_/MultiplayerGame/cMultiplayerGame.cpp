@@ -189,6 +189,27 @@ void MultiplayerGame::cMultiplayerGame::SubmitDataToBeRendered(
 }
 
 
+void MultiplayerGame::cMultiplayerGame::UpdateNetworkBasedOnSimulation()
+{
+	Network::eNetworkType networkType = Network::GetNetworkTypeOfThisComputer();
+
+	if (networkType == Network::Client)
+	{
+		const char* sendBuffer = "A hello from client";
+		auto result = Network::SendData(sendBuffer);
+	}
+	else if (networkType == Network::Server)
+	{
+		char recvBuffer[512];
+		auto result = Network::ReceiveData(recvBuffer);
+
+
+		UserOutput::ConsolePrint("Message from clien: ", recvBuffer);
+	}
+}
+
+
+
 // Initialize / Clean Up
 //----------------------
 

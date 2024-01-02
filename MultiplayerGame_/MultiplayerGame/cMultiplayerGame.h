@@ -99,6 +99,8 @@ namespace MultiplayerGame
 			const float i_elapsedSecondCount_systemTime, 
 			const float i_elapsedSecondCount_sinceLastSimulationUpdate) final;
 
+		void UpdateNetworkBasedOnSimulation() final;
+
 
 		// Initialize / Clean Up
 		//----------------------

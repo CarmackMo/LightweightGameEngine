@@ -52,5 +52,6 @@ namespace Network
 	cResult ReceiveData(char* i_receiveBuffer);
 
 	eNetworkType GetNetworkTypeOfThisComputer();
-}
-}
+
+}// Namespace Network
+}// Namespace eae6320
